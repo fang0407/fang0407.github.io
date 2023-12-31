@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="SDP介绍SDP（Session Description Protocol） 完全是⼀种会话描述格式，它不属于传输协议，只使⽤不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电⼦邮件以及超⽂本传输协议（HTTP）。SDP协议是也是基于⽂本的协议，这样就能保证协议的可扩展性⽐较强，这样就使其具有⼴泛的应⽤范围。SDP 不⽀持会话内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SDP协议">
+<meta property="og:url" content="https://fang0407.github.io/2023/09/22/SDP%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="SDP介绍SDP（Session Description Protocol） 完全是⼀种会话描述格式，它不属于传输协议，只使⽤不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电⼦邮件以及超⽂本传输协议（HTTP）。SDP协议是也是基于⽂本的协议，这样就能保证协议的可扩展性⽐较强，这样就使其具有⼴泛的应⽤范围。SDP 不⽀持会话内">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-09-22T12:37:35.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:37:49.214Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/09/22/SDP%E5%8D%8F%E8%AE%AE/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/09/22/SDP%E5%8D%8F%E8%AE%AE/","path":"2023/09/22/SDP协议/","title":"SDP协议"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SDP协议 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SDP%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">SDP介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SDP%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">SDP格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%85%E9%9C%80%E5%AD%97%E6%AE%B5"><span class="nav-number">2.1.</span> <span class="nav-text">必需字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E5%AD%97%E6%AE%B5"><span class="nav-number">2.2.</span> <span class="nav-text">可选字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BC%A6%E5%AD%97%E6%AE%B5"><span class="nav-number">2.3.</span> <span class="nav-text">⼦字段</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/22/SDP%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SDP协议 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SDP协议
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-22 20:37:35" itemprop="dateCreated datePublished" datetime="2023-09-22T20:37:35+08:00">2023-09-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:37:49" itemprop="dateModified" datetime="2023-12-30T22:37:49+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="SDP介绍"><a href="#SDP介绍" class="headerlink" title="SDP介绍"></a>SDP介绍</h1><p>SDP（Session Description Protocol） 完全是<strong>⼀种会话描述格式</strong>，它<strong>不属于传输协议</strong>，只使⽤不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电⼦邮件以及超⽂本传输协议（HTTP）。SDP协议是也是基于⽂本的协议，这样就能保证协议的可扩展性⽐较强，这样就使其具有⼴泛的应⽤范围。SDP 不⽀持会话内容或媒体编码的协商，所以在流媒体中只⽤来描述媒体信息。媒体协商这⼀块要⽤RTSP来实现．</p>
+<h1 id="SDP格式"><a href="#SDP格式" class="headerlink" title="SDP格式"></a>SDP格式</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;type&gt;=&lt;value&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>&lt;type&gt;</code>：⼤⼩写敏感的⼀个字符，代表特定的属性，⽐如 v 代表版本。</p>
+</li>
+<li><p><code>&lt;value&gt;</code>：结构化⽂本，格式与属性类型有关，UTF8编码。</p>
+</li>
+<li><p><code>=</code> 两边不允许存在空格。</p>
+</li>
+</ul>
+<h2 id="必需字段"><a href="#必需字段" class="headerlink" title="必需字段"></a>必需字段</h2><ul>
+<li>v&#x3D;（协议版本号），⼀个会话描述的开始，前⼀个会话结束标志。</li>
+<li>o&#x3D;（会话源或者会话⽣成者，以及会话标识符）。</li>
+<li>s&#x3D;（会话名称）这个字段是个⽂本字符串，可以显示给会话参与者。</li>
+<li>t&#x3D;（会话时间）这个字段指明会话开始时间与结束时间。</li>
+<li>m&#x3D;（媒体）该字段⽤来指明媒体类型、数据应该发送到的传输端⼝，传输协议（例如RTP）以及媒体格式（例如RTP负载格式）。</li>
+</ul>
+<h2 id="可选字段"><a href="#可选字段" class="headerlink" title="可选字段"></a>可选字段</h2><p>SDP可选字段中，⼀些只能应⽤于会话级，⼀些只能应⽤于媒体级，还有⼀些可以应⽤于两种级别。对于应⽤于两种级别的字段，在某个具体媒体上，<strong>应⽤于媒体级的字段会覆盖应⽤于会话级的字段值</strong>。例如，某个字段其会话级的字段值为X，媒体1的该字段值为Y，那么值X应⽤于会话中除媒体类型1之外的所有媒体，⽽媒体1应⽤值Y。</p>
+<p>可选字段如下：</p>
+<ul>
+<li>i&#x3D;（会话信息）对字段的⽂本描述，提供了⽐会话名称更多的信息。该字段既可以⽤于会话级也可以⽤于媒体级。 </li>
+<li>u&#x3D;（描述的URI地址）URI信息，通过这个地址可以获取更多会话相关信息。例如，⼀个会议可能公布在WEB⻚⾯上，所以需要该WEB的URI。每个会话只能提供⼀个URI。</li>
+<li>E&#x3D;（E-mail地址）负责会话个体的E-mail地址，可以有多个。只能⽤于会话级别。</li>
+<li>p&#x3D;（电话号码）同email⼀样，多个，会话级别。</li>
+<li>c&#x3D;（连接信息）该字段提供连接数据，包括连接类型、⽹络类型和连接地址。可应⽤于会话级也可以⽤于媒体级。</li>
+<li>b&#x3D;（带宽信息）指明带宽需求，单位kbit&#x2F;s, 可⽤于两个级别。</li>
+<li>r&#x3D;（重复次数）如果是有规律的⽇程安排活动，这个字段⽤来指明会话重复频次和时间。</li>
+<li>z&#x3D;（时区调整）⽤于按⽇程安排的有规律活动会话。会话可能会夸时区，避免时区变更造成的混乱。</li>
+<li>k&#x3D;（加密密钥）为了对媒体加密、解密，该字段提供了⼀个加密密钥或者规定了⼀个获取密钥的机制。可⽤于两个级别。</li>
+<li>a&#x3D;（属性）⽤于描述会话或者某个媒体的额外属性。</li>
+</ul>
+<p>可选字段中，连接信息字段是特别与条件相关的。因为该字段定义了数据应发送到的⽹络地址，所以必须被包含进会话描述中的某个地⽅。 </p>
+<h2 id="⼦字段"><a href="#⼦字段" class="headerlink" title="⼦字段"></a>⼦字段</h2><p>在SDP中许多字段采⽤多个⼦字段的形式，此时，这些字段值由多个以空格符间隔的多个值组成。格式如下：</p>
+<ul>
+<li>字段 名称&#x3D;&lt;⼦字段1的值&gt; &lt;⼦字段2的值&gt; &lt;⼦字段3的值&gt;</li>
+</ul>
+<p>例如：</p>
+<ul>
+<li>会话源（o） ：有6个⼦字段：⽤户名、会话ID、版本、⽹络类型、地址类型、地址。 </li>
+<li>连接信息（c）：有3个⼦字段：⽹络类型、地址类型和连接地址。同会话源中含义不同，他们表示需要接收媒体数据的⽹络和地址，⽽不是⽣成会话的⽹络和地址。</li>
+<li>媒体信息（m）：有四个⼦字段：媒体类型、端⼝、传输协议、格式。</li>
+</ul>
+<p><strong>媒体信息</strong></p>
+<p>格式： m&#x3D;(媒体)（端⼝）（传送层）（格式列表）。</p>
+<p>媒体类型：⾳频、视频、应⽤、数据和控制。</p>
+<p>端⼝：媒体传送层端⼝。</p>
+<p>传送层：ip4上⼤多基于rtp&#x2F;udp上传送（RTP&#x2F;AVP）IETF RTP协议，在udp上传输。</p>
+<p>格式列表： 对应对应的⾳频负载类型（PT）。</p>
+<p>例子：m&#x3D;video 0 RTP&#x2F;AVP 96 </p>
+<p><strong>属性</strong></p>
+<p>属性有两种形式，第⼀种是特征属性，第⼆种属于值属性。SDP描述了多个建议属性。 </p>
+<ul>
+<li><p>特征属性</p>
+<ul>
+<li><p>例如a&#x3D;sendonly，表明会话描述的发送者只希望发送数据⽽不打算接收数据，端⼝号⽆意义，可以置为0。 </p>
+</li>
+<li><p>例如a&#x3D;recvonly，表明这个会话描述的发送者只想接收数据⽽不打算发送数据。</p>
+</li>
+</ul>
+</li>
+<li><p>值属性</p>
+<ul>
+<li><p>例如a&#x3D;rtpmp:&lt;负载类型&gt;&lt;编码名称&gt;&#x2F;&lt;时钟速率&gt;[&lt;编码参数&gt;]</p>
+</li>
+<li><p>rtpmap属性提供了⼀个在VoIP应⽤中的重要属性使⽤⽅法，该属性可⽤于媒体流，在媒体格式不是静态的RTP负载类型时特别有⽤。严格来说，“rtpmap”只在使⽤动态负载类型情况下才是必须的，例如标准的G.711语⾳是静态RTP负载类型，采⽤如下⽅法就可以对它完整描述：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m=audio 45678 RTP/AVP 0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>⽽对动态负载来说需要指定更多信息才能使远端完全识别到媒体编码，例如16位线性编码16kHz取样的⽴体声⾳就是⼀个动态RTP负载类型，如果我们采⽤动态负载类型98表示这个媒体流，那么SDP格式如下：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m=audio 45678 RTP/AVP 98 </span><br><span class="line">a=rtpmap 98 L16/16000/2</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/09/22/RTSP%E5%8D%8F%E8%AE%AE/" rel="prev" title="RTSP协议">
+                  <i class="fa fa-angle-left"></i> RTSP协议
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/23/RTCP%E5%8D%8F%E8%AE%AE/" rel="next" title="RTCP协议">
+                  RTCP协议 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

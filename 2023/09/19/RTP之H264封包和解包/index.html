@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="NALU格式H.264标准协议定义了两种不同的类型：⼀种是VCL即Video Coding Layer ， ⼀ 种是NAL即Network Abstraction Layer。其中前者就是编码器吐出来的原始编码数据，没有考虑传输和存储问题。后⾯这种就是为了展现H.264的⽹络亲和性，对VCL输出的slice⽚数据进⾏了封装为NALUs(NAL Units)，然后再封装为RTP包进⾏传输，这些都是H">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RTP之H264封包和解包">
+<meta property="og:url" content="https://fang0407.github.io/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="NALU格式H.264标准协议定义了两种不同的类型：⼀种是VCL即Video Coding Layer ， ⼀ 种是NAL即Network Abstraction Layer。其中前者就是编码器吐出来的原始编码数据，没有考虑传输和存储问题。后⾯这种就是为了展现H.264的⽹络亲和性，对VCL输出的slice⽚数据进⾏了封装为NALUs(NAL Units)，然后再封装为RTP包进⾏传输，这些都是H">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/RTP%E5%8D%8F%E8%AE%AE.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/%E5%8D%95%E4%B8%80NALU%E6%89%93%E5%8C%85.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A%E6%89%93%E5%8C%85%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%88%87%E7%89%87.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A%E6%89%93%E5%8C%85%E4%B8%AD%E9%97%B4%E5%88%87%E7%89%87.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A%E6%89%93%E5%8C%85%E6%9C%80%E5%90%8E%E5%88%87%E7%89%87.png">
+<meta property="article:published_time" content="2023-09-19T13:37:41.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:38:09.830Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang0407.github.io/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/RTP%E5%8D%8F%E8%AE%AE.png">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/","path":"2023/09/19/RTP之H264封包和解包/","title":"RTP之H264封包和解包"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>RTP之H264封包和解包 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NALU%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">NALU格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RTP%E7%9A%84H264%E6%89%93%E5%8C%85"><span class="nav-number">2.</span> <span class="nav-text">RTP的H264打包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%B8%80NALU%E6%89%93%E5%8C%85"><span class="nav-number">2.1.</span> <span class="nav-text">单一NALU打包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FU-A%E6%89%93%E5%8C%85"><span class="nav-number">2.2.</span> <span class="nav-text">FU-A打包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FU-indication"><span class="nav-number">2.2.1.</span> <span class="nav-text">FU indication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FU-header"><span class="nav-number">2.2.2.</span> <span class="nav-text">FU header</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#IDR%E5%B8%A7%E7%9A%84NALU%E7%AC%AC%E2%BC%80%E4%B8%AA%E5%88%87%E2%BD%9A"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">IDR帧的NALU第⼀个切⽚</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IDR%E5%B8%A7%E7%9A%84NALU%E7%AC%AC%E2%BC%86%E4%B8%AA%E5%88%87%E2%BD%9A"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">IDR帧的NALU第⼆个切⽚</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IDR%E5%B8%A7%E7%9A%84NALU%E6%9C%80%E5%90%8E%E2%BC%80%E4%B8%AA%E5%88%87%E2%BD%9A"><span class="nav-number">2.2.2.3.</span> <span class="nav-text">IDR帧的NALU最后⼀个切⽚</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.2.3.</span> <span class="nav-text">代码示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Wireshark%E8%A7%A3%E6%9E%90RTP%E5%8C%85%E4%B8%ADH264"><span class="nav-number">3.</span> <span class="nav-text">Wireshark解析RTP包中H264</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="RTP之H264封包和解包 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RTP之H264封包和解包
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-19 21:37:41" itemprop="dateCreated datePublished" datetime="2023-09-19T21:37:41+08:00">2023-09-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:38:09" itemprop="dateModified" datetime="2023-12-30T22:38:09+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="NALU格式"><a href="#NALU格式" class="headerlink" title="NALU格式"></a>NALU格式</h1><p>H.264标准协议定义了两种不同的类型：⼀种是VCL即Video Coding Layer ， ⼀ 种是NAL即Network Abstraction Layer。其中前者就是编码器吐出来的原始编码数据，没有考虑传输和存储问题。后⾯这种就是为了展现H.264的⽹络亲和性，对VCL输出的slice⽚数据进⾏了封装为NALUs(NAL Units)，然后再封装为RTP包进⾏传输，这些都是H.264的基础。</p>
+<p>NALU的基本格式是：NALU Header + NALU Data,其中NALU的头由⼀个字节组成如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|0|1|2|3|4|5|6|7|</span><br><span class="line">+-+-+-+-+-+-+-+-+</span><br><span class="line">|F|NRI|  Type   |</span><br><span class="line">+---------------+</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F(1 bit)</td>
+<td>如果是坏帧，则置1，其余H.264固定为0。</td>
+</tr>
+<tr>
+<td>NRI(2 bit)</td>
+<td>⽤来指示该NALU 的重要性等级。值越⼤，表示当前NALU越重要。具体⼤于0 时取何值，没有具体规定。<br>例如：如果是00，则表示此帧即使丢失了，也不影响解码；其他值则表示此帧如果丢失了，会影响解码，这个字段指明了该NALU的重要性，但是实际我们不太关⼼这个字段。</td>
+</tr>
+<tr>
+<td>Nalu_Type(5 bit)</td>
+<td>NAL Unit的类型，这个值指明了NALU的类型，其中NALU的类型⻅下表。</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Nalu_Type</th>
+<th>NALU内容</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>未指定</td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>⾮IDR图像编码的slice</td>
+<td>⽐如普通I、P、B帧</td>
+</tr>
+<tr>
+<td>2</td>
+<td>编码slice数据划分A</td>
+<td>2类型时，只传递⽚中最重要的信息，如⽚头，⽚中宏块的预测模式等；⼀般不会⽤到</td>
+</tr>
+<tr>
+<td>3</td>
+<td>编码slice数据划分B</td>
+<td>3类型是只传输残差；⼀般不会⽤到</td>
+</tr>
+<tr>
+<td>4</td>
+<td>编码slice数据划分C</td>
+<td>4时则只可以传输残差中的AC系数；⼀般不会⽤到</td>
+</tr>
+<tr>
+<td>5</td>
+<td>IDR图像中的编码slice</td>
+<td>IDR帧，IDR⼀定是I帧但是I帧不⼀定是IDR帧</td>
+</tr>
+<tr>
+<td>6</td>
+<td>SEI补充增强信息单元</td>
+<td>可以存⼀些私有数据等</td>
+</tr>
+<tr>
+<td>7</td>
+<td>SPS 序列参数集</td>
+<td>编码的参数配置</td>
+</tr>
+<tr>
+<td>8</td>
+<td>PPS 图像参数集</td>
+<td>编码的参数配置</td>
+</tr>
+<tr>
+<td>9</td>
+<td>接⼊单元定界符</td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td>序列结束</td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td>码流结束</td>
+<td></td>
+</tr>
+<tr>
+<td>12</td>
+<td>填充数据</td>
+<td></td>
+</tr>
+<tr>
+<td>24</td>
+<td>STAP-A</td>
+<td>单⼀时间聚合包模式，意味着⼀个RTP包可以传输多个NALU，但是这些NALU的编码时间要⼀样才能聚合到⼀个RTP。</td>
+</tr>
+<tr>
+<td>25</td>
+<td>STAP-B</td>
+<td>单⼀时间聚合包模式，⽐STAP-B多⼀个DON。</td>
+</tr>
+<tr>
+<td>26</td>
+<td>MTAP 16</td>
+<td>多个时间聚合包模式：意味着⼀个RTP包可以传输多个NALU，但是这些NALU的编码时间有可能不⼀样。</td>
+</tr>
+<tr>
+<td>27</td>
+<td>MTAP 24</td>
+<td>多个时间的聚合包模式。</td>
+</tr>
+<tr>
+<td>28</td>
+<td>FU-A</td>
+<td>分包模式：当⼀个RTP容纳不下⼀个NALU时，就需要FUs这种格式。</td>
+</tr>
+<tr>
+<td>29</td>
+<td>FU-B</td>
+<td>分包模式。</td>
+</tr>
+<tr>
+<td>30-31</td>
+<td>未指定，保留</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>我们看到1-11就是NALU的单个包类型，但是⼀个NALU的⼤⼩是不⼀样的，如果是⾮视频数据的SPS PPS才⼗⼏个字节，对于IDR帧，则有可能⼏⼗KB。 </p>
+<h1 id="RTP的H264打包"><a href="#RTP的H264打包" class="headerlink" title="RTP的H264打包"></a>RTP的H264打包</h1><p>把NALU打包到RTP⽅式就很多，分为： </p>
+<ul>
+<li>⼀个RTP包承载⼀个NALU</li>
+<li>多个NALU合并到⼀个RTP</li>
+<li>⼀个⼤的NALU切分成多个RTP</li>
+</ul>
+<p>同时由于时间戳的问题，就有了24-29⼏种类型。 </p>
+<p>但是对于发送端组RTP包的⼀⽅来说，尽可能找简单的打包⽅式。对于接受端则需要适配各种发送端的打包⽅式，因为⽆法决定输⼊源的打包⽅式。比较简单的打包方式：</p>
+<ul>
+<li>我们对于<strong>NALU的⻓度&lt;&#x3D;1400</strong>（rtp payload size）的则采⽤的是<strong>单⼀NALU打包到单⼀的RTP包中</strong>。</li>
+<li>我们对于<strong>NALU的⻓度&gt;1400</strong>的则采⽤了<strong>FU-A的⽅式</strong>进⾏了打包，这种就是把⼀个⼤的NALU进⾏了切分，最后接收⽅则进⾏了合并，把多个RTP包合并成⼀个完整的NALU即可。</li>
+</ul>
+<p><strong>为什么NALU的⻓度⼤于1400字节就要进⾏FU-A切⽚</strong>，是因为底层MTU⼤⼩值固定为1500，从传输效率讲，这⾥⽤1400作为切分条件。</p>
+<p>如下图所示： </p>
+<img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/RTP协议.png" alt="RTP协议" style="zoom:50%;">
+
+<ul>
+<li>28、29、30三个RTP分别传输的SPS、PPS、SEI这三种NALU，其中⼀个NALU分到⼀个RTP包，这是单⼀打包⽅式。</li>
+<li>31、32三个RTP包分别传输了IDR帧的NALU单元，由于⽐较⼤，发送⽅采⽤了FU-A的打包⽅式。</li>
+<li>上图还显示了SPS、PPS、SEI的RTP包固定头，Seq初始值不为0，为随机值，并且⼀个RTP包就顺序+1，这跟上⾯分析的⼀致。</li>
+<li>上⾯SPS、PPS、SEI本身不涉及时间戳，但是这⾥头填充为和⾃⼰后⾯的第⼀个RTP保持⼀致，同样IDR的NALU切分的不同RTP包时间戳也是⼀样的。</li>
+</ul>
+<h2 id="单一NALU打包"><a href="#单一NALU打包" class="headerlink" title="单一NALU打包"></a>单一NALU打包</h2><p>就是⼀个RTP包打包⼀个单独的NALU⽅式，其实最好理解，就是在RTP固定头后⾯<strong>直接填充NLAU单元数据</strong>即可，即： </p>
+<p>RTP Header + NALU Header + NALU Data; （不包括startcode） </p>
+<img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/单一NALU打包.png" alt="单一NALU打包" style="zoom:50%;">
+
+<p>抓包可以看到第一个字节为67即SPS，后面开始就是NALU Data部分。</p>
+<h2 id="FU-A打包"><a href="#FU-A打包" class="headerlink" title="FU-A打包"></a>FU-A打包</h2><p>FU-A（Fragmentation Unit - Type A）的荷载格式用于传输H.264视频编码的分片数据。在RTP FU-A中，NALU（Network Abstraction Layer Unit）帧被分成小片段并封装成RTP包。以下是RTP FU-A的格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">0                   1                   2                   3</span><br><span class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">| FU indicator  |   FU header   |                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |</span><br><span class="line">|                                                               |</span><br><span class="line">|                         FU payload                            |</span><br><span class="line">|                                                               |</span><br><span class="line">|                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                               :...OPTIONAL RTP padding        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<p>这种打包⽅式也不复杂，为了解释清楚，需要了解下⾯两个数据包头即FU indicator和Fu header。</p>
+<h3 id="FU-indication"><a href="#FU-indication" class="headerlink" title="FU indication"></a>FU indication</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|0|1|2|3|4|5|6|7|</span><br><span class="line">+-+-+-+-+-+-+-+-+</span><br><span class="line">|F|NRI|  Type   |</span><br><span class="line">+---------------+</span><br></pre></td></tr></table></figure>
+
+<p>这⾥⾯的的F和NRI已经在NALU的Header解释清楚了，就是NALU头的前⾯三个bit位，<strong>后⾯的TYPE就是NALU的FU-A类型28</strong>，这样在RTP固定头后⾯第⼀字节的后⾯5bit提取出来就确认了该RTP包承载的不是⼀个完整的NALU，是其⼀部分。</p>
+<p>那么问题来了，⼀个NALU切分成多个RTP包传输，那么到底从哪⼉开始哪⼉结束呢？可能有⼈说RTP包固定头不是有mark标记么，注意区分那个是以<strong>帧图像的结束标记</strong>，这⾥要确定是NALU结束的标记，其次NALU的类型呢？那么就需要<strong>RTP固定12字节后⾯的Fu Header来进⾏区分</strong>。</p>
+<h3 id="FU-header"><a href="#FU-header" class="headerlink" title="FU header"></a>FU header</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|0|1|2|3|4|5|6|7|</span><br><span class="line">+-+-+-+-+-+-+-+-+</span><br><span class="line">|S|E|R|  Type   |</span><br><span class="line">+---------------+</span><br></pre></td></tr></table></figure>
+
+<p>字段解释：</p>
+<ul>
+<li><p>S: 1 bit，当设置成1，开始位指示分⽚NAL单元的开始。当跟随的FU荷载不是分⽚NAL单元荷载的开始，开始位设为0。</p>
+</li>
+<li><p>E: 1 bit，当设置成1，结束位指示分⽚NAL单元的结束，即, 荷载的最后字节也是分⽚NAL单元的最后 ⼀个字节，当跟随的FU荷载不是分⽚NAL单元的最后分⽚,结束位设置为0。也就是说⼀个NALU切⽚时，<strong>第⼀个切⽚的SE是10，然后中间的切⽚是00，最后⼀个切⽚时01</strong>。 </p>
+</li>
+<li><p>R: 1 bit，保留位必须设置为0，接收者必须忽略该位。</p>
+</li>
+<li><p>Type: 5 bits，此处的Type就是NALU头中的Type，取1-23的那个值，表示NAL单元荷载类型定义。</p>
+</li>
+</ul>
+<p>为了验证这种打包⽅式，我们同样进⾏了写⽂件和抓包，对第⼀个IDR帧的NLAU采取的这种分⽚进⾏了研究。 </p>
+<h4 id="IDR帧的NALU第⼀个切⽚"><a href="#IDR帧的NALU第⼀个切⽚" class="headerlink" title="IDR帧的NALU第⼀个切⽚"></a>IDR帧的NALU第⼀个切⽚</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包第一个切片.png" alt="FU-A打包第一个切片" style="zoom:50%;">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">⼗六机制：0x7C </span><br><span class="line">⼆进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">⼗六进制：0x85</span><br><span class="line">⼆进制：1000 0101</span><br></pre></td></tr></table></figure>
+
+<p>这⾥的SE是10，则说明该RTP包承载的NALU的第⼀个切⽚。</p>
+<p>FU indication字节的前3bit位和Fu header字节后5bit位则为0110 0101即0x65这刚好符合IDR帧的NALU Header定义，后⾯的b8 00 00 03等⼆进制就是NALU的DATA字段。 </p>
+<h4 id="IDR帧的NALU第⼆个切⽚"><a href="#IDR帧的NALU第⼆个切⽚" class="headerlink" title="IDR帧的NALU第⼆个切⽚"></a>IDR帧的NALU第⼆个切⽚</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包中间切片.png" alt="FU-A打包中间切片" style="zoom:50%;">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">⼗六机制：0x7C</span><br><span class="line">⼆进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">⼗六进制：0x05</span><br><span class="line">⼆进制：0000 0101</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这⾥的SE是00，则说明该RTP包承载的NALU的中间切⽚。</li>
+<li>按照同样⽅法提取，则NALU Header的⼆进制为0110 0101即0x65，同样说明是IDR帧类型，类似这种的中间切⽚有很多，从31-56RTP包都是中间切⽚，直到最后⼀个NALU的切⽚。</li>
+</ul>
+<h4 id="IDR帧的NALU最后⼀个切⽚"><a href="#IDR帧的NALU最后⼀个切⽚" class="headerlink" title="IDR帧的NALU最后⼀个切⽚"></a>IDR帧的NALU最后⼀个切⽚</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包最后切片.png" alt="FU-A打包最后切片" style="zoom:50%;">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">⼗六机制：0x7C</span><br><span class="line">⼆进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">⼗六进制：0x45</span><br><span class="line">⼆进制：0100 0101</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这⾥的SE是01，则说明该RTP包承载的NALU的最后⼀个切⽚。</li>
+</ul>
+<h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">rtp_h264_pack_fu_a</span><span class="params">(<span class="keyword">struct</span> <span class="type">rtp_encode_h264_t</span> *packer, <span class="type">const</span> <span class="type">uint8_t</span>* nalu, <span class="type">int</span> bytes)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> r, n;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> *rtp;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// RFC6184 5.3. NAL Unit Header Usage: Table 2 (p15)</span></span><br><span class="line">    <span class="comment">// RFC6184 5.8. Fragmentation Units (FUs) (p29)</span></span><br><span class="line">    <span class="type">uint8_t</span> fu_indicator = (*nalu &amp; <span class="number">0xE0</span>) | <span class="number">28</span>; <span class="comment">// FU-A 固定的逻辑</span></span><br><span class="line">    <span class="type">uint8_t</span> fu_header = *nalu &amp; <span class="number">0x1F</span>;           </span><br><span class="line"></span><br><span class="line">    r = <span class="number">0</span>;</span><br><span class="line">    nalu += <span class="number">1</span>; <span class="comment">// skip NAL Unit Type byte</span></span><br><span class="line">    bytes -= <span class="number">1</span>;</span><br><span class="line">    assert(bytes &gt; <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// FU-A start, 设置为s置位1</span></span><br><span class="line">    <span class="keyword">for</span> (fu_header |= FU_START; <span class="number">0</span> == r &amp;&amp; bytes &gt; <span class="number">0</span>; ++packer-&gt;pkt.rtp.seq) &#123;</span><br><span class="line">        <span class="keyword">if</span> (bytes + RTP_FIXED_HEADER &lt;= packer-&gt;size - N_FU_HEADER) &#123;</span><br><span class="line">            assert(<span class="number">0</span> == (fu_header &amp; FU_START));</span><br><span class="line">            fu_header = FU_END | (fu_header &amp; <span class="number">0x1F</span>); <span class="comment">// FU-A end  整个nalu结束了</span></span><br><span class="line">            packer-&gt;pkt.payloadlen = bytes;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            packer-&gt;pkt.payloadlen = packer-&gt;size - RTP_FIXED_HEADER - N_FU_HEADER;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        packer-&gt;pkt.payload = nalu;</span><br><span class="line">        n = RTP_FIXED_HEADER + N_FU_HEADER + packer-&gt;pkt.payloadlen;</span><br><span class="line">        <span class="comment">//分配内存</span></span><br><span class="line">        rtp = (<span class="type">uint8_t</span>*)packer-&gt;handler.alloc(packer-&gt;cbparam, n);</span><br><span class="line">        <span class="keyword">if</span> (!rtp) <span class="keyword">return</span> -ENOMEM;</span><br><span class="line"></span><br><span class="line">        packer-&gt;pkt.rtp.m = (FU_END &amp; fu_header) ? <span class="number">1</span> : <span class="number">0</span>; <span class="comment">// set marker flag</span></span><br><span class="line">        n = rtp_packet_serialize_header(&amp;packer-&gt;pkt, rtp, n);</span><br><span class="line">        <span class="keyword">if</span> (n != RTP_FIXED_HEADER) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*fu_indicator + fu_header*/</span></span><br><span class="line">        rtp[n + <span class="number">0</span>] = fu_indicator;</span><br><span class="line">        rtp[n + <span class="number">1</span>] = fu_header;</span><br><span class="line">        <span class="built_in">memcpy</span>(rtp + n + N_FU_HEADER, packer-&gt;pkt.payload, packer-&gt;pkt.payloadlen);</span><br><span class="line">        </span><br><span class="line">        r = packer-&gt;handler.packet(packer-&gt;cbparam, </span><br><span class="line">                                   rtp, n + N_FU_HEADER + packer-&gt;pkt.payloadlen, </span><br><span class="line">                                   packer-&gt;pkt.rtp.timestamp, <span class="number">0</span>);</span><br><span class="line">        packer-&gt;handler.<span class="built_in">free</span>(packer-&gt;cbparam, rtp);</span><br><span class="line">        </span><br><span class="line">        bytes -= packer-&gt;pkt.payloadlen;</span><br><span class="line">        nalu += packer-&gt;pkt.payloadlen;</span><br><span class="line">        fu_header &amp;= <span class="number">0x1F</span>; <span class="comment">// clear flags</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Wireshark解析RTP包中H264"><a href="#Wireshark解析RTP包中H264" class="headerlink" title="Wireshark解析RTP包中H264"></a>Wireshark解析RTP包中H264</h1><ul>
+<li>选择RTP包</li>
+<li>鼠标右击选择解码为（Decode As）…</li>
+<li>在当前（currnet）属性列表中选择RTP，并保存</li>
+<li>可以看到选中的包协议类型为RTP，PT为96</li>
+<li>选择编辑（Edit）中的首选项（Preferences）</li>
+<li>左侧菜单列表选择Protocols中的H264</li>
+<li>根据上面PT为96，填写H264 dynamic payload types 为96，并保存</li>
+<li>可以看到协议类型变为H264</li>
+</ul>
+<p>Wireshark H264导出工具：<a target="_blank" rel="noopener" href="https://github.com/volvet/h264extractor">https://github.com/volvet/h264extractor</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/" rel="prev" title="RTP协议">
+                  <i class="fa fa-angle-left"></i> RTP协议
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/21/RTP%E4%B9%8BAAC%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/" rel="next" title="RTP之AAC封包和解包">
+                  RTP之AAC封包和解包 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

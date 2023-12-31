@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="⾳视频同步为什么要进行音视频同步：由于⾳频和视频的输出不在同⼀个线程，⽽且，也不⼀定会同时解出同⼀个pts的⾳频帧和视频帧。甚至，编码或封装的时候可能pts还是不连续的，或有个别错误的。因此，在进⾏⾳频和视频的播放时，需要对⾳频和视频的播放速度、播放时刻进⾏控制，以实现⾳频和视频保持同步，即所谓的⾳视频同步。 在ffplay中，⾳频（audio）和视频（video）有各⾃的输出线程，其中⾳频的输出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FFplay⾳视频同步">
+<meta property="og:url" content="https://fang0407.github.io/2023/09/10/FFplay%E2%BE%B3%E8%A7%86%E9%A2%91%E5%90%8C%E6%AD%A5/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="⾳视频同步为什么要进行音视频同步：由于⾳频和视频的输出不在同⼀个线程，⽽且，也不⼀定会同时解出同⼀个pts的⾳频帧和视频帧。甚至，编码或封装的时候可能pts还是不连续的，或有个别错误的。因此，在进⾏⾳频和视频的播放时，需要对⾳频和视频的播放速度、播放时刻进⾏控制，以实现⾳频和视频保持同步，即所谓的⾳视频同步。 在ffplay中，⾳频（audio）和视频（video）有各⾃的输出线程，其中⾳频的输出">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-09-10T12:53:38.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:40:03.786Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/09/10/FFplay%E2%BE%B3%E8%A7%86%E9%A2%91%E5%90%8C%E6%AD%A5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/09/10/FFplay%E2%BE%B3%E8%A7%86%E9%A2%91%E5%90%8C%E6%AD%A5/","path":"2023/09/10/FFplay⾳视频同步/","title":"FFplay⾳视频同步"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FFplay⾳视频同步 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%BE%B3%E8%A7%86%E9%A2%91%E5%90%8C%E6%AD%A5"><span class="nav-number">1.</span> <span class="nav-text">⾳视频同步</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BE%B3%E8%A7%86%E9%A2%91%E5%90%8C%E6%AD%A5%E6%96%B9%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">⾳视频同步方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BE%B3%E8%A7%86%E9%A2%91%E5%90%8C%E6%AD%A5%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">⾳视频同步概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FFmpeg%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.1.</span> <span class="nav-text">FFmpeg基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FFplay%E5%90%8C%E6%AD%A5%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.2.</span> <span class="nav-text">FFplay同步概念</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A5%E9%9F%B3%E9%A2%91%E4%B8%BA%E5%9F%BA%E5%87%86"><span class="nav-number">2.</span> <span class="nav-text">以音频为基准</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%9F%B3%E9%A2%91%E6%97%B6%E9%92%9F"><span class="nav-number">2.1.</span> <span class="nav-text">设置音频时钟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E5%90%8C%E6%AD%A5%E5%88%B0%E9%9F%B3%E9%A2%91"><span class="nav-number">2.2.</span> <span class="nav-text">视频同步到音频</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A5%E8%A7%86%E9%A2%91%E4%B8%BA%E5%9F%BA%E5%87%86"><span class="nav-number">3.</span> <span class="nav-text">以视频为基准</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%A7%86%E9%A2%91%E6%97%B6%E9%92%9F"><span class="nav-number">3.1.</span> <span class="nav-text">设置视频时钟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E5%90%8C%E6%AD%A5%E5%88%B0%E8%A7%86%E9%A2%91"><span class="nav-number">3.2.</span> <span class="nav-text">音频同步到视频</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A5%E5%A4%96%E9%83%A8%E6%97%B6%E9%92%9F%E4%B8%BA%E5%9F%BA%E5%87%86"><span class="nav-number">4.</span> <span class="nav-text">以外部时钟为基准</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/10/FFplay%E2%BE%B3%E8%A7%86%E9%A2%91%E5%90%8C%E6%AD%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FFplay⾳视频同步 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FFplay⾳视频同步
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-10 20:53:38" itemprop="dateCreated datePublished" datetime="2023-09-10T20:53:38+08:00">2023-09-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:40:03" itemprop="dateModified" datetime="2023-12-30T22:40:03+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FFplay/" itemprop="url" rel="index"><span itemprop="name">FFplay</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="⾳视频同步"><a href="#⾳视频同步" class="headerlink" title="⾳视频同步"></a>⾳视频同步</h1><p><strong>为什么要进行音视频同步</strong>：由于⾳频和视频的输出不在同⼀个线程，⽽且，也不⼀定会同时解出同⼀个pts的⾳频帧和视频帧。甚至，编码或封装的时候可能pts还是不连续的，或有个别错误的。因此，在进⾏⾳频和视频的播放时，需要对⾳频和视频的播放速度、播放时刻进⾏控制，以实现⾳频和视频保持同步，即所谓的⾳视频同步。</p>
+<p>在ffplay中，⾳频（audio）和视频（video）有各⾃的输出线程，其中⾳频的输出线程是sdl的⾳频输出回调线程，video的输出线程是程序的主线程。 </p>
+<h2 id="⾳视频同步方式"><a href="#⾳视频同步方式" class="headerlink" title="⾳视频同步方式"></a>⾳视频同步方式</h2><ul>
+<li><p>以⾳频为基准，同步视频到⾳频</p>
+<ul>
+<li>视频慢了则丢掉部分视频帧（视觉-&gt;画⾯跳帧）。</li>
+<li>视频快了则继续渲染上⼀帧。</li>
+</ul>
+</li>
+<li><p>以视频为基准，同步⾳频到视频 </p>
+<ul>
+<li>⾳频慢了则加快播放速度（或丢掉部分⾳频帧，丢帧极容易听出来断⾳）。</li>
+<li>⾳频快了则放慢播放速度（或重复上⼀帧 ）。</li>
+<li>⾳频改变播放速度时涉及到重采样。</li>
+</ul>
+</li>
+<li><p>以外部时钟为基准，同步⾳频和视频到外部时钟。</p>
+<ul>
+<li>前两者的综合，根据外部时钟改变播放速度。</li>
+</ul>
+</li>
+<li><p>视频和⾳频各⾃输出，即不作同步处理（FREE RUN）。</p>
+</li>
+</ul>
+<p>由于⼈⽿对于声⾳变化的敏感度⽐视觉⾼，因此，⼀般采样的策略是将视频同步到⾳频，即对画⾯进⾏适当的丢帧或重复以追赶或等待⾳频。 特殊地，有时候会碰到⼀些特殊封装（或者有问题的封装），此时就不作同步处理，各⾃为主时钟，进⾏播放。 </p>
+<h2 id="⾳视频同步概念"><a href="#⾳视频同步概念" class="headerlink" title="⾳视频同步概念"></a>⾳视频同步概念</h2><h3 id="FFmpeg基本概念"><a href="#FFmpeg基本概念" class="headerlink" title="FFmpeg基本概念"></a>FFmpeg基本概念</h3><p><strong>PTS</strong></p>
+<p>pts是presentation timestamp的缩写，即显示时间戳，⽤于标记⼀个帧的呈现时刻，它的单位由timebase决定。timebase的类型是结构体AVRational（⽤于表示分数）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">AVRational</span>&#123;</span></span><br><span class="line">    <span class="type">int</span> num; <span class="comment">///&lt; Numerator</span></span><br><span class="line">    <span class="type">int</span> den; <span class="comment">///&lt; Denominator</span></span><br><span class="line">&#125; AVRational;</span><br></pre></td></tr></table></figure>
+
+<p>如 timebase&#x3D;{1, 1000} 表示千分之⼀秒（毫秒），那么pts&#x3D;1000，即为pts*1&#x2F;1000 &#x3D; 1秒，那么这⼀帧就需要在第⼀秒的时候呈现。</p>
+<p><strong>AVRatioal转为小数</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">double</span> <span class="title function_">av_q2d</span><span class="params">(AVRational a)</span>｛ </span><br><span class="line">    <span class="keyword">return</span> a.num / <span class="params">(<span class="type">double</span>)</span> a.den;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>计算时间戳</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">timestamp = pts * av_q2d(st-&gt;time_base)</span><br></pre></td></tr></table></figure>
+
+<p><strong>计算帧时⻓</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time = st-&gt;duration * av_q2d(st-&gt;time_base)</span><br></pre></td></tr></table></figure>
+
+<p><strong>不同时间基之间的转换</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int64_t</span> <span class="title function_">av_rescale_q</span><span class="params">(<span class="type">int64_t</span> a, AVRational bq, AVRational cq)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="FFplay同步概念"><a href="#FFplay同步概念" class="headerlink" title="FFplay同步概念"></a>FFplay同步概念</h3><p>在做同步的时候，我们需要⼀个”时钟”的概念，⾳频、视频、外部时钟都有⾃⼰独⽴的时钟，各⾃set各⾃的时钟，以谁为基准(master), 其他的则只能get该时钟进⾏同步。</p>
+<p><strong>时钟结构体</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Clock</span> &#123;</span></span><br><span class="line">    <span class="type">double</span> pts;                      <span class="comment">//时钟基础, 当前帧(待播放)显示时间戳，播放后,当前帧变成上一帧</span></span><br><span class="line">    <span class="type">double</span> pts_drift;                <span class="comment">//当前pts与当前系统时钟的差值, audio、video对于该值是独立的</span></span><br><span class="line">    <span class="type">double</span> last_updated;             <span class="comment">//最后一次更新的系统时钟</span></span><br><span class="line">    <span class="type">double</span> speed;                    <span class="comment">//时钟速度控制，用于控制播放速度</span></span><br><span class="line">    <span class="type">int</span> serial;                      <span class="comment">//播放序列，所谓播放序列就是一段连续的播放动作，一个seek操作会启动一段新的播放序列</span></span><br><span class="line">    <span class="type">int</span> paused;                      <span class="comment">//= 1 说明是暂停状态</span></span><br><span class="line">    <span class="type">int</span> *queue_serial;               <span class="comment">//指向packet_serial</span></span><br><span class="line">&#125; Clock;</span><br></pre></td></tr></table></figure>
+
+<p><strong>初始化时钟</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">init_clock</span><span class="params">(Clock *c, <span class="type">int</span> *queue_serial)</span></span><br><span class="line">&#123;</span><br><span class="line">    c-&gt;speed = <span class="number">1.0</span>;</span><br><span class="line">    c-&gt;paused = <span class="number">0</span>;</span><br><span class="line">    c-&gt;queue_serial = queue_serial;</span><br><span class="line">    set_clock(c, NAN, <span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>设置时钟</strong></p>
+<p>并且提供set_clock_at()函数，需要⽤pts、serial、time（系统时间）进⾏对时。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">set_clock_at</span><span class="params">(Clock *c, <span class="type">double</span> pts, <span class="type">int</span> serial, <span class="type">double</span> time)</span></span><br><span class="line">&#123;</span><br><span class="line">    c-&gt;pts = pts;</span><br><span class="line">    c-&gt;last_updated = time;</span><br><span class="line">    c-&gt;pts_drift = c-&gt;pts - time;</span><br><span class="line">    c-&gt;serial = serial;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">set_clock</span><span class="params">(Clock *c, <span class="type">double</span> pts, <span class="type">int</span> serial)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">double</span> time = av_gettime_relative() / <span class="number">1000000.0</span>;</span><br><span class="line">    set_clock_at(c, pts, serial, time);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>获取时钟</strong></p>
+<p>也提供了get_clock()函数来查询时间。</p>
+<p>对于视频时钟和音频时钟speed在初始化的时候就是1之后不会被改变，所以对于视频时钟和音频时钟来说，get_clock函数一般返回的是<code>c-&gt;pts_drift + time</code>。</p>
+<p>但对于speed会改变的外部时钟来说，get_clock函数一般返回的是<code>c-&gt;pts_drift + time - (time - c-&gt;last_updated) * (1.0 - c-&gt;speed)</code>。表达式中的last_updated意思是时钟上次更新的时间（在set_clock_at中更新）。</p>
+<p>所以表达式的意思是如果播放速度过快（speed &gt; 1），返回的时间就加上（speed-1）倍的当前时间和时钟上次更新的时间的差值。如果播放速度过慢（speed &lt; 1），返回的时间就减去（speed-1）倍的当前时间和时钟上次更新的时间的差值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">double</span> <span class="title function_">get_clock</span><span class="params">(Clock *c)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (*c-&gt;queue_serial != c-&gt;serial)</span><br><span class="line">        <span class="keyword">return</span> NAN;</span><br><span class="line">    <span class="keyword">if</span> (c-&gt;paused) &#123;</span><br><span class="line">        <span class="keyword">return</span> c-&gt;pts;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">double</span> time = av_gettime_relative() / <span class="number">1000000.0</span>;</span><br><span class="line">        <span class="keyword">return</span> c-&gt;pts_drift + time - (time - c-&gt;last_updated) * (<span class="number">1.0</span> - c-&gt;speed);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>举个例子：⼀个时间轴（time是⼀直在按时间递增），从左往右看：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">----T1---T2------------T3---T4-----&gt;time</span><br></pre></td></tr></table></figure>
+
+<p>T1时刻调用set_clock()设置时间，假设这时的pts是落后时间T2的，那么计算pts_drift &#x3D; pts - T2。</p>
+<p>T3时刻调用get_clock()查询时间，因为set_clock时的pts已经过时，不能直接拿set_clock()时的pts当做这个时钟的时间。不过我们前⾯计算过pts_drift ，也就是pts和T4的差值，所以我们可以通过当前时刻的时间来估算当前时刻的pts： <code>pts = T4 + pts_drift</code>。 </p>
+<p><strong>获取主时钟</strong></p>
+<p>ffplay默认使用音频作为主时钟，并且提供获取主时钟的函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* get the current master clock value */</span></span><br><span class="line"><span class="type">static</span> <span class="type">double</span> <span class="title function_">get_master_clock</span><span class="params">(VideoState *is)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">double</span> val;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (get_master_sync_type(is)) &#123;</span><br><span class="line">    <span class="keyword">case</span> AV_SYNC_VIDEO_MASTER:</span><br><span class="line">        val = get_clock(&amp;is-&gt;vidclk);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> AV_SYNC_AUDIO_MASTER:</span><br><span class="line">        val = get_clock(&amp;is-&gt;audclk);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        val = get_clock(&amp;is-&gt;extclk);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="以音频为基准"><a href="#以音频为基准" class="headerlink" title="以音频为基准"></a>以音频为基准</h1><h2 id="设置音频时钟"><a href="#设置音频时钟" class="headerlink" title="设置音频时钟"></a>设置音频时钟</h2><p>当用SDL打开音频硬件设备的时候，SDL库就会创建一个线程，来及时执行回调函数来获取数据进行播放。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">sdl_audio_callback</span><span class="params">(<span class="type">void</span> *opaque, Uint8 *stream, <span class="type">int</span> len)</span></span><br><span class="line">&#123;</span><br><span class="line">    VideoState *is = opaque;</span><br><span class="line">    <span class="type">int</span> audio_size, len1;</span><br><span class="line"></span><br><span class="line">    audio_callback_time = av_gettime_relative();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (len &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (is-&gt;audio_buf_index &gt;= is-&gt;audio_buf_size) &#123;</span><br><span class="line">            audio_size = audio_decode_frame(is);</span><br><span class="line">            <span class="keyword">if</span> (audio_size &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">/* if error, just output silence */</span></span><br><span class="line">                is-&gt;audio_buf = <span class="literal">NULL</span>;</span><br><span class="line">                is-&gt;audio_buf_size = SDL_AUDIO_MIN_BUFFER_SIZE / </span><br><span class="line">                    is-&gt;audio_tgt.frame_size * is-&gt;audio_tgt.frame_size;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (is-&gt;show_mode != SHOW_MODE_VIDEO)</span><br><span class="line">                    update_sample_display(is, (<span class="type">int16_t</span> *)is-&gt;audio_buf, audio_size);</span><br><span class="line">                is-&gt;audio_buf_size = audio_size;</span><br><span class="line">            &#125;</span><br><span class="line">            is-&gt;audio_buf_index = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        len1 = is-&gt;audio_buf_size - is-&gt;audio_buf_index;</span><br><span class="line">        <span class="keyword">if</span> (len1 &gt; len)</span><br><span class="line">            len1 = len;</span><br><span class="line">        <span class="keyword">if</span> (!is-&gt;muted &amp;&amp; is-&gt;audio_buf &amp;&amp; is-&gt;audio_volume == SDL_MIX_MAXVOLUME)</span><br><span class="line">            <span class="built_in">memcpy</span>(stream, (<span class="type">uint8_t</span> *)is-&gt;audio_buf + is-&gt;audio_buf_index, len1);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">memset</span>(stream, <span class="number">0</span>, len1);</span><br><span class="line">            <span class="keyword">if</span> (!is-&gt;muted &amp;&amp; is-&gt;audio_buf)</span><br><span class="line">                SDL_MixAudioFormat(stream, </span><br><span class="line">                                   (<span class="type">uint8_t</span> *)is-&gt;audio_buf + is-&gt;audio_buf_index,</span><br><span class="line">                                   AUDIO_S16SYS, len1, is-&gt;audio_volume);</span><br><span class="line">        &#125;</span><br><span class="line">        len -= len1;</span><br><span class="line">        stream += len1;</span><br><span class="line">        is-&gt;audio_buf_index += len1;</span><br><span class="line">    &#125;</span><br><span class="line">    is-&gt;audio_write_buf_size = is-&gt;audio_buf_size - is-&gt;audio_buf_index;</span><br><span class="line">    <span class="comment">/* Let&#x27;s assume the audio driver that is used by SDL has two periods. */</span></span><br><span class="line">    <span class="keyword">if</span> (!isnan(is-&gt;audio_clock)) &#123;</span><br><span class="line">        set_clock_at(&amp;is-&gt;audclk,</span><br><span class="line">                     is-&gt;audio_clock -</span><br><span class="line">                     (<span class="type">double</span>)(<span class="number">2</span> * is-&gt;audio_hw_buf_size + is-&gt;audio_write_buf_size) / </span><br><span class="line">                     is-&gt;audio_tgt.bytes_per_sec,</span><br><span class="line">                     is-&gt;audio_clock_serial,</span><br><span class="line">                     audio_callback_time / <span class="number">1000000.0</span>);</span><br><span class="line">        </span><br><span class="line">        sync_clock_to_slave(&amp;is-&gt;extclk, &amp;is-&gt;audclk);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面的代码主要是设置音频的时钟，记录当前这一刻，音频流播放到哪里了。下面分析一下一些变量：</p>
+<ul>
+<li><code>is-&gt;audio_write_buf_size</code> 代表当前缓存里还剩多少数据没有拷贝给SDL。</li>
+<li><code>is-&gt;audio_clock</code> 这个变量是在 audio_decode_frame()函数里面赋值的，记录的就是当这个AVFrame播放完之后，音频流所处的位置。<code>is-&gt;audio_clock</code> 记录的是播放完那个AVFrame之后的pts，但是此时此刻只是把这个AVFrame的内存数据拷贝给了SDL。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">is-&gt;audio_clock = af-&gt;pts + (<span class="type">double</span>) af-&gt;frame-&gt;nb_samples / af-&gt;frame-&gt;sample_rate;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Let&#x27;s assume the audio driver that is used by SDL has two periods. */</span></span><br><span class="line"><span class="keyword">if</span> (!isnan(is-&gt;audio_clock)) &#123;</span><br><span class="line">    set_clock_at(&amp;is-&gt;audclk,</span><br><span class="line">                 is-&gt;audio_clock -</span><br><span class="line">                 (<span class="type">double</span>)(<span class="number">2</span> * is-&gt;audio_hw_buf_size + is-&gt;audio_write_buf_size) / </span><br><span class="line">                 is-&gt;audio_tgt.bytes_per_sec,</span><br><span class="line">                 is-&gt;audio_clock_serial,</span><br><span class="line">                 audio_callback_time / <span class="number">1000000.0</span>);</span><br><span class="line"></span><br><span class="line">    sync_clock_to_slave(&amp;is-&gt;extclk, &amp;is-&gt;audclk);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>SDL线程并不是没有音频数据可以播放了才调sdl_audio_callback()来拿数据，而是他内部还剩audio_hw_buf_size长度的数据就会调 sdl_audio_callback()来拿数据，是提前拿数据的。所以，SDL内部还剩audio_hw_buf_size字节，现在又来取了len字节，同时我们的 audio_buf缓存还剩audio_write_buf_size字节。总共有3块内存等待播放，而这3块内存播放完之后的pts就是is-&gt;audio_clock，len实际上就是等于audio_write_buf_size，只是换了下名字，所以可以直接用audio_hw_buf_size乘以2。</p>
+<h2 id="视频同步到音频"><a href="#视频同步到音频" class="headerlink" title="视频同步到音频"></a>视频同步到音频</h2><p>ffplay中将视频同步到⾳频的主要⽅案是，如果视频播放过快，则重复播放上⼀帧，以等待⾳频；如果视频播放过慢，则丢帧追赶⾳频。这⼀部分的逻辑实现在视频输出函数video_refresh中。</p>
+<p>视频同步流程：</p>
+<ul>
+<li>根据上一帧lastvp的播放时长duration，校正等到delay值，duration是上一帧理想播放时长，delay是上一帧实际播放时长，根据delay值可以计算得到当前帧的播放时刻。</li>
+<li>如果当前帧vp播放时刻未到，则继续显示上一帧lastvp，并将延时值remaining_time作为输出参数供上级调用函数处理。</li>
+<li>如果<strong>当前帧vp播放时刻已到</strong>并且<strong>lastvp播放时刻未到</strong>，则立即显示当前帧，否则会丢弃当前帧。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* called to display each frame */</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">video_refresh</span><span class="params">(<span class="type">void</span> *opaque, <span class="type">double</span> *remaining_time)</span></span><br><span class="line">&#123;</span><br><span class="line">    VideoState *is = opaque;</span><br><span class="line">    <span class="type">double</span> time;</span><br><span class="line"></span><br><span class="line">    Frame *sp, *sp2;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!is-&gt;paused &amp;&amp; get_master_sync_type(is) == AV_SYNC_EXTERNAL_CLOCK &amp;&amp; is-&gt;realtime)</span><br><span class="line">        check_external_clock_speed(is);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!display_disable &amp;&amp; is-&gt;show_mode != SHOW_MODE_VIDEO &amp;&amp; is-&gt;audio_st) &#123;</span><br><span class="line">        time = av_gettime_relative() / <span class="number">1000000.0</span>;</span><br><span class="line">        <span class="keyword">if</span> (is-&gt;force_refresh || is-&gt;last_vis_time + rdftspeed &lt; time) &#123;</span><br><span class="line">            video_display(is);</span><br><span class="line">            is-&gt;last_vis_time = time;</span><br><span class="line">        &#125;</span><br><span class="line">        *remaining_time = FFMIN(*remaining_time, is-&gt;last_vis_time + rdftspeed - time);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is-&gt;video_st) &#123;</span><br><span class="line">    retry:</span><br><span class="line">        <span class="keyword">if</span> (frame_queue_nb_remaining(&amp;is-&gt;pictq) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// nothing to do, no picture to display in the queue</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">double</span> last_duration, duration, delay;</span><br><span class="line">            Frame *vp, *lastvp;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* dequeue the picture */</span></span><br><span class="line">            lastvp = frame_queue_peek_last(&amp;is-&gt;pictq);</span><br><span class="line">            vp = frame_queue_peek(&amp;is-&gt;pictq);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (vp-&gt;serial != is-&gt;videoq.serial) &#123;</span><br><span class="line">                frame_queue_next(&amp;is-&gt;pictq);</span><br><span class="line">                <span class="keyword">goto</span> retry;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (lastvp-&gt;serial != vp-&gt;serial)</span><br><span class="line">                is-&gt;frame_timer = av_gettime_relative() / <span class="number">1000000.0</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (is-&gt;paused)</span><br><span class="line">                <span class="keyword">goto</span> display;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* compute nominal last_duration */</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment">//lastvp上⼀帧，vp当前帧，nextvp下⼀帧</span></span><br><span class="line">            <span class="comment">//last_duration 代表当前帧本来需要显示多长时间。当前帧是指窗口正在显示的帧。</span></span><br><span class="line">            last_duration = vp_duration(is, lastvp, vp);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">//经过compute_target_delay⽅法，计算出待显示帧vp需要等待的时间。</span></span><br><span class="line">            <span class="comment">//如果以video同步，则delay直接等于last_duration。</span></span><br><span class="line">            <span class="comment">//如果以audio或外部时钟同步，则需要⽐对主时钟调整待显示帧vp要等待的时间。</span></span><br><span class="line">            <span class="comment">//delay 代表当前帧实际应该显示多长时间</span></span><br><span class="line">            delay = compute_target_delay(last_duration, is);</span><br><span class="line"></span><br><span class="line">            time = av_gettime_relative()/<span class="number">1000000.0</span>;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">//is-&gt;frame_timer 实际上就是上⼀帧lastvp的播放时间</span></span><br><span class="line">            <span class="comment">//is-&gt;frame_timer + delay 是待显示帧vp该播放的时间</span></span><br><span class="line">            <span class="keyword">if</span> (time &lt; is-&gt;frame_timer + delay) &#123;    <span class="comment">//判断是否继续显示上⼀帧</span></span><br><span class="line">                <span class="comment">//当前系统时刻还未到达上⼀帧的结束时刻，那么还应该继续显示上⼀帧。</span></span><br><span class="line">                <span class="comment">//计算出最⼩等待时间</span></span><br><span class="line">                *remaining_time = FFMIN(is-&gt;frame_timer + delay - time, *remaining_time);</span><br><span class="line">                <span class="keyword">goto</span> display;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">//接下来准备显示当前帧，若不丢帧</span></span><br><span class="line"></span><br><span class="line">            is-&gt;frame_timer += delay;    <span class="comment">//更新当前帧播放的时间</span></span><br><span class="line">            <span class="keyword">if</span> (delay &gt; <span class="number">0</span> &amp;&amp; time - is-&gt;frame_timer &gt; AV_SYNC_THRESHOLD_MAX)</span><br><span class="line">                is-&gt;frame_timer = time;</span><br><span class="line"></span><br><span class="line">            SDL_LockMutex(is-&gt;pictq.mutex);</span><br><span class="line">            <span class="keyword">if</span> (!isnan(vp-&gt;pts))</span><br><span class="line">                update_video_pts(is, vp-&gt;pts, vp-&gt;pos, vp-&gt;serial);    <span class="comment">//更新视频时钟</span></span><br><span class="line">            SDL_UnlockMutex(is-&gt;pictq.mutex);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (frame_queue_nb_remaining(&amp;is-&gt;pictq) &gt; <span class="number">1</span>) &#123;</span><br><span class="line">                Frame *nextvp = frame_queue_peek_next(&amp;is-&gt;pictq);</span><br><span class="line">                <span class="comment">//当前帧vp播放时长 = nextvp-&gt;pts - vp-&gt;pts</span></span><br><span class="line">                duration = vp_duration(is, vp, nextvp);</span><br><span class="line">                <span class="keyword">if</span>(!is-&gt;step &amp;&amp; </span><br><span class="line">                   (framedrop&gt;<span class="number">0</span> || </span><br><span class="line">                    (framedrop &amp;&amp; get_master_sync_type(is) != AV_SYNC_VIDEO_MASTER)) &amp;&amp; </span><br><span class="line">                   <span class="comment">//当前帧vp未能及时播放，即下一帧播放时刻(is-&gt;frame_timer+duration)小于当前系统时刻(time)</span></span><br><span class="line">                   time &gt; is-&gt;frame_timer + duration)&#123;</span><br><span class="line">                    is-&gt;frame_drops_late++;</span><br><span class="line">                    frame_queue_next(&amp;is-&gt;pictq);</span><br><span class="line">                    <span class="keyword">goto</span> retry;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            frame_queue_next(&amp;is-&gt;pictq);</span><br><span class="line">            is-&gt;force_refresh = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (is-&gt;step &amp;&amp; !is-&gt;paused)</span><br><span class="line">                stream_toggle_pause(is);</span><br><span class="line">        &#125;</span><br><span class="line">    display:</span><br><span class="line">        <span class="comment">/* display picture */</span></span><br><span class="line">        <span class="keyword">if</span> (!display_disable &amp;&amp; is-&gt;force_refresh &amp;&amp; </span><br><span class="line">            is-&gt;show_mode == SHOW_MODE_VIDEO &amp;&amp; is-&gt;pictq.rindex_shown)</span><br><span class="line">            video_display(is);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>compute_target_delay</code>根据视频时钟与同步时钟（如音频时钟）的差值，校正delay值，使视频时钟追赶或等待同步时钟。</p>
+<p>可以看到，如果是音频时钟为主时钟，就会跑进去 <code>if</code> 里面的逻辑。</p>
+<p>变量 <code>diff</code> 代表视频时钟与主时钟的时间差，主时钟默认是音频时钟。<strong>当 diff 大于 0 的时候，代表视频时钟比音频时钟快</strong>。<strong>当 diff 小于 0 的时候，代表视频时钟比音频时钟慢</strong>。<code>diff</code> 的单位是秒。</p>
+<p>音视频不同步是常态，不需要做到完全同步，只要把不同步的程度控制在阈值范围内，人就感受不到不同步了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">double</span> <span class="title function_">compute_target_delay</span><span class="params">(<span class="type">double</span> delay, VideoState *is)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">double</span> sync_threshold, diff = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* update delay to follow master synchronisation source */</span></span><br><span class="line">    <span class="keyword">if</span> (get_master_sync_type(is) != AV_SYNC_VIDEO_MASTER) &#123;</span><br><span class="line">        <span class="comment">/* if video is slave, we try to correct big delays by</span></span><br><span class="line"><span class="comment">           duplicating or deleting a frame */</span></span><br><span class="line">        <span class="comment">//视频时钟与同步时钟(如音频时钟)的差异</span></span><br><span class="line">        diff = get_clock(&amp;is-&gt;vidclk) - get_master_clock(is);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// delay 代表当前帧实际应该显示多长时间</span></span><br><span class="line">        <span class="comment">// diff是视频时钟与同步时钟的差值</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">/* skip or repeat frame. We take into account the</span></span><br><span class="line"><span class="comment">           delay to compute the threshold. I still don&#x27;t know</span></span><br><span class="line"><span class="comment">           if it is the best guess */</span></span><br><span class="line">        </span><br><span class="line">        sync_threshold = FFMAX(AV_SYNC_THRESHOLD_MIN, FFMIN(AV_SYNC_THRESHOLD_MAX, delay));</span><br><span class="line">        <span class="keyword">if</span> (!isnan(diff) &amp;&amp; <span class="built_in">fabs</span>(diff) &lt; is-&gt;max_frame_duration) &#123;</span><br><span class="line">            <span class="keyword">if</span> (diff &lt;= -sync_threshold)    <span class="comment">//播放较慢</span></span><br><span class="line">                delay = FFMAX(<span class="number">0</span>, delay + diff);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (diff &gt;= sync_threshold &amp;&amp; delay &gt; AV_SYNC_FRAMEDUP_THRESHOLD)    <span class="comment">//播放过快</span></span><br><span class="line">                delay = delay + diff;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (diff &gt;= sync_threshold)    <span class="comment">//播放较快</span></span><br><span class="line">                delay = <span class="number">2</span> * delay;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    av_log(<span class="literal">NULL</span>, AV_LOG_TRACE, <span class="string">&quot;video: delay=%0.3f A-V=%f\n&quot;</span>,</span><br><span class="line">           delay, -diff);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> delay;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>FFplay 里面计算同步阈值（sync_threshold）的方式有点复杂，如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sync_threshold = <span class="built_in">FFMAX</span>(AV_SYNC_THRESHOLD_MIN, <span class="built_in">FFMIN</span>(AV_SYNC_THRESHOLD_MAX, delay));</span><br></pre></td></tr></table></figure>
+
+<p>先介绍一下两个宏：</p>
+<p>1，AV_SYNC_THRESHOLD_MIN，最小的同步阈值，值为 0.04，单位是秒。</p>
+<p>2，AV_SYNC_THRESHOLD_MAX，最大的同步阈值，值为 0.1，单位是秒。</p>
+<p>上面的代码，就是从 0.04 ~ 0.1 之间选出一个值作为同步阈值。</p>
+<p>对于 1&#x2F;12帧的视频，delay 是 0.082，所以 sync_threshold 等于 0.082，等于一帧的播放时长。</p>
+<p>对于 1&#x2F;24 帧的视频，delay 是 0.041，所以 sync_threshold 等于 0.041，等于一帧的播放时长。</p>
+<p>对于 1&#x2F;48 帧的视频，delay 是 0.0205，所以 sync_threshold 等于 0.04，约等于两帧的播放时长。</p>
+<p>这就是 FFplay 计算同步阈值（sync_threshold） 的算法。</p>
+<p>计算出同步阈值之后，就需要判断音视频的时间差 <code>diff</code> 是否超过阈值，所以就有了下面的判断：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="built_in">isnan</span>(diff) &amp;&amp; <span class="built_in">fabs</span>(diff) &lt; is-&gt;max_frame_duration) &#123;</span><br><span class="line">    <span class="keyword">if</span> (diff &lt;= -sync_threshold)</span><br><span class="line">        delay = <span class="built_in">FFMAX</span>(<span class="number">0</span>, delay + diff);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (diff &gt;= sync_threshold &amp;&amp; delay &gt; AV_SYNC_FRAMEDUP_THRESHOLD)</span><br><span class="line">        delay = delay + diff;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (diff &gt;= sync_threshold)</span><br><span class="line">        delay = <span class="number">2</span> * delay;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>is-&gt;max_frame_duration</code> 通常是 10s，这个判断是当音视频不同步的差异超过 10s，就不再进行同步操作。</p>
+<p><code>sync_threshold</code> 同步域值，当前帧显示多长时间。</p>
+<p><code>diff</code> 是负数的时候（<code>diff + sync_threshold &lt;= 0</code>），代表视频比音频慢了，通常会将 <code>delay</code> 置为 0。</p>
+<p><code>diff</code> 是正数的时候（<code>diff - sync_threshold &gt;= 0</code>），代表视频比音频快了，当超过阈值的时候，就会把 <code>delay * 2</code>。</p>
+<h1 id="以视频为基准"><a href="#以视频为基准" class="headerlink" title="以视频为基准"></a>以视频为基准</h1><p>媒体流⾥⾯只有视频成分，这个时候才会⽤以视频为基准。 </p>
+<p>在⾳频输出时，最⼩单位是“样本”。⾳频⼀般以数字采样值保存，⼀般常⽤的采样频率有44.1K，48K等，也就是每秒钟有44100或48000个样本。视频输出中与“样本”概念最为接近的画⾯帧，如⼀个24fps(frame per second)的视频，⼀秒钟有24个画⾯输出，这⾥的⼀个画⾯和⾳频中的⼀个样本是等效的。可以想⻅，如果对⾳频使⽤⼀样的丢帧（丢样本）和重复显示⽅案，是不科学的。（⾳频的连续性远⾼于视频，通过重复⼏百个样本或者丢弃⼏百个样本来达到同步，会在听觉有很明显的不连贯）。</p>
+<p>⾳频本质上来讲：就是做重采样补偿，⾳频慢了，重采样后的样本就⽐正常的减少，以赶紧播放下⼀帧；⾳频快了，重采样后的样本就⽐正常的增加，从⽽播放慢⼀些。 </p>
+<h2 id="设置视频时钟"><a href="#设置视频时钟" class="headerlink" title="设置视频时钟"></a>设置视频时钟</h2><p>按照着视频帧间隔去播放，并实时地重新矫正video时钟。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">video_refresh</span><span class="params">(<span class="type">void</span> *opaque, <span class="type">double</span> *remaining_time)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">	<span class="keyword">if</span> (!isnan(vp-&gt;pts))</span><br><span class="line">    	update_video_pts(is, vp-&gt;pts, vp-&gt;pos, vp-&gt;serial);</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">update_video_pts</span><span class="params">(VideoState *is, <span class="type">double</span> pts, <span class="type">int64_t</span> pos, <span class="type">int</span> serial)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* update current video pts */</span></span><br><span class="line">    set_clock(&amp;is-&gt;vidclk, pts, serial);</span><br><span class="line">    sync_clock_to_slave(&amp;is-&gt;extclk, &amp;is-&gt;vidclk);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="音频同步到视频"><a href="#音频同步到视频" class="headerlink" title="音频同步到视频"></a>音频同步到视频</h2><p>音频同步流程：</p>
+<ul>
+<li>根据与vidoe clock的差值，计算应该输出的样本数。由函数synchronize_audio完成。</li>
+<li>判断是否需要重采样：如果要输出的样本数与frame的样本数不相等，也就是需要适当减少或增加样本。</li>
+<li>重采样——利⽤重采样库进⾏样本的插⼊或剔除。</li>
+</ul>
+<p>注意：与视频的处理略有不同，视频的同步控制主要体现在上⼀帧显示时⻓的控制，即对frame_timer的控制；⽽⾳频是直接体现在输出样本上的控制。 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">audio_decode_frame</span><span class="params">(VideoState *is)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> data_size, resampled_data_size;</span><br><span class="line">    <span class="type">int64_t</span> dec_channel_layout;</span><br><span class="line">    av_unused <span class="type">double</span> audio_clock0;</span><br><span class="line">    <span class="type">int</span> wanted_nb_samples;</span><br><span class="line">    Frame *af;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is-&gt;paused)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(af = frame_queue_peek_readable(&amp;is-&gt;sampq)))</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        frame_queue_next(&amp;is-&gt;sampq);</span><br><span class="line">    &#125; <span class="keyword">while</span> (af-&gt;serial != is-&gt;audioq.serial);</span><br><span class="line"></span><br><span class="line">    data_size = av_samples_get_buffer_size(<span class="literal">NULL</span>, af-&gt;frame-&gt;channels,</span><br><span class="line">                                           af-&gt;frame-&gt;nb_samples,</span><br><span class="line">                                           af-&gt;frame-&gt;format, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//获取声道布局</span></span><br><span class="line">    dec_channel_layout =</span><br><span class="line">        (af-&gt;frame-&gt;channel_layout &amp;&amp; af-&gt;frame-&gt;channels == </span><br><span class="line">         av_get_channel_layout_nb_channels(af-&gt;frame-&gt;channel_layout)) ?</span><br><span class="line">            af-&gt;frame-&gt;channel_layout : av_get_default_channel_layout(af-&gt;frame-&gt;channels);</span><br><span class="line">    <span class="comment">// 获取样本数校正值：若同步时钟是⾳频，则不调整样本数；否则根据同步需要调整样本数</span></span><br><span class="line">    wanted_nb_samples = synchronize_audio(is, af-&gt;frame-&gt;nb_samples);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//is-&gt;audio_src第一次由is-&gt;audio_tgt设置 见上面</span></span><br><span class="line">    <span class="keyword">if</span> (af-&gt;frame-&gt;format        != is-&gt;audio_src.fmt            ||</span><br><span class="line">        dec_channel_layout       != is-&gt;audio_src.channel_layout ||</span><br><span class="line">        af-&gt;frame-&gt;sample_rate   != is-&gt;audio_src.freq           ||</span><br><span class="line">        (wanted_nb_samples       != af-&gt;frame-&gt;nb_samples &amp;&amp; !is-&gt;swr_ctx)) &#123;</span><br><span class="line">        swr_free(&amp;is-&gt;swr_ctx);</span><br><span class="line">        <span class="comment">//分配swr_ctx</span></span><br><span class="line">        is-&gt;swr_ctx = swr_alloc_set_opts(<span class="literal">NULL</span>,</span><br><span class="line">                                         is-&gt;audio_tgt.channel_layout, </span><br><span class="line">                                         is-&gt;audio_tgt.fmt, </span><br><span class="line">                                         is-&gt;audio_tgt.freq,</span><br><span class="line">                                         dec_channel_layout,           </span><br><span class="line">                                         af-&gt;frame-&gt;format, </span><br><span class="line">                                         af-&gt;frame-&gt;sample_rate,</span><br><span class="line">                                         <span class="number">0</span>, </span><br><span class="line">                                         <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">if</span> (!is-&gt;swr_ctx || swr_init(is-&gt;swr_ctx) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, AV_LOG_ERROR,</span><br><span class="line">                   <span class="string">&quot;Cannot create sample rate converter for conversion of %d Hz %s %d channels to %d Hz %s %d channels!\n&quot;</span>,</span><br><span class="line">                   af-&gt;frame-&gt;sample_rate, av_get_sample_fmt_name(af-&gt;frame-&gt;format), af-&gt;frame-&gt;channels,</span><br><span class="line">                   is-&gt;audio_tgt.freq, av_get_sample_fmt_name(is-&gt;audio_tgt.fmt), is-&gt;audio_tgt.channels);</span><br><span class="line">            swr_free(&amp;is-&gt;swr_ctx);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        is-&gt;audio_src.channel_layout = dec_channel_layout;</span><br><span class="line">        is-&gt;audio_src.channels       = af-&gt;frame-&gt;channels;</span><br><span class="line">        is-&gt;audio_src.freq = af-&gt;frame-&gt;sample_rate;</span><br><span class="line">        is-&gt;audio_src.fmt = af-&gt;frame-&gt;format;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is-&gt;swr_ctx) &#123;</span><br><span class="line">        <span class="type">const</span> <span class="type">uint8_t</span> **in = (<span class="type">const</span> <span class="type">uint8_t</span> **)af-&gt;frame-&gt;extended_data;</span><br><span class="line">        <span class="type">uint8_t</span> **out = &amp;is-&gt;audio_buf1;</span><br><span class="line">        <span class="type">int</span> out_count = (<span class="type">int64_t</span>)wanted_nb_samples * is-&gt;audio_tgt.freq / af-&gt;frame-&gt;sample_rate + <span class="number">256</span>;</span><br><span class="line">        <span class="type">int</span> out_size  = av_samples_get_buffer_size(<span class="literal">NULL</span>, </span><br><span class="line">                                                   is-&gt;audio_tgt.channels, </span><br><span class="line">                                                   out_count, </span><br><span class="line">                                                   is-&gt;audio_tgt.fmt, </span><br><span class="line">                                                   <span class="number">0</span>);</span><br><span class="line">        <span class="type">int</span> len2;</span><br><span class="line">        <span class="keyword">if</span> (out_size &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, AV_LOG_ERROR, <span class="string">&quot;av_samples_get_buffer_size() failed\n&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (wanted_nb_samples != af-&gt;frame-&gt;nb_samples) &#123;</span><br><span class="line">            <span class="comment">//激活重采样补偿</span></span><br><span class="line">            <span class="keyword">if</span> (swr_set_compensation(is-&gt;swr_ctx, </span><br><span class="line">                                     (wanted_nb_samples - af-&gt;frame-&gt;nb_samples) * </span><br><span class="line">                                     is-&gt;audio_tgt.freq / af-&gt;frame-&gt;sample_rate,</span><br><span class="line">                                     wanted_nb_samples * is-&gt;audio_tgt.freq / </span><br><span class="line">                                     af-&gt;frame-&gt;sample_rate) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                av_log(<span class="literal">NULL</span>, AV_LOG_ERROR, <span class="string">&quot;swr_set_compensation() failed\n&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        av_fast_malloc(&amp;is-&gt;audio_buf1, &amp;is-&gt;audio_buf1_size, out_size);</span><br><span class="line">        <span class="keyword">if</span> (!is-&gt;audio_buf1)</span><br><span class="line">            <span class="keyword">return</span> AVERROR(ENOMEM);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//转换</span></span><br><span class="line">        len2 = swr_convert(is-&gt;swr_ctx, out, out_count, in, af-&gt;frame-&gt;nb_samples);</span><br><span class="line">        <span class="keyword">if</span> (len2 &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, AV_LOG_ERROR, <span class="string">&quot;swr_convert() failed\n&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (len2 == out_count) &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, AV_LOG_WARNING, <span class="string">&quot;audio buffer is probably too small\n&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (swr_init(is-&gt;swr_ctx) &lt; <span class="number">0</span>)</span><br><span class="line">                swr_free(&amp;is-&gt;swr_ctx);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        is-&gt;audio_buf = is-&gt;audio_buf1;</span><br><span class="line">        resampled_data_size = len2 * is-&gt;audio_tgt.channels * av_get_bytes_per_sample(is-&gt;audio_tgt.fmt);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        is-&gt;audio_buf = af-&gt;frame-&gt;data[<span class="number">0</span>];</span><br><span class="line">        resampled_data_size = data_size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    audio_clock0 = is-&gt;audio_clock;</span><br><span class="line">    <span class="comment">/* update the audio clock with the pts */</span></span><br><span class="line">    <span class="keyword">if</span> (!isnan(af-&gt;pts))</span><br><span class="line">        is-&gt;audio_clock = af-&gt;pts + (<span class="type">double</span>) af-&gt;frame-&gt;nb_samples / af-&gt;frame-&gt;sample_rate;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        is-&gt;audio_clock = NAN;</span><br><span class="line">    is-&gt;audio_clock_serial = af-&gt;serial;</span><br><span class="line">    <span class="keyword">return</span> resampled_data_size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>synchronize_audio负责根据与video clock的差值计算出合适的⽬标样本数，通过样本数控制⾳频输出速度。 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* return the wanted number of samples to get better sync if sync_type is video</span></span><br><span class="line"><span class="comment"> * or external master clock */</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">synchronize_audio</span><span class="params">(VideoState *is, <span class="type">int</span> nb_samples)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> wanted_nb_samples = nb_samples;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* if not master, then we try to remove or add samples to correct the clock */</span></span><br><span class="line">    <span class="keyword">if</span> (get_master_sync_type(is) != AV_SYNC_AUDIO_MASTER) &#123;</span><br><span class="line">        <span class="type">double</span> diff, avg_diff;</span><br><span class="line">        <span class="type">int</span> min_nb_samples, max_nb_samples;</span><br><span class="line"></span><br><span class="line">        diff = get_clock(&amp;is-&gt;audclk) - get_master_clock(is);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!isnan(diff) &amp;&amp; <span class="built_in">fabs</span>(diff) &lt; AV_NOSYNC_THRESHOLD) &#123;</span><br><span class="line">            is-&gt;audio_diff_cum = diff + is-&gt;audio_diff_avg_coef * is-&gt;audio_diff_cum;</span><br><span class="line">            <span class="keyword">if</span> (is-&gt;audio_diff_avg_count &lt; AUDIO_DIFF_AVG_NB) &#123;</span><br><span class="line">                <span class="comment">/* not enough measures to have a correct estimate */</span></span><br><span class="line">                is-&gt;audio_diff_avg_count++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">/* estimate the A-V difference */</span></span><br><span class="line">                avg_diff = is-&gt;audio_diff_cum * (<span class="number">1.0</span> - is-&gt;audio_diff_avg_coef);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">fabs</span>(avg_diff) &gt;= is-&gt;audio_diff_threshold) &#123;</span><br><span class="line">                    wanted_nb_samples = nb_samples + (<span class="type">int</span>)(diff * is-&gt;audio_src.freq);</span><br><span class="line">                    min_nb_samples = ((nb_samples * (<span class="number">100</span> - SAMPLE_CORRECTION_PERCENT_MAX) / <span class="number">100</span>));</span><br><span class="line">                    max_nb_samples = ((nb_samples * (<span class="number">100</span> + SAMPLE_CORRECTION_PERCENT_MAX) / <span class="number">100</span>));</span><br><span class="line">                    wanted_nb_samples = av_clip(wanted_nb_samples, min_nb_samples, max_nb_samples);</span><br><span class="line">                &#125;</span><br><span class="line">                av_log(<span class="literal">NULL</span>, AV_LOG_TRACE, <span class="string">&quot;diff=%f adiff=%f sample_diff=%d apts=%0.3f %f\n&quot;</span>,</span><br><span class="line">                       diff, avg_diff, wanted_nb_samples - nb_samples,</span><br><span class="line">                       is-&gt;audio_clock, is-&gt;audio_diff_threshold);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">/* too big difference : may be initial PTS errors, so</span></span><br><span class="line"><span class="comment">               reset A-V filter */</span></span><br><span class="line">            is-&gt;audio_diff_avg_count = <span class="number">0</span>;</span><br><span class="line">            is-&gt;audio_diff_cum       = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> wanted_nb_samples;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="以外部时钟为基准"><a href="#以外部时钟为基准" class="headerlink" title="以外部时钟为基准"></a>以外部时钟为基准</h1><p>在seek的时候体验⾮常差，没有必要选择这种同步⽅式。	</p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/449755257">https://zhuanlan.zhihu.com/p/449755257</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15655186/6090529">https://blog.51cto.com/u_15655186/6090529</a></p>
+<p><a target="_blank" rel="noopener" href="https://ffmpeg.xianwaizhiyin.net/ffplay/video_sync.html">https://ffmpeg.xianwaizhiyin.net/ffplay/video_sync.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/leisure_chn/p/10307089.html">https://www.cnblogs.com/leisure_chn/p/10307089.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/09/10/FFplay%E8%A7%86%E9%A2%91%E8%BE%93%E5%87%BA%E5%92%8C%E5%B0%BA%E2%BC%A8%E5%8F%98%E6%8D%A2/" rel="prev" title="FFplay视频输出和尺⼨变换">
+                  <i class="fa fa-angle-left"></i> FFplay视频输出和尺⼨变换
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/12/FFplay%E6%92%AD%E6%94%BE%E6%8E%A7%E5%88%B6/" rel="next" title="FFplay播放控制">
+                  FFplay播放控制 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

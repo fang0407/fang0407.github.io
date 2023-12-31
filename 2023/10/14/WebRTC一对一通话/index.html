@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一对一通话  信令协议设计 join 加入房间。 resp­-join 当join房间后发现房间已经存在另一个人时则返回另一个人的uid；如果只有自己则不返回。 new­-peer 服务器通知客户端有新人加入，收到new­-peer则发起连接请求。 offer 转发offer sdp。 answer 转发answer sdp。 candidate 转发candidate sdp。  leave 离">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebRTC一对一通话">
+<meta property="og:url" content="https://fang0407.github.io/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="一对一通话  信令协议设计 join 加入房间。 resp­-join 当join房间后发现房间已经存在另一个人时则返回另一个人的uid；如果只有自己则不返回。 new­-peer 服务器通知客户端有新人加入，收到new­-peer则发起连接请求。 offer 转发offer sdp。 answer 转发answer sdp。 candidate 转发candidate sdp。  leave 离">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fang0407.github.io/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/%E5%AA%92%E4%BD%93%E5%8D%8F%E5%95%86.png">
+<meta property="article:published_time" content="2023-10-14T12:03:33.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:37:01.288Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang0407.github.io/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D.png">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/","path":"2023/10/14/WebRTC一对一通话/","title":"WebRTC一对一通话"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>WebRTC一对一通话 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D"><span class="nav-number">1.</span> <span class="nav-text">一对一通话</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E4%BB%A4%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.1.</span> <span class="nav-text">信令协议设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTCPeerConnection"><span class="nav-number">1.2.</span> <span class="nav-text">RTCPeerConnection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AA%92%E4%BD%93%E5%8D%8F%E5%95%86"><span class="nav-number">1.3.</span> <span class="nav-text">媒体协商</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%AA%92%E4%BD%93%E6%B5%81"><span class="nav-number">1.4.</span> <span class="nav-text">添加媒体流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%8D%8F%E5%95%86"><span class="nav-number">1.5.</span> <span class="nav-text">网络协商</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Coturn%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">Coturn服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">3.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%80%E5%9F%9F%E7%BD%91%E6%B5%8B%E8%AF%95"><span class="nav-number">3.1.</span> <span class="nav-text">局域网测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AC%E7%BD%91%E9%83%A8%E7%BD%B2"><span class="nav-number">3.2.</span> <span class="nav-text">公网部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="WebRTC一对一通话 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WebRTC一对一通话
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-10-14 20:03:33" itemprop="dateCreated datePublished" datetime="2023-10-14T20:03:33+08:00">2023-10-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:37:01" itemprop="dateModified" datetime="2023-12-30T22:37:01+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="一对一通话"><a href="#一对一通话" class="headerlink" title="一对一通话"></a>一对一通话</h1><img src="/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/一对一通话.png" alt="一对一通话" style="zoom:70%;">
+
+<h2 id="信令协议设计"><a href="#信令协议设计" class="headerlink" title="信令协议设计"></a>信令协议设计</h2><ul>
+<li><code>join</code> 加入房间。</li>
+<li><code>resp­-join</code> 当join房间后发现房间已经存在另一个人时则返回另一个人的uid；如果只有自己则不返回。</li>
+<li><code>new­-peer</code> 服务器通知客户端有新人加入，收到new­-peer则发起连接请求。</li>
+<li><code>offer</code> 转发offer sdp。</li>
+<li><code>answer</code> 转发answer sdp。</li>
+<li><code>candidate</code> 转发candidate sdp。 </li>
+<li><code>leave</code> 离开房间，服务器收到leave信令则检查同一房间是否有其他人，如果有其他人则通知他有人离开。</li>
+<li><code>peer­-leave</code> 服务器通知客户端有人离开。</li>
+</ul>
+<h2 id="RTCPeerConnection"><a href="#RTCPeerConnection" class="headerlink" title="RTCPeerConnection"></a>RTCPeerConnection</h2><p><code>RTCPeerConnection</code> 接口代表一个由本地计算机到远端的 WebRTC 连接。该接口提供了创建，保持，监控，关闭连接的方法的实现。</p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/RTCPeerConnection">https://developer.mozilla.org/zh-CN/docs/Web/API/RTCPeerConnection</a></p>
+<p><strong>RTCPeerConnection</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pc = <span class="keyword">new</span> <span class="title class_">RTCPeerConnection</span>([configuration]);</span><br></pre></td></tr></table></figure>
+
+<p>configuration可选</p>
+<ul>
+<li><p><code>bundlePolicy</code>：一般用<code>max­bundle</code>。</p>
+<ul>
+<li><code>banlanced</code>：音频与视频轨使用各自的传输通道。</li>
+<li><code>max­compat</code>：每个轨使用自己的传输通道。</li>
+<li><code>max­bundle</code>：都绑定到同一个传输通道。</li>
+</ul>
+</li>
+<li><p><code>iceTransportPolicy</code>：指定ICE的传输策略，一般用<code>all</code>。</p>
+<ul>
+<li><code>relay</code>：只使用中继候选者。</li>
+<li><code>all</code>：可以使用任何类型的候选者。</li>
+</ul>
+</li>
+<li><p><code>iceServers</code>：其由RTCIceServer组成，每个RTCIceServer都是一个ICE代理的服务器。</p>
+<ul>
+<li><code>credential </code>：凭据，只有TURN服务使用。</li>
+<li><code>credentialType</code>：凭据类型，可以password或oauth。</li>
+<li><code>urls </code>：用于连接服中的ur数组。</li>
+<li><code>username</code>：用户名，只有TURN服务使用。</li>
+</ul>
+</li>
+<li><p><code>rtcpMuxPolicy</code>：rtcp的复用策略，该选项在收集ICE候选者时使用，一般用<code>require</code>。</p>
+<ul>
+<li><code>negotiate</code>：收集RTCP与RTP复用的ICE候选者，如果RTCP能复用就与RTP复用，如果不能复用，就将他们单独使用。</li>
+<li><code>require</code>：只能收集RTCP与RTP复用的ICE候选者，如果RTCP不能复用，则失败。</li>
+</ul>
+</li>
+</ul>
+<p><strong>事件处理回调</strong></p>
+<ul>
+<li><code>onicecandidate</code>：收到候选者时触发的事件。</li>
+<li><code>ontrack</code>：获取远端流。</li>
+<li><code>onconnectionstatechange</code>：PeerConnection的连接状态。</li>
+<li><code>oniceconnectionstatechange</code>：ICE连接事件。</li>
+</ul>
+<h2 id="媒体协商"><a href="#媒体协商" class="headerlink" title="媒体协商"></a>媒体协商</h2><img src="/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/媒体协商.png" alt="媒体协商" style="zoom:70%;">
+
+<p><strong>createOffer</strong></p>
+<p>生成一个 offer，它是一个带有特定的配置信息寻找远端匹配机器（peer）的请求。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">aPromise = myPeerConnection.<span class="title function_">createOffer</span>([options]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//[options] 参数：</span></span><br><span class="line"><span class="keyword">var</span> options = &#123;</span><br><span class="line">    <span class="attr">offerToReceiveAudio</span>: <span class="literal">true</span>, <span class="comment">// 告诉另一端，你是否想接收音频，默认true </span></span><br><span class="line">    <span class="attr">offerToReceiveVideo</span>: <span class="literal">true</span>, <span class="comment">// 告诉另一端，你是否想接收视频，默认true </span></span><br><span class="line">    <span class="attr">iceRestart</span>: <span class="literal">false</span>, <span class="comment">// 是否在活跃状态重启ICE网络协商 </span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>createAnswer</strong></p>
+<p>在协调一条连接中的两端 offer&#x2F;answers 时，根据从远端发来的 offer 生成一个 answer。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aPromise = <span class="title class_">RTCPeerConnection</span>.<span class="title function_">createAnswer</span>([options]); <span class="comment">//目前createAnswer的options是 无效的。</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>setLocalDescription</strong></p>
+<p>改变与连接相关的本地描述。这个描述定义了连接的属性，例如：连接的编码方式。连接会受到它的改变的影响，而且连接必须能同时支持新的以及旧的描述。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aPromise = <span class="title class_">RTCPeerConnection</span>.<span class="title function_">setLocalDescription</span>(sessionDescription);</span><br></pre></td></tr></table></figure>
+
+<p><strong>setRemoteDescription</strong></p>
+<p>改变与连接相关的远端描述。这个描述定义了连接的属性，例如：连接的编码方式。连接会受到它的改变的影响，而且连接必须能同时支持新的以及旧的描述。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aPromise = <span class="title class_">RTCPeerConnection</span>.<span class="title function_">setRemoteDescription</span>(sessionDescription);</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加媒体流"><a href="#添加媒体流" class="headerlink" title="添加媒体流"></a>添加媒体流</h2><p><strong>addTrack</strong></p>
+<p>将一个新的媒体音轨添加到一组音轨中，这些音轨将被传输给另一个对等点。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">rtpSender = rtcPeerConnection.<span class="title function_">addTrack</span>(track, stream...);</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">参数：</span></span><br><span class="line"><span class="comment">track：一个MediaStreamTrack对象，表示要添加到对等连接的媒体轨道。</span></span><br><span class="line"><span class="comment">stream...：可选一个或多个本地的MediaStream对象，该轨迹应添加到其中。</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="网络协商"><a href="#网络协商" class="headerlink" title="网络协商"></a>网络协商</h2><p>添加一个 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Glossary/ICE">ICE</a> 代理。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aPromise = pc.<span class="title function_">addIceCandidate</span>(candidate);</span><br></pre></td></tr></table></figure>
+
+<p>candidate有Web端（和Android不同）相关属性：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>candidate</td>
+<td>候选者描述信息</td>
+</tr>
+<tr>
+<td>sdpMid</td>
+<td>与候选者相关的媒体流的识别标签</td>
+</tr>
+<tr>
+<td>sdpMLineIndex</td>
+<td>在SDP中 m&#x3D;的索引值</td>
+</tr>
+<tr>
+<td>usernameFragment</td>
+<td>包括了远端的唯一标识</td>
+</tr>
+</tbody></table>
+<h1 id="Coturn服务"><a href="#Coturn服务" class="headerlink" title="Coturn服务"></a>Coturn服务</h1><p>coturn穿透和转发服务器，集成了stun+turn协议。 </p>
+<p><strong>编译安装</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/coturn/coturn</span><br><span class="line">cd coturn</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<p><strong>是否安装成功</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">turnserver ‐L 0.0.0.0 ‐a ‐u test:123456 ‐v ‐f ‐r nort.gov</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看相应的端口号3478是否存在进程</span></span><br><span class="line">sudo lsof ‐i:3478</span><br></pre></td></tr></table></figure>
+
+<p><strong>测试地址</strong></p>
+<p>测试网址：<a target="_blank" rel="noopener" href="https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/">https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/</a></p>
+<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><h2 id="局域网测试"><a href="#局域网测试" class="headerlink" title="局域网测试"></a>局域网测试</h2><p><strong>启动conturn</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">turnserver ‐L 0.0.0.0 ‐a ‐u test:123456 ‐v ‐f ‐r nort.gov</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置RTCPeerConnection参数</strong></p>
+<p><code>RTCPeerConnection</code>时传入ICE server的参数，以便当在公网环境下可以进行正常通话。</p>
+<p>设置configuration，先设置为relay中继模式，只有relay中继模式可用的时候，才能部署到公网去（部署到公网后也先测试relay）。 </p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> defaultConfiguration = &#123;</span><br><span class="line"><span class="attr">bundlePolicy</span>: <span class="string">&quot;max-bundle&quot;</span>,</span><br><span class="line"><span class="attr">rtcpMuxPolicy</span>: <span class="string">&quot;require&quot;</span>,</span><br><span class="line"><span class="attr">iceTransportPolicy</span>: <span class="string">&quot;relay&quot;</span>, <span class="comment">//relay 或者 all，测试用relay</span></span><br><span class="line"><span class="comment">// 修改ice数组测试效果，需要进行封装</span></span><br><span class="line"><span class="attr">iceServers</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">urls</span>: [</span><br><span class="line">      <span class="string">&quot;turn:192.168.2.101:3478?transport=udp&quot;</span>,</span><br><span class="line">      <span class="string">&quot;turn:192.168.2.101:3478?transport=tcp&quot;</span>, <span class="comment">// 可以插入多个进行备选</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">username</span>: <span class="string">&quot;test&quot;</span>,</span><br><span class="line">    <span class="attr">credential</span>: <span class="string">&quot;123456&quot;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">urls</span>: [<span class="string">&quot;stun:192.168.2.101:3478&quot;</span>],</span><br><span class="line">  &#125;,</span><br><span class="line">],</span><br><span class="line">&#125;;</span><br><span class="line">pc = <span class="keyword">new</span> <span class="title class_">RTCPeerConnection</span>(defaultConfiguration</span><br></pre></td></tr></table></figure>
+
+<p><strong>局域网测试</strong></p>
+<p>启动通话后，如果使用relay模式断开conturn后会发现Web是无法通信的，但是使用all模式断开conturn后依然可以通信。</p>
+<h2 id="公网部署"><a href="#公网部署" class="headerlink" title="公网部署"></a>公网部署</h2><p>注意公网防火墙问题，比如 coturn涉及到的3478端口是否开放。在局域网上搭建，部署公网只需要替换公网IP即可。</p>
+<p><strong>nginx安装</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">wget http://nginx.org/download/nginx‐1.15.8.tar.gz</span><br><span class="line">tar xvzf nginx‐1.15.8.tar.gz</span><br><span class="line">cd nginx‐1.15.8/</span><br><span class="line"></span><br><span class="line">./configure ‐‐with‐http_ssl_module</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br><span class="line"></span><br><span class="line">启动：sudo /usr/local/nginx/sbin/nginx </span><br><span class="line">停止：sudo /usr/local/nginx/sbin/nginx -s stop</span><br><span class="line">重新加载配置文件：sudo /usr/local/nginx/sbin/nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<p><strong>产生证书</strong> </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir ‐p ~/cert</span><br><span class="line">cd ~/cert</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">CA私钥</span></span><br><span class="line">openssl genrsa -out key.pem 2048</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">自签名证书</span></span><br><span class="line">openssl req -new -x509 -key key.pem -out cert.pem -days 1095</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置web服务器</strong></p>
+<p>添加<code>/usr/local/nginx/conf/conf.d/webrtc-https.conf</code></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">443</span> ssl;</span><br><span class="line">    <span class="comment"># 配置自己的证书</span></span><br><span class="line">    <span class="attribute">ssl_certificate</span> /root/cert/cert.pem;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span> /root/cert/key.pem;</span><br><span class="line">    <span class="attribute">charset</span> utf‐<span class="number">8</span>;</span><br><span class="line">    <span class="comment"># ip地址或者域名</span></span><br><span class="line">    <span class="attribute">server_name</span> <span class="number">192.168.2.101</span>;</span><br><span class="line">    <span class="section">location</span> / &#123;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access‐Control‐Allow‐Origin&#x27;</span> <span class="string">&#x27;*&#x27;</span>;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access‐Control‐Allow‐Credentials&#x27;</span> <span class="string">&#x27;true&#x27;</span>;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access‐Control‐Allow‐Methods&#x27;</span> <span class="string">&#x27;*&#x27;</span>;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access‐Control‐Allow‐Headers&#x27;</span> <span class="string">&#x27;Origin, X‐Requested‐With, Content‐Type, Accept&#x27;</span>;</span><br><span class="line">        <span class="comment"># web页面所在目录</span></span><br><span class="line">        <span class="attribute">root</span> /root/webrtc/client;</span><br><span class="line">        <span class="attribute">index</span> index.php index.html index.htm;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编辑<code>nginx.conf</code>文件，在末尾<code>&#125;</code>之前添加包含文件。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">    <span class="attribute">include</span> /usr/local/nginx/conf/conf.d/<span class="regexp">*.conf</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果遇到权限问题，编辑<code>nginx.conf</code>文件，加入。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">user</span> root owner;</span><br></pre></td></tr></table></figure>
+
+<p>页面打开<a target="_blank" rel="noopener" href="https://192.168.2.101测试./">https://192.168.2.101测试。</a></p>
+<p><strong>配置websocket代理</strong></p>
+<p>此时Web不能直接访问信令服务器，https不能访问ws，本身是安全的访问，不能降级做不安全的访问。</p>
+<p>使用Nginx服务器代理访问信令服务器。</p>
+<p>完整配置文件：<code>/usr/local/nginx/conf/conf.d/webrtc-websocket-proxy.conf</code></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">map</span> <span class="variable">$http_upgrade</span> <span class="variable">$connection_upgrade</span> &#123;</span><br><span class="line">    <span class="attribute">default</span> upgrade;</span><br><span class="line">    &#x27;&#x27; close;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">upstream</span> websocket &#123;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">192.168.2.101:8099</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8098</span> ssl;</span><br><span class="line">    <span class="comment">#ssl on;</span></span><br><span class="line">    <span class="attribute">ssl_certificate</span> /root/cert/cert.pem;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span> /root/cert/key.pem;</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">server_name</span> <span class="number">192.168.2.101</span>;</span><br><span class="line">    <span class="section">location</span> /ws &#123;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://websocket;</span><br><span class="line">        <span class="attribute">proxy_http_version</span> <span class="number">1</span>.<span class="number">1</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Upgrade <span class="variable">$http_upgrade</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Connection <span class="variable">$connection_upgrade</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>websocket超时断开</strong></p>
+<p>在通话时，出现60秒后客户端自动断开的问题，是因为经过nginx代理时，如果websocket长时间没有收发消息则该websocket将会被断开。我们这里可以修改收发消息的时间间隔。</p>
+<ul>
+<li><strong>proxy_connect_timeout：</strong>设置代理服务器与后端服务器建立连接的超时时间。</li>
+<li><strong>proxy_read_timeout：</strong>设置代理服务器从后端服务器读取数据的超时时间。</li>
+<li><strong>proxy_send_timeout：</strong>设置代理服务器向后端服务器发送数据的超时时间。</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">map</span> <span class="variable">$http_upgrade</span> <span class="variable">$connection_upgrade</span> &#123;</span><br><span class="line">    <span class="attribute">default</span> upgrade;</span><br><span class="line">    &#x27;&#x27; close;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">upstream</span> websocket &#123;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">192.168.2.101:8099</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8098</span> ssl;</span><br><span class="line">    <span class="comment">#ssl on;</span></span><br><span class="line">    <span class="attribute">ssl_certificate</span> /root/cert/cert.pem;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span> /root/cert/key.pem;</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">server_name</span> <span class="number">192.168.2.101</span>;</span><br><span class="line">    <span class="section">location</span> /ws &#123;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://websocket;</span><br><span class="line">        <span class="attribute">proxy_http_version</span> <span class="number">1</span>.<span class="number">1</span>;</span><br><span class="line">        <span class="attribute">proxy_connect_timeout</span> <span class="number">4s</span>;</span><br><span class="line">        <span class="attribute">proxy_read_timeout</span> <span class="number">6000s</span>;</span><br><span class="line">        <span class="attribute">proxy_send_timeout</span> <span class="number">6000s</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Upgrade <span class="variable">$http_upgrade</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Connection <span class="variable">$connection_upgrade</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">	F1[客户端]--https port=443--&gt;F2[Web服务]</span><br><span class="line">	F2--wss port=8098 path=/ws--&gt;F3[nginx代理信令服务]</span><br><span class="line">	F3--http port=8099--&gt;F4[信令服务]</span><br><span class="line">	F1--ICE port=3478--&gt;F5[Coturn服务]</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/11/WebSocket%E5%8D%8F%E8%AE%AE/" rel="prev" title="WebSocket协议">
+                  <i class="fa fa-angle-left"></i> WebSocket协议
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/16/AppRTC%E6%90%AD%E5%BB%BA/" rel="next" title="AppRTC搭建">
+                  AppRTC搭建 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

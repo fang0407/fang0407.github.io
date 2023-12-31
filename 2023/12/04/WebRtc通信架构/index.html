@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="MeshMesh ⽅案的结构如下图所示：    在上图中，B1、B2、B3、B4 分别表示 4 个浏览器，它们之间两两相连，同时还分别与 STUN&#x2F;TURN 服务器进⾏连接（此时的 STUN&#x2F;TURN 服务器不能进⾏数据中转，否则情况会变得⾮常复杂），这样就形成了⼀个⽹格拓扑结构。当某个浏览器想要共享它的⾳视频流时，它会将共享的媒体流分别发送给其他 3 个浏览器，这样就实现了多">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebRtc通信架构">
+<meta property="og:url" content="https://fang0407.github.io/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="MeshMesh ⽅案的结构如下图所示：    在上图中，B1、B2、B3、B4 分别表示 4 个浏览器，它们之间两两相连，同时还分别与 STUN&#x2F;TURN 服务器进⾏连接（此时的 STUN&#x2F;TURN 服务器不能进⾏数据中转，否则情况会变得⾮常复杂），这样就形成了⼀个⽹格拓扑结构。当某个浏览器想要共享它的⾳视频流时，它会将共享的媒体流分别发送给其他 3 个浏览器，这样就实现了多">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fang0407.github.io/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/Mesh%E6%9E%B6%E6%9E%84.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/MCU%E6%9E%B6%E6%9E%84.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/SFU%E6%9E%B6%E6%9E%84.png">
+<meta property="article:published_time" content="2023-12-04T13:43:00.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:37:05.214Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang0407.github.io/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/Mesh%E6%9E%B6%E6%9E%84.png">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/","path":"2023/12/04/WebRtc通信架构/","title":"WebRtc通信架构"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>WebRtc通信架构 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mesh"><span class="nav-number">1.</span> <span class="nav-text">Mesh</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MCU"><span class="nav-number">2.</span> <span class="nav-text">MCU</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SFU"><span class="nav-number">3.</span> <span class="nav-text">SFU</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="WebRtc通信架构 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WebRtc通信架构
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-12-04 21:43:00" itemprop="dateCreated datePublished" datetime="2023-12-04T21:43:00+08:00">2023-12-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:37:05" itemprop="dateModified" datetime="2023-12-30T22:37:05+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Mesh"><a href="#Mesh" class="headerlink" title="Mesh"></a>Mesh</h1><p>Mesh ⽅案的结构如下图所示： </p>
+<img src="/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/Mesh架构.png" alt="Mesh架构" style="zoom:50%;">
+
+<p>在上图中，B1、B2、B3、B4 分别表示 4 个浏览器，它们之间两两相连，同时还分别与 STUN&#x2F;TURN 服务器进⾏连接（此时的 STUN&#x2F;TURN 服务器不能进⾏数据中转，否则情况会变得⾮常复杂），这样就形成了⼀个⽹格拓扑结构。当某个浏览器想要共享它的⾳视频流时，它会将共享的媒体流分别发送给其他 3 个浏览器，这样就实现了多⼈通信。</p>
+<p><strong>优点</strong></p>
+<ul>
+<li>充分利⽤了客户端的带宽资源。 </li>
+<li>节省了服务器资源，因为服务器带宽往往是专线，价格昂贵，所以这种⽅案可以很好地控制成本。</li>
+<li>不需要服务器中转数据，STUN&#x2F;TUTN 只是负责 NAT 穿越，这样利⽤现有 WebRTC 通信模型就可以实现，⽽不需要开发媒体服务器。</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>共享端共享媒体流的时候，需要给每⼀个参与⼈都转发⼀份媒体流，这样对上⾏带宽的占⽤很⼤。参与⼈越多，占⽤的带宽就越⼤。除此之外，对 CPU、Memory 等资源也是极⼤的考验。⼀般来说，客户端的机器资源、带宽资源往往是有限的，资源占⽤和参与⼈数是线性相关的。这样导致多⼈通信的规模⾮常有限，通过实践来看，这种⽅案在超过 4 个⼈时，就会有⾮常⼤的问题。</li>
+<li>在多⼈通信时，如果有部分⼈不能实现 NAT 穿越，但还想让这些⼈与其他⼈互通，就显得很麻烦，需要做出更多的可靠性设计。</li>
+</ul>
+<h1 id="MCU"><a href="#MCU" class="headerlink" title="MCU"></a>MCU</h1><p>MCU 主要的处理逻辑是：接收每个共享端的⾳视频流，经过解码、与其他解码后的⾳视频进⾏混流、重新编码，之后再将混好的⾳视频流发送给房间⾥的所有⼈。</p>
+<p>MCU ⽅案的模型是⼀个星形结构，如下图所示：</p>
+<img src="/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/MCU架构.png" alt="MCU架构" style="zoom:50%;">
+
+<p><strong>优点</strong></p>
+<ul>
+<li>技术⾮常成熟，在硬件视频会议中应⽤⾮常⼴泛。</li>
+<li>作为⾳视频⽹关，通过解码、再编码可以屏蔽不同编解码设备的差异化，满⾜更多客户的集成需求，提升⽤户体验和产品竞争⼒。</li>
+<li>将多路视频混合成⼀路，所有参与⼈看到的是相同的画⾯，客户体验⾮常好。</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>重新解码、编码、混流，需要⼤量的运算，对 CPU 资源的消耗很⼤。</li>
+<li>重新解码、编码、混流还会带来延迟。</li>
+<li>由于机器资源耗费很⼤，所以 MCU 所提供的容量有限，⼀般⼗⼏路视频就是上限了。</li>
+</ul>
+<h1 id="SFU"><a href="#SFU" class="headerlink" title="SFU"></a>SFU</h1><p>SFU 像是⼀个媒体流路由器，接收终端的⾳视频流，根据需要转发给其他终端。SFU 在⾳视频会议中应⽤⾮常⼴泛，尤其是 WebRTC 普及以后。⽀持 WebRTC 多⽅通信的媒体服务器基本都是 SFU 结构。SFU的拓扑机构和功能模型如下图： </p>
+<img src="/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/SFU架构.png" alt="SFU架构" style="zoom:50%;">
+
+<p>在这个图中，B1、B2、B3、B4 分别代表 4 个浏览器，每⼀个浏览器都会共享⼀路流发给 SFU，SFU 会将每⼀路流转发给共享者之外的 3 个浏览器。 </p>
+<p><strong>优点</strong></p>
+<ul>
+<li>⾸先由于是数据包直接转发，不需要编码、解码，对 CPU 资源消耗很⼩。</li>
+<li>其次是 直接转发也极⼤地降低了延迟，提⾼了实时性。</li>
+<li>最后 带来了很⼤的灵活性，能够更好地适应不同的⽹络状况和终端类型。</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>由于是数据包直接转发，参与⼈观看多路视频的时候可能会出现不同步（mesh、mcu实际上也是可能出现这种情况）；相同的视频流，不同的参与⼈看到的画⾯也可能不⼀致。 </li>
+<li>参与⼈同时观看多路视频，在多路视频窗⼝显示、渲染等会带来很多麻烦，尤其对多⼈实时通信进⾏录制，多路流也会带来很多回放的困难。总之，整体在通⽤性、⼀致性⽅⾯⽐较差。</li>
+</ul>
+<p>⽬前许多 SFU 实现都⽀持 SVC 模式和 Simulcast 模式，⽤于适配 WiFi、4G 等不同⽹络状况，以及 Phone、Pad、PC 等不同终端设备。</p>
+<p><strong>Simulcast 模式</strong></p>
+<p>Simulcast 模式就是指视频的共享者可以同时向 SFU 发送多路不同分辨率的视频流（⼀般为三路，如 1080P、720P、360P）。⽽ SFU 可以将接收到的三路流根据各终端的情况⽽选择其中某⼀路发送出去。例如，由于 PC 端⽹络特别好，给 PC 端发送 1080P 分辨率的视频；⽽移动⽹络较差，就给 Phone 发送 360P 分辨率的视频。 </p>
+<p>Simulcast 模式对移动端的终端类型⾮常有⽤，它可以灵活⽽⼜智能地适应不同的⽹络环境。</p>
+<p><strong>SVC 模式</strong></p>
+<p>SVC（Scalable Video Coding） 是可伸缩的视频编码模式。与 Simulcast 模式的同时传多路流不同， </p>
+<p>SVC 模式是在视频编码时做“⼿脚”。 它在视频编码时将视频分成多层——核⼼层、中间层和扩展层。上层依赖于底层，⽽且越上层越清晰，越底层越模糊。在带宽不好的情况下，可以只传输底层，即核⼼层，在带宽充⾜的情况下，可以将三层全部传输过去。 </p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/466172240">https://zhuanlan.zhihu.com/p/466172240</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/12/01/Golang%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="prev" title="Golang并发编程">
+                  <i class="fa fa-angle-left"></i> Golang并发编程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/12/07/Janus%E6%90%AD%E5%BB%BA/" rel="next" title="Janus搭建">
+                  Janus搭建 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

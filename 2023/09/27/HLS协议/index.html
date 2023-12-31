@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="M3U8格式M3U8格式介绍M3U8（也称为HLS播放列表）是一种文本文件格式，用于描述HTTP Live Streaming（HLS）协议中的媒体播放列表。HLS是一种流媒体传输协议，广泛用于将音频和视频内容分发到互联网上的移动设备和桌面浏览器。 M3U8文件是一个纯文本文件，其中包含了多个媒体片段的URL和其他相关信息，以便客户端能够按顺序下载和播放这些片段。 播放列表 ⼀个 m3u8 的播放">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HLS协议">
+<meta property="og:url" content="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="M3U8格式M3U8格式介绍M3U8（也称为HLS播放列表）是一种文本文件格式，用于描述HTTP Live Streaming（HLS）协议中的媒体播放列表。HLS是一种流媒体传输协议，广泛用于将音频和视频内容分发到互联网上的移动设备和桌面浏览器。 M3U8文件是一个纯文本文件，其中包含了多个媒体片段的URL和其他相关信息，以便客户端能够按顺序下载和播放这些片段。 播放列表 ⼀个 m3u8 的播放">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/ts%E2%BD%82%E4%BB%B6%E5%88%86%E5%B1%82.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/HLS%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/tsheader%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/AdaptationField%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/PAT%E6%8A%A5%E6%96%87.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/PMT%E6%8A%A5%E6%96%87.png">
+<meta property="article:published_time" content="2023-09-27T14:59:19.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:39:25.594Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/ts%E2%BD%82%E4%BB%B6%E5%88%86%E5%B1%82.png">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/","path":"2023/09/27/HLS协议/","title":"HLS协议"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>HLS协议 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#M3U8%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">M3U8格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#M3U8%E6%A0%BC%E5%BC%8F%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">M3U8格式介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%92%AD%E6%94%BE%E5%88%97%E8%A1%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">播放列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE"><span class="nav-number">1.1.2.</span> <span class="nav-text">标签</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#M3U8%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.2.</span> <span class="nav-text">M3U8示例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TS%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">TS格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TS%E6%A0%BC%E5%BC%8F%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.1.</span> <span class="nav-text">TS格式介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%85%E5%A4%B4"><span class="nav-number">2.2.</span> <span class="nav-text">包头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E9%80%82%E5%BA%94%E5%AD%97%E6%AE%B5"><span class="nav-number">2.3.</span> <span class="nav-text">自适应字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E6%95%88%E8%B4%9F%E8%BD%BD"><span class="nav-number">2.4.</span> <span class="nav-text">有效负载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PAT"><span class="nav-number">2.4.1.</span> <span class="nav-text">PAT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PMT"><span class="nav-number">2.4.2.</span> <span class="nav-text">PMT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PES"><span class="nav-number">2.4.3.</span> <span class="nav-text">PES</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">HTTP协议</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="HLS协议 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HLS协议
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-27 22:59:19" itemprop="dateCreated datePublished" datetime="2023-09-27T22:59:19+08:00">2023-09-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:39:25" itemprop="dateModified" datetime="2023-12-30T22:39:25+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="M3U8格式"><a href="#M3U8格式" class="headerlink" title="M3U8格式"></a>M3U8格式</h1><h2 id="M3U8格式介绍"><a href="#M3U8格式介绍" class="headerlink" title="M3U8格式介绍"></a>M3U8格式介绍</h2><p>M3U8（也称为HLS播放列表）是一种文本文件格式，用于描述HTTP Live Streaming（HLS）协议中的媒体播放列表。HLS是一种流媒体传输协议，广泛用于将音频和视频内容分发到互联网上的移动设备和桌面浏览器。</p>
+<p>M3U8文件是一个纯文本文件，其中包含了多个媒体片段的URL和其他相关信息，以便客户端能够按顺序下载和播放这些片段。</p>
+<h3 id="播放列表"><a href="#播放列表" class="headerlink" title="播放列表"></a>播放列表</h3><ul>
+<li>⼀个 m3u8 的播放列表（Playlist） 就是⼀个由多个独⽴⾏组成的⽂本⽂件，每⾏由回⻋&#x2F;换⾏区分。每⼀⾏可以是⼀个URI、空⽩⾏或是⼀个以 “#” 号开头的字符串，并且空格只能存在于⼀⾏中不同元素间的分隔。⼀个 URI 表示⼀个媒体段或是 “variant Playlist file”（最多⽀持⼀层嵌套，即⼀个 m3u8 ⽂件中嵌套另⼀个 m3u8）。以 “EXT” 开头的表示⼀个 “tag”，否则表示注释，直接忽略。</li>
+<li>每⼀个 .m3u8 ⽂件，分别对应若⼲个 ts ⽂件，这些 <strong>ts ⽂件才是真正存放视频的数据</strong>。<strong>m3u8 ⽂件只是存放了⼀些 ts ⽂件的配置信息和相关路径</strong>，当视频播放时，.m3u8 是动态改变的，video标签会解析这个⽂件，并找到对应的 ts ⽂件来播放，所以⼀般为了加快速度，.m3u8 放在 web 服务器上，ts ⽂件放在 cdn 上。.m3u8 ⽂件，其实就是以 utf-8 编码的 m3u ⽂件，这个⽂件本身不能播放，只是存放了播放信息的⽂本⽂件。</li>
+</ul>
+<h3 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h3><p>标签（Tags）提供了有关媒体流和播放列表本身的信息。</p>
+<p><strong>#EXTM3U</strong></p>
+<ul>
+<li>格式：<code>#EXTM3U</code></li>
+<li>作用：每个M3U⽂件第⼀⾏必须是这个tag，请标示作⽤。</li>
+</ul>
+<p><strong>#EXT-X-VERSION</strong></p>
+<ul>
+<li>格式：<code>#EXT-X-VERSION:&lt;v&gt;</code></li>
+<li>作用：m3u8⽂件版本号，⽐如#EXT-X-VERSION:3。</li>
+</ul>
+<p><strong>#EXT-X-TARGETDURATION</strong></p>
+<ul>
+<li>格式： <code>#EXT-X-TARGETDURATION:&lt;s&gt;</code></li>
+<li>作用：指定当前视频流中的单个切⽚（即 ts）⽂件的最⼤时⻓（秒）。所以 #EXTINF 中指定的时间⻓度必须⼩于或是等于这个最⼤值。这个 tag 在整个 Playlist ⽂件中只能出现 ⼀次（在嵌套的情况下，⼀般有真正ts url 的 m3u8 才会出现该 tag）。</li>
+</ul>
+<p><strong>#EXT-X-MEDIA-SEQUENCE</strong></p>
+<ul>
+<li>格式：<code>#EXT-X-MEDIA-SEQUENCE:&lt;number&gt;</code></li>
+<li>作用：指定Meida Segment的开始序号，每⼀个 media URI 在 Playlist 中只有唯⼀的序号，相邻之间序号 +1。 ⼀个 media URI 并不是必须要包含的，如果没有，默认为 0。</li>
+</ul>
+<p><strong>#EXT-X-ALLOW-CACHE</strong></p>
+<ul>
+<li>格式：<code>#EXT-X-ALLOW-CACHE:&lt;YES|NO&gt;</code></li>
+<li>作用：指示客户端是否被允许缓存媒体片段，可以在 m3u8⽂件 中任意地⽅出现，并且最多只出现⼀次，作⽤效果是所有的媒体段。</li>
+</ul>
+<p><strong>#EXTINF</strong></p>
+<ul>
+<li>格式：<code>#EXTINF:&lt;duration&gt;,&lt;title&gt;</code></li>
+<li>作用：指定每个媒体段（ts）的持续时间（单位秒），这个仅对其后⾯的 URI 有效，每两个媒体段 URI 间被这个 tag 分隔开；⽐如<code>#EXTINF:14.357, no desc</code>。</li>
+</ul>
+<p><strong>#EXT-X-ENDLIST</strong></p>
+<ul>
+<li>格式：<code>#EXT-X-ENDLIST</code></li>
+<li>作用：表示 m3u8 ⽂件的结束，live m3u8 没有该 tag。它可以在 Playlist 中任意位置出现，但是只能出现⼀个。</li>
+</ul>
+<p><strong>#EXT-X-STREAM-INF</strong></p>
+<ul>
+<li>格式：<code>#EXT-X-STREAM-INF:&lt;attribute-list&gt;</code></li>
+<li>作用：指定⼀个包含多媒体信息的 media URI 作为 Playlist，⼀般做 m3u8 的嵌套使⽤，它只对紧跟后⾯的 URI 有效。</li>
+<li>常⽤的属性如下：<ul>
+<li>BANDWIDTH：带宽，必须有。</li>
+<li>CODECS：指定流的编码类型，不是必须的。</li>
+<li>RESOLUTION：分辨率。</li>
+<li>AUDIO：这个值必须和 AUDIO 类别的 “EXT-X-MEDIA” 标签中 “GROUP-ID” 属性值相匹配。</li>
+<li>VIDEO：同上。</li>
+</ul>
+</li>
+</ul>
+<p><strong>#EXT-X-KEY</strong></p>
+<ul>
+<li><p>格式：<code>#EXT-X-KEY:&lt;attribute-list&gt;</code></p>
+</li>
+<li><p>作用：表示怎么对 media segments 进⾏解密。其作⽤范围是下次该 tag 出现前的所有 media URI。</p>
+</li>
+<li><p>例子：</p>
+<ul>
+<li><p><code>#EXT-X-KEY:METHOD=AES-128,URI=&quot;http://hls.videocc.net/4adf37ccc0/7/4adf37ccc048da15dd93d60358cb7d27_2.key&quot;,IV=0xfae721f7c61ccb9f8d986454e8e923b9</code></p>
+</li>
+<li><p>METHOD 是视频加密方式；METHOD可以为 NONE 或者 AES-128。</p>
+</li>
+<li><p>KEY 的地址：<code>http://hls.videocc.net/4adf37ccc0/7/4adf37ccc048da15dd93d60358cb7d27_2.key</code>（需要下载该文件）。</p>
+</li>
+<li><p>IV 是偏移量：<code>0xfae721f7c61ccb9f8d986454e8e923b9</code>。</p>
+</li>
+<li><p>如果是 NONE，则 URI 以及 IV 属性必须不存在，如果是 AES-128（Advanced Encryption Standard），则 URI 必须存在，IV 可以不存在。对于 AES-128 的情况，keytag 和 URI 属性共同表示了⼀个 key ⽂件，<strong>通过 URI 可以获得这个 key，如果没有 IV（Initialization Vector），则使⽤序列号作为 IV 进⾏编解码，将序列号的⾼位 Tags 赋到 16 个字节的 buffer 中，左边补 0；如果有 IV，则将该值当成 16 个字节的 16 进制数</strong>。</p>
+</li>
+<li><p>参考链接：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/jruing/p/15820950.html">https://www.cnblogs.com/jruing/p/15820950.html</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="M3U8示例"><a href="#M3U8示例" class="headerlink" title="M3U8示例"></a>M3U8示例</h2><p>该请求是⼀个实际使⽤中的顶级 m3u8 ⽂件，该⽂件中⼜定义了<code>/live/test.m3u8?hls_ctx=18201z96</code>⼆级⽂件 。 <strong>顶级m3u8 ⽂件主要是做码率适配的，⼆级 m3u8 才是真正的切⽚⽂件</strong>，客户端会默认选择码率最⾼的请求，如果发现码率达不到，会请求降低码率的流。客户端拿到⼆级 m3u8 ⽂件后，会继续请求⾥⾯的⽂件，这时就可以进⾏播放了。 </p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/live/test.m3u8</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Lavf/59.30.100</span><br><span class="line"><span class="attribute">Accept</span><span class="punctuation">: </span>*/*</span><br><span class="line"><span class="attribute">Range</span><span class="punctuation">: </span>bytes=0-</span><br><span class="line"><span class="attribute">Connection</span><span class="punctuation">: </span>close</span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>192.168.2.101:8080</span><br><span class="line"><span class="attribute">Icy-MetaData</span><span class="punctuation">: </span>1</span><br><span class="line"></span><br><span class="line"><span class="language-http"><span class="meta">HTTP/1.1</span> <span class="number">200</span> OK</span></span><br><span class="line"><span class="language-http"><span class="attribute">Connection</span><span class="punctuation">: </span>Close</span></span><br><span class="line"><span class="language-http"><span class="attribute">Content-Length</span><span class="punctuation">: </span>90</span></span><br><span class="line"><span class="language-http"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/vnd.apple.mpegurl</span></span><br><span class="line"><span class="language-http"><span class="attribute">Server</span><span class="punctuation">: </span>SRS/6.0.75(Bee)</span></span><br><span class="line"><span class="language-http"></span></span><br><span class="line"><span class="language-http"><span class="language-awk"><span class="comment">#EXTM3U</span></span></span></span><br><span class="line"><span class="language-awk"><span class="language-http"><span class="comment">#EXT-X-STREAM-INF:BANDWIDTH=1,AVERAGE-BANDWIDTH=1</span></span></span></span><br><span class="line"><span class="language-awk"><span class="language-http"><span class="regexp">/live/</span>test.m3u8?hls_ctx=<span class="number">18201</span>z96</span></span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/live/test.m3u8?hls_ctx=18201z96</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Lavf/59.30.100</span><br><span class="line"><span class="attribute">Accept</span><span class="punctuation">: </span>*/*</span><br><span class="line"><span class="attribute">Range</span><span class="punctuation">: </span>bytes=0-</span><br><span class="line"><span class="attribute">Connection</span><span class="punctuation">: </span>keep-alive</span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>192.168.2.101:8080</span><br><span class="line"><span class="attribute">Icy-MetaData</span><span class="punctuation">: </span>1</span><br><span class="line"></span><br><span class="line"><span class="language-http"><span class="meta">HTTP/1.1</span> <span class="number">200</span> OK</span></span><br><span class="line"><span class="language-http"><span class="attribute">Connection</span><span class="punctuation">: </span>Close</span></span><br><span class="line"><span class="language-http"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/vnd.apple.mpegurl</span></span><br><span class="line"><span class="language-http"><span class="attribute">Content-Length</span><span class="punctuation">: </span>330</span></span><br><span class="line"><span class="language-http"><span class="attribute">Server</span><span class="punctuation">: </span>SRS/6.0.75(Bee)</span></span><br><span class="line"><span class="language-http"></span></span><br><span class="line"><span class="language-http"><span class="language-apache"><span class="comment">#EXTM3U</span></span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="comment">#EXT-X-VERSION:3</span></span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="comment">#EXT-X-MEDIA-SEQUENCE:7</span></span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="comment">#EXT-X-TARGETDURATION:15</span></span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="comment">#EXTINF:14.994, no desc</span></span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="attribute">test</span>-<span class="number">7</span>.ts?hls_ctx=<span class="number">18201</span>z96</span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="comment">#EXTINF:14.994, no desc</span></span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="attribute">test</span>-<span class="number">8</span>.ts?hls_ctx=<span class="number">18201</span>z96</span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="comment">#EXTINF:14.994, no desc</span></span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="attribute">test</span>-<span class="number">9</span>.ts?hls_ctx=<span class="number">18201</span>z96</span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="comment">#EXTINF:14.994, no desc</span></span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="attribute">test</span>-<span class="number">10</span>.ts?hls_ctx=<span class="number">18201</span>z96</span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="comment">#EXTINF:8.933, no desc</span></span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="attribute">test</span>-<span class="number">11</span>.ts?hls_ctx=<span class="number">18201</span>z96</span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"></span></span></span><br><span class="line"><span class="language-apache"><span class="language-http"><span class="comment">#EXT-X-ALLOW-CACHE:YES</span></span></span></span><br></pre></td></tr></table></figure>
+
+<h1 id="TS格式"><a href="#TS格式" class="headerlink" title="TS格式"></a>TS格式</h1><h2 id="TS格式介绍"><a href="#TS格式介绍" class="headerlink" title="TS格式介绍"></a>TS格式介绍</h2><p>TS 全称为 <strong>MPEG2-TS</strong>，是一种封装的格式，视频编码主要格式为 H264&#x2F;MPEG4，⾳频为 AAC&#x2F;MP3。</p>
+<ul>
+<li>TS分层格式：</li>
+</ul>
+<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/ts⽂件分层.png" alt="ts⽂件分层" style="zoom:50%;">
+
+<ul>
+<li><p>TS 包⼤⼩<strong>固定为188字节</strong>，TS ⽂件分为三层：</p>
+<ul>
+<li>ts 层：Transport Stream，<strong>是在 pes 层的基础上加⼊数据流的识别和传输必须的信息</strong>。</li>
+<li>pes 层： Packet Elemental Stream，<strong>是在⾳视频数据上加了时间戳等对数据帧的说明信息</strong>。</li>
+<li>es 层：Elementary Stream，<strong>即⾳视频数据</strong>。</li>
+</ul>
+</li>
+<li><p>解析TS流数据的流程：</p>
+<ul>
+<li><strong>查找 PID 为 0x0 的包，解析 PAT，PAT包中的 Program Map PID 表示PMT的 PID</strong>；</li>
+<li><strong>查找 PMT，PMT包中的 Elementary PID 表示音视频包的 PID，PMT 包中的 PCR PID 表示 PCR 的 PID</strong>，有的时候 PCR 的 PID 跟音频或者视频的  PID 相同，说明 PCR 会融进音视频的包，有的时候 PCR 又是自己单独的包。</li>
+</ul>
+</li>
+<li><p>报文预览：</p>
+</li>
+</ul>
+<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/HLS报文.png" alt="HLS报文" style="zoom:50%;">
+
+<h2 id="包头"><a href="#包头" class="headerlink" title="包头"></a>包头</h2><p>Header 报文格式：</p>
+<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/tsheader报文.png" alt="tsheader报文" style="zoom:50%;">
+
+<p>MPEG2-TS 包的包头占据了4字节，用于标识包的类型和其他信息。包头的字段包括：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>比特数量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sync Byte</td>
+<td>8b</td>
+<td>同步字节，固定为0x47</td>
+</tr>
+<tr>
+<td>Transport Error Indicator</td>
+<td>1b</td>
+<td>传输错误指示符，表明在ts头的adapt域后有⼀个⽆⽤字节，通常都为0，这个字节算在adapt域⻓度内</td>
+</tr>
+<tr>
+<td>Payload Unit Start Indicator</td>
+<td>1b</td>
+<td>负载单元起始标示符，⼀个完整的数据包开始时标记为1</td>
+</tr>
+<tr>
+<td>Transport Priority</td>
+<td>1b</td>
+<td>传输优先级，0为低优先级，1为⾼优先级，通常取0</td>
+</tr>
+<tr>
+<td><strong>PID</strong></td>
+<td>13b</td>
+<td>用于标识包中的数据流类型，例如音频、视频、字幕等</td>
+</tr>
+<tr>
+<td>Transport Scrambling Contor</td>
+<td>2b</td>
+<td>用于指示包是否经过了加扰处理，00表示未加密</td>
+</tr>
+<tr>
+<td>Adaptation Field Control</td>
+<td>2b</td>
+<td>用于指示是否存在自适应字段，<br>‘00’保留；‘01’为⽆⾃适应域，仅含有效负载；<br>‘10’为仅含⾃适应域，⽆有效负载；<br>‘11’为同时带有⾃适应域和有效负载</td>
+</tr>
+<tr>
+<td>Continuity Counter</td>
+<td>4b</td>
+<td>递增计数器，从0-f，起始值不⼀定取0，但必须是连续的，可用于检测丢失的包</td>
+</tr>
+</tbody></table>
+<p><strong>TS 的内容是通过 PID 值来标识的，主要内容包括：PAT 表、PMT 表、⾳频流、视频流。</strong>PAT 表的和 PMT 表需要定期插⼊ ts 流，因为⽤户随时可能加⼊ ts 流，这个间隔⽐较⼩，通常每隔⼏个视频帧就要加⼊ PAT和 PMT。PAT 和 PMT 表是必须的，还可以加⼊其它表如 SDT（业务描述表）等，不过 hls 流只要有PAT 和 PMT 就可以播放了。 </p>
+<h2 id="自适应字段"><a href="#自适应字段" class="headerlink" title="自适应字段"></a>自适应字段</h2><p>Adaptation Field 报文格式：</p>
+<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/AdaptationField报文.png" alt="AdaptationField报文" style="zoom:50%;">
+
+<p>自适应字段（Adaptation Field）是可选的，长度不固定，用于在需要时包含额外的控制信息。它可以包括时钟调整、加扰解除、字节对齐等信息。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>比特数量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Adaptation Field Length</td>
+<td>8b</td>
+<td>⾃适应域⻓度，后⾯的字节数</td>
+</tr>
+<tr>
+<td>Discontinuity Indicator</td>
+<td>1b</td>
+<td>通常用于指示数据流的不连续性。如果有多个数据流，这个标志可以用于标识它们之间的切换</td>
+</tr>
+<tr>
+<td>Random Access Indicator</td>
+<td>1b</td>
+<td>指示是否存在关键帧或I帧。这对于视频流中的随机访问非常重要</td>
+</tr>
+<tr>
+<td>Elementary Stream Priority Indicator</td>
+<td>1b</td>
+<td>指示当前包的元素流的优先级</td>
+</tr>
+<tr>
+<td>PCR Flag</td>
+<td>1b</td>
+<td>指示是否存在PCR（Program Clock Reference）字段。PCR用于同步多个数据流的时钟</td>
+</tr>
+<tr>
+<td>OPCR Flag</td>
+<td>1b</td>
+<td>指示是否存在OPCR（Original Program Clock Reference）字段。OPCR用于描述原始数据流的时钟</td>
+</tr>
+<tr>
+<td>Splicing Point Flag</td>
+<td>1b</td>
+<td>指示当前包是否可以被拷贝，即是否可以在此处进行剪切</td>
+</tr>
+<tr>
+<td>Transport Private Data Flag</td>
+<td>1b</td>
+<td>指示是否存在拷贝权标志信息</td>
+</tr>
+<tr>
+<td>Adaptation Field Extension Flag</td>
+<td>1b</td>
+<td>指示是否存在自适应字段扩展</td>
+</tr>
+<tr>
+<td>Program Clock Reference</td>
+<td>48b</td>
+<td>如果PCR标志为1，则包含PCR字段，用于同步音频和视频的时钟</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody></table>
+<p>⾃适应区的⻓度要包含传输错误指示符标识的⼀个字节。</p>
+<p>打包 ts 流时 PAT 和 PMT 表是没有 adaptation field 的，<strong>不够的⻓度直接补 0xff 即可</strong>。视频流和⾳频流都需要加 adaptation field，通常加在⼀个帧的第⼀个 ts包和最后⼀个 ts 包⾥，中间的 ts 包不加。</p>
+<p>pcr 是节⽬时钟参考，pcr、dts、pts 都是对同⼀个系统时钟的采样值，pcr 是递增的，因此可以将其设置为 dts 值，⾳频数据不需要 pcr。如果没有字段，ipad 是可以播放的，但 vlc ⽆法播放。</p>
+<h2 id="有效负载"><a href="#有效负载" class="headerlink" title="有效负载"></a>有效负载</h2><p>有效负载（Payload）包含了音频、视频、字幕等媒体数据。有效负载的长度可以根据包头中的信息变化，通常为0到184字节。有效负载的具体格式取决于所传输的内容和编码方式。<strong>在解析 MPEG-TS 流时，需要根据 PID（Packet Identifier）字段中的标识来确定有效负载的类型，并使用相应的解码器来解析数据。</strong>不同的 PID 值对应不同的数据流类型，例如音频、视频、字幕等。</p>
+<h3 id="PAT"><a href="#PAT" class="headerlink" title="PAT"></a>PAT</h3><p>PAT报文格式：</p>
+<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/PAT报文.png" alt="PAT报文" style="zoom:50%;">
+
+<p><strong>TS包头中的 PID 值为0x0，表示当前负载为PAT（Program Association Table）。</strong>PAT数据的信息可以理解为整个TS流包含的节目信息。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>比特数量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Table ID</td>
+<td>8b</td>
+<td>PAT表固定为0x00</td>
+</tr>
+<tr>
+<td>Syntax indicator</td>
+<td>1b</td>
+<td>固定为1</td>
+</tr>
+<tr>
+<td>Reserverd</td>
+<td>3b</td>
+<td>固定为011</td>
+</tr>
+<tr>
+<td>Length</td>
+<td>12b</td>
+<td>后面数据的长度</td>
+</tr>
+<tr>
+<td>Transport Stream Id</td>
+<td>16b</td>
+<td>传输流ID，固定为0x0001</td>
+</tr>
+<tr>
+<td>Reserved</td>
+<td>2b</td>
+<td>固定为11</td>
+</tr>
+<tr>
+<td>Version Number</td>
+<td>5b</td>
+<td>版本号，固定为00000，如果PAT有变化则版本号加1</td>
+</tr>
+<tr>
+<td>Current&#x2F;Next Indicator</td>
+<td>1b</td>
+<td>固定为1，表示这个PAT表可以用，如果为0则要等待下一个PAT表</td>
+</tr>
+<tr>
+<td>Section Number</td>
+<td>8b</td>
+<td>固定为0x00</td>
+</tr>
+<tr>
+<td>Last Section Number</td>
+<td>8b</td>
+<td>固定为0x00</td>
+</tr>
+<tr>
+<td>开始循环</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Program Number</strong></td>
+<td>16b</td>
+<td>节目号</td>
+</tr>
+<tr>
+<td>Reserved</td>
+<td>3b</td>
+<td>固定为111</td>
+</tr>
+<tr>
+<td><strong>Program Map PID</strong></td>
+<td>13b</td>
+<td>节目号对应内容的PID值</td>
+</tr>
+<tr>
+<td>结束循环</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CRC32</td>
+<td>32b</td>
+<td>前面数据的CRC32校验码</td>
+</tr>
+</tbody></table>
+<h3 id="PMT"><a href="#PMT" class="headerlink" title="PMT"></a>PMT</h3><p>PMT报文格式：</p>
+<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/PMT报文.png" alt="PMT报文" style="zoom:50%;">
+
+<p>PMT（Program Map Table）是MPEG2-TS（MPEG Transport Stream）中的一种表格，用于描述一个或多个节目的组成，包括音频、视频、字幕等多个元素的信息。PMT表格的主要作用是告诉接收设备如何解析和处理特定节目的数据流。以下是PMT表格的基本格式：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>比特数量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Table Id</td>
+<td>8b</td>
+<td>PMT表取值随意，0x02</td>
+</tr>
+<tr>
+<td>Syntax Indicator</td>
+<td>1b</td>
+<td>固定为1</td>
+</tr>
+<tr>
+<td>Reserved</td>
+<td>2b</td>
+<td>固定为011</td>
+</tr>
+<tr>
+<td>Length</td>
+<td>12b</td>
+<td>后面数据的长度</td>
+</tr>
+<tr>
+<td>Program Number</td>
+<td>16b</td>
+<td>频道号码，表示当前的PMT关联到的频道，取值0x0001</td>
+</tr>
+<tr>
+<td>Reserved</td>
+<td>2b</td>
+<td>固定为11</td>
+</tr>
+<tr>
+<td>Version Number</td>
+<td>5b</td>
+<td>版本号，固定为00000，如果PAT有变化则版本号加1</td>
+</tr>
+<tr>
+<td>Current&#x2F;Next Indicator</td>
+<td>1b</td>
+<td>固定为1</td>
+</tr>
+<tr>
+<td>Section Number</td>
+<td>8b</td>
+<td>固定为0x00</td>
+</tr>
+<tr>
+<td>Last Section Number</td>
+<td>8b</td>
+<td>固定为0x00</td>
+</tr>
+<tr>
+<td>Reserved</td>
+<td>3b</td>
+<td>固定为111</td>
+</tr>
+<tr>
+<td><strong>PCR_PID</strong></td>
+<td>13b</td>
+<td>PCR（节目参考时钟）所在TS分组的PID，指定为视频PID</td>
+</tr>
+<tr>
+<td>Reserved</td>
+<td>4b</td>
+<td>固定为1111</td>
+</tr>
+<tr>
+<td>Program Info Length</td>
+<td>12b</td>
+<td>节目描述信息，指定为0x000表示没有</td>
+</tr>
+<tr>
+<td>开始循环</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Stream type</td>
+<td>8b</td>
+<td>流类型，标志是Video还是Audio还是其他数据，h.264编码对应0x1b，aac编码对应0x0f，mp3编码对应0x03</td>
+</tr>
+<tr>
+<td>Reserved</td>
+<td>3b</td>
+<td>固定为111</td>
+</tr>
+<tr>
+<td><strong>Elementary PID</strong></td>
+<td>13b</td>
+<td>与Stream type对应的PID</td>
+</tr>
+<tr>
+<td>Reserved</td>
+<td>4b</td>
+<td>固定为1111</td>
+</tr>
+<tr>
+<td>ES info length</td>
+<td>12b</td>
+<td>描述信息，指定为0x000表示没有</td>
+</tr>
+<tr>
+<td>结束循环</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CRC32</td>
+<td>32b</td>
+<td>前面数据的CRC32校验码</td>
+</tr>
+</tbody></table>
+<h3 id="PES"><a href="#PES" class="headerlink" title="PES"></a>PES</h3><p><strong>PES（Packetized Elementary Stream）用于传输和存储音频、视频和其他媒体数据。</strong>PES将媒体数据分成小包，每个包包含了媒体数据及其相关信息，使其易于传输和解析。以下是PES包的基本格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">----------------------------------------------------------------</span><br><span class="line">|    PES Header (optional)                                     |</span><br><span class="line">----------------------------------------------------------------</span><br><span class="line">|    PES Packet Data (Payload)                                 |</span><br><span class="line">|                                                              |</span><br><span class="line">|    (Elementary Stream Data)                                  |</span><br><span class="line">|                                                              |</span><br><span class="line">----------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>PES Header（可选的）：PES包头是一个可选的部分，包含有关媒体数据的信息，通常包括以下字段：</p>
+<ul>
+<li><p>Start Code Prefix：3字节的起始码前缀，通常为<code>0x000001</code>，用于标识PES包的开始。</p>
+</li>
+<li><p>Stream ID：8位字段，用于标识该PES包中包含的数据流类型（音频、视频等）。</p>
+</li>
+<li><p>PES Packet Length：16位字段，指示PES包的长度，包括包头和有效负载。</p>
+</li>
+<li><p>Optional Header Data：可选的头部数据，包括时间戳、数据流识别信息等。</p>
+</li>
+</ul>
+</li>
+<li><p>PES Packet Data：PES包的有效负载，也称为”Elementary Stream Data”，包含了音频、视频或其他媒体数据。这部分数据的具体格式和编码方式取决于所传输的媒体类型。对于H264和AAC，打包 H264 数据时必须给视频数据加上⼀个 NALU，NALU 包括 nalu header 和 nalu type，nalu header 固定为 0x00000001（帧开始）或 0x000001（帧中）。H264 的数据是由 slice 组成的，slice 的内容包括：视频、sps、pps 等。nalu type 决定了后⾯的 H264 数据内容；打包AAC⾳频必须加上⼀个 ADTS。</p>
+</li>
+<li><p>PES包的具体字段取决于媒体类型（音频或视频）和编码方式（例如，H264视频或AAC音频），因此字段的含义和格式会有所不同。以下是一些常见的PES包字段，根据不同媒体类型和编码方式可能会有变化：</p>
+<ul>
+<li><p>PTS（Presentation Time Stamp）和DTS（Decoding Time Stamp）：这些时间戳字段指示了媒体数据的显示时间和解码时间，以便正确同步音视频。</p>
+</li>
+<li><p>ESCR（Elementary Stream Clock Reference）：用于指示音频或视频数据的时钟参考。</p>
+</li>
+<li><p>ES Rate：指示数据流的速率。</p>
+</li>
+<li><p>PES Header Data Length：描述PES头部的长度。</p>
+</li>
+<li><p>PES Scrambling Control：指示数据是否进行了加密或打乱。</p>
+</li>
+<li><p>PES Priority：指示PES包的优先级。</p>
+</li>
+<li><p>Data Alignment Indicator：指示数据对齐。</p>
+</li>
+<li><p>PES Private Data：可选的私有数据字段，用于传输特定于应用程序的信息。</p>
+</li>
+<li><p>Stuffing Bytes：用于填充PES包以达到固定长度的填充字节。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h1><p>参考：<a target="_blank" rel="noopener" href="https://www.kancloud.cn/spirit-ling/http-study/636182">https://www.kancloud.cn/spirit-ling/http-study/636182</a></p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rell336/article/details/38109621">https://blog.csdn.net/rell336/article/details/38109621</a> </p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rongdeguoqian/article/details/18214627">https://blog.csdn.net/rongdeguoqian/article/details/18214627</a> </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/09/27/HLS%E7%AE%80%E4%BB%8B/" rel="prev" title="HLS简介">
+                  <i class="fa fa-angle-left"></i> HLS简介
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/29/HLS%E6%8B%89%E6%B5%81%E6%BA%90%E7%A0%81/" rel="next" title="HLS拉流源码">
+                  HLS拉流源码 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

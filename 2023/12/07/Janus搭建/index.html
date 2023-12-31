@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Janus 是⼀个开源的，通过 C 语⾔实现了对 WebRTC ⽀持的 Gateway；Janus ⾃身实现得很简单，提供插件机制来⽀持不同的业务逻辑，配合官⽅⾃带插件就可以⽤来实现⾼效的 Media Server 服务。 本⽂主要介绍如何在 Ubuntu 16.04 下搭建起 janus 服务器，实现 janus 官⽅ Demo 浏览器与 Android APP Demo（janus-gatew">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Janus搭建">
+<meta property="og:url" content="https://fang0407.github.io/2023/12/07/Janus%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="Janus 是⼀个开源的，通过 C 语⾔实现了对 WebRTC ⽀持的 Gateway；Janus ⾃身实现得很简单，提供插件机制来⽀持不同的业务逻辑，配合官⽅⾃带插件就可以⽤来实现⾼效的 Media Server 服务。 本⽂主要介绍如何在 Ubuntu 16.04 下搭建起 janus 服务器，实现 janus 官⽅ Demo 浏览器与 Android APP Demo（janus-gatew">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-12-07T12:21:42.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:39:19.209Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/12/07/Janus%E6%90%AD%E5%BB%BA/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/12/07/Janus%E6%90%AD%E5%BB%BA/","path":"2023/12/07/Janus搭建/","title":"Janus搭建"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Janus搭建 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">1.</span> <span class="nav-text">命令安装依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">2.</span> <span class="nav-text">源码安装依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85WebSocket"><span class="nav-number">2.1.</span> <span class="nav-text">安装WebSocket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85libsrtp"><span class="nav-number">2.2.</span> <span class="nav-text">安装libsrtp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85libusrsctp"><span class="nav-number">2.3.</span> <span class="nav-text">安装libusrsctp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85libmicrohttpd"><span class="nav-number">2.4.</span> <span class="nav-text">安装libmicrohttpd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91Janus"><span class="nav-number">2.5.</span> <span class="nav-text">编译Janus</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%92%8C%E8%BF%90%E2%BE%8FJanus"><span class="nav-number">3.</span> <span class="nav-text">配置和运⾏Janus</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%90%AF%E5%8A%A8nginx"><span class="nav-number">3.1.</span> <span class="nav-text">配置启动nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%90%AF%E5%8A%A8coturn"><span class="nav-number">3.2.</span> <span class="nav-text">安装启动coturn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8Video-Room"><span class="nav-number">3.3.</span> <span class="nav-text">启动Video Room</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jcfg%E6%96%87%E4%BB%B6"><span class="nav-number">3.3.1.</span> <span class="nav-text">jcfg文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEjanus-jcfg"><span class="nav-number">3.3.2.</span> <span class="nav-text">配置janus.jcfg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEjanus-transport-http-jcfg"><span class="nav-number">3.3.3.</span> <span class="nav-text">配置janus.transport.http.jcfg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEjanus-transport-websockets-jcfg"><span class="nav-number">3.3.4.</span> <span class="nav-text">配置janus.transport.websockets.jcfg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%BD%91%E9%A1%B5%E9%BB%98%E8%AE%A4%E6%94%AF%E6%8C%81%E7%9A%84wss%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.3.5.</span> <span class="nav-text">修改网页默认支持的wss协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C-Janus"><span class="nav-number">3.3.6.</span> <span class="nav-text">运行 Janus</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95web%E5%92%8Cweb%E7%9A%84%E9%80%9A%E8%AF%9D"><span class="nav-number">3.3.7.</span> <span class="nav-text">测试web和web的通话</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/12/07/Janus%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Janus搭建 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Janus搭建
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-12-07 20:21:42" itemprop="dateCreated datePublished" datetime="2023-12-07T20:21:42+08:00">2023-12-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:39:19" itemprop="dateModified" datetime="2023-12-30T22:39:19+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Janus/" itemprop="url" rel="index"><span itemprop="name">Janus</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Janus 是⼀个开源的，通过 C 语⾔实现了对 WebRTC ⽀持的 Gateway；Janus ⾃身实现得很简单，提供插件机制来⽀持不同的业务逻辑，配合官⽅⾃带插件就可以⽤来实现⾼效的 Media Server 服务。</p>
+<p>本⽂主要介绍如何在 Ubuntu 16.04 下搭建起 janus 服务器，实现 janus 官⽅ Demo 浏览器与 Android APP Demo（janus-gateway-android）之间的⾳视频通话。 </p>
+<h1 id="命令安装依赖"><a href="#命令安装依赖" class="headerlink" title="命令安装依赖"></a>命令安装依赖</h1><p>编译运⾏ Janus Server 需要依赖较多的⼀些第三⽅库，⽽这些依赖库在 Ubuntu 下主要通过 aptitude 进⾏安装，⾸先通过安装 aptitude：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install aptitude</span><br></pre></td></tr></table></figure>
+
+<p>Ubuntu 下通过 aptitude 批量安装依赖⼯具包：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">sudo aptitude install libmicrohttpd-dev libjansson-dev libnice-dev \</span><br><span class="line">	libssl1.0.1-dev libsrtp-dev libsofia-sip-ua-dev libglib2.3.4-dev \</span><br><span class="line">	libopus-dev libogg-dev libcurl4-openssl-dev pkg-config gengetopt \</span><br><span class="line">	libtool automake</span><br><span class="line">	</span><br><span class="line">sudo apt install cmake</span><br><span class="line">sudo aptitude install libconfig-dev</span><br><span class="line">sudo aptitude install libssl-dev</span><br><span class="line">sudo aptitude install doxygen graphviz</span><br><span class="line"></span><br><span class="line"># ffmpeg库 ⽀持--enable-post-processing</span><br><span class="line">sudo aptitude install libavcodec-dev libavformat-dev libswscale-dev libavutil-dev</span><br></pre></td></tr></table></figure>
+
+<h1 id="源码安装依赖"><a href="#源码安装依赖" class="headerlink" title="源码安装依赖"></a>源码安装依赖</h1><h2 id="安装WebSocket"><a href="#安装WebSocket" class="headerlink" title="安装WebSocket"></a>安装WebSocket</h2><p>janus ⽀持 WebSocket 是可选项，如果不安装，编译 janus 时，默认不⽀持 WebSocket 的链接请求，⽽ Android APP Demo 是通过 WebSocket 与 janus 进⾏通信的，因为我们希望 Android APP Demo 能与浏览器（HTTP）进⾏视频通话，所以就必须要在编译 janus 时⽀持 WebSocket。</p>
+<p>依次执⾏以下命令，分别进⾏下载，编译，安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/warmcat/libwebsockets.git</span><br><span class="line">cd libwebsockets</span><br><span class="line">git branch -a 查看选择最新的稳定版本</span><br><span class="line">git checkout v3.2-stable 切换到最新稳定版本</span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_C_FLAGS=&quot;-fpic&quot; ..</span><br><span class="line">make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
+
+<p>安装成功后，在编译 janus 时，janus 默认会增加对 WebSocket 的集成，或者通过增加编译参数 <code>--enable-websockets</code> 打开 WebSocket 开关。</p>
+<h2 id="安装libsrtp"><a href="#安装libsrtp" class="headerlink" title="安装libsrtp"></a>安装libsrtp</h2><p>Janus 需要⾄少 version 1.5 以上的 libsrtp，如果系统中已经安装了 libsrtp，则⾸先卸载后，⼿动安装新版本，这⾥我们安装 libsrtp 2.2，依次执⾏以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/cisco/libsrtp/archive/v2.2.0.tar.gz</span><br><span class="line">tar xfv v2.2.0.tar.gz</span><br><span class="line">cd libsrtp-2.2.0</span><br><span class="line">./configure --prefix=/usr --enable-openssl</span><br><span class="line">make shared_library &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装libusrsctp"><a href="#安装libusrsctp" class="headerlink" title="安装libusrsctp"></a>安装libusrsctp</h2><p>libusrsctp⽀持<code>--enable-data-channels</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/Kurento/libusrsctp.git</span><br><span class="line">cd libusrsctp</span><br><span class="line">./bootstrap</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装libmicrohttpd"><a href="#安装libmicrohttpd" class="headerlink" title="安装libmicrohttpd"></a>安装libmicrohttpd</h2><p>libmicrohttpd⽀持<code>--enable-rest</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.71.tar.gz</span><br><span class="line">tar zxf libmicrohttpd-0.9.71.tar.gz</span><br><span class="line">cd libmicrohttpd-0.9.71/</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译Janus"><a href="#编译Janus" class="headerlink" title="编译Janus"></a>编译Janus</h2><p>通过 Git 下载 Janus 源码，并编译安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/meetecho/janus-gateway.git</span><br><span class="line">git tag 查看当前的 tag</span><br><span class="line">git checkout v0.10.4</span><br><span class="line">sh autogen.sh</span><br><span class="line">./configure --prefix=/opt/janus --enable-websockets --enable-post-processing --enable-docs --enable-rest --enable-data-channels</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<p>Janus安装到 <code>/opt/janus</code> 路径，插件的so库在 <code>/opt/janus/lib/janus/plugins</code>。</p>
+<h1 id="配置和运⾏Janus"><a href="#配置和运⾏Janus" class="headerlink" title="配置和运⾏Janus"></a>配置和运⾏Janus</h1><h2 id="配置启动nginx"><a href="#配置启动nginx" class="headerlink" title="配置启动nginx"></a>配置启动nginx</h2><p>安装nginx，主要⽤来提供web访问。</p>
+<p><strong>⽣成证书</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/cert</span><br><span class="line">cd ~/cert</span><br><span class="line"># CA私钥</span><br><span class="line">openssl genrsa -out key.pem 2048</span><br><span class="line"># ⾃签名证书</span><br><span class="line">openssl req -new -x509 -key key.pem -out cert.pem -days 1095</span><br></pre></td></tr></table></figure>
+
+<p><strong>安装nginx</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#下载nginx 1.15.8版本</span><br><span class="line">wget http://nginx.org/download/nginx-1.15.8.tar.gz</span><br><span class="line">tar xvzf nginx-1.15.8.tar.gz</span><br><span class="line">cd nginx-1.15.8/</span><br><span class="line"></span><br><span class="line"># 配置，⼀定要⽀持https</span><br><span class="line">./configure --with-http_ssl_module</span><br><span class="line"></span><br><span class="line"># 编译</span><br><span class="line">make</span><br><span class="line"></span><br><span class="line">#安装</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<p><strong>修改nginx配置⽂件</strong></p>
+<p>nginx配置文件路径<code>/usr/local/nginx/conf/nginx.conf</code>。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HTTPS server</span></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>       <span class="number">443</span> ssl;</span><br><span class="line">    <span class="attribute">server_name</span>  localhost;</span><br><span class="line">            <span class="comment"># 配置相应的key</span></span><br><span class="line">    <span class="attribute">ssl_certificate</span>      /root/cert/cert.pem;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span>  /root/cert/key.pem;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">ssl_session_cache</span>    shared:SSL:<span class="number">1m</span>;</span><br><span class="line">    <span class="attribute">ssl_session_timeout</span>  <span class="number">5m</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">ssl_ciphers</span>  HIGH:!aNULL:!MD5;</span><br><span class="line">    <span class="attribute">ssl_prefer_server_ciphers</span>  <span class="literal">on</span>;</span><br><span class="line">            <span class="comment"># 指向janus demo所在目录</span></span><br><span class="line">    <span class="section">location</span> / &#123;</span><br><span class="line">        <span class="attribute">root</span>   /opt/janus/share/janus/demos;</span><br><span class="line">        <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>启动nginx</strong></p>
+<p><code>sudo /usr/local/nginx/sbin/nginx</code></p>
+<p>可以访问到界面，但此时还不能正常通话。</p>
+<h2 id="安装启动coturn"><a href="#安装启动coturn" class="headerlink" title="安装启动coturn"></a>安装启动coturn</h2><p><strong>安装</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libssl-dev</span><br><span class="line">sudo apt-get install libevent-dev</span><br><span class="line"></span><br><span class="line">wget http://coturn.net/turnserver/v4.5.0.7/turnserver-4.5.0.7.tar.gz</span><br><span class="line">tar xfz turnserver-4.5.0.7.tar.gz</span><br><span class="line">cd turnserver-4.5.0.7</span><br><span class="line"></span><br><span class="line">./configure</span><br><span class="line">make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
+
+<p><strong>启动</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo turnserver -L 0.0.0.0 --min-port 50000 --max-port 60000  -a -u test:123456 -v -f -r nort.gov</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动Video-Room"><a href="#启动Video-Room" class="headerlink" title="启动Video Room"></a>启动Video Room</h2><h3 id="jcfg文件"><a href="#jcfg文件" class="headerlink" title="jcfg文件"></a>jcfg文件</h3><p>上述Janus安装目录在<code>/opt/janus</code>。其中各个目录的作用：</p>
+<table>
+<thead>
+<tr>
+<th>bin</th>
+<th>etc</th>
+<th>include</th>
+<th>lib</th>
+<th>share</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>可执行文件</td>
+<td>janus配置文件</td>
+<td>janus头文件</td>
+<td>janus库</td>
+<td>存放脚本或者文档，web demo也在这里</td>
+</tr>
+</tbody></table>
+<p>要先把.sample后缀的文件拷贝成jcfg后缀。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># 进到对应的目录</span><br><span class="line">cd /opt/janus/etc/janus</span><br><span class="line"></span><br><span class="line"># 拷贝文件</span><br><span class="line">sudo cp janus.jcfg.sample janus.jcfg</span><br><span class="line">sudo cp janus.transport.http.jcfg.sample janus.transport.http.jcfg</span><br><span class="line">sudo cp janus.transport.websockets.jcfg.sample janus.transport.websockets.jcfg</span><br><span class="line">sudo cp janus.plugin.videoroom.jcfg.sample janus.plugin.videoroom.jcfg</span><br><span class="line">sudo cp janus.transport.pfunix.jcfg.sample janus.transport.pfunix.jcfg</span><br><span class="line">sudo cp janus.plugin.streaming.jcfg.sample janus.plugin.streaming.jcfg</span><br><span class="line">sudo cp janus.plugin.recordplay.jcfg.sample janus.plugin.recordplay.jcfg</span><br><span class="line">sudo cp janus.plugin.voicemail.jcfg.sample janus.plugin.voicemail.jcfg</span><br><span class="line">sudo cp janus.plugin.sip.jcfg.sample janus.plugin.sip.jcfg</span><br><span class="line">sudo cp janus.plugin.nosip.jcfg.sample janus.plugin.nosip.jcfg</span><br><span class="line">sudo cp janus.plugin.textroom.jcfg.sample  janus.plugin.textroom.jcfg</span><br><span class="line">sudo cp janus.plugin.echotest.jcfg.sample janus.plugin.echotest.jcfg</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置janus-jcfg"><a href="#配置janus-jcfg" class="headerlink" title="配置janus.jcfg"></a>配置janus.jcfg</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 搜索 stun_server 修改：</span><br><span class="line">stun_server = &quot;IP地址&quot;</span><br><span class="line">stun_port = 3478</span><br><span class="line">nice_debug = false       </span><br><span class="line"></span><br><span class="line"># 搜索 turn_server 修改：</span><br><span class="line">turn_server = &quot;IP地址&quot;</span><br><span class="line">turn_port = 3478</span><br><span class="line">turn_type = &quot;udp&quot;</span><br><span class="line">turn_user = &quot;test&quot;</span><br><span class="line">turn_pwd = &quot;123456&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置janus-transport-http-jcfg"><a href="#配置janus-transport-http-jcfg" class="headerlink" title="配置janus.transport.http.jcfg"></a>配置janus.transport.http.jcfg</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">general: &#123;</span><br><span class="line">        #events = true              # Whether to notify event handlers about transport events (default=true)</span><br><span class="line">        json = &quot;indented&quot;           # Whether the JSON messages should be indented (default),</span><br><span class="line">                                    # plain (no indentation) or compact (no indentation and no spaces)</span><br><span class="line">        base_path = &quot;/janus&quot;        # Base path to bind to in the web server (plain HTTP only)</span><br><span class="line">        threads = &quot;unlimited&quot;       # unlimited=thread per connection, number=thread pool</span><br><span class="line">        http = true                 # Whether to enable the plain HTTP interface</span><br><span class="line">        port = 8088                 # Web server HTTP port</span><br><span class="line">        #interface = &quot;eth0&quot;         # Whether we should bind this server to a specific interface only</span><br><span class="line">        #ip = &quot;192.168.0.1&quot;     # Whether we should bind this server to a specific IP address (v4 or v6) only</span><br><span class="line">        https = true           # Whether to enable HTTPS (default=false)</span><br><span class="line">        secure_port = 8089     # Web server HTTPS port, if enabled</span><br><span class="line">        #secure_interface = &quot;eth0&quot;    # Whether we should bind this server to a specific interface only</span><br><span class="line">        #secure_ip = &quot;192.168.0.1&quot;    # Whether we should bind this server to a specific IP address (v4 or v6) only</span><br><span class="line">        #acl = &quot;127.,192.168.0.&quot;   # Only allow requests coming from this comma separated list of addresses</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">certificates: &#123;</span><br><span class="line">        cert_pem = &quot;/root/cert/cert.pem&quot;</span><br><span class="line">        cert_key = &quot;/root/cert/key.pem&quot;</span><br><span class="line">        #cert_pwd = &quot;secretpassphrase&quot;</span><br><span class="line">        #ciphers = &quot;PFS:-VERS-TLS1.0:-VERS-TLS1.1:-3DES-CBC:-ARCFOUR-128&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置janus-transport-websockets-jcfg"><a href="#配置janus-transport-websockets-jcfg" class="headerlink" title="配置janus.transport.websockets.jcfg"></a>配置janus.transport.websockets.jcfg</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">general: &#123;</span><br><span class="line">        #events = true            # Whether to notify event handlers about transport events (default=true)</span><br><span class="line">        json = &quot;indented&quot;         # Whether the JSON messages should be indented (default),</span><br><span class="line">                                  # plain (no indentation) or compact (no indentation and no spaces)</span><br><span class="line">        #pingpong_trigger = 30    # After how many seconds of idle, a PING should be sent</span><br><span class="line">        #pingpong_timeout = 10    # After how many seconds of not getting a PONG, a timeout should be detected</span><br><span class="line"></span><br><span class="line">        ws = true                 # Whether to enable the WebSockets API</span><br><span class="line">        ws_port = 8188            # WebSockets server port</span><br><span class="line">        #ws_interface = &quot;eth0&quot;    # Whether we should bind this server to a specific interface only</span><br><span class="line">        #ws_ip = &quot;192.168.0.1&quot;    # Whether we should bind this server to a specific IP address only</span><br><span class="line">        wss = true                # Whether to enable secure WebSockets</span><br><span class="line">        wss_port = 8989           # WebSockets server secure port, if enabled</span><br><span class="line">        #wss_interface = &quot;eth0&quot;   # Whether we should bind this server to a specific interface only</span><br><span class="line">        #wss_ip = &quot;192.168.0.1&quot;   # Whether we should bind this server to a specific IP address only</span><br><span class="line">        #ws_logging = &quot;err,warn&quot;  # libwebsockets debugging level as a comma separated list of things</span><br><span class="line">                                  # to debug, supported values: err, warn, notice, info, debug, parser,</span><br><span class="line">                                  # header, ext, client, latency, user, count (plus &#x27;none&#x27; and &#x27;all&#x27;)</span><br><span class="line">        #ws_acl = &quot;127.,192.168.0.&quot;   # Only allow requests coming from this comma separated list of addresses</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">certificates: &#123;</span><br><span class="line">        cert_pem = &quot;/root/cert/cert.pem&quot;</span><br><span class="line">        cert_key = &quot;/root/cert/key.pem&quot;</span><br><span class="line">        #cert_pwd = &quot;secretpassphrase&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改网页默认支持的wss协议"><a href="#修改网页默认支持的wss协议" class="headerlink" title="修改网页默认支持的wss协议"></a>修改网页默认支持的wss协议</h3><p>修改 <code>/opt/janus/share/janus/demos/videoroomtest.js</code>文件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> server = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">protocol</span> === <span class="string">&#x27;http:&#x27;</span>)</span><br><span class="line">        server = <span class="string">&quot;http://&quot;</span> + <span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">hostname</span> + <span class="string">&quot;:8088/janus&quot;</span>;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">        server = <span class="string">&quot;https://&quot;</span> + <span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">hostname</span> + <span class="string">&quot;:8089/janus&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>将默认的https协议改为wss</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> server = <span class="string">&quot;wss://&quot;</span> + <span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">hostname</span> + <span class="string">&quot;:8989&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行-Janus"><a href="#运行-Janus" class="headerlink" title="运行 Janus"></a>运行 Janus</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/opt/janus/bin/janus --debug-level=5 --log-file=$HOME/janus-log</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试web和web的通话"><a href="#测试web和web的通话" class="headerlink" title="测试web和web的通话"></a>测试web和web的通话</h3><p>开两个同样的网页，然后点击Demos中的Video Room的start，输入名字则开始进行音视频通话测试。</p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/205056453">https://zhuanlan.zhihu.com/p/205056453</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/" rel="prev" title="WebRtc通信架构">
+                  <i class="fa fa-angle-left"></i> WebRtc通信架构
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/12/09/Golang%E6%B5%8B%E8%AF%95/" rel="next" title="Golang测试">
+                  Golang测试 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

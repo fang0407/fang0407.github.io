@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="PCM格式PCM（Pulse Code Modulation，脉冲编码调制）⾳频数据是未经压缩的⾳频采样数据裸流，它是由模拟信号经过采样、量化、编码转换成的标准数字⾳频数据。 描述PCM数据的6个参数：   Sample Rate：采样频率。8kHz（电话）、44.1kHz（CD）、48kHz（DVD）。 Sample Size：量化位数。通常该值为16-bit。 Number of Channe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="音频编码">
+<meta property="og:url" content="https://fang0407.github.io/2023/09/03/%E9%9F%B3%E9%A2%91%E7%BC%96%E7%A0%81/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="PCM格式PCM（Pulse Code Modulation，脉冲编码调制）⾳频数据是未经压缩的⾳频采样数据裸流，它是由模拟信号经过采样、量化、编码转换成的标准数字⾳频数据。 描述PCM数据的6个参数：   Sample Rate：采样频率。8kHz（电话）、44.1kHz（CD）、48kHz（DVD）。 Sample Size：量化位数。通常该值为16-bit。 Number of Channe">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-09-03T10:29:28.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:41:53.244Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/09/03/%E9%9F%B3%E9%A2%91%E7%BC%96%E7%A0%81/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/09/03/%E9%9F%B3%E9%A2%91%E7%BC%96%E7%A0%81/","path":"2023/09/03/音频编码/","title":"音频编码"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>音频编码 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PCM%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">PCM格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E7%A0%81%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">解码函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#avcodec-send-frame"><span class="nav-number">2.1.</span> <span class="nav-text">avcodec_send_frame</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#avcodec-receive-packet"><span class="nav-number">2.2.</span> <span class="nav-text">avcodec_receive_packet</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E7%BC%96%E7%A0%81%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">音频编码流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">3.1.</span> <span class="nav-text">流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">相关函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E7%BC%96%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">音频编码示例</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/03/%E9%9F%B3%E9%A2%91%E7%BC%96%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="音频编码 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          音频编码
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-03 18:29:28" itemprop="dateCreated datePublished" datetime="2023-09-03T18:29:28+08:00">2023-09-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:41:53" itemprop="dateModified" datetime="2023-12-30T22:41:53+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="PCM格式"><a href="#PCM格式" class="headerlink" title="PCM格式"></a>PCM格式</h1><p>PCM（Pulse Code Modulation，脉冲编码调制）<strong>⾳频数据是未经压缩的⾳频采样数据裸流</strong>，它是由模拟信号经过采样、量化、编码转换成的标准数字⾳频数据。</p>
+<p>描述PCM数据的6个参数： </p>
+<ul>
+<li>Sample Rate：采样频率。8kHz（电话）、44.1kHz（CD）、48kHz（DVD）。</li>
+<li>Sample Size：量化位数。通常该值为16-bit。</li>
+<li>Number of Channels：通道个数。常⻅的⾳频有⽴体声（stereo）和单声道（mono）两种类型，⽴体声包含左声道和右声道。另外还有环绕⽴体声等其它不太常⽤的类型。</li>
+<li>Sign：表示样本数据是否是有符号位，⽐如⽤⼀字节表示的样本数据，有符号的话表示范围为-128 ~ 127，⽆符号是0 ~ 255。有符号位16bits数据取值范围为-32768~32767。</li>
+<li>Byte Ordering：字节序。字节序是little-endian还是big-endian。通常均为little-endian。</li>
+<li>Integer Or Floating Point：整形或浮点型。⼤多数格式的PCM样本数据使⽤整形表示，⽽在⼀些对精度要求⾼的应⽤⽅⾯，使⽤浮点类型表示PCM样本数据（浮点数 float值域为 [-1.0, 1.0]）。</li>
+</ul>
+<p><strong>字节序</strong></p>
+<p>谈到字节序的问题，必然牵涉到两⼤CPU派系。那就是Motorola的PowerPC系列CPU和Intel的x86系列CPU。PowerPC系列采⽤big endian⽅式存储数据，⽽x86系列则采⽤little endian⽅式存储数据。那么究竟什么是big endian，什么⼜是little endian？ </p>
+<ul>
+<li>big endian是指低地址存放最⾼有效字节（MSB，Most Significant Bit）。</li>
+<li>little endian则是低地址存放最低有效字节（LSB，Least Significant Bit）。</li>
+</ul>
+<p>⽐如数字0x12345678在两种不同字节序CPU中的存储顺序如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">低地址 ⾼地址</span><br><span class="line"></span><br><span class="line">对于Big Endian</span><br><span class="line">|12| |34| |56| |78|</span><br><span class="line"></span><br><span class="line">对于Little Endian</span><br><span class="line">|78| |56| |34| |12|</span><br></pre></td></tr></table></figure>
+
+<p>所有⽹络协议都是采⽤big endian的⽅式来传输数据的。所以也把big endian⽅式称之为<strong>⽹络字节序</strong>。当两台采⽤不同字节序的主机通信时，在发送数据之前都必须经过字节序的转换成为⽹络字节序后再进⾏传输。</p>
+<h1 id="解码函数"><a href="#解码函数" class="headerlink" title="解码函数"></a>解码函数</h1><h2 id="avcodec-send-frame"><a href="#avcodec-send-frame" class="headerlink" title="avcodec_send_frame"></a>avcodec_send_frame</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Supply a raw video or audio frame to the encoder. Use avcodec_receive_packet()</span></span><br><span class="line"><span class="comment"> * to retrieve buffered output packets.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param avctx     codec context</span></span><br><span class="line"><span class="comment"> * @param[in] frame AVFrame containing the raw audio or video frame to be encoded.</span></span><br><span class="line"><span class="comment"> *                  Ownership of the frame remains with the caller, and the</span></span><br><span class="line"><span class="comment"> *                  encoder will not write to the frame. The encoder may create</span></span><br><span class="line"><span class="comment"> *                  a reference to the frame data (or copy it if the frame is</span></span><br><span class="line"><span class="comment"> *                  not reference-counted).</span></span><br><span class="line"><span class="comment"> *                  It can be NULL, in which case it is considered a flush</span></span><br><span class="line"><span class="comment"> *                  packet.  This signals the end of the stream. If the encoder</span></span><br><span class="line"><span class="comment"> *                  still has packets buffered, it will return them after this</span></span><br><span class="line"><span class="comment"> *                  call. Once flushing mode has been entered, additional flush</span></span><br><span class="line"><span class="comment"> *                  packets are ignored, and sending frames will return</span></span><br><span class="line"><span class="comment"> *                  AVERROR_EOF.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *                  For audio:</span></span><br><span class="line"><span class="comment"> *                  If AV_CODEC_CAP_VARIABLE_FRAME_SIZE is set, then each frame</span></span><br><span class="line"><span class="comment"> *                  can have any number of samples.</span></span><br><span class="line"><span class="comment"> *                  If it is not set, frame-&gt;nb_samples must be equal to</span></span><br><span class="line"><span class="comment"> *                  avctx-&gt;frame_size for all frames except the last.</span></span><br><span class="line"><span class="comment"> *                  The final frame may be smaller than avctx-&gt;frame_size.</span></span><br><span class="line"><span class="comment"> * @return 0 on success, otherwise negative error code:</span></span><br><span class="line"><span class="comment"> *      AVERROR(EAGAIN):   input is not accepted in the current state - user</span></span><br><span class="line"><span class="comment"> *                         must read output with avcodec_receive_packet() (once</span></span><br><span class="line"><span class="comment"> *                         all output is read, the packet should be resent, and</span></span><br><span class="line"><span class="comment"> *                         the call will not fail with EAGAIN).</span></span><br><span class="line"><span class="comment"> *      AVERROR_EOF:       the encoder has been flushed, and no new frames can</span></span><br><span class="line"><span class="comment"> *                         be sent to it</span></span><br><span class="line"><span class="comment"> *      AVERROR(EINVAL):   codec not opened, it is a decoder, or requires flush</span></span><br><span class="line"><span class="comment"> *      AVERROR(ENOMEM):   failed to add packet to internal queue, or similar</span></span><br><span class="line"><span class="comment"> *      other errors: legitimate encoding errors</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">avcodec_send_frame</span><span class="params">(AVCodecContext *avctx, <span class="type">const</span> AVFrame *frame)</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="avcodec-receive-packet"><a href="#avcodec-receive-packet" class="headerlink" title="avcodec_receive_packet"></a>avcodec_receive_packet</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Read encoded data from the encoder.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param avctx codec context</span></span><br><span class="line"><span class="comment"> * @param avpkt This will be set to a reference-counted packet allocated by the</span></span><br><span class="line"><span class="comment"> *              encoder. Note that the function will always call</span></span><br><span class="line"><span class="comment"> *              av_packet_unref(avpkt) before doing anything else.</span></span><br><span class="line"><span class="comment"> * @return 0 on success, otherwise negative error code:</span></span><br><span class="line"><span class="comment"> *      AVERROR(EAGAIN):   output is not available in the current state - user</span></span><br><span class="line"><span class="comment"> *                         must try to send input</span></span><br><span class="line"><span class="comment"> *      AVERROR_EOF:       the encoder has been fully flushed, and there will be</span></span><br><span class="line"><span class="comment"> *                         no more output packets</span></span><br><span class="line"><span class="comment"> *      AVERROR(EINVAL):   codec not opened, or it is a decoder</span></span><br><span class="line"><span class="comment"> *      other errors: legitimate encoding errors</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">avcodec_receive_packet</span><span class="params">(AVCodecContext *avctx, AVPacket *avpkt)</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="音频编码流程"><a href="#音频编码流程" class="headerlink" title="音频编码流程"></a>音频编码流程</h1><p>从本地⽂件读取PCM数据进⾏AAC格式编码，然后将编码后的AAC数据存储到本地⽂件。</p>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">	A(开始)--&gt;B[avcodec_find_encoder]</span><br><span class="line">	B--&gt;C[avcodec_alloc_context3]</span><br><span class="line">	C--&gt;D[设置编码器参数]</span><br><span class="line">	D--&gt;E[检测编码器参数]</span><br><span class="line">	E--&gt;F[avcodec_open2]</span><br><span class="line">	F--&gt;G[av_packet_alloc]</span><br><span class="line">	G--&gt;H[av_frame_alloc]</span><br><span class="line">	H--&gt;I[av_frame_get_buffer]</span><br><span class="line">	I--&gt;J&#123;读取PCM数据&#125;</span><br><span class="line">	J--&gt;|有数据|K[av_frame_make_writable]</span><br><span class="line">	K--&gt;L[av_sample_fill_arrays]</span><br><span class="line">	L--&gt;M[avcodec_send_frame]</span><br><span class="line">	M--&gt;N[avcodec_receive_packet]</span><br><span class="line">	N--&gt;O&#123;EAGAIN or EOF&#125;</span><br><span class="line">	O--&gt;|否|P[写入AAC数据]</span><br><span class="line">	O--&gt;|是|J</span><br><span class="line">	J--&gt;|无数据|Q[刷新编码器缓冲]</span><br><span class="line">	Q--&gt;R[释放各种资源]</span><br><span class="line">	R--&gt;S(结束)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h2><ul>
+<li><p>avcodec_find_encoder()：根据指定的AVCodecID查找注册的编码器。 </p>
+</li>
+<li><p>avcodec_alloc_context3()：为AVCodecContext分配内存。 </p>
+</li>
+<li><p>avcodec_open2()：关联编码器和编码器上下文。</p>
+</li>
+<li><p>avcodec_send_frame()：将AVFrame⾮压缩数据给编码器。 </p>
+</li>
+<li><p>avcodec_receive_packet()：获取到编码后的AVPacket数据，收到的packet需要⾃⼰释放内存。 </p>
+</li>
+<li><p>av_frame_get_buffer()：为⾳频或视频帧分配新的buffer。在调⽤这个函数之前，必须在AVFame上设置好以下属性：format（视频为像素格式，⾳频为样本格式）、nb_samples（样本个数，针对⾳频）、channel_layout（通道类型，针对⾳频）、width&#x2F;height（宽⾼，针对视频）。</p>
+</li>
+<li><p>av_frame_make_writable：确保AVFrame是可写的，使⽤av_frame_make_writable()的问题是，在最坏的情况下，它会在您使⽤encode再次更改整个输⼊frame之前复制它。如果frame不可写，av_frame_make_writable()将分配新的缓冲区，并复制这个输⼊input frame数据，避免和编码器需要缓存该帧时造成冲突。</p>
+</li>
+<li><p>av_samples_fill_arrays()： 填充⾳频帧，指针的拷贝，并不是源数据拷贝。</p>
+</li>
+</ul>
+<h1 id="音频编码示例"><a href="#音频编码示例" class="headerlink" title="音频编码示例"></a>音频编码示例</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavformat/avformat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavcodec/avcodec.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavutil/imgutils.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libswscale/swscale.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">check_sample_fmt</span><span class="params">(<span class="type">const</span> AVCodec* codec, <span class="keyword">enum</span> AVSampleFormat sample_fmt)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> <span class="class"><span class="keyword">enum</span> <span class="title">AVSampleFormat</span> *<span class="title">p</span> =</span> codec-&gt;sample_fmts;</span><br><span class="line">    <span class="keyword">while</span> (*p != AV_SAMPLE_FMT_NONE) &#123;</span><br><span class="line">        <span class="keyword">if</span> (*p == sample_fmt)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        p++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">check_sample_rate</span><span class="params">(<span class="type">const</span> AVCodec* codec, <span class="type">const</span> <span class="type">int</span> sample_rate)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span>* p = codec-&gt;supported_samplerates;</span><br><span class="line">    <span class="keyword">while</span> (*p != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span>(*p == sample_rate)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        p++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">check_channel_layout</span><span class="params">(<span class="type">const</span> AVCodec* codec, <span class="type">const</span> <span class="type">uint64_t</span> channel_layout)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//不是所有的codec都有给出支持channel_layouts</span></span><br><span class="line">    <span class="type">const</span> <span class="type">uint64_t</span>* p = codec-&gt;channel_layouts;</span><br><span class="line">    <span class="keyword">if</span> (!p) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;the codec %s no set channel_layouts\n&quot;</span>, codec-&gt;name);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (*p != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (*p == channel_layout) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        p++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">get_adts_header</span><span class="params">(AVCodecContext *ctx, <span class="type">uint8_t</span> *adts_header, <span class="type">int</span> aac_length)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint8_t</span> freq_idx = <span class="number">0</span>;    <span class="comment">//0: 96000 Hz  3: 48000 Hz 4: 44100 Hz</span></span><br><span class="line">    <span class="keyword">switch</span> (ctx-&gt;sample_rate) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">96000</span>: freq_idx = <span class="number">0</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">88200</span>: freq_idx = <span class="number">1</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">64000</span>: freq_idx = <span class="number">2</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">48000</span>: freq_idx = <span class="number">3</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">44100</span>: freq_idx = <span class="number">4</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">32000</span>: freq_idx = <span class="number">5</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">24000</span>: freq_idx = <span class="number">6</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">22050</span>: freq_idx = <span class="number">7</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">16000</span>: freq_idx = <span class="number">8</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">12000</span>: freq_idx = <span class="number">9</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">11025</span>: freq_idx = <span class="number">10</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">8000</span>: freq_idx = <span class="number">11</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">7350</span>: freq_idx = <span class="number">12</span>; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>: freq_idx = <span class="number">4</span>; <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">uint8_t</span> chanCfg = ctx-&gt;channels;</span><br><span class="line">    <span class="type">uint32_t</span> frame_length = aac_length + <span class="number">7</span>;</span><br><span class="line">    adts_header[<span class="number">0</span>] = <span class="number">0xFF</span>;</span><br><span class="line">    adts_header[<span class="number">1</span>] = <span class="number">0xF1</span>;</span><br><span class="line">    adts_header[<span class="number">2</span>] = ((ctx-&gt;profile) &lt;&lt; <span class="number">6</span>) + (freq_idx &lt;&lt; <span class="number">2</span>) + (chanCfg &gt;&gt; <span class="number">2</span>);</span><br><span class="line">    adts_header[<span class="number">3</span>] = (((chanCfg &amp; <span class="number">3</span>) &lt;&lt; <span class="number">6</span>) + (frame_length  &gt;&gt; <span class="number">11</span>));</span><br><span class="line">    adts_header[<span class="number">4</span>] = ((frame_length &amp; <span class="number">0x7FF</span>) &gt;&gt; <span class="number">3</span>);</span><br><span class="line">    adts_header[<span class="number">5</span>] = (((frame_length &amp; <span class="number">7</span>) &lt;&lt; <span class="number">5</span>) + <span class="number">0x1F</span>);</span><br><span class="line">    adts_header[<span class="number">6</span>] = <span class="number">0xFC</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">encode</span><span class="params">(AVCodecContext* codec_ctx, AVFrame* frame, AVPacket* pkt, FILE* aac_fd)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line">    ret = avcodec_send_frame(codec_ctx, frame);</span><br><span class="line">    <span class="keyword">if</span> (ret == AVERROR(EAGAIN)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;encoder send frame eagain\n&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ret == AVERROR_EOF) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (ret &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        ret = avcodec_receive_packet(codec_ctx, pkt);</span><br><span class="line">        <span class="keyword">if</span> (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;error encoding audio frame\n&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;codec_ctx-&gt;flags:0x%x &amp; AV_CODEC_FLAG_GLOBAL_HEADER:0x%x, name:%s\n&quot;</span>,</span><br><span class="line">               codec_ctx-&gt;flags, codec_ctx-&gt;flags &amp; AV_CODEC_FLAG_GLOBAL_HEADER, codec_ctx-&gt;codec-&gt;name);</span><br><span class="line">        <span class="keyword">if</span>((codec_ctx-&gt;flags &amp; AV_CODEC_FLAG_GLOBAL_HEADER)) &#123;</span><br><span class="line">            <span class="comment">// 需要额外的adts header写入</span></span><br><span class="line">            <span class="type">uint8_t</span> aac_header[<span class="number">7</span>];</span><br><span class="line">            get_adts_header(codec_ctx, aac_header, pkt-&gt;size);</span><br><span class="line">            <span class="type">size_t</span> len = fwrite(aac_header, <span class="number">1</span>, <span class="number">7</span>, aac_fd);</span><br><span class="line">            <span class="keyword">if</span>(len != <span class="number">7</span>) &#123;</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;fwrite aac_header failed\n&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//write to file</span></span><br><span class="line">        <span class="type">size_t</span> len = fwrite(pkt-&gt;data, <span class="number">1</span>, pkt-&gt;size, aac_fd);</span><br><span class="line">        <span class="keyword">if</span> (len != pkt-&gt;size) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;write aac data failed\n&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 是否需要释放数据? avcodec_receive_packet第一个调用的就是 av_packet_unref</span></span><br><span class="line"><span class="comment">        * 所以我们不用手动去释放，这里有个问题，不能将pkt直接插入到队列，因为编码器会释放数据</span></span><br><span class="line"><span class="comment">        * 可以新分配一个pkt, 然后使用av_packet_move_ref转移pkt对应的buffer</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">        <span class="comment">// av_packet_unref(pkt);</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//只支持两通道转换</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">f32le_convert_to_fltp</span><span class="params">(<span class="type">float</span>* f32le, <span class="type">float</span>* fltp, <span class="type">int</span> nb_samples)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">float</span>* fltp_l = fltp;</span><br><span class="line">    <span class="type">float</span>* fltp_r = fltp + nb_samples;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; nb_samples; ++i) &#123;</span><br><span class="line">        fltp_l[i] = f32le[i*<span class="number">2</span>];</span><br><span class="line">        fltp_r[i] = f32le[i*<span class="number">2</span>+<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//ffplay -f f32le -i test.pcm -ar 48000 -ac 2</span></span><br><span class="line"><span class="comment">//ffplay -f test.aac</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* pcm_file = <span class="string">&quot;test.pcm&quot;</span>;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* aac_file = <span class="string">&quot;test.aac&quot;</span>;</span><br><span class="line">    FILE* pcm_fd = fopen(pcm_file, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!pcm_fd) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;open pcm file %s failed\n&quot;</span>, pcm_file);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    FILE* aac_fd = fopen(aac_file, <span class="string">&quot;wb&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!aac_fd) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;open aac file %s failed\n&quot;</span>, pcm_file);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">AVCodecID</span> <span class="title">codec_id</span> =</span> AV_CODEC_ID_AAC;</span><br><span class="line">    <span class="type">const</span> AVCodec* codec = avcodec_find_encoder(codec_id);</span><br><span class="line">    AVCodecContext* codec_ctx = avcodec_alloc_context3(codec);</span><br><span class="line">    <span class="comment">//设置参数</span></span><br><span class="line">    codec_ctx-&gt;codec_id = codec_id;</span><br><span class="line">    codec_ctx-&gt;codec_type = AVMEDIA_TYPE_AUDIO;</span><br><span class="line">    codec_ctx-&gt;bit_rate = <span class="number">128</span>*<span class="number">1024</span>;</span><br><span class="line">    codec_ctx-&gt;channel_layout = AV_CH_LAYOUT_STEREO;</span><br><span class="line">    codec_ctx-&gt;sample_rate = <span class="number">48000</span>;</span><br><span class="line">    codec_ctx-&gt;channels = av_get_channel_layout_nb_channels(codec_ctx-&gt;channel_layout);</span><br><span class="line">    codec_ctx-&gt;profile = FF_PROFILE_AAC_LOW;</span><br><span class="line">    codec_ctx-&gt;sample_fmt = AV_SAMPLE_FMT_FLTP;</span><br><span class="line">    codec_ctx-&gt;flags = AV_CODEC_FLAG_GLOBAL_HEADER;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//检查</span></span><br><span class="line">    <span class="keyword">if</span> (!check_sample_fmt(codec, codec_ctx-&gt;sample_fmt)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;ffmpeg encoder not support sample format\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!check_sample_rate(codec, codec_ctx-&gt;sample_rate)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;ffmpeg encoder not support sample rate\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!check_channel_layout(codec, codec_ctx-&gt;channel_layout)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;ffmpeg encoder not support channel layout\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    avcodec_open2(codec_ctx, codec, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="comment">// frame_size是在avcodec_open2后进行关联</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Audio encode config\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;frame size:%d\n&quot;</span>, codec_ctx-&gt;frame_size);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;bit_rate:%ldkbps\n&quot;</span>, codec_ctx-&gt;bit_rate/<span class="number">1024</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;sample_rate:%d\n&quot;</span>, codec_ctx-&gt;sample_rate);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;sample_fmt:%s\n&quot;</span>, av_get_sample_fmt_name(codec_ctx-&gt;sample_fmt));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;channels:%d\n&quot;</span>, codec_ctx-&gt;channels);</span><br><span class="line"></span><br><span class="line">    AVPacket* pkt = av_packet_alloc();</span><br><span class="line">    AVFrame* frame = av_frame_alloc();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">       每次送多少给编码器由:</span></span><br><span class="line"><span class="comment">       1.frame_size(每帧单个通道的采样点数)</span></span><br><span class="line"><span class="comment">       2.sample_fmt(采样点格式)</span></span><br><span class="line"><span class="comment">       3.channel_layout(通道布局)</span></span><br><span class="line"><span class="comment">       三要素决定</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    frame-&gt;nb_samples = codec_ctx-&gt;frame_size;</span><br><span class="line">    frame-&gt;format = codec_ctx-&gt;sample_fmt;</span><br><span class="line">    frame-&gt;channel_layout = codec_ctx-&gt;channel_layout;</span><br><span class="line">    frame-&gt;channels = av_get_channel_layout_nb_channels(frame-&gt;channel_layout);</span><br><span class="line">    <span class="comment">//可不写，pcm_buf实际存储数据</span></span><br><span class="line">    av_frame_get_buffer(frame, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//每帧大小</span></span><br><span class="line">    <span class="type">int</span> frame_bytes = frame-&gt;channels * frame-&gt;nb_samples *</span><br><span class="line">                      av_get_bytes_per_sample((<span class="keyword">enum</span> AVSampleFormat)frame-&gt;format);</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span>* pcm_buf = (<span class="type">uint8_t</span>*)<span class="built_in">malloc</span>(frame_bytes);</span><br><span class="line">    <span class="type">uint8_t</span>* pcm_temp_buf = (<span class="type">uint8_t</span>*)<span class="built_in">malloc</span>(frame_bytes);</span><br><span class="line">    <span class="type">int64_t</span> pts = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="built_in">memset</span>(pcm_buf, <span class="number">0</span>, frame_bytes);</span><br><span class="line">        <span class="type">size_t</span> nread = fread(pcm_buf, <span class="number">1</span>, frame_bytes, pcm_fd);</span><br><span class="line">        <span class="keyword">if</span> (nread &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//确保frame可写，如果编码器内部保持了内存引用计数，需要重新拷贝一份</span></span><br><span class="line">        av_frame_make_writable(frame);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">memset</span>(pcm_temp_buf, <span class="number">0</span>, frame_bytes);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * FFmpeg⾳频解码后和编码前的数据是存放在AVFrame结构中的。 </span></span><br><span class="line"><span class="comment">         * Packed格式，frame.data[0]或frame.extended_data[0]包含所有的⾳频数据中。 </span></span><br><span class="line"><span class="comment">         * Planar格式，frame.data[i]或者frame.extended_data[i]表示第i个声道的数据（假设声道0是第1个）, </span></span><br><span class="line"><span class="comment">         * AVFrame.data数组⼤⼩固定为8，如果声道数超过8，需要从frame.extended_data获取声道数据。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">//本地的f32了packed 转 float palanar</span></span><br><span class="line">        f32le_convert_to_fltp((<span class="type">float</span>*)pcm_buf, (<span class="type">float</span>*)pcm_temp_buf, frame-&gt;nb_samples);</span><br><span class="line">        av_samples_fill_arrays(frame-&gt;data, frame-&gt;linesize,</span><br><span class="line">                               pcm_temp_buf, frame-&gt;channels, frame-&gt;nb_samples,</span><br><span class="line">                               (<span class="keyword">enum</span> AVSampleFormat)frame-&gt;format, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        pts += frame-&gt;nb_samples;</span><br><span class="line">        frame-&gt;pts = pts;</span><br><span class="line">        <span class="type">int</span> ret = encode(codec_ctx, frame, pkt, aac_fd);</span><br><span class="line">        <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;encode failed\n&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    encode(codec_ctx, <span class="literal">NULL</span>, pkt, aac_fd);</span><br><span class="line"></span><br><span class="line">    fclose(pcm_fd);</span><br><span class="line">    fclose(aac_fd);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pcm_buf)</span><br><span class="line">        <span class="built_in">free</span>(pcm_buf);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pcm_temp_buf)</span><br><span class="line">        <span class="built_in">free</span>(pcm_temp_buf);</span><br><span class="line"></span><br><span class="line">    av_frame_free(&amp;frame);</span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    avcodec_free_context(&amp;codec_ctx);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/09/02/%E9%9F%B3%E9%A2%91%E9%87%8D%E9%87%87%E6%A0%B7/" rel="prev" title="音频重采样">
+                  <i class="fa fa-angle-left"></i> 音频重采样
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/04/H264%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/" rel="next" title="H264编码原理">
+                  H264编码原理 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

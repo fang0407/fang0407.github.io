@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="播放器封装123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FFplay数据结构">
+<meta property="og:url" content="https://fang0407.github.io/2023/09/08/FFplay%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="播放器封装123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-09-08T03:23:40.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:40:19.223Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/09/08/FFplay%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/09/08/FFplay%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/","path":"2023/09/08/FFplay数据结构/","title":"FFplay数据结构"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FFplay数据结构 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%92%AD%E6%94%BE%E5%99%A8%E5%B0%81%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">播放器封装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E9%92%9F%E5%B0%81%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">时钟封装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E5%8F%82%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">音频参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E7%A0%81%E5%99%A8%E5%B0%81%E8%A3%85"><span class="nav-number">4.</span> <span class="nav-text">解码器封装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Packet%E9%98%9F%E5%88%97"><span class="nav-number">5.</span> <span class="nav-text">Packet队列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%96%B9%E6%B3%95"><span class="nav-number">5.1.</span> <span class="nav-text">操作方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E9%98%9F%E5%88%97"><span class="nav-number">5.1.1.</span> <span class="nav-text">初始化队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%80%E6%AF%81%E9%98%9F%E5%88%97"><span class="nav-number">5.1.2.</span> <span class="nav-text">销毁队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E9%98%9F%E5%88%97"><span class="nav-number">5.1.3.</span> <span class="nav-text">启动队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%88%E6%AD%A2%E9%98%9F%E5%88%97"><span class="nav-number">5.1.4.</span> <span class="nav-text">终止队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E2%BC%8A%E2%BC%80%E4%B8%AA%E8%8A%82%E7%82%B9"><span class="nav-number">5.1.5.</span> <span class="nav-text">存⼊⼀个节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E2%BC%8A%E2%BC%80%E4%B8%AA%E7%A9%BA%E8%8A%82%E7%82%B9"><span class="nav-number">5.1.6.</span> <span class="nav-text">存⼊⼀个空节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E2%BC%80%E4%B8%AA%E8%8A%82%E7%82%B9"><span class="nav-number">5.1.7.</span> <span class="nav-text">获取⼀个节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%85%E9%99%A4%E9%98%9F%E5%88%97%E5%86%85%E6%89%80%E6%9C%89%E7%9A%84%E8%8A%82%E7%82%B9"><span class="nav-number">5.1.8.</span> <span class="nav-text">清除队列内所有的节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.2.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">5.2.1.</span> <span class="nav-text">内存管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#serial%E7%9A%84%E5%8F%98%E5%8C%96%E8%BF%87%E7%A8%8B"><span class="nav-number">5.2.2.</span> <span class="nav-text">serial的变化过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Frame%E9%98%9F%E5%88%97"><span class="nav-number">6.</span> <span class="nav-text">Frame队列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%96%B9%E6%B3%95-1"><span class="nav-number">6.1.</span> <span class="nav-text">操作方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E9%98%9F%E5%88%97-1"><span class="nav-number">6.1.1.</span> <span class="nav-text">初始化队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%80%E6%AF%81%E9%98%9F%E5%88%97-1"><span class="nav-number">6.1.2.</span> <span class="nav-text">销毁队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%8F%AF%E5%86%99%E5%B8%A7"><span class="nav-number">6.1.3.</span> <span class="nav-text">获取可写帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%8F%AF%E8%AF%BB%E5%B8%A7"><span class="nav-number">6.1.4.</span> <span class="nav-text">获取可读帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E5%86%99%E7%B4%A2%E5%BC%95"><span class="nav-number">6.1.5.</span> <span class="nav-text">更新写索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E8%AF%BB%E7%B4%A2%E5%BC%95"><span class="nav-number">6.1.6.</span> <span class="nav-text">更新读索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E9%98%9F%E5%88%97%E5%89%A9%E4%BD%99%E5%A4%A7%E5%B0%8F"><span class="nav-number">6.1.7.</span> <span class="nav-text">获取队列剩余大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E5%B8%A7"><span class="nav-number">6.1.8.</span> <span class="nav-text">获取当前帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E4%B8%8B%E2%BC%80%E5%B8%A7"><span class="nav-number">6.1.9.</span> <span class="nav-text">获取下⼀帧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E4%B8%8A%E4%B8%80%E5%B8%A7"><span class="nav-number">6.1.10.</span> <span class="nav-text">获取上一帧</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/08/FFplay%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FFplay数据结构 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FFplay数据结构
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-08 11:23:40" itemprop="dateCreated datePublished" datetime="2023-09-08T11:23:40+08:00">2023-09-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:40:19" itemprop="dateModified" datetime="2023-12-30T22:40:19+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FFplay/" itemprop="url" rel="index"><span itemprop="name">FFplay</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="播放器封装"><a href="#播放器封装" class="headerlink" title="播放器封装"></a>播放器封装</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">VideoState</span> &#123;</span></span><br><span class="line">    SDL_Thread *read_tid;           <span class="comment">//读线程句柄</span></span><br><span class="line">    AVInputFormat *iformat;         <span class="comment">//指向demuxer，解复用器格式：dshow、flv</span></span><br><span class="line">    <span class="type">int</span> abort_request;              <span class="comment">//=1请求退出播放</span></span><br><span class="line">    <span class="type">int</span> force_refresh;              <span class="comment">//=1需要刷新画面</span></span><br><span class="line">    <span class="type">int</span> paused;                     <span class="comment">//=1暂停，=0播放</span></span><br><span class="line">    <span class="type">int</span> last_paused;                <span class="comment">//保存暂停/播放状态</span></span><br><span class="line">    <span class="type">int</span> queue_attachments_req;      <span class="comment">//mp3、acc音频文件附带的专辑封面，所以需要注意的是音频文件不一定只存在音频流本身</span></span><br><span class="line">    <span class="type">int</span> seek_req;                   <span class="comment">//标识一次seek请求</span></span><br><span class="line">    <span class="type">int</span> seek_flags;                 <span class="comment">//seek标志，按字节还是时间seek，诸如AVSEEK_BYTE等</span></span><br><span class="line">    <span class="type">int64_t</span> seek_pos;               <span class="comment">//请求seek的目标位置（当前位置+增量）</span></span><br><span class="line">    <span class="type">int64_t</span> seek_rel;               <span class="comment">//本次seek的增量</span></span><br><span class="line">    <span class="type">int</span> read_pause_return;</span><br><span class="line">    AVFormatContext *ic;            <span class="comment">//iformat的上下文</span></span><br><span class="line">    <span class="type">int</span> realtime;                   <span class="comment">//=1为实时流，还是本地文件</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//三种同步的时钟</span></span><br><span class="line">    Clock audclk;                   <span class="comment">//音频时钟</span></span><br><span class="line">    Clock vidclk;                   <span class="comment">//视频时钟</span></span><br><span class="line">    Clock extclk;                   <span class="comment">//外部时钟</span></span><br><span class="line">     </span><br><span class="line">    FrameQueue pictq;               <span class="comment">//视频frame队列</span></span><br><span class="line">    FrameQueue subpq;               <span class="comment">//字幕frame队列</span></span><br><span class="line">    FrameQueue sampq;               <span class="comment">//采样frame队列</span></span><br><span class="line"> </span><br><span class="line">    Decoder auddec;                 <span class="comment">//音频解码器</span></span><br><span class="line">    Decoder viddec;                 <span class="comment">//视频解码器</span></span><br><span class="line">    Decoder subdec;                 <span class="comment">//字幕解码器</span></span><br><span class="line"> </span><br><span class="line">    <span class="type">int</span> audio_stream;               <span class="comment">//音频流索引</span></span><br><span class="line"> </span><br><span class="line">    <span class="type">int</span> av_sync_type;               <span class="comment">//音视频同步类型，默认audio master</span></span><br><span class="line"> </span><br><span class="line">    <span class="type">double</span> audio_clock;             <span class="comment">//当前音频帧的pts+当前帧Duration</span></span><br><span class="line">    <span class="type">int</span> audio_clock_serial;         <span class="comment">//播放序列，seek可改变此值</span></span><br><span class="line">    </span><br><span class="line">     <span class="comment">/* 以下四个参数，非audio master 同步方式使用*/</span></span><br><span class="line">    <span class="type">double</span> audio_diff_cum;</span><br><span class="line">    <span class="type">double</span> audio_diff_avg_coef;</span><br><span class="line">    <span class="type">double</span> audio_diff_threshold;</span><br><span class="line">    <span class="type">int</span> audio_diff_avg_count;</span><br><span class="line">     </span><br><span class="line">    AVStream *audio_st;             <span class="comment">//音频流</span></span><br><span class="line">    PacketQueue audioq;             <span class="comment">//音频packet队列</span></span><br><span class="line">    <span class="type">int</span> audio_hw_buf_size;          <span class="comment">//SDL音频缓冲区的大小</span></span><br><span class="line">    <span class="type">uint8_t</span> *audio_buf;             <span class="comment">//指向需要重采样的数据</span></span><br><span class="line">    <span class="type">uint8_t</span> *audio_buf1;            <span class="comment">//指向重采样后的数据</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> audio_buf_size;    <span class="comment">//带播放的一帧音频数据（audio_buf）大小</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> audio_buf1_size;   <span class="comment">//申请到的音频缓冲区audio_buf1实际大小</span></span><br><span class="line">    <span class="type">int</span> audio_buf_index;            <span class="comment">//更新拷贝位置，当前音频帧中已拷贝入SDL音频缓冲区的位置索引</span></span><br><span class="line">    <span class="type">int</span> audio_write_buf_size;       <span class="comment">//当前音频帧中尚未拷贝入SDL音频缓冲区的数据量</span></span><br><span class="line">    <span class="type">int</span> audio_volume;               <span class="comment">//音量</span></span><br><span class="line">    <span class="type">int</span> muted;                      <span class="comment">//=1静音，=0正常</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">AudioParams</span> <span class="title">audio_src</span>;</span>   <span class="comment">//音频frame的参数</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> CONFIG_AVFILTER</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">AudioParams</span> <span class="title">audio_filter_src</span>;</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">AudioParams</span> <span class="title">audio_tgt</span>;</span>   <span class="comment">//SDL支持的音频参数，重采样转换</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">SwrContext</span> *<span class="title">swr_ctx</span>;</span>     <span class="comment">//音频重采样context</span></span><br><span class="line">    <span class="type">int</span> frame_drops_early;          <span class="comment">//丢弃视频packet计数</span></span><br><span class="line">    <span class="type">int</span> frame_drops_late;           <span class="comment">//丢弃视频frame计数</span></span><br><span class="line"> </span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">ShowMode</span> &#123;</span></span><br><span class="line">        SHOW_MODE_NONE = <span class="number">-1</span>, SHOW_MODE_VIDEO = <span class="number">0</span>, SHOW_MODE_WAVES, SHOW_MODE_RDFT, SHOW_MODE_NB</span><br><span class="line">    &#125; show_mode;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//音频波形显示使用</span></span><br><span class="line">    <span class="type">int16_t</span> sample_array[SAMPLE_ARRAY_SIZE];</span><br><span class="line">    <span class="type">int</span> sample_array_index;</span><br><span class="line">    <span class="type">int</span> last_i_start;</span><br><span class="line">    RDFTContext *rdft;</span><br><span class="line">    <span class="type">int</span> rdft_bits;</span><br><span class="line">    FFTSample *rdft_data;</span><br><span class="line">    <span class="type">int</span> xpos;</span><br><span class="line">    <span class="type">double</span> last_vis_time;</span><br><span class="line">    SDL_Texture *vis_texture;</span><br><span class="line">    SDL_Texture *sub_texture;       <span class="comment">//字幕显示</span></span><br><span class="line">    SDL_Texture *vid_texture;       <span class="comment">//视频显示</span></span><br><span class="line"> </span><br><span class="line">    <span class="type">int</span> subtitle_stream;            <span class="comment">//字幕流索引</span></span><br><span class="line">    AVStream *subtitle_st;          <span class="comment">//字幕流</span></span><br><span class="line">    PacketQueue subtitleq;          <span class="comment">//字幕packet队列</span></span><br><span class="line"> </span><br><span class="line">    <span class="type">double</span> frame_timer;             <span class="comment">//记录最后一帧播放时间</span></span><br><span class="line">    <span class="type">double</span> frame_last_returned_time;</span><br><span class="line">    <span class="type">double</span> frame_last_filter_delay;</span><br><span class="line">    <span class="type">int</span> video_stream;               <span class="comment">//视频流索引</span></span><br><span class="line">    AVStream *video_st;             <span class="comment">//视频流</span></span><br><span class="line">    PacketQueue videoq;             <span class="comment">//视频packet队列</span></span><br><span class="line">    <span class="type">double</span> max_frame_duration;      <span class="comment">//一帧最大的间隔</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">SwsContext</span> *<span class="title">sub_convert_ctx</span>;</span>  <span class="comment">//字幕尺寸格式变换</span></span><br><span class="line">    <span class="type">int</span> eof;                        <span class="comment">//是否读取结束</span></span><br><span class="line"> </span><br><span class="line">    <span class="type">char</span> *filename;                 <span class="comment">//文件名</span></span><br><span class="line">    <span class="type">int</span> width, height, xleft, ytop; <span class="comment">//宽，高，x起始坐标，y起始坐标</span></span><br><span class="line">    <span class="type">int</span> step;                       <span class="comment">//=1步进播放模式，=0其他模式</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="keyword">if</span> CONFIG_AVFILTER</span></span><br><span class="line">    <span class="type">int</span> vfilter_idx;</span><br><span class="line">    AVFilterContext *in_video_filter;   <span class="comment">// the first filter in the video chain</span></span><br><span class="line">    AVFilterContext *out_video_filter;  <span class="comment">// the last filter in the video chain</span></span><br><span class="line">    AVFilterContext *in_audio_filter;   <span class="comment">// the first filter in the audio chain</span></span><br><span class="line">    AVFilterContext *out_audio_filter;  <span class="comment">// the last filter in the audio chain</span></span><br><span class="line">    AVFilterGraph *agraph;              <span class="comment">// audio filter graph</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//保存最近的相应audio、video、subtitle流的stream_index</span></span><br><span class="line">    <span class="type">int</span> last_video_stream, last_audio_stream, last_subtitle_stream;</span><br><span class="line"> </span><br><span class="line">    SDL_cond *continue_read_thread;  <span class="comment">//当读取线程队列满后进入休眠，可通过condition唤醒读取线程</span></span><br><span class="line">&#125; VideoState;</span><br></pre></td></tr></table></figure>
+
+<h1 id="时钟封装"><a href="#时钟封装" class="headerlink" title="时钟封装"></a>时钟封装</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Clock</span> &#123;</span></span><br><span class="line">    <span class="type">double</span> pts;                      <span class="comment">//时钟基础, 当前帧(待播放)显示时间戳，播放后,当前帧变成上一帧</span></span><br><span class="line">    <span class="type">double</span> pts_drift;                <span class="comment">//当前pts与当前系统时钟的差值, audio、video对于该值是独立的</span></span><br><span class="line">    <span class="type">double</span> last_updated;             <span class="comment">//最后一次更新的系统时钟</span></span><br><span class="line">    <span class="type">double</span> speed;                    <span class="comment">//时钟速度控制，用于控制播放速度</span></span><br><span class="line">    <span class="type">int</span> serial;                      <span class="comment">//播放序列，所谓播放序列就是一段连续的播放动作，一个seek操作会启动一段新的播放序列</span></span><br><span class="line">    <span class="type">int</span> paused;                      <span class="comment">//= 1 说明是暂停状态</span></span><br><span class="line">    <span class="type">int</span> *queue_serial;               <span class="comment">//指向packet_serial</span></span><br><span class="line">&#125; Clock;</span><br></pre></td></tr></table></figure>
+
+<h1 id="音频参数"><a href="#音频参数" class="headerlink" title="音频参数"></a>音频参数</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">AudioParams</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> freq;                        <span class="comment">//采样率</span></span><br><span class="line">    <span class="type">int</span> channels;                    <span class="comment">//通道数</span></span><br><span class="line">    <span class="type">int64_t</span> channel_layout;          <span class="comment">//通道布局，如：2.1声道，5.1声道</span></span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">AVSampleFormat</span> <span class="title">fmt</span>;</span>         <span class="comment">//音频采样格式，如：AV_SAMPLE_FMT_S16</span></span><br><span class="line">    <span class="type">int</span> frame_size;                  <span class="comment">//一个采样单元占用的字节数</span></span><br><span class="line">    <span class="type">int</span> bytes_per_sec;               <span class="comment">//一秒时间的字节数</span></span><br><span class="line">&#125; AudioParams;</span><br></pre></td></tr></table></figure>
+
+<h1 id="解码器封装"><a href="#解码器封装" class="headerlink" title="解码器封装"></a>解码器封装</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Decoder</span> &#123;</span></span><br><span class="line">    AVPacket pkt;                    <span class="comment">//packet缓存</span></span><br><span class="line">    PacketQueue *<span class="built_in">queue</span>;              <span class="comment">//packet队列，音频归音频、视频归视频的</span></span><br><span class="line">    AVCodecContext *avctx;           <span class="comment">//解码器上下文</span></span><br><span class="line">    <span class="type">int</span> pkt_serial;                  <span class="comment">//包序列</span></span><br><span class="line">    <span class="type">int</span> finished;                    <span class="comment">//=0解码器处理工作状态，!=0处于空闲状态</span></span><br><span class="line">    <span class="type">int</span> packet_pending;              <span class="comment">//=0解码器处于异常状态，需要考虑重置解码器，=1解码器处于正常状态</span></span><br><span class="line">    SDL_cond *empty_queue_cond;      <span class="comment">//检查到packet队列为空时发送signal缓存read_thread读取数据</span></span><br><span class="line">    <span class="type">int64_t</span> start_pts;               <span class="comment">//初始化时是stream的start_time</span></span><br><span class="line">    AVRational start_pts_tb;         <span class="comment">//初始化时是stream的time_base</span></span><br><span class="line">    <span class="type">int64_t</span> next_pts;                <span class="comment">//记录最近一次解码后的frame的pts</span></span><br><span class="line">    AVRational next_pts_tb;          <span class="comment">//next_pts的单位</span></span><br><span class="line">    SDL_Thread *decoder_tid;         <span class="comment">//线程句柄</span></span><br><span class="line">&#125; Decoder;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Packet队列"><a href="#Packet队列" class="headerlink" title="Packet队列"></a>Packet队列</h1><p>PacketQueue用于保存解封装后的数据（AVPacekt）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">PacketQueue</span> &#123;</span></span><br><span class="line">    MyAVPacketList *first_pkt, *last_pkt; <span class="comment">//队首，队尾指针</span></span><br><span class="line">    <span class="type">int</span> nb_packets;                  <span class="comment">//包数量，也就是队列元素数量</span></span><br><span class="line">    <span class="type">int</span> size;                        <span class="comment">//队列所有元素的数据大小总和</span></span><br><span class="line">    <span class="type">int64_t</span> duration;                <span class="comment">//队列所有元素的数据播放持续时间</span></span><br><span class="line">    <span class="type">int</span> abort_request;               <span class="comment">//用户退出请求标志</span></span><br><span class="line">    <span class="type">int</span> serial;                      <span class="comment">//播放序列号</span></span><br><span class="line">    SDL_mutex *mutex;                <span class="comment">//用于维持PacketQueue的多线程安全</span></span><br><span class="line">    SDL_cond *cond;                  <span class="comment">//用于读、写线程相互通知，</span></span><br><span class="line">&#125; PacketQueue;</span><br></pre></td></tr></table></figure>
+
+<p>MyAVPacketList为队列的一个节点，next字段访问下一个结点。</p>
+<p>serial标记当前节点的播放序号，主要用来区分是否连续数据，每做一次seek，serial都会+1以区分不同的播放序列。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">MyAVPacketList</span> &#123;</span></span><br><span class="line">    AVPacket pkt;                    <span class="comment">//解封装后的数据</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">MyAVPacketList</span> *<span class="title">next</span>;</span>     <span class="comment">//下一个节点</span></span><br><span class="line">    <span class="type">int</span> serial;                      <span class="comment">//播放序列</span></span><br><span class="line">&#125; MyAVPacketList;</span><br></pre></td></tr></table></figure>
+
+<p>⾳频、视频、字幕流都有⾃⼰独⽴的PacketQueue。 </p>
+<h2 id="操作方法"><a href="#操作方法" class="headerlink" title="操作方法"></a>操作方法</h2><p>PacketQueue 操作提供以下⽅法： </p>
+<ul>
+<li>packet_queue_init：初始化。</li>
+<li>packet_queue_destroy：销毁。</li>
+<li>packet_queue_start：启⽤。</li>
+<li>packet_queue_abort：终⽌。</li>
+<li>packet_queue_get：获取⼀个节点。</li>
+<li>packet_queue_put：存⼊⼀个节点。</li>
+<li>packet_queue_put_nullpacket：存⼊⼀个空节点。</li>
+<li>packet_queue_flush：清除队列内所有的节点。</li>
+</ul>
+<h3 id="初始化队列"><a href="#初始化队列" class="headerlink" title="初始化队列"></a>初始化队列</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">packet_queue_init</span><span class="params">(PacketQueue *q)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">memset</span>(q, <span class="number">0</span>, <span class="keyword">sizeof</span>(PacketQueue));</span><br><span class="line">    q-&gt;mutex = SDL_CreateMutex();</span><br><span class="line">    <span class="keyword">if</span> (!q-&gt;mutex) &#123; </span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_FATAL, <span class="string">&quot;SDL_CreateMutex(): %s\n&quot;</span>, SDL_GetError());</span><br><span class="line">        <span class="keyword">return</span> AVERROR(ENOMEM);</span><br><span class="line">    &#125;</span><br><span class="line">    q-&gt;cond = SDL_CreateCond();</span><br><span class="line">    <span class="keyword">if</span> (!q-&gt;cond) &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_FATAL, <span class="string">&quot;SDL_CreateCond(): %s\n&quot;</span>, SDL_Get Error());</span><br><span class="line">        <span class="keyword">return</span> AVERROR(ENOMEM);</span><br><span class="line">    &#125;   </span><br><span class="line">    q-&gt;abort_request = <span class="number">1</span>; <span class="comment">// 在packet_queue_start和packet_queue_abort 时修改到该值</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="销毁队列"><a href="#销毁队列" class="headerlink" title="销毁队列"></a>销毁队列</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">packet_queue_destroy</span><span class="params">(PacketQueue *q)</span></span><br><span class="line">&#123;</span><br><span class="line">    packet_queue_flush(q); <span class="comment">//先清除所有的节点</span></span><br><span class="line">    SDL_DestroyMutex(q-&gt;mutex);</span><br><span class="line">    SDL_DestroyCond(q-&gt;cond);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动队列"><a href="#启动队列" class="headerlink" title="启动队列"></a>启动队列</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//启动队列</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">packet_queue_start</span><span class="params">(PacketQueue *q)</span></span><br><span class="line">&#123;</span><br><span class="line">    SDL_LockMutex(q-&gt;mutex);</span><br><span class="line">    q-&gt;abort_request = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//这里放入了一个flush_pkt:</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">        1.插入flush_pkt 触发PacketQueue其对应的serial，加1操作</span></span><br><span class="line"><span class="comment">        2.触发解码器清空自身缓存，avcodec_flush_buffers()，以备新序列的数据进⾏新解码</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    packet_queue_put_private(q, &amp;flush_pkt); <span class="comment">//flush_pkt 是⼀个特殊的packet</span></span><br><span class="line">    SDL_UnlockMutex(q-&gt;mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="终止队列"><a href="#终止队列" class="headerlink" title="终止队列"></a>终止队列</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//终止队列</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">packet_queue_abort</span><span class="params">(PacketQueue *q)</span></span><br><span class="line">&#123;</span><br><span class="line">    SDL_LockMutex(q-&gt;mutex);</span><br><span class="line"> </span><br><span class="line">    q-&gt;abort_request = <span class="number">1</span>; <span class="comment">//请求退出</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    SDL_CondSignal的作⽤在于确保当前等待该条件的线程能被激活并继续执⾏退出流程，并唤醒者会</span></span><br><span class="line"><span class="comment">    检测abort_request标志确定⾃⼰的退出流程。</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    SDL_CondSignal(q-&gt;cond); <span class="comment">//释放一个条件信号</span></span><br><span class="line"> </span><br><span class="line">    SDL_UnlockMutex(q-&gt;mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="存⼊⼀个节点"><a href="#存⼊⼀个节点" class="headerlink" title="存⼊⼀个节点"></a>存⼊⼀个节点</h3><p>对于packet_queue_put_private主要完成3件事： </p>
+<ul>
+<li><p>计算serial。serial标记了这个节点内的数据是何时的。⼀般情况下新增节点与上⼀个节点的serial是⼀样的，但当队列中加⼊⼀个flush_pkt后，后续节点的serial会⽐之前⼤1，⽤来区别不同播放序列的packet。</p>
+</li>
+<li><p>节点⼊队列操作。 </p>
+</li>
+<li><p>队列属性操作。更新队列中节点的数⽬、占⽤字节数（含AVPacket.data的⼤⼩）及其时⻓。主要⽤来控制Packet队列的⼤⼩，PacketQueue链表式的队列，在内存充⾜的条件下我们可以⽆限put⼊packet，如果我们要控制队列⼤⼩，则需要通过其变量size、duration、nb_packets三者单⼀或者综合去约束队列的节点的数量。</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//往队列中放入一个节点</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">packet_queue_put</span><span class="params">(PacketQueue *q, AVPacket *pkt)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line"> </span><br><span class="line">    SDL_LockMutex(q-&gt;mutex);</span><br><span class="line">    ret = packet_queue_put_private(q, pkt);<span class="comment">//主要的实现</span></span><br><span class="line">    SDL_UnlockMutex(q-&gt;mutex);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (pkt != &amp;flush_pkt &amp;&amp; ret &lt; <span class="number">0</span>)</span><br><span class="line">        av_packet_unref(pkt);<span class="comment">//添加失败，需要释放packet</span></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">packet_queue_put_private</span><span class="params">(PacketQueue *q, AVPacket *pkt)</span></span><br><span class="line">&#123;</span><br><span class="line">    MyAVPacketList *pkt1;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (q-&gt;abort_request)<span class="comment">//如果终止，则放入失败</span></span><br><span class="line">       <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"> </span><br><span class="line">    pkt1 = av_malloc(<span class="keyword">sizeof</span>(MyAVPacketList));<span class="comment">//分配内存节点</span></span><br><span class="line">    <span class="keyword">if</span> (!pkt1)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    pkt1-&gt;pkt = *pkt;<span class="comment">//拷⻉AVPacket(浅拷⻉，AVPacket.data等内存并没有拷贝)</span></span><br><span class="line">    pkt1-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> (pkt == &amp;flush_pkt)<span class="comment">//如果放入的是flush_pkt，需要增加队列的播放序列号，以区分不连续的两段数据</span></span><br><span class="line">        q-&gt;serial++;</span><br><span class="line">    pkt1-&gt;serial = q-&gt;serial;<span class="comment">//用队列序列号标记节点</span></span><br><span class="line">　　<span class="comment">//如果last_pkt为空，说明队列是空，新增节点为头节点</span></span><br><span class="line">    <span class="keyword">if</span> (!q-&gt;last_pkt)</span><br><span class="line">        q-&gt;first_pkt = pkt1;</span><br><span class="line">    <span class="keyword">else</span><span class="comment">//否则，队列有数据，则让原队尾的next为新增节点</span></span><br><span class="line">        q-&gt;last_pkt-&gt;next = pkt1;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//队列属性操作：增加节点数、cache大小、cache总时间</span></span><br><span class="line">    q-&gt;last_pkt = pkt1;</span><br><span class="line">    q-&gt;nb_packets++;</span><br><span class="line">    q-&gt;size += pkt1-&gt;pkt.size + <span class="keyword">sizeof</span>(*pkt1);</span><br><span class="line">    q-&gt;duration += pkt1-&gt;pkt.duration;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//发出信号，表明当前队列中有数据了，通知等待中的读线程可以取数据了</span></span><br><span class="line">    SDL_CondSignal(q-&gt;cond);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="存⼊⼀个空节点"><a href="#存⼊⼀个空节点" class="headerlink" title="存⼊⼀个空节点"></a>存⼊⼀个空节点</h3><p>放⼊空包意味着流的结束，⼀般在媒体数据读取完成的时候放⼊空包。放⼊空包，⽬的是为了冲刷解码器，将编码器⾥⾯所有frame都读取出来。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//放入空包意味着流的结束，一般在媒体数据读取完成的时候放入空包</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">packet_queue_put_nullpacket</span><span class="params">(PacketQueue *q, <span class="type">int</span> stream_index)</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket pkt1, *pkt = &amp;pkt1;</span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line">    pkt-&gt;data = <span class="literal">NULL</span>;</span><br><span class="line">    pkt-&gt;size = <span class="number">0</span>;</span><br><span class="line">    pkt-&gt;stream_index = stream_index;</span><br><span class="line">    <span class="keyword">return</span> packet_queue_put(q, pkt);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取⼀个节点"><a href="#获取⼀个节点" class="headerlink" title="获取⼀个节点"></a>获取⼀个节点</h3><p>如果有取到数据，主要分3个步骤： </p>
+<ul>
+<li>队列操作：出队列操作，nb_packets相应-1；duration也相应减少，size相应减少占⽤的字节⼤⼩。</li>
+<li>给输出参数赋值：就是MyAVPacketList的成员传递给输出参数pkt和serial。</li>
+<li>释放节点内存：释放放⼊队列时申请的节点内存（注意是节点内存⽽不是AVPacket的数据的内存）。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">参数：</span></span><br><span class="line"><span class="comment">    队列</span></span><br><span class="line"><span class="comment">    输出参数</span></span><br><span class="line"><span class="comment">    调⽤者是否需要在没节点可取的情况下阻塞等待</span></span><br><span class="line"><span class="comment">    输出参数，即MyAVPacketList.serial</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">packet_queue_get</span><span class="params">(PacketQueue *q, AVPacket *pkt, <span class="type">int</span> block, <span class="type">int</span> *serial)</span></span><br><span class="line">&#123;</span><br><span class="line">    MyAVPacketList *pkt1;</span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line"> </span><br><span class="line">    SDL_LockMutex(q-&gt;mutex);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">if</span> (q-&gt;abort_request) &#123;<span class="comment">//判断是否退出</span></span><br><span class="line">            ret = <span class="number">-1</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="comment">//从队头拿数据</span></span><br><span class="line">        pkt1 = q-&gt;first_pkt;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//队列中有数据</span></span><br><span class="line">        <span class="keyword">if</span> (pkt1) &#123;</span><br><span class="line">            q-&gt;first_pkt = pkt1-&gt;next;<span class="comment">//队头移动到第二个节点</span></span><br><span class="line">            <span class="keyword">if</span> (!q-&gt;first_pkt)</span><br><span class="line">                q-&gt;last_pkt = <span class="literal">NULL</span>;</span><br><span class="line">            q-&gt;nb_packets--;<span class="comment">//节点数减1</span></span><br><span class="line">            q-&gt;size -= pkt1-&gt;pkt.size + <span class="keyword">sizeof</span>(*pkt1);<span class="comment">//cache大小扣除一个节点</span></span><br><span class="line">            q-&gt;duration -= pkt1-&gt;pkt.duration;<span class="comment">//总时长扣除一个节点</span></span><br><span class="line">            *pkt = pkt1-&gt;pkt;<span class="comment">//返回AVPacket，这⾥发⽣⼀次AVPacket结构体拷⻉，AVPacket的data只拷⻉了指针</span></span><br><span class="line">            <span class="keyword">if</span> (serial)</span><br><span class="line">                *serial = pkt1-&gt;serial;</span><br><span class="line">            av_free(pkt1);<span class="comment">//释放节点内存，只是释放了节点，而不是释放AVPacket的内存</span></span><br><span class="line">            ret = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!block) &#123;<span class="comment">//队列中没有数据，且⾮阻塞调⽤</span></span><br><span class="line">            ret = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">//这⾥没有break，for循环的另⼀个作⽤是在条件变量满⾜后重复上述代码取出节点</span></span><br><span class="line">            SDL_CondWait(q-&gt;cond, q-&gt;mutex);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    SDL_UnlockMutex(q-&gt;mutex);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="清除队列内所有的节点"><a href="#清除队列内所有的节点" class="headerlink" title="清除队列内所有的节点"></a>清除队列内所有的节点</h3><p>packet_queue_flush⽤于将packet队列中的所有节点清除，包括节点对应的AVPacket。⽐如⽤于退出播放和seek播放： </p>
+<ul>
+<li><p>退出播放，则要清空packet queue的节点。</p>
+</li>
+<li><p>seek播放，要清空seek之前缓存的节点数据，以便插⼊新节点数据。</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">packet_queue_flush</span><span class="params">(PacketQueue *q)</span></span><br><span class="line">&#123;</span><br><span class="line">    MyAVPacketList *pkt, *pkt1;</span><br><span class="line"> </span><br><span class="line">    SDL_LockMutex(q-&gt;mutex);</span><br><span class="line">    <span class="keyword">for</span> (pkt = q-&gt;first_pkt; pkt; pkt = pkt1) &#123;</span><br><span class="line">        pkt1 = pkt-&gt;next;</span><br><span class="line">        av_packet_unref(&amp;pkt-&gt;pkt);<span class="comment">//释放AVPacket的数据</span></span><br><span class="line">        av_freep(&amp;pkt); <span class="comment">//释放节点</span></span><br><span class="line">    &#125;</span><br><span class="line">    q-&gt;last_pkt = <span class="literal">NULL</span>;</span><br><span class="line">    q-&gt;first_pkt = <span class="literal">NULL</span>;</span><br><span class="line">    q-&gt;nb_packets = <span class="number">0</span>;</span><br><span class="line">    q-&gt;size = <span class="number">0</span>;</span><br><span class="line">    q-&gt;duration = <span class="number">0</span>;</span><br><span class="line">    SDL_UnlockMutex(q-&gt;mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PacketQueue</span><br><span class="line"></span><br><span class="line">MyAVPacketList          MyAVPacketList        MyAVPacketList</span><br><span class="line">｜ next  ｜--------&gt;  ｜  next ｜--------&gt;   ｜  next  ｜           ...</span><br><span class="line">｜AVPacket｜-&gt;data     ｜AVPacket｜-&gt;data	  ｜AVPacket｜-&gt;data</span><br></pre></td></tr></table></figure>
+
+<p>MyAVPacketList的内存是完全由PacketQueue维护的，在put的时候malloc，在get的时候free。 </p>
+<p>AVPacket内存分两块：</p>
+<ul>
+<li>⼀部分是AVPacket结构体的内存，这部分是和MyAVPacketList共存亡的。 </li>
+<li>另⼀部分是AVPacket字段指向的内存，这部分⼀般通过 av_packet_unref 函数释放。⼀般情况下，是在get后由调⽤者负责⽤ av_packet_unref 函数释放。特殊的情况是当碰到packet_queue_flush 或put失败时，这时需要队列⾃⼰处理。</li>
+</ul>
+<h3 id="serial的变化过程"><a href="#serial的变化过程" class="headerlink" title="serial的变化过程"></a>serial的变化过程</h3><p>serial的概念，区别前后数据包是否连续，主要应⽤于seek操作。</p>
+<p>放⼊flush_pkt的时候后，serial增加了1。</p>
+<h1 id="Frame队列"><a href="#Frame队列" class="headerlink" title="Frame队列"></a>Frame队列</h1><p>AVFrame是真正存储解码后的音视频数据，存储字幕使用AVSubtitle。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Frame</span> &#123;</span></span><br><span class="line">    AVFrame *frame;                   <span class="comment">//指向数据帧，音视频解码后的数据</span></span><br><span class="line">    AVSubtitle sub;                   <span class="comment">//用于字幕</span></span><br><span class="line">    <span class="type">int</span> serial;                       <span class="comment">//播放序列，在seek时serial会变化</span></span><br><span class="line">    <span class="type">double</span> pts;                       <span class="comment">//时间戳，单位为秒</span></span><br><span class="line">    <span class="type">double</span> duration;                  <span class="comment">//该帧持续时间，单位为秒</span></span><br><span class="line">    <span class="type">int64_t</span> pos;                      <span class="comment">//该帧在输入文件中的字节位置</span></span><br><span class="line">    <span class="type">int</span> width;</span><br><span class="line">    <span class="type">int</span> height;</span><br><span class="line">    <span class="type">int</span> format;</span><br><span class="line">    AVRational sar;</span><br><span class="line">    <span class="type">int</span> uploaded;                     <span class="comment">//记录该帧是否已经显示过</span></span><br><span class="line">    <span class="type">int</span> flip_v;                       <span class="comment">//1旋转180，0正常播放</span></span><br><span class="line">&#125; Frame;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">FrameQueue</span> &#123;</span></span><br><span class="line">    Frame <span class="built_in">queue</span>[FRAME_QUEUE_SIZE];    <span class="comment">//队列大小，数字太大时占用内存就会越大，需要注意设置</span></span><br><span class="line">    <span class="type">int</span> rindex;                       <span class="comment">//读索引，待播放时读取此帧进行播放，播放后此帧成为上一帧</span></span><br><span class="line">    <span class="type">int</span> windex;                       <span class="comment">//写索引</span></span><br><span class="line">    <span class="type">int</span> size;                         <span class="comment">//当前总帧数</span></span><br><span class="line">    <span class="type">int</span> max_size;                     <span class="comment">//可存储最大帧数</span></span><br><span class="line">    <span class="type">int</span> keep_last;                    <span class="comment">//=1 说明要在队列里面保持最后一帧的数据不释放，只在销毁队列的时候才真正释放</span></span><br><span class="line">    <span class="type">int</span> rindex_shown;                 <span class="comment">//初始化值为0，配合kepp_last=1使用</span></span><br><span class="line">    SDL_mutex *mutex;</span><br><span class="line">    SDL_cond *cond;</span><br><span class="line">    PacketQueue *pktq;                <span class="comment">//数据包缓冲队列</span></span><br><span class="line">&#125; FrameQueue;</span><br></pre></td></tr></table></figure>
+
+<p>FrameQueue是⼀个环形缓冲区(ring buffer)，是⽤数组实现的⼀个FIFO。数组⽅式的环形缓冲区适合于事先明确了缓冲区的最⼤容量的情形。 </p>
+<p>ffplay中创建了三个frame_queue：⾳频frame_queue，视频frame_queue，字幕frame_queue。每⼀个frame_queue⼀个写端⼀个读端，写端位于解码线程，读端位于播放线程。 </p>
+<p>FrameQueue的设计⽐如PacketQueue复杂，引⼊了读取节点但节点不出队列的操作、读取下⼀节点也不出队列等等的操作。</p>
+<h2 id="操作方法-1"><a href="#操作方法-1" class="headerlink" title="操作方法"></a>操作方法</h2><p>FrameQueue操作提供以下⽅法：</p>
+<ul>
+<li>frame_queue_unref_item：释放Frame⾥⾯的AVFrame和 AVSubtitle。</li>
+<li>frame_queue_init：初始化队列。</li>
+<li>frame_queue_destory：销毁队列。</li>
+<li>frame_queue_signal：发送唤醒信号。</li>
+<li>frame_queue_peek：获取当前Frame，调⽤之前先调⽤frame_queue_nb_remaining确保有frame可读。</li>
+<li>frame_queue_peek_next：获取当前Frame的下⼀Frame，调⽤之前先调⽤。</li>
+<li>frame_queue_nb_remaining确保⾄少有2 Frame在队列。</li>
+<li>frame_queue_peek_last：获取上⼀Frame。</li>
+<li>frame_queue_peek_writable：获取⼀个可写Frame，可以以阻塞或⾮阻塞⽅式进⾏。</li>
+<li>frame_queue_peek_readable：获取⼀个可读Frame，可以以阻塞或⾮阻塞⽅式进⾏。</li>
+<li>frame_queue_push：更新写索引，此时Frame才真正⼊队列，队列节点Frame个数加1。</li>
+<li>frame_queue_next：更新读索引，此时Frame才真正出队列，队列节点Frame个数减1。</li>
+<li>frame_queue_nb_remaining：获取队列Frame节点个数。</li>
+<li>frame_queue_last_pos：获取最近播放Frame对应数据在媒体⽂件的位置，主要在seek时使⽤。</li>
+</ul>
+<h3 id="初始化队列-1"><a href="#初始化队列-1" class="headerlink" title="初始化队列"></a>初始化队列</h3><p>队列初始化函数确定了队列⼤⼩，将为队列中每⼀个节点的frame( f-&gt;queue[i].frame )分配内存，注意只是分配Frame对象本身，⽽不关注Frame中的数据缓冲区。Frame中的数据缓冲区是AVBuffer，使⽤引⽤计数机制。</p>
+<p>f-&gt;max_size 是队列的⼤⼩，此处值为16（由FRAME_QUEUE_SIZE定义），实际分配的时候视频为3，⾳频为9，字幕为16，<strong>因为这⾥存储的是解码后的数据，不宜设置过⼤</strong>，⽐如视频当为1080p时，如果为YUV420p格式，⼀帧就有3110400字节。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">frame_queue_init</span><span class="params">(FrameQueue *f, PacketQueue *pktq, <span class="type">int</span> max_size, <span class="type">int</span> keep_last)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    <span class="built_in">memset</span>(f, <span class="number">0</span>, <span class="keyword">sizeof</span>(FrameQueue));</span><br><span class="line">    <span class="keyword">if</span> (!(f-&gt;mutex = SDL_CreateMutex())) &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_FATAL, <span class="string">&quot;SDL_CreateMutex(): %s\n&quot;</span>, SDL_GetError());</span><br><span class="line">        <span class="keyword">return</span> AVERROR(ENOMEM);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!(f-&gt;cond = SDL_CreateCond())) &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_FATAL, <span class="string">&quot;SDL_CreateCond(): %s\n&quot;</span>, SDL_GetError());</span><br><span class="line">        <span class="keyword">return</span> AVERROR(ENOMEM);</span><br><span class="line">    &#125;</span><br><span class="line">    f-&gt;pktq = pktq;</span><br><span class="line">    f-&gt;max_size = FFMIN(max_size, FRAME_QUEUE_SIZE);<span class="comment">//队列大小</span></span><br><span class="line">    f-&gt;keep_last = !!keep_last;<span class="comment">//将int取值的keep_last转换为boot取值（0或1）</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; f-&gt;max_size; i++)</span><br><span class="line">        <span class="keyword">if</span> (!(f-&gt;<span class="built_in">queue</span>[i].frame = av_frame_alloc()))<span class="comment">//为每一个节点分配内存，并不是缓存区的内存</span></span><br><span class="line">            <span class="keyword">return</span> AVERROR(ENOMEM);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="销毁队列-1"><a href="#销毁队列-1" class="headerlink" title="销毁队列"></a>销毁队列</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">frame_queue_destory</span><span class="params">(FrameQueue *f)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; f-&gt;max_size; i++) &#123;</span><br><span class="line">        Frame *vp = &amp;f-&gt;<span class="built_in">queue</span>[i];</span><br><span class="line">        frame_queue_unref_item(vp);<span class="comment">//释放对vp-&gt;frame中的数据缓冲区AVBuffer的引⽤</span></span><br><span class="line">        av_frame_free(&amp;vp-&gt;frame);<span class="comment">//释放vp-&gt;frame对象本身，节点</span></span><br><span class="line">    &#125;</span><br><span class="line">    SDL_DestroyMutex(f-&gt;mutex);</span><br><span class="line">    SDL_DestroyCond(f-&gt;cond);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取可写帧"><a href="#获取可写帧" class="headerlink" title="获取可写帧"></a>获取可写帧</h3><p>向队列尾部申请一个可写的帧空间，若队列已满无空间可写，则等待（由SDL_cond *cond控制，由frame_queue_next或frame_queue_signal触发唤醒）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> Frame *<span class="title function_">frame_queue_peek_writable</span><span class="params">(FrameQueue *f)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* wait until we have space to put a new frame */</span></span><br><span class="line">    SDL_LockMutex(f-&gt;mutex);</span><br><span class="line">    <span class="keyword">while</span> (f-&gt;size &gt;= f-&gt;max_size &amp;&amp; !f-&gt;pktq-&gt;abort_request) &#123;</span><br><span class="line">        SDL_CondWait(f-&gt;cond, f-&gt;mutex);<span class="comment">//frame_queue_next或frame_queue_signal触发唤醒</span></span><br><span class="line">    &#125;</span><br><span class="line">    SDL_UnlockMutex(f-&gt;mutex);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (f-&gt;pktq-&gt;abort_request)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> &amp;f-&gt;<span class="built_in">queue</span>[f-&gt;windex];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取可读帧"><a href="#获取可读帧" class="headerlink" title="获取可读帧"></a>获取可读帧</h3><p>从队列头部读取一帧，只读取不删除，若无帧可读则等待。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> Frame *<span class="title function_">frame_queue_peek_readable</span><span class="params">(FrameQueue *f)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* wait until we have a readable a new frame */</span></span><br><span class="line">    SDL_LockMutex(f-&gt;mutex);</span><br><span class="line">    <span class="comment">//减去保存的上一帧f-&gt;rindex_shown</span></span><br><span class="line">    <span class="keyword">while</span> (f-&gt;size - f-&gt;rindex_shown &lt;= <span class="number">0</span> &amp;&amp; !f-&gt;pktq-&gt;abort_request) &#123;</span><br><span class="line">        SDL_CondWait(f-&gt;cond, f-&gt;mutex);</span><br><span class="line">    &#125;</span><br><span class="line">    SDL_UnlockMutex(f-&gt;mutex);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (f-&gt;pktq-&gt;abort_request)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> &amp;f-&gt;<span class="built_in">queue</span>[(f-&gt;rindex + f-&gt;rindex_shown) % f-&gt;max_size];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="更新写索引"><a href="#更新写索引" class="headerlink" title="更新写索引"></a>更新写索引</h3><p>更新写索引，此时Frame才真正⼊队列，队列节点Frame个数加1。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">frame_queue_push</span><span class="params">(FrameQueue *f)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (++f-&gt;windex == f-&gt;max_size)</span><br><span class="line">        f-&gt;windex = <span class="number">0</span>;</span><br><span class="line">    SDL_LockMutex(f-&gt;mutex);</span><br><span class="line">    f-&gt;size++;</span><br><span class="line">    SDL_CondSignal(f-&gt;cond);<span class="comment">//当frame_queue_peek_readable在等待时，可唤醒</span></span><br><span class="line">    SDL_UnlockMutex(f-&gt;mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="更新读索引"><a href="#更新读索引" class="headerlink" title="更新读索引"></a>更新读索引</h3><p>更新读索引，此时Frame才真正出队列，队列节点Frame个数减1。</p>
+<p>在启⽤keep_last机制后，rindex_shown值总是为1，rindex_shown确保了最后播放的⼀帧总保留在队列中，获取上一帧才有意义。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">frame_queue_next</span><span class="params">(FrameQueue *f)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (f-&gt;keep_last &amp;&amp; !f-&gt;rindex_shown) &#123;</span><br><span class="line">        f-&gt;rindex_shown = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    frame_queue_unref_item(&amp;f-&gt;<span class="built_in">queue</span>[f-&gt;rindex]);<span class="comment">//删除frame</span></span><br><span class="line">    <span class="keyword">if</span> (++f-&gt;rindex == f-&gt;max_size)</span><br><span class="line">        f-&gt;rindex = <span class="number">0</span>;</span><br><span class="line">    SDL_LockMutex(f-&gt;mutex);</span><br><span class="line">    f-&gt;size--;</span><br><span class="line">    SDL_CondSignal(f-&gt;cond);</span><br><span class="line">    SDL_UnlockMutex(f-&gt;mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取队列剩余大小"><a href="#获取队列剩余大小" class="headerlink" title="获取队列剩余大小"></a>获取队列剩余大小</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> Frame *<span class="title function_">frame_queue_nb_remaining</span><span class="params">(FrameQueue *f)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> f-&gt;size - f-&gt;rindex_shown;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取当前帧"><a href="#获取当前帧" class="headerlink" title="获取当前帧"></a>获取当前帧</h3><p>获取队列当前帧, 在调⽤该函数前先调⽤frame_queue_nb_remaining确保有帧可读。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> Frame *<span class="title function_">frame_queue_peek</span><span class="params">(FrameQueue *f)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;f-&gt;<span class="built_in">queue</span>[(f-&gt;rindex + f-&gt;rindex_shown) % f-&gt;max_size];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取下⼀帧"><a href="#获取下⼀帧" class="headerlink" title="获取下⼀帧"></a>获取下⼀帧</h3><p>获取当前帧的下⼀帧, 此时要确保queue⾥⾯⾄少有2个帧。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> Frame *<span class="title function_">frame_queue_peek_next</span><span class="params">(FrameQueue *f)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;f-&gt;<span class="built_in">queue</span>[(f-&gt;rindex + f-&gt;rindex_shown + <span class="number">1</span>) % f-&gt;max_size];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取上一帧"><a href="#获取上一帧" class="headerlink" title="获取上一帧"></a>获取上一帧</h3><p>当rindex_shown&#x3D;0时，和frame_queue_peek效果⼀样。</p>
+<p>当rindex_shown&#x3D;1时，读取的是已经显示过的frame。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> Frame *<span class="title function_">frame_queue_peek_last</span><span class="params">(FrameQueue *f)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;f-&gt;<span class="built_in">queue</span>[f-&gt;rindex];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_60259116/article/details/131871978">https://blog.csdn.net/m0_60259116/article/details/131871978</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/09/08/FFplay%E6%A1%86%E6%9E%B6/" rel="prev" title="FFplay框架">
+                  <i class="fa fa-angle-left"></i> FFplay框架
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/08/FFplay%E8%A7%A3%E5%A4%8D%E7%94%A8%E7%BA%BF%E7%A8%8B/" rel="next" title="FFplay解复用线程">
+                  FFplay解复用线程 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

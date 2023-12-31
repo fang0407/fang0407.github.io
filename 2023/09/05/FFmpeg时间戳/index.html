@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="PTS和DTSPTS（Presentation TimeStamp）是渲染用的时间戳，也就是说，我们的视频帧是按照 PTS 的时间戳来展示的。 DTS（Decoding TimeStamp）解码时间戳，是用于视频解码的。 ⾳频中DTS和PTS是相同的。视频中由于B帧需要双向预测，B帧依赖于其前和其后的帧，因此含B帧的视频解码顺序与显示顺序不同，即DTS与PTS不同。当然，不含B帧的视频，其DTS和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FFmpeg时间戳">
+<meta property="og:url" content="https://fang0407.github.io/2023/09/05/FFmpeg%E6%97%B6%E9%97%B4%E6%88%B3/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="PTS和DTSPTS（Presentation TimeStamp）是渲染用的时间戳，也就是说，我们的视频帧是按照 PTS 的时间戳来展示的。 DTS（Decoding TimeStamp）解码时间戳，是用于视频解码的。 ⾳频中DTS和PTS是相同的。视频中由于B帧需要双向预测，B帧依赖于其前和其后的帧，因此含B帧的视频解码顺序与显示顺序不同，即DTS与PTS不同。当然，不含B帧的视频，其DTS和">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-09-05T13:12:11.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:40:42.996Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/09/05/FFmpeg%E6%97%B6%E9%97%B4%E6%88%B3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/09/05/FFmpeg%E6%97%B6%E9%97%B4%E6%88%B3/","path":"2023/09/05/FFmpeg时间戳/","title":"FFmpeg时间戳"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FFmpeg时间戳 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PTS%E5%92%8CDTS"><span class="nav-number">1.</span> <span class="nav-text">PTS和DTS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%9F%BA%E4%B8%8E%E6%97%B6%E9%97%B4%E6%88%B3"><span class="nav-number">2.</span> <span class="nav-text">时间基与时间戳</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FFmpeg%E5%86%85%E9%83%A8%E6%97%B6%E9%97%B4%E5%9F%BA"><span class="nav-number">3.</span> <span class="nav-text">FFmpeg内部时间基</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%80%BC%E5%BD%A2%E5%BC%8F%E8%BD%AC%E6%8D%A2"><span class="nav-number">4.</span> <span class="nav-text">时间值形式转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%9F%BA%E8%BD%AC%E6%8D%A2%E5%87%BD%E6%95%B0"><span class="nav-number">5.</span> <span class="nav-text">时间基转换函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#av-rescale-q"><span class="nav-number">5.1.</span> <span class="nav-text">av_rescale_q</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#av-rescale-rnd"><span class="nav-number">5.2.</span> <span class="nav-text">av_rescale_rnd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#av-packet-rescale-ts"><span class="nav-number">5.3.</span> <span class="nav-text">av_packet_rescale_ts</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AC%E5%B0%81%E8%A3%85%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E6%97%B6%E9%97%B4%E5%9F%BA%E8%BD%AC%E6%8D%A2"><span class="nav-number">6.</span> <span class="nav-text">转封装过程中的时间基转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AC%E7%A0%81%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E6%97%B6%E9%97%B4%E5%9F%BA%E8%BD%AC%E6%8D%A2"><span class="nav-number">7.</span> <span class="nav-text">转码过程中的时间基转换</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/05/FFmpeg%E6%97%B6%E9%97%B4%E6%88%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FFmpeg时间戳 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FFmpeg时间戳
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-05 21:12:11" itemprop="dateCreated datePublished" datetime="2023-09-05T21:12:11+08:00">2023-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:40:42" itemprop="dateModified" datetime="2023-12-30T22:40:42+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="PTS和DTS"><a href="#PTS和DTS" class="headerlink" title="PTS和DTS"></a>PTS和DTS</h1><p>PTS（Presentation TimeStamp）是渲染用的时间戳，也就是说，我们的视频帧是按照 PTS 的时间戳来展示的。</p>
+<p>DTS（Decoding TimeStamp）解码时间戳，是用于视频解码的。</p>
+<p>⾳频中DTS和PTS是相同的。视频中由于B帧需要双向预测，B帧依赖于其前和其后的帧，因此含B帧的视频解码顺序与显示顺序不同，即DTS与PTS不同。当然，不含B帧的视频，其DTS和PTS是相同的。</p>
+<h1 id="时间基与时间戳"><a href="#时间基与时间戳" class="headerlink" title="时间基与时间戳"></a>时间基与时间戳</h1><p>有了时间戳之后，最终进行展示时还要需要将PTS时间戳转成以秒为单位的时间。那这里需要向大家介绍一下 ffmpeg的时间基。</p>
+<p>我们在执行 ffmpeg&#x2F;ffplay命令时，可以通过控制台看到几个参数，分别是 tbr, tbn, tbc。这几个值是什么含义呢？其实就是不同的时间基。</p>
+<ul>
+<li>tbr: 是我们通常所说的帧率。time base of rate</li>
+<li>tbn: 视频流的时间基。 time base of stream</li>
+<li>tbc: 视频解码的时间基。time base of codec</li>
+</ul>
+<p>在ffmpeg中，不同的时间戳对应不同的时间基。对于视频的渲染我们使用的是视频流的时间基，也就是 tbn。时间基就是时间刻度。以帧率为例，如果每秒钟的帧率是 25帧，那么它的时间基（时间刻度）就是 1&#x2F;25。也就是说每隔1&#x2F;25 秒后，显示一帧。</p>
+<h1 id="FFmpeg内部时间基"><a href="#FFmpeg内部时间基" class="headerlink" title="FFmpeg内部时间基"></a>FFmpeg内部时间基</h1><p>除了我上面所讲的几个时间基之外，ffmpeg内部还有一个时间基。即我们通过所见到的 AV_TIME_BASE。它在ffmpeg内部定义如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define         AV_TIME_BASE   1000000</span><br></pre></td></tr></table></figure>
+
+<p>它还有一种分数所表式法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define         AV_TIME_BASE_Q   (AVRational)&#123;1, AV_TIME_BASE&#125;</span><br></pre></td></tr></table></figure>
+
+<p>AV_TIME_BASE及AV_TIME_BASE_Q⽤于FFmpeg内部函数处理，使⽤此时间基计算得到时间值表示的是微秒。</p>
+<h1 id="时间值形式转换"><a href="#时间值形式转换" class="headerlink" title="时间值形式转换"></a>时间值形式转换</h1><p>av_q2d()将时间从AVRational形式转换为double形式。AVRational是分数类型，double是双精度浮点数类型，转换的结果单位是秒。转换前后的值基于同⼀时间基，仅仅是数值的表现形式不同⽽已。 av_q2d()实现如下： </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">double</span> <span class="title function_">av_q2d</span><span class="params">(AVRational a)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a.num / (<span class="type">double</span>) a.den; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>av_q2d()使⽤⽅法如下： </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">AVStream stream;</span><br><span class="line">AVPacket packet;</span><br><span class="line">packet播放时刻值：timestamp(单位秒) = packet.pts * av_q2d(stream.time_base);</span><br><span class="line">packet播放时⻓值：duration(单位秒) = packet.duration * av_q2d(stream.time_base);</span><br></pre></td></tr></table></figure>
+
+<h1 id="时间基转换函数"><a href="#时间基转换函数" class="headerlink" title="时间基转换函数"></a>时间基转换函数</h1><h2 id="av-rescale-q"><a href="#av-rescale-q" class="headerlink" title="av_rescale_q"></a>av_rescale_q</h2><p>av_rescale_q()⽤于不同时间基的转换，⽤于将时间值从⼀种时间基转换为另⼀种时间基。将a数值由 bq时间基转成 cq的时间基，通过返回结果获取以cq时间基表示的新数值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int64_t</span> <span class="title function_">av_rescale_q</span><span class="params">(<span class="type">int64_t</span> a, AVRational bq, AVRational cq)</span> av_const;</span><br></pre></td></tr></table></figure>
+
+<h2 id="av-rescale-rnd"><a href="#av-rescale-rnd" class="headerlink" title="av_rescale_rnd"></a>av_rescale_rnd</h2><p>它的作⽤是计算 “a * b &#x2F; c” 的值并分五种⽅式来取</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">AVRounding</span> &#123;</span></span><br><span class="line">    AV_ROUND_ZERO     = <span class="number">0</span>, <span class="comment">///&lt; Round toward zero.        靠近0</span></span><br><span class="line">    AV_ROUND_INF      = <span class="number">1</span>, <span class="comment">///&lt; Round away from zero.     远离0</span></span><br><span class="line">    AV_ROUND_DOWN     = <span class="number">2</span>, <span class="comment">///&lt; Round toward -infinity.   趋于负无穷</span></span><br><span class="line">    AV_ROUND_UP       = <span class="number">3</span>, <span class="comment">///&lt; Round toward +infinity.   趋于负无穷</span></span><br><span class="line">    AV_ROUND_NEAR_INF = <span class="number">5</span>, <span class="comment">///&lt; Round to nearest and halfway cases away from zero. 四舍五入,小于0.5取值趋向0,大于0.5取值趋远于0</span></span><br><span class="line">    AV_ROUND_PASS_MINMAX = <span class="number">8192</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">int64_t</span> <span class="title function_">av_rescale_rnd</span><span class="params">(<span class="type">int64_t</span> a, <span class="type">int64_t</span> b, <span class="type">int64_t</span> c, <span class="keyword">enum</span> AVRounding rnd)</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="av-packet-rescale-ts"><a href="#av-packet-rescale-ts" class="headerlink" title="av_packet_rescale_ts"></a>av_packet_rescale_ts</h2><p>⽤于将AVPacket中各种时间值从⼀种时间基转换为另⼀种时间基。 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">av_packet_rescale_ts</span><span class="params">(AVPacket *pkt, AVRational tb_src, AVRational tb_dst)</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="转封装过程中的时间基转换"><a href="#转封装过程中的时间基转换" class="headerlink" title="转封装过程中的时间基转换"></a>转封装过程中的时间基转换</h1><p>容器中的时间基：AVStream.time_base（tbn）定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">AVStream</span> &#123;</span></span><br><span class="line">   ......</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * This is the fundamental unit of time (in seconds) in terms</span></span><br><span class="line"><span class="comment">     * of which frame timestamps are represented.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * decoding: set by libavformat</span></span><br><span class="line"><span class="comment">     * encoding: May be set by the caller before avformat_write_header() to</span></span><br><span class="line"><span class="comment">     *           provide a hint to the muxer about the desired timebase. In</span></span><br><span class="line"><span class="comment">     *           avformat_write_header(), the muxer will overwrite this field</span></span><br><span class="line"><span class="comment">     *           with the timebase that will actually be used for the timestamps</span></span><br><span class="line"><span class="comment">     *           written into the file (which may or may not be related to the</span></span><br><span class="line"><span class="comment">     *           user-provided one, depending on the format).</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    AVRational time_base;</span><br><span class="line">   ......</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>AVStream.time_base是AVPacket中pts和dts的时间单位，输⼊流与输出流中time_base按如下⽅式确定：</p>
+<ul>
+<li>对于输⼊流：打开输⼊⽂件后，调⽤avformat_find_stream_info()可获取到每个流中的time_base。</li>
+<li>对于输出流：打开输出⽂件后，调⽤avformat_write_header()可根据输出⽂件封装格式确定每个流的time_base并写⼊输出⽂件中。</li>
+</ul>
+<p>不同封装格式具有不同的时间基，在转封装（将⼀种封装格式转换为另⼀种封装格式）过程中，时间基转换相关代码如下： </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从输⼊⽂件中读取packet</span></span><br><span class="line"><span class="comment">// 将packet中的各时间值从输⼊流封装格式时间基转换到输出流封装格式时间基</span></span><br><span class="line">av_packet_rescale_ts(&amp;pkt, in_stream-&gt;time_base, out_stream-&gt;time_base);</span><br></pre></td></tr></table></figure>
+
+<p>flv封装格式的time_base为{1,1000}，ts封装格式的time_base为{1,90000}。</p>
+<h1 id="转码过程中的时间基转换"><a href="#转码过程中的时间基转换" class="headerlink" title="转码过程中的时间基转换"></a>转码过程中的时间基转换</h1><p>编解码器中的时间基（AVCodecContext.time_base，3.2节中的tbc）定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">AVCodecContext</span> &#123;</span></span><br><span class="line">   ......</span><br><span class="line">    </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * This is the fundamental unit of time (in seconds) in terms</span></span><br><span class="line"><span class="comment">     * of which frame timestamps are represented. For fixed-fps content,</span></span><br><span class="line"><span class="comment">     * timebase should be 1/framerate and timestamp increments should be</span></span><br><span class="line"><span class="comment">     * identically 1.</span></span><br><span class="line"><span class="comment">     * This often, but not always is the inverse of the frame rate or field rate</span></span><br><span class="line"><span class="comment">     * for video. 1/time_base is not the average frame rate if the frame rate is not</span></span><br><span class="line"><span class="comment">     * constant.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * Like containers, elementary streams also can store timestamps, 1/time_base</span></span><br><span class="line"><span class="comment">     * is the unit in which these timestamps are specified.</span></span><br><span class="line"><span class="comment">     * As example of such codec time base see ISO/IEC 14496-2:2001(E)</span></span><br><span class="line"><span class="comment">     * vop_time_increment_resolution and fixed_vop_rate</span></span><br><span class="line"><span class="comment">     * (fixed_vop_rate == 0 implies that it is different from the framerate)</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * - encoding: MUST be set by user.</span></span><br><span class="line"><span class="comment">     * - decoding: the use of this field for decoding is deprecated.</span></span><br><span class="line"><span class="comment">     *             Use framerate instead.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   AVRational time_base;    </span><br><span class="line">   ......</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>上述注释指出，AVCodecContext.time_base是帧率（视频帧）的倒数，每帧时间戳递增1，那么tbc就等于帧率。编码过程中，应由⽤户设置好此参数。解码过程中，此参数已过时，建议直接使⽤帧率倒数⽤作时间基。 </p>
+<p>这⾥有⼀个问题：按照此处注释说明，帧率为25的视频流，tbc理应为25，但实际值却为50，不知作何解释？是否tbc已经过时，不具参考意义？ </p>
+<p>根据注释中的建议，实际使⽤时，在视频解码过程中，我们不使⽤AVCodecContext.time_base，⽽⽤帧率倒数作时间基，在视频编码过程中，我们将AVCodecContext.time_base设置为帧率的倒数。</p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="http://www.imooc.com/article/91381">http://www.imooc.com/article/91381</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/09/04/%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81/" rel="prev" title="视频编码">
+                  <i class="fa fa-angle-left"></i> 视频编码
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/07/%E9%9F%B3%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81%E5%92%8C%E5%B0%81%E8%A3%85/" rel="next" title="音视频编码和封装">
+                  音视频编码和封装 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

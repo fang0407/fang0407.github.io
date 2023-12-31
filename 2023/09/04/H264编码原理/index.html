@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="H264编码原理对于每一帧图像，是划分为一个个块进行编码，就是我们说的宏块。宏块大小一般是 16x16（H264、VP8），32x32（H265、VP9），64x64（H265、VP9、AV1），128x128（AV1）。 宏块扫描对于一个 YUV 图像，可以把划分成一个个 16x16 的宏块（以 H264 为例），Y、U、V 分量的大小分别是 16x16、8x8、8x8。这里我们只对 Y 分量进">
+<meta property="og:type" content="article">
+<meta property="og:title" content="H264编码原理">
+<meta property="og:url" content="https://fang0407.github.io/2023/09/04/H264%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="H264编码原理对于每一帧图像，是划分为一个个块进行编码，就是我们说的宏块。宏块大小一般是 16x16（H264、VP8），32x32（H265、VP9），64x64（H265、VP9、AV1），128x128（AV1）。 宏块扫描对于一个 YUV 图像，可以把划分成一个个 16x16 的宏块（以 H264 为例），Y、U、V 分量的大小分别是 16x16、8x8、8x8。这里我们只对 Y 分量进">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-09-04T12:00:56.000Z">
+<meta property="article:modified_time" content="2023-12-26T13:23:13.672Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/09/04/H264%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/09/04/H264%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/","path":"2023/09/04/H264编码原理/","title":"H264编码原理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>H264编码原理 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#H264%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">H264编码原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8F%E5%9D%97%E6%89%AB%E6%8F%8F"><span class="nav-number">1.1.</span> <span class="nav-text">宏块扫描</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A7%E5%86%85%E9%A2%84%E6%B5%8B"><span class="nav-number">1.2.</span> <span class="nav-text">帧内预测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A7%E9%97%B4%E9%A2%84%E6%B5%8B"><span class="nav-number">1.3.</span> <span class="nav-text">帧间预测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DCT%E5%8F%98%E6%8D%A2%E5%92%8C%E9%87%8F%E5%8C%96"><span class="nav-number">1.4.</span> <span class="nav-text">DCT变换和量化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8F%E5%8C%96%E6%AD%A5%E9%95%BF"><span class="nav-number">1.4.1.</span> <span class="nav-text">量化步长</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/04/H264%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="H264编码原理 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          H264编码原理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-04 20:00:56" itemprop="dateCreated datePublished" datetime="2023-09-04T20:00:56+08:00">2023-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-26 21:23:13" itemprop="dateModified" datetime="2023-12-26T21:23:13+08:00">2023-12-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%BC%96%E7%A0%81%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">编码封装格式</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="H264编码原理"><a href="#H264编码原理" class="headerlink" title="H264编码原理"></a>H264编码原理</h1><p>对于每一帧图像，是划分为一个个块进行编码，就是我们说的宏块。宏块大小一般是 16x16（H264、VP8），32x32（H265、VP9），64x64（H265、VP9、AV1），128x128（AV1）。</p>
+<h2 id="宏块扫描"><a href="#宏块扫描" class="headerlink" title="宏块扫描"></a>宏块扫描</h2><p>对于一个 YUV 图像，可以把划分成一个个 16x16 的宏块（以 H264 为例），Y、U、V 分量的大小分别是 16x16、8x8、8x8。这里我们只对 Y 分量进行分析（U、V 分量同理）。假设 Y 分量这16x16 个像素就是一个个数字，采用“之”字方式扫描每一个像素值，则可以得到一个“像素串”。</p>
+<p>压缩的目的是使得编码器当前的字符出现连续相同的字符，比如1,1,1,1,1,1,1,1，我们可以描述为8个1。</p>
+<p>数字越小越容易用更少的bit做压缩，比如一连串数字很小（比如 0，1，2，1，0）的“像素串” ，因为 0 在二进制中只占 1 个位，2只占2个位即可。</p>
+<h2 id="帧内预测"><a href="#帧内预测" class="headerlink" title="帧内预测"></a>帧内预测</h2><p><strong>帧内预测</strong>就是在当前编码图像内部已经编码完成的块中找到与将要编码的块相邻的块。一般就是即将编码块的左边块、上边块、左上角块和右上角块，通过将这些块与编码块相邻的像素经过多种不同的算法得到多个不同的预测块。</p>
+<p>然后我们再用编码块减去每一个预测块得到一个个残差块。最后，我们取这些算法得到的残差块中像素的绝对值加起来最小的块为预测块。而得到这个预测块的算法为帧内预测模式。</p>
+<h2 id="帧间预测"><a href="#帧间预测" class="headerlink" title="帧间预测"></a>帧间预测</h2><p>同理，帧间预测也是一样的。我们在前面已经编码完成的图像中，循环遍历每一个块，将它作为预测块，用当前的编码块与这个块做差值，得到残差块，取残差块中像素值的绝对值加起来最小的块为预测块，预测块所在的已经编码的图像称为参考帧。预测块在参考帧中的坐标值（x0, y0）与编码块在编码帧中的坐标值 （x1, y1） 的差值（x0 - x1, y0 - y1）称之为运动矢量。 </p>
+<p>而在参考帧中去寻找预测块的过程称之为运动搜索。事实上编码过程中真正的运动搜索不是一个个块去遍历寻找的，而是有快速的运动搜索算法的。 </p>
+<p>通过预测得到的<strong>残差块的像素值</strong>相比编码块的像素值，去除了大部分空间冗余信息和时间冗余信息，这样得到的像素值更小。如果把这个残差块做扫描得到的像素串送去做行程编码，是不是相比直接拿编码块的像素串去做编码更有可能得到更大的压缩率？</p>
+<h2 id="DCT变换和量化"><a href="#DCT变换和量化" class="headerlink" title="DCT变换和量化"></a>DCT变换和量化</h2><p>我们的目标不只是将像素值变小，而是希望能出现连续的 0 像素。</p>
+<p>这就需要利用我们人眼的视觉敏感性的特点了。我们刚才说了人眼对高频信息不太敏感。因为人眼看到的效果可能差别不大，所以我们可以去除一些高频信息。这个就是接下来我们要讨论的 DCT 变换和量化。</p>
+<h3 id="量化步长"><a href="#量化步长" class="headerlink" title="量化步长"></a>量化步长</h3><p>由于人眼对高频信息不太敏感，如果我们通过一种手段去除掉大部分高频信息，也就是将大部分高频信息置为 0，但又不太影响人的观感，是不是就可以达到我们最初的目标，即可以得到有一连串 0 的像素串？这就涉及到量化操作了。</p>
+<p>我们让变换块的系数都同时除以一个值，这个值我们称之为量化步长，也就是 QStep（QStep 是编码器内部的概念，用户一般使用量化参数 QP 这个值，<strong>QP 和 QStep</strong> 得到的结果就是量化后的系数。QStep 越大，得到量化后的系数就会越小。同时，相同的 QStep 值，高频系数值相比低频系数值更小，量化后就更容易变成 0。这样一来，将大部分高频系数变成 0。</p>
+<p>解码的时候，需要将 QStep 乘以量化后的系数得到变换系数，很明显这个变换系数和原始没有量化的变换系数是不一样的，这个就是常说的有损编码。 </p>
+<p>而到底损失多少呢？其由 QStep 来控制，QStep 越大，损失就越大。QStep 跟 QP 一一对应。从编码器应用角度来看，<strong>QP 值越大，损失就越大</strong>，从而画面的清晰度就会越低。同时，QP 值越大系数被量化成 0 的概率就越大，这样编码之后码流大小就会越小，压缩就会越高。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/09/03/%E9%9F%B3%E9%A2%91%E7%BC%96%E7%A0%81/" rel="prev" title="音频编码">
+                  <i class="fa fa-angle-left"></i> 音频编码
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/04/%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81/" rel="next" title="视频编码">
+                  视频编码 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="RTP简介RTP（real-time transport protocol），实时传输协议，用于在计算机网络中传输实时数据，特别是音频和视频数据。RTP通常与其伴随的协议RTCP（RTP Control Protocol）一起使用，用于监视和管理多媒体会话。 RTP包格式RTP报文由两部分组成：报头和有效载荷。RTP报文格式如下图所示：    V：RTP协议的版本号，占2位，当前协议版本号为2。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RTP协议">
+<meta property="og:url" content="https://fang0407.github.io/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="RTP简介RTP（real-time transport protocol），实时传输协议，用于在计算机网络中传输实时数据，特别是音频和视频数据。RTP通常与其伴随的协议RTCP（RTP Control Protocol）一起使用，用于监视和管理多媒体会话。 RTP包格式RTP报文由两部分组成：报头和有效载荷。RTP报文格式如下图所示：    V：RTP协议的版本号，占2位，当前协议版本号为2。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fang0407.github.io/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/RTP%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png">
+<meta property="article:published_time" content="2023-09-19T12:31:33.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:38:15.819Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang0407.github.io/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/RTP%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/","path":"2023/09/19/RTP协议/","title":"RTP协议"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>RTP协议 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RTP%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">RTP简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RTP%E5%8C%85%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">RTP包格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RTP%E6%89%A9%E5%B1%95%E5%A4%B4"><span class="nav-number">3.</span> <span class="nav-text">RTP扩展头</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E4%BF%A1%E6%BA%90%E5%92%8C%E7%89%B9%E7%BA%A6%E4%BF%A1%E6%BA%90"><span class="nav-number">4.</span> <span class="nav-text">同步信源和特约信源</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">代码示例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RTP%E5%9B%BA%E5%AE%9A%E5%A4%B4"><span class="nav-number">5.1.</span> <span class="nav-text">RTP固定头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTP%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">5.2.</span> <span class="nav-text">RTP序列化和反序列化</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="RTP协议 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RTP协议
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-19 20:31:33" itemprop="dateCreated datePublished" datetime="2023-09-19T20:31:33+08:00">2023-09-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:38:15" itemprop="dateModified" datetime="2023-12-30T22:38:15+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="RTP简介"><a href="#RTP简介" class="headerlink" title="RTP简介"></a>RTP简介</h1><p>RTP（real-time transport protocol），实时传输协议，用于在计算机网络中传输实时数据，特别是音频和视频数据。RTP通常与其伴随的协议RTCP（RTP Control Protocol）一起使用，用于监视和管理多媒体会话。</p>
+<h1 id="RTP包格式"><a href="#RTP包格式" class="headerlink" title="RTP包格式"></a>RTP包格式</h1><p>RTP报文由两部分组成：<strong>报头和有效载荷</strong>。RTP报文格式如下图所示：</p>
+<img src="/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/RTP报文格式.png" alt="RTP报文格式" style="zoom:100%;">
+
+<ul>
+<li><p>V：RTP协议的版本号，占2位，当前协议版本号为2。</p>
+</li>
+<li><p>P：填充标志，占1位，如果P&#x3D;1，则在该报⽂的尾部填充⼀个或多个额外的⼋位组，它们不是有效载荷的⼀部分。</p>
+</li>
+<li><p>X：扩展标志，占1位，如果X&#x3D;1，则在RTP报头后跟有⼀个扩展报头。 </p>
+</li>
+<li><p>CC：CSRC计数器，占4位，指示CSRC 标识符的个数。 </p>
+</li>
+<li><p>M：标记，占1位，不同的有效载荷有不同的含义，对于视频，标记⼀帧的结束；对于⾳频，标记帧的开始。</p>
+</li>
+<li><p>Payload：有效载荷类型，占7位，⽤于说明RTP报⽂中有效载荷的类型，如GSM⾳频、JPEM图像等。 </p>
+</li>
+<li><p>Sequence number：序列号，占16位，⽤于标识发送者所发送的RTP报⽂的序列号，<strong>每发送⼀个报⽂，序列号增1</strong>。<strong>接收者通过序列号来检测报⽂丢失情况</strong>，重新排序报⽂，恢复数据。</p>
+</li>
+<li><p>Time stamp：时间戳，占32位，时戳反映了该RTP报⽂的第⼀个⼋位组的采样时刻。接收者使⽤时戳来计算延迟和延迟抖动，并进⾏同步控制。 </p>
+</li>
+<li><p>SSRC Identifier：同步信源（SSRC），占32位，⽤于标识同步信源。该标识符是随机选择的，参加同⼀视频会议的两个同步信源不能有相同的SSRC。</p>
+</li>
+<li><p>Contributing Sources：特约信源（CSRC），每个CSRC标识符占32位，可以有0～15个。每个CSRC标识了包含在该RTP报⽂有效载荷中的所有特约信源。</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">rtp_header_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> v:<span class="number">2</span>;        <span class="comment">/* protocol version */</span></span><br><span class="line">    <span class="type">uint32_t</span> p:<span class="number">1</span>;        <span class="comment">/* padding flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> x:<span class="number">1</span>;        <span class="comment">/* header extension flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> cc:<span class="number">4</span>;       <span class="comment">/* CSRC count */</span></span><br><span class="line">    <span class="type">uint32_t</span> m:<span class="number">1</span>;        <span class="comment">/* marker bit */</span></span><br><span class="line">    <span class="type">uint32_t</span> pt:<span class="number">7</span>;       <span class="comment">/* payload type */</span></span><br><span class="line">    <span class="type">uint32_t</span> seq:<span class="number">16</span>;     <span class="comment">/* sequence number */</span></span><br><span class="line">    <span class="type">uint32_t</span> timestamp;  <span class="comment">/* timestamp */</span></span><br><span class="line">    <span class="type">uint32_t</span> ssrc;       <span class="comment">/* synchronization source */</span></span><br><span class="line">&#125; <span class="type">rtp_header_t</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="RTP扩展头"><a href="#RTP扩展头" class="headerlink" title="RTP扩展头"></a>RTP扩展头</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|       defined by profile       |           length              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                        extension data                          |</span><br><span class="line">|                             ....                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>defined by profile：16位，用于指示扩展的类型。<strong>不同的RTP应用可以定义不同类型的扩展</strong>。这个字段用于指示是哪种类型的扩展。</p>
+<ul>
+<li>profile值为0xBE、0xDE，说明extension data的ID和len占1个字节, 即ID占4位 length占4位。</li>
+<li>profile值为0x10、0x0X（“X”表示任意数, 一般为“0”, 即0x00）, 说明extension data的ID和len占2个字节, 即ID占8位 length占8位。</li>
+</ul>
+</li>
+<li><p>length：16位，指定扩展的总长度（<strong>以32位单位</strong>）。这是<strong>扩展数据的字节数</strong>。例如: length &#x3D; 3, 说明扩展头长度占12字节。</p>
+</li>
+<li><p>extension data：扩展数据字段包含<strong>实际的扩展信息</strong>。其内容和格式完全由所使用的RTP应用协议定义。</p>
+</li>
+</ul>
+<h1 id="同步信源和特约信源"><a href="#同步信源和特约信源" class="headerlink" title="同步信源和特约信源"></a>同步信源和特约信源</h1><ul>
+<li><p>同步信源（SSRC）是<strong>指产⽣媒体流的信源</strong>，例如⻨克⻛、摄像机、RTP混合器等。它通过RTP报头中的⼀个32位数字SSRC标识符来标识，⽽<strong>不依赖于⽹络地址</strong>，接收者将根据<strong>SSRC标识符来区分不同的信源，进⾏RTP报⽂的分组</strong>。</p>
+</li>
+<li><p>特约信源（CSRC）是指当混合器接收到⼀个或多个同步信源的RTP报⽂后，<strong>经过混合处理产⽣⼀个新的组合RTP报⽂</strong>，<strong>并把混合器作为组合RTP报⽂的SSRC</strong>，⽽<strong>将原来所有的SSRC都作为CSRC传送给接收者</strong>，使接收者知道组成组合报⽂的各个SSRC。</p>
+</li>
+<li><p>在发送端，上层应⽤程序以分组形式将编码后的媒体数据传给RTP通信模块，作为RTP报⽂的有效载荷，RTP通信模块将根据上层应⽤提供的参数在有效载荷前添加RTP报头，形成RTP报⽂，通过Socket接⼝选择UDP协议发送出去。</p>
+</li>
+<li><p>在接收端，RTP通信模块通过Socket接⼝接收到RTP报⽂后，将RTP报头分离出来作相应处理，再将RTP报⽂的有效载荷作为数据分组传递给上层应⽤。</p>
+</li>
+<li><p>若⼀个RTP包流的源，对由RTP混频器⽣成的组合流起了作⽤，则它就是⼀个作⽤源。对特定包的⽣成起作⽤的源，其SSRC标识符组成的列表，被混频器插⼊到包的RTP报头中。这个列表叫做CSRC表。⽤图表示⼤概是这样：</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">SSRC1--RTP1--&gt;混合器SSRC4</span><br><span class="line">SSRC2--RTP1--&gt;混合器SSRC4</span><br><span class="line">SSRC3--RTP1--&gt;混合器SSRC4</span><br><span class="line">混合器SSRC4--RTP--&gt;接收端</span><br></pre></td></tr></table></figure>
+
+<p>例如，有三个信号源各发出⼀路rtp流，RTP1携带的SSRC是SSRC1，RTP2携带的SSRC是SSRC2，RTP3携带SSRC3，这三路RTP流到达混合器时，混合器会将这三路流混合成⼀路流发出去，它会把这三路流的SSRC记录下来，形成⼀个列表，叫CSRC表，在发送的混合RTP流中，<strong>SSRC域填充的字段是混合器本身的SSRC4</strong>，<strong>⽽CSRC字段则会根据该包的负载的源来填⼊</strong>。</p>
+<p>例如当前的RTP包的负载是来⾃SSRC1的，那么在当前RTP包的CSRC字段填⼊SSRC1。这样接收者就可以根据CSRC来区分不同的信源；⼀般的，混合的RTP流中，每隔⼀段时间，就会有⼀个RTP报⽂包含了完整的CSRC表。例如在发送混合流时的第⼀个RTP包，它的CSRC域把CSRC表都填⼊，此时该包的负载可能是⽆意义或者并不是媒体流；此后的RTP报⽂中则根据负载的来源来填⼊CSRC域。</p>
+<h1 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h1><h2 id="RTP固定头"><a href="#RTP固定头" class="headerlink" title="RTP固定头"></a>RTP固定头</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//RTP版本</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_VERSION 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//RTP固定 header的长度</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_FIXED_HEADER 12</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">rtp_header_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> v:<span class="number">2</span>;       <span class="comment">/* protocol version */</span></span><br><span class="line">    <span class="type">uint32_t</span> p:<span class="number">1</span>;       <span class="comment">/* padding flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> x:<span class="number">1</span>;       <span class="comment">/* header extension flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> cc:<span class="number">4</span>;      <span class="comment">/* CSRC count */</span></span><br><span class="line">    <span class="type">uint32_t</span> m:<span class="number">1</span>;       <span class="comment">/* marker bit */</span></span><br><span class="line">    <span class="type">uint32_t</span> pt:<span class="number">7</span>;      <span class="comment">/* payload type */</span></span><br><span class="line">    <span class="type">uint32_t</span> seq:<span class="number">16</span>;    <span class="comment">/* sequence number */</span></span><br><span class="line">    <span class="type">uint32_t</span> timestamp; <span class="comment">/* timestamp */</span></span><br><span class="line">    <span class="type">uint32_t</span> ssrc;      <span class="comment">/* synchronization source */</span></span><br><span class="line">&#125; <span class="type">rtp_header_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//封装这个RTP 包括 header + [csrc/extension] + payload</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">rtp_packet_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">rtp_header_t</span> rtp;</span><br><span class="line">    <span class="type">uint32_t</span> csrc[<span class="number">16</span>];      <span class="comment">// 最多16个csrc</span></span><br><span class="line">    <span class="type">const</span> <span class="type">void</span>* extension;  <span class="comment">// extension(valid only if rtp.x = 1)</span></span><br><span class="line">    <span class="type">uint16_t</span> extlen;        <span class="comment">// extension length in bytes</span></span><br><span class="line">    <span class="type">uint16_t</span> reserved;      <span class="comment">// extension reserved</span></span><br><span class="line">    <span class="type">const</span> <span class="type">void</span>* payload;    <span class="comment">// rtp payload</span></span><br><span class="line">    <span class="type">int</span> payloadlen;         <span class="comment">// payload length in bytes</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_V(v)    ((v &gt;&gt; 30) &amp; 0x03)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_P(v)    ((v &gt;&gt; 29) &amp; 0x01)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_X(v)    ((v &gt;&gt; 28) &amp; 0x01)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_CC(v)   ((v &gt;&gt; 24) &amp;&amp; 0x0F)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_M(v)    ((v &gt;&gt; 23) &amp;&amp; 0x01)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_PT(v)   ((v &gt;&gt; 16) &amp;&amp; 0x7F)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_SEQ(v)  ((v &gt;&gt; 00) &amp;&amp; 0xFFFF)</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="RTP序列化和反序列化"><a href="#RTP序列化和反序列化" class="headerlink" title="RTP序列化和反序列化"></a>RTP序列化和反序列化</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> nbo_r16 rtp_read_uint16</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> nbo_r32 rtp_read_uint32</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> nbo_w16 rtp_write_uint16</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> nbo_w32 rtp_write_uint32</span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">uint16_t</span> <span class="title function_">rtp_read_uint16</span><span class="params">(<span class="type">const</span> <span class="type">uint8_t</span>* ptr)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> (((<span class="type">uint16_t</span>)ptr[<span class="number">0</span>]) &lt;&lt; <span class="number">8</span>) | ptr[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">uint32_t</span> <span class="title function_">rtp_read_uint32</span><span class="params">(<span class="type">const</span> <span class="type">uint8_t</span>* ptr)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> (((<span class="type">uint32_t</span>)ptr[<span class="number">0</span>]) &lt;&lt; <span class="number">24</span>) | (((<span class="type">uint32_t</span>)ptr[<span class="number">1</span>]) &lt;&lt; <span class="number">16</span>) | (((<span class="type">uint32_t</span>)ptr[<span class="number">2</span>]) &lt;&lt; <span class="number">8</span>) | ptr[<span class="number">3</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">void</span> <span class="title function_">rtp_write_uint16</span><span class="params">(<span class="type">uint8_t</span>* ptr, <span class="type">uint16_t</span> val)</span></span><br><span class="line">&#123;</span><br><span class="line">    ptr[<span class="number">0</span>] = (<span class="type">uint8_t</span>)(val &gt;&gt; <span class="number">8</span>);</span><br><span class="line">    ptr[<span class="number">1</span>] = (<span class="type">uint8_t</span>)val;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">void</span> <span class="title function_">rtp_write_uint32</span><span class="params">(<span class="type">uint8_t</span>* ptr, <span class="type">uint32_t</span> val)</span></span><br><span class="line">&#123;</span><br><span class="line">    ptr[<span class="number">0</span>] = (<span class="type">uint8_t</span>)(val &gt;&gt; <span class="number">24</span>);</span><br><span class="line">    ptr[<span class="number">1</span>] = (<span class="type">uint8_t</span>)(val &gt;&gt; <span class="number">16</span>);</span><br><span class="line">    ptr[<span class="number">2</span>] = (<span class="type">uint8_t</span>)(val &gt;&gt; <span class="number">8</span>);</span><br><span class="line">    ptr[<span class="number">3</span>] = (<span class="type">uint8_t</span>)val;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">void</span> <span class="title function_">nbo_write_rtp_header</span><span class="params">(<span class="type">uint8_t</span> *ptr, <span class="type">const</span> <span class="type">rtp_header_t</span> *header)</span></span><br><span class="line">&#123;</span><br><span class="line">    ptr[<span class="number">0</span>] = (<span class="type">uint8_t</span>)((header-&gt;v &lt;&lt; <span class="number">6</span>) | (header-&gt;p &lt;&lt; <span class="number">5</span>) | (header-&gt;x &lt;&lt; <span class="number">4</span>) | header-&gt;cc);</span><br><span class="line">    ptr[<span class="number">1</span>] = (<span class="type">uint8_t</span>)((header-&gt;m &lt;&lt; <span class="number">7</span>) | header-&gt;pt);</span><br><span class="line">    ptr[<span class="number">2</span>] = (<span class="type">uint8_t</span>)(header-&gt;seq &gt;&gt; <span class="number">8</span>);</span><br><span class="line">    ptr[<span class="number">3</span>] = (<span class="type">uint8_t</span>)(header-&gt;seq &amp; <span class="number">0xFF</span>);</span><br><span class="line"></span><br><span class="line">    nbo_w32(ptr+<span class="number">4</span>, header-&gt;timestamp);</span><br><span class="line">    nbo_w32(ptr+<span class="number">8</span>, header-&gt;ssrc);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">rtp_packet_deserialize</span><span class="params">(<span class="keyword">struct</span> <span class="type">rtp_packet_t</span> *pkt, <span class="type">const</span> <span class="type">void</span>* data, <span class="type">int</span> bytes)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint32_t</span> i, v;</span><br><span class="line">    <span class="type">int</span> hdrlen;</span><br><span class="line">    <span class="type">const</span> <span class="type">uint8_t</span> *ptr;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bytes &lt; RTP_FIXED_HEADER) <span class="comment">// RFC3550 5.1 RTP Fixed Header Fields(p12)</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    ptr = (<span class="type">const</span> <span class="type">unsigned</span> <span class="type">char</span> *)data;</span><br><span class="line">    <span class="built_in">memset</span>(pkt, <span class="number">0</span>, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> <span class="type">rtp_packet_t</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// pkt header</span></span><br><span class="line">    v = nbo_r32(ptr);</span><br><span class="line">    pkt-&gt;rtp.v = RTP_V(v);</span><br><span class="line">    pkt-&gt;rtp.p = RTP_P(v);</span><br><span class="line">    pkt-&gt;rtp.x = RTP_X(v);</span><br><span class="line">    pkt-&gt;rtp.cc = RTP_CC(v);</span><br><span class="line">    pkt-&gt;rtp.m = RTP_M(v);</span><br><span class="line">    pkt-&gt;rtp.pt = RTP_PT(v);</span><br><span class="line">    pkt-&gt;rtp.seq = RTP_SEQ(v);</span><br><span class="line">    pkt-&gt;rtp.timestamp = nbo_r32(ptr + <span class="number">4</span>);</span><br><span class="line">    pkt-&gt;rtp.ssrc = nbo_r32(ptr + <span class="number">8</span>);</span><br><span class="line"></span><br><span class="line">    hdrlen = RTP_FIXED_HEADER + pkt-&gt;rtp.cc * <span class="number">4</span>;    <span class="comment">// 解析带csrc时的总长度</span></span><br><span class="line">    <span class="keyword">if</span> (RTP_VERSION != pkt-&gt;rtp.v || bytes &lt; hdrlen + (pkt-&gt;rtp.x ? <span class="number">4</span> : <span class="number">0</span>) + (pkt-&gt;rtp.p ? <span class="number">1</span> : <span class="number">0</span>))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// pkt contributing source</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; pkt-&gt;rtp.cc; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        pkt-&gt;csrc[i] = nbo_r32(ptr + <span class="number">12</span> + i * <span class="number">4</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    assert(bytes &gt;= hdrlen);</span><br><span class="line">    pkt-&gt;payload = (<span class="type">uint8_t</span>*)ptr + hdrlen;      <span class="comment">// 跳过头部 拿到payload</span></span><br><span class="line">    pkt-&gt;payloadlen = bytes - hdrlen;           <span class="comment">// payload长度</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// pkt header extension</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">1</span> == pkt-&gt;rtp.x)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">const</span> <span class="type">uint8_t</span> *rtpext = ptr + hdrlen;</span><br><span class="line">        assert(pkt-&gt;payloadlen &gt;= <span class="number">4</span>);</span><br><span class="line">        pkt-&gt;extension = rtpext + <span class="number">4</span>;</span><br><span class="line">        pkt-&gt;reserved = nbo_r16(rtpext);</span><br><span class="line">        pkt-&gt;extlen = nbo_r16(rtpext + <span class="number">2</span>) * <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">if</span> (pkt-&gt;extlen + <span class="number">4</span> &gt; pkt-&gt;payloadlen)</span><br><span class="line">        &#123;</span><br><span class="line">            assert(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            pkt-&gt;payload = rtpext + pkt-&gt;extlen + <span class="number">4</span>;</span><br><span class="line">            pkt-&gt;payloadlen -= pkt-&gt;extlen + <span class="number">4</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// padding</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">1</span> == pkt-&gt;rtp.p)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">uint8_t</span> padding = ptr[bytes - <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">if</span> (pkt-&gt;payloadlen &lt; padding)</span><br><span class="line">        &#123;</span><br><span class="line">            assert(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            pkt-&gt;payloadlen -= padding;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">rtp_packet_serialize_header</span><span class="params">(<span class="type">const</span> <span class="keyword">struct</span> <span class="type">rtp_packet_t</span> *pkt, <span class="type">void</span>* data, <span class="type">int</span> bytes)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> hdrlen;</span><br><span class="line">    <span class="type">uint32_t</span> i;</span><br><span class="line">    <span class="type">uint8_t</span>* ptr;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (RTP_VERSION != pkt-&gt;rtp.v || <span class="number">0</span> != (pkt-&gt;extlen % <span class="number">4</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        assert(<span class="number">0</span>); <span class="comment">// RTP version field must equal 2 (p66)</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// RFC3550 5.1 RTP Fixed Header Fields(p12)</span></span><br><span class="line">    hdrlen = RTP_FIXED_HEADER + pkt-&gt;rtp.cc * <span class="number">4</span> + (pkt-&gt;rtp.x ? <span class="number">4</span> : <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (bytes &lt; hdrlen + pkt-&gt;extlen)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    ptr = (<span class="type">uint8_t</span> *)data;</span><br><span class="line">    nbo_write_rtp_header(ptr, &amp;pkt-&gt;rtp);</span><br><span class="line">    ptr += RTP_FIXED_HEADER;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// pkt contributing source</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; pkt-&gt;rtp.cc; i++, ptr += <span class="number">4</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        nbo_w32(ptr, pkt-&gt;csrc[i]);     <span class="comment">// csrc列表封装到头部</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// pkt header extension</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">1</span> == pkt-&gt;rtp.x)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 5.3.1 RTP Header Extension</span></span><br><span class="line">        assert(<span class="number">0</span> == (pkt-&gt;extlen % <span class="number">4</span>));</span><br><span class="line">        nbo_w16(ptr, pkt-&gt;reserved);</span><br><span class="line">        nbo_w16(ptr + <span class="number">2</span>, pkt-&gt;extlen / <span class="number">4</span>);</span><br><span class="line">        <span class="built_in">memcpy</span>(ptr + <span class="number">4</span>, pkt-&gt;extension, pkt-&gt;extlen);   <span class="comment">// extension封装到头部</span></span><br><span class="line">        ptr += pkt-&gt;extlen + <span class="number">4</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> hdrlen + pkt-&gt;extlen;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">rtp_packet_serialize</span><span class="params">(<span class="type">const</span> <span class="keyword">struct</span> <span class="type">rtp_packet_t</span> *pkt, <span class="type">void</span>* data, <span class="type">int</span> bytes)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> hdrlen;</span><br><span class="line"></span><br><span class="line">    hdrlen = rtp_packet_serialize_header(pkt, data, bytes);</span><br><span class="line">    <span class="keyword">if</span> (hdrlen &lt; RTP_FIXED_HEADER || hdrlen + pkt-&gt;payloadlen &gt; bytes)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memcpy</span>(((<span class="type">uint8_t</span>*)data) + hdrlen, pkt-&gt;payload, pkt-&gt;payloadlen);</span><br><span class="line">    <span class="keyword">return</span> hdrlen + pkt-&gt;payloadlen;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/557859851?utm_id=0">https://zhuanlan.zhihu.com/p/557859851?utm_id=0</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/SimpleForest/article/details/129894415">https://blog.csdn.net/SimpleForest/article/details/129894415</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/09/17/RTMP%E5%8D%8F%E8%AE%AE/" rel="prev" title="RTMP协议">
+                  <i class="fa fa-angle-left"></i> RTMP协议
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/" rel="next" title="RTP之H264封包和解包">
+                  RTP之H264封包和解包 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

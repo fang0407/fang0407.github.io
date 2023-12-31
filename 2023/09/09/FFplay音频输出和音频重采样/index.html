@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="⾳频输出模块⾳频输出的主要流程：   打开SDL⾳频设备，设置参数。 启动SDL⾳频设备播放。 SDL⾳频回调函数读取数据，即从FrameQueue读取frame填充回调函数提供的buffer空间。  打开⾳频设备stream_component_open函数中打开音频设备。 audio_src ⼀开始与 audio_tgt 是⼀样的，如果输出设备⽀持⾳轨参数，那么 audio_src 可以⼀直保">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FFplay音频输出和音频重采样">
+<meta property="og:url" content="https://fang0407.github.io/2023/09/09/FFplay%E9%9F%B3%E9%A2%91%E8%BE%93%E5%87%BA%E5%92%8C%E9%9F%B3%E9%A2%91%E9%87%8D%E9%87%87%E6%A0%B7/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="⾳频输出模块⾳频输出的主要流程：   打开SDL⾳频设备，设置参数。 启动SDL⾳频设备播放。 SDL⾳频回调函数读取数据，即从FrameQueue读取frame填充回调函数提供的buffer空间。  打开⾳频设备stream_component_open函数中打开音频设备。 audio_src ⼀开始与 audio_tgt 是⼀样的，如果输出设备⽀持⾳轨参数，那么 audio_src 可以⼀直保">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-09-09T12:01:01.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:40:15.401Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/09/09/FFplay%E9%9F%B3%E9%A2%91%E8%BE%93%E5%87%BA%E5%92%8C%E9%9F%B3%E9%A2%91%E9%87%8D%E9%87%87%E6%A0%B7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/09/09/FFplay%E9%9F%B3%E9%A2%91%E8%BE%93%E5%87%BA%E5%92%8C%E9%9F%B3%E9%A2%91%E9%87%8D%E9%87%87%E6%A0%B7/","path":"2023/09/09/FFplay音频输出和音频重采样/","title":"FFplay音频输出和音频重采样"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FFplay音频输出和音频重采样 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%BE%B3%E9%A2%91%E8%BE%93%E5%87%BA%E6%A8%A1%E5%9D%97"><span class="nav-number">1.</span> <span class="nav-text">⾳频输出模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%BC%80%E2%BE%B3%E9%A2%91%E8%AE%BE%E5%A4%87"><span class="nav-number">1.1.</span> <span class="nav-text">打开⾳频设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">回调函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="nav-number">1.2.1.</span> <span class="nav-text">读取数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%BE%B3%E9%A2%91%E9%87%8D%E9%87%87%E6%A0%B7"><span class="nav-number">2.</span> <span class="nav-text">⾳频重采样</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FFmpeg%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">FFmpeg函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#av-get-default-channel-layout"><span class="nav-number">3.1.1.</span> <span class="nav-text">av_get_default_channel_layout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#av-samples-get-buffer-size"><span class="nav-number">3.1.2.</span> <span class="nav-text">av_samples_get_buffer_size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#av-gettime-relative"><span class="nav-number">3.1.3.</span> <span class="nav-text">av_gettime_relative</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/09/FFplay%E9%9F%B3%E9%A2%91%E8%BE%93%E5%87%BA%E5%92%8C%E9%9F%B3%E9%A2%91%E9%87%8D%E9%87%87%E6%A0%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FFplay音频输出和音频重采样 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FFplay音频输出和音频重采样
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-09 20:01:01" itemprop="dateCreated datePublished" datetime="2023-09-09T20:01:01+08:00">2023-09-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:40:15" itemprop="dateModified" datetime="2023-12-30T22:40:15+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FFplay/" itemprop="url" rel="index"><span itemprop="name">FFplay</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="⾳频输出模块"><a href="#⾳频输出模块" class="headerlink" title="⾳频输出模块"></a>⾳频输出模块</h1><p>⾳频输出的主要流程： </p>
+<ul>
+<li>打开SDL⾳频设备，设置参数。</li>
+<li>启动SDL⾳频设备播放。</li>
+<li>SDL⾳频回调函数读取数据，即从FrameQueue读取frame填充回调函数提供的buffer空间。</li>
+</ul>
+<h2 id="打开⾳频设备"><a href="#打开⾳频设备" class="headerlink" title="打开⾳频设备"></a>打开⾳频设备</h2><p>stream_component_open函数中打开音频设备。</p>
+<p>audio_src ⼀开始与 audio_tgt 是⼀样的，如果输出设备⽀持⾳轨参数，那么 audio_src 可以⼀直保持与 audio_tgt ⼀致，否则将在后⾯代码中⾃动修正为⾳轨参数，并引⼊重采样机制。 </p>
+<p>audio_buf相关的⼏个变量：</p>
+<ul>
+<li>audio_buf：从要输出的AVFrame中取出的⾳频数据（PCM），如果有必要，则对该数据重采样。</li>
+<li>audio_buf_size：audio_buf的总⼤⼩。</li>
+<li>audio_buf_index：下⼀次可读的audio_buf的index位置。</li>
+<li>audio_write_buf_size：audio_buf剩余的buffer⻓度，即audio_buf_size - audio_buf_index。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//从avctx(即AVCodecContext)中获取⾳频格式参数</span></span><br><span class="line">sample_rate    = avctx-&gt;sample_rate;</span><br><span class="line">nb_channels    = avctx-&gt;channels;</span><br><span class="line">channel_layout = avctx-&gt;channel_layout;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* prepare audio output */</span></span><br><span class="line"><span class="comment">//调⽤audio_open打开sdl⾳频输出，实际打开的设备参数保存在audio_tgt，返回值表示输出设备的缓冲区⼤⼩</span></span><br><span class="line"><span class="keyword">if</span> ((ret = audio_open(is, channel_layout, nb_channels, sample_rate, &amp;is-&gt;audio_tgt)) &lt; <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">goto</span> fail;</span><br><span class="line">is-&gt;audio_hw_buf_size = ret;</span><br><span class="line">is-&gt;audio_src = is-&gt;audio_tgt;    <span class="comment">//暂时将数据源参数等同于⽬标输出参数</span></span><br><span class="line">is-&gt;audio_buf_size  = <span class="number">0</span>;</span><br><span class="line">is-&gt;audio_buf_index = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<p>audio_open()函数填⼊期望的⾳频参数，打开⾳频设备后，将实际的⾳频参数存⼊输出参数is-&gt;audio_tgt中，后⾯⾳频播放线程⽤会⽤到此参数，使⽤此参数将原始⾳频数据重采样，转换为⾳频设备⽀持的格式。 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">audio_open</span><span class="params">(<span class="type">void</span> *opaque, <span class="type">int64_t</span> wanted_channel_layout, <span class="type">int</span> wanted_nb_channels, </span></span><br><span class="line"><span class="params">                      <span class="type">int</span> wanted_sample_rate, <span class="keyword">struct</span> AudioParams *audio_hw_params)</span></span><br><span class="line">&#123;</span><br><span class="line">    SDL_AudioSpec wanted_spec, spec;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *env;</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">int</span> next_nb_channels[] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">4</span>, <span class="number">6</span>&#125;;</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">int</span> next_sample_rates[] = &#123;<span class="number">0</span>, <span class="number">44100</span>, <span class="number">48000</span>, <span class="number">96000</span>, <span class="number">192000</span>&#125;;</span><br><span class="line">    <span class="type">int</span> next_sample_rate_idx = FF_ARRAY_ELEMS(next_sample_rates) - <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    env = SDL_getenv(<span class="string">&quot;SDL_AUDIO_CHANNELS&quot;</span>);</span><br><span class="line">    <span class="comment">//若环境变量有设置，优先从环境变量取得声道数和声道布局</span></span><br><span class="line">    <span class="keyword">if</span> (env) &#123;</span><br><span class="line">        wanted_nb_channels = atoi(env);</span><br><span class="line">        wanted_channel_layout = av_get_default_channel_layout(wanted_nb_channels);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//设置wanted_spec期望音频参数</span></span><br><span class="line">    <span class="keyword">if</span> (!wanted_channel_layout || </span><br><span class="line">        wanted_nb_channels != av_get_channel_layout_nb_channels(wanted_channel_layout)) &#123;</span><br><span class="line">        wanted_channel_layout = av_get_default_channel_layout(wanted_nb_channels);</span><br><span class="line">        wanted_channel_layout &amp;= ~AV_CH_LAYOUT_STEREO_DOWNMIX;</span><br><span class="line">    &#125;</span><br><span class="line">    wanted_nb_channels = av_get_channel_layout_nb_channels(wanted_channel_layout);</span><br><span class="line">    wanted_spec.channels = wanted_nb_channels;   <span class="comment">//声道数</span></span><br><span class="line">    wanted_spec.freq = wanted_sample_rate;       <span class="comment">//采样率</span></span><br><span class="line">    <span class="keyword">if</span> (wanted_spec.freq &lt;= <span class="number">0</span> || wanted_spec.channels &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_ERROR, <span class="string">&quot;Invalid sample rate or channel count!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (next_sample_rate_idx &amp;&amp; next_sample_rates[next_sample_rate_idx] &gt;= wanted_spec.freq)</span><br><span class="line">        next_sample_rate_idx--;</span><br><span class="line">    wanted_spec.format = AUDIO_S16SYS;   <span class="comment">//S表带符号，16是采样深度，SYS表采用系统字节序</span></span><br><span class="line">    wanted_spec.silence = <span class="number">0</span>;  <span class="comment">//静音值</span></span><br><span class="line">    <span class="comment">//⼀次读取多⻓的数据</span></span><br><span class="line">    wanted_spec.samples = FFMAX(SDL_AUDIO_MIN_BUFFER_SIZE, </span><br><span class="line">                                <span class="number">2</span> &lt;&lt; av_log2(wanted_spec.freq / SDL_AUDIO_MAX_CALLBACKS_PER_SEC));</span><br><span class="line">    wanted_spec.callback = sdl_audio_callback;    <span class="comment">//SDL以特定的频率调⽤回调函数，在回调函数中取得⾳频数据</span></span><br><span class="line">    wanted_spec.userdata = opaque;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//打开⾳频设备并创建⾳频处理线程。期望的参数是wanted_spec，实际得到的硬件参数是spec</span></span><br><span class="line">    <span class="keyword">while</span> (!(audio_dev = SDL_OpenAudioDevice(<span class="literal">NULL</span>, </span><br><span class="line">                                             <span class="number">0</span>, </span><br><span class="line">                                             &amp;wanted_spec, </span><br><span class="line">                                             &amp;spec, </span><br><span class="line">                                             SDL_AUDIO_ALLOW_FREQUENCY_CHANGE | </span><br><span class="line">                                             SDL_AUDIO_ALLOW_CHANNELS_CHANGE))) &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_WARNING, <span class="string">&quot;SDL_OpenAudio (%d channels, %d Hz): %s\n&quot;</span>,</span><br><span class="line">               wanted_spec.channels, wanted_spec.freq, SDL_GetError());</span><br><span class="line">        wanted_spec.channels = next_nb_channels[FFMIN(<span class="number">7</span>, wanted_spec.channels)];</span><br><span class="line">        <span class="keyword">if</span> (!wanted_spec.channels) &#123;</span><br><span class="line">            wanted_spec.freq = next_sample_rates[next_sample_rate_idx--];</span><br><span class="line">            wanted_spec.channels = wanted_nb_channels;</span><br><span class="line">            <span class="keyword">if</span> (!wanted_spec.freq) &#123;</span><br><span class="line">                av_log(<span class="literal">NULL</span>, AV_LOG_ERROR,</span><br><span class="line">                       <span class="string">&quot;No more combinations to try, audio open failed\n&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        wanted_channel_layout = av_get_default_channel_layout(wanted_spec.channels);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//检查打开⾳频设备的实际参数</span></span><br><span class="line">    <span class="keyword">if</span> (spec.format != AUDIO_S16SYS) &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_ERROR,</span><br><span class="line">               <span class="string">&quot;SDL advised audio format %d is not supported!\n&quot;</span>, spec.format);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//检查打开⾳频设备的实际参数</span></span><br><span class="line">    <span class="keyword">if</span> (spec.channels != wanted_spec.channels) &#123;</span><br><span class="line">        wanted_channel_layout = av_get_default_channel_layout(spec.channels);</span><br><span class="line">        <span class="keyword">if</span> (!wanted_channel_layout) &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, AV_LOG_ERROR,</span><br><span class="line">                   <span class="string">&quot;SDL advised channel count %d is not supported!\n&quot;</span>, spec.channels);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">//audio_hw_params保存的参数，就是在做重采样的时候要转成的格式</span></span><br><span class="line">    audio_hw_params-&gt;fmt = AV_SAMPLE_FMT_S16;</span><br><span class="line">    audio_hw_params-&gt;freq = spec.freq;</span><br><span class="line">    audio_hw_params-&gt;channel_layout = wanted_channel_layout;</span><br><span class="line">    audio_hw_params-&gt;channels =  spec.channels;   </span><br><span class="line">    <span class="comment">//channels * fmt</span></span><br><span class="line">    audio_hw_params-&gt;frame_size = av_samples_get_buffer_size(<span class="literal">NULL</span>, </span><br><span class="line">                                                             audio_hw_params-&gt;channels, </span><br><span class="line">                                                             <span class="number">1</span>, </span><br><span class="line">                                                             audio_hw_params-&gt;fmt, </span><br><span class="line">                                                             <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//channels * freq * fmt</span></span><br><span class="line">    audio_hw_params-&gt;bytes_per_sec = av_samples_get_buffer_size(<span class="literal">NULL</span>, </span><br><span class="line">                                                                audio_hw_params-&gt;channels, </span><br><span class="line">                                                                audio_hw_params-&gt;freq, </span><br><span class="line">                                                                audio_hw_params-&gt;fmt, </span><br><span class="line">                                                                <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (audio_hw_params-&gt;bytes_per_sec &lt;= <span class="number">0</span> || audio_hw_params-&gt;frame_size &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_ERROR, <span class="string">&quot;av_samples_get_buffer_size failed\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> spec.size;    <span class="comment">//硬件内部缓存的数据字节</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* prepare a new audio buffer */</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">sdl_audio_callback</span><span class="params">(<span class="type">void</span> *opaque, Uint8 *stream, <span class="type">int</span> len)</span></span><br><span class="line">&#123;</span><br><span class="line">    VideoState *is = opaque;</span><br><span class="line">    <span class="type">int</span> audio_size, len1;</span><br><span class="line"></span><br><span class="line">    audio_callback_time = av_gettime_relative();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (len &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//如果audio_buf消耗完了，则调⽤audio_decode_frame重新填充audio_buf</span></span><br><span class="line">        <span class="keyword">if</span> (is-&gt;audio_buf_index &gt;= is-&gt;audio_buf_size) &#123;</span><br><span class="line">            audio_size = audio_decode_frame(is);</span><br><span class="line">            <span class="keyword">if</span> (audio_size &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">/* if error, just output silence */</span></span><br><span class="line">                is-&gt;audio_buf = <span class="literal">NULL</span>;</span><br><span class="line">                is-&gt;audio_buf_size = SDL_AUDIO_MIN_BUFFER_SIZE / is-&gt;audio_tgt.frame_size * </span><br><span class="line">                    is-&gt;audio_tgt.frame_size;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (is-&gt;show_mode != SHOW_MODE_VIDEO)</span><br><span class="line">                    update_sample_display(is, (<span class="type">int16_t</span> *)is-&gt;audio_buf, audio_size);</span><br><span class="line">                is-&gt;audio_buf_size = audio_size;</span><br><span class="line">            &#125;</span><br><span class="line">            is-&gt;audio_buf_index = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        len1 = is-&gt;audio_buf_size - is-&gt;audio_buf_index;   <span class="comment">//缓冲区剩余⼤⼩</span></span><br><span class="line">        <span class="keyword">if</span> (len1 &gt; len)</span><br><span class="line">            len1 = len;</span><br><span class="line">        <span class="keyword">if</span> (!is-&gt;muted &amp;&amp; is-&gt;audio_buf &amp;&amp; is-&gt;audio_volume == SDL_MIX_MAXVOLUME)</span><br><span class="line">            <span class="built_in">memcpy</span>(stream, (<span class="type">uint8_t</span> *)is-&gt;audio_buf + is-&gt;audio_buf_index, len1);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">memset</span>(stream, <span class="number">0</span>, len1);</span><br><span class="line">            <span class="keyword">if</span> (!is-&gt;muted &amp;&amp; is-&gt;audio_buf)</span><br><span class="line">                <span class="comment">//调整⾳量</span></span><br><span class="line">                SDL_MixAudioFormat(stream, </span><br><span class="line">                                   (<span class="type">uint8_t</span> *)is-&gt;audio_buf + is-&gt;audio_buf_index, </span><br><span class="line">                                   AUDIO_S16SYS, </span><br><span class="line">                                   len1, </span><br><span class="line">                                   is-&gt;audio_volume);</span><br><span class="line">        &#125;</span><br><span class="line">        len -= len1;</span><br><span class="line">        stream += len1;</span><br><span class="line">        <span class="comment">//更新is-&gt;audio_buf_index</span></span><br><span class="line">        is-&gt;audio_buf_index += len1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    is-&gt;audio_write_buf_size = is-&gt;audio_buf_size - is-&gt;audio_buf_index;</span><br><span class="line">    <span class="comment">/* Let&#x27;s assume the audio driver that is used by SDL has two periods. */</span></span><br><span class="line">    <span class="comment">//同步相关</span></span><br><span class="line">    <span class="keyword">if</span> (!isnan(is-&gt;audio_clock)) &#123;</span><br><span class="line">        set_clock_at(&amp;is-&gt;audclk,</span><br><span class="line">                     is-&gt;audio_clock -</span><br><span class="line">                     (<span class="type">double</span>)(<span class="number">2</span> * is-&gt;audio_hw_buf_size + is-&gt;audio_write_buf_size) /</span><br><span class="line">                     is-&gt;audio_tgt.bytes_per_sec,</span><br><span class="line">                     is-&gt;audio_clock_serial,</span><br><span class="line">                     audio_callback_time / <span class="number">1000000.0</span>);</span><br><span class="line">        </span><br><span class="line">        sync_clock_to_slave(&amp;is-&gt;extclk, &amp;is-&gt;audclk);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="读取数据"><a href="#读取数据" class="headerlink" title="读取数据"></a>读取数据</h3><p>ffmpeg解码⼀个AVPacket的⾳频到AVFrame后，在AVFrame中存储的⾳频数据⼤⼩与SDL回调所需要的数据不⼀定相等 （回调函数每次要获取的数据量都是固定）；特别是如果要实现声⾳变速播放功能，那每帧AVFrame做变速后的数据⼤⼩⼤概率和SDL回调锁需要的数据⼤⼩不⼀致。这就需要再增加⼀级缓冲区解决问题，即是从FrameQueue队列读取到Frame的数据后，先缓存到⼀个buffer⾥，然后再从该buffer读取数据给到SDL回调函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">audio_decode_frame</span><span class="params">(VideoState *is)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> data_size, resampled_data_size;</span><br><span class="line">    <span class="type">int64_t</span> dec_channel_layout;</span><br><span class="line">    av_unused <span class="type">double</span> audio_clock0;</span><br><span class="line">    <span class="type">int</span> wanted_nb_samples;</span><br><span class="line">    Frame *af;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is-&gt;paused)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(af = frame_queue_peek_readable(&amp;is-&gt;sampq)))</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        frame_queue_next(&amp;is-&gt;sampq);</span><br><span class="line">    &#125; <span class="keyword">while</span> (af-&gt;serial != is-&gt;audioq.serial);</span><br><span class="line">    <span class="comment">//计算这⼀帧的字节数</span></span><br><span class="line">    data_size = av_samples_get_buffer_size(<span class="literal">NULL</span>, af-&gt;frame-&gt;channels,</span><br><span class="line">                                           af-&gt;frame-&gt;nb_samples,</span><br><span class="line">                                           af-&gt;frame-&gt;format, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    dec_channel_layout =</span><br><span class="line">        (af-&gt;frame-&gt;channel_layout &amp;&amp; af-&gt;frame-&gt;channels == </span><br><span class="line">         av_get_channel_layout_nb_channels(af-&gt;frame-&gt;channel_layout)) ? </span><br><span class="line">        af-&gt;frame-&gt;channel_layout : av_get_default_channel_layout(af-&gt;frame-&gt;channels);</span><br><span class="line">    wanted_nb_samples = synchronize_audio(is, af-&gt;frame-&gt;nb_samples);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (af-&gt;frame-&gt;format        != is-&gt;audio_src.fmt            ||</span><br><span class="line">        dec_channel_layout       != is-&gt;audio_src.channel_layout ||</span><br><span class="line">        af-&gt;frame-&gt;sample_rate   != is-&gt;audio_src.freq           ||</span><br><span class="line">        (wanted_nb_samples       != af-&gt;frame-&gt;nb_samples &amp;&amp; !is-&gt;swr_ctx)) &#123;</span><br><span class="line">        <span class="comment">//判断是否需要重新初始化重采样</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is-&gt;swr_ctx) &#123;</span><br><span class="line">        <span class="comment">//...重采样相关</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//frame的数据</span></span><br><span class="line">        is-&gt;audio_buf = af-&gt;frame-&gt;data[<span class="number">0</span>];</span><br><span class="line">        resampled_data_size = data_size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    audio_clock0 = is-&gt;audio_clock;</span><br><span class="line">    <span class="comment">/* update the audio clock with the pts */</span> ??</span><br><span class="line">    <span class="keyword">if</span> (!isnan(af-&gt;pts))</span><br><span class="line">        is-&gt;audio_clock = af-&gt;pts + (<span class="type">double</span>) af-&gt;frame-&gt;nb_samples / af-&gt;frame-&gt;sample_rate;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        is-&gt;audio_clock = NAN;</span><br><span class="line">    is-&gt;audio_clock_serial = af-&gt;serial;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> resampled_data_size;  <span class="comment">//返回audio_buf的数据⼤⼩</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="⾳频重采样"><a href="#⾳频重采样" class="headerlink" title="⾳频重采样"></a>⾳频重采样</h1><p>FFmpeg解码得到的⾳频帧的格式未必能被SDL⽀持，在这种情况下，需要进⾏⾳频重采样，即将⾳频帧格式转换为SDL⽀持的⾳频格式，否则是⽆法正常播放的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">audio_decode_frame</span><span class="params">(VideoState *is)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> data_size, resampled_data_size;</span><br><span class="line">    <span class="type">int64_t</span> dec_channel_layout;</span><br><span class="line">    av_unused <span class="type">double</span> audio_clock0;</span><br><span class="line">    <span class="type">int</span> wanted_nb_samples;</span><br><span class="line">    Frame *af;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is-&gt;paused)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(af = frame_queue_peek_readable(&amp;is-&gt;sampq)))</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        frame_queue_next(&amp;is-&gt;sampq);</span><br><span class="line">    &#125; <span class="keyword">while</span> (af-&gt;serial != is-&gt;audioq.serial);</span><br><span class="line"></span><br><span class="line">    data_size = av_samples_get_buffer_size(<span class="literal">NULL</span>, af-&gt;frame-&gt;channels,</span><br><span class="line">                                           af-&gt;frame-&gt;nb_samples,</span><br><span class="line">                                           af-&gt;frame-&gt;format, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//获取声道布局</span></span><br><span class="line">    dec_channel_layout =</span><br><span class="line">        (af-&gt;frame-&gt;channel_layout &amp;&amp; af-&gt;frame-&gt;channels == </span><br><span class="line">         av_get_channel_layout_nb_channels(af-&gt;frame-&gt;channel_layout)) ?</span><br><span class="line">            af-&gt;frame-&gt;channel_layout : av_get_default_channel_layout(af-&gt;frame-&gt;channels);</span><br><span class="line">    <span class="comment">// 获取样本数校正值：若同步时钟是⾳频，则不调整样本数；否则根据同步需要调整样本数</span></span><br><span class="line">    wanted_nb_samples = synchronize_audio(is, af-&gt;frame-&gt;nb_samples);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//is-&gt;audio_src第一次由is-&gt;audio_tgt设置 见上面</span></span><br><span class="line">    <span class="keyword">if</span> (af-&gt;frame-&gt;format        != is-&gt;audio_src.fmt            ||</span><br><span class="line">        dec_channel_layout       != is-&gt;audio_src.channel_layout ||</span><br><span class="line">        af-&gt;frame-&gt;sample_rate   != is-&gt;audio_src.freq           ||</span><br><span class="line">        (wanted_nb_samples       != af-&gt;frame-&gt;nb_samples &amp;&amp; !is-&gt;swr_ctx)) &#123;</span><br><span class="line">        swr_free(&amp;is-&gt;swr_ctx);</span><br><span class="line">        <span class="comment">//分配swr_ctx</span></span><br><span class="line">        is-&gt;swr_ctx = swr_alloc_set_opts(<span class="literal">NULL</span>,</span><br><span class="line">                                         is-&gt;audio_tgt.channel_layout, </span><br><span class="line">                                         is-&gt;audio_tgt.fmt, </span><br><span class="line">                                         is-&gt;audio_tgt.freq,</span><br><span class="line">                                         dec_channel_layout,           </span><br><span class="line">                                         af-&gt;frame-&gt;format, </span><br><span class="line">                                         af-&gt;frame-&gt;sample_rate,</span><br><span class="line">                                         <span class="number">0</span>, </span><br><span class="line">                                         <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">if</span> (!is-&gt;swr_ctx || swr_init(is-&gt;swr_ctx) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, AV_LOG_ERROR,</span><br><span class="line">                   <span class="string">&quot;Cannot create sample rate converter for conversion of %d Hz %s %d channels to %d Hz %s %d channels!\n&quot;</span>,</span><br><span class="line">                   af-&gt;frame-&gt;sample_rate, av_get_sample_fmt_name(af-&gt;frame-&gt;format), af-&gt;frame-&gt;channels,</span><br><span class="line">                   is-&gt;audio_tgt.freq, av_get_sample_fmt_name(is-&gt;audio_tgt.fmt), is-&gt;audio_tgt.channels);</span><br><span class="line">            swr_free(&amp;is-&gt;swr_ctx);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        is-&gt;audio_src.channel_layout = dec_channel_layout;</span><br><span class="line">        is-&gt;audio_src.channels       = af-&gt;frame-&gt;channels;</span><br><span class="line">        is-&gt;audio_src.freq = af-&gt;frame-&gt;sample_rate;</span><br><span class="line">        is-&gt;audio_src.fmt = af-&gt;frame-&gt;format;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is-&gt;swr_ctx) &#123;</span><br><span class="line">        <span class="type">const</span> <span class="type">uint8_t</span> **in = (<span class="type">const</span> <span class="type">uint8_t</span> **)af-&gt;frame-&gt;extended_data;</span><br><span class="line">        <span class="type">uint8_t</span> **out = &amp;is-&gt;audio_buf1;</span><br><span class="line">        <span class="type">int</span> out_count = (<span class="type">int64_t</span>)wanted_nb_samples * is-&gt;audio_tgt.freq / af-&gt;frame-&gt;sample_rate + <span class="number">256</span>;</span><br><span class="line">        <span class="type">int</span> out_size  = av_samples_get_buffer_size(<span class="literal">NULL</span>, </span><br><span class="line">                                                   is-&gt;audio_tgt.channels, </span><br><span class="line">                                                   out_count, </span><br><span class="line">                                                   is-&gt;audio_tgt.fmt, </span><br><span class="line">                                                   <span class="number">0</span>);</span><br><span class="line">        <span class="type">int</span> len2;</span><br><span class="line">        <span class="keyword">if</span> (out_size &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, AV_LOG_ERROR, <span class="string">&quot;av_samples_get_buffer_size() failed\n&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (wanted_nb_samples != af-&gt;frame-&gt;nb_samples) &#123;</span><br><span class="line">            <span class="keyword">if</span> (swr_set_compensation(is-&gt;swr_ctx, </span><br><span class="line">                                     (wanted_nb_samples - af-&gt;frame-&gt;nb_samples) * </span><br><span class="line">                                     is-&gt;audio_tgt.freq / af-&gt;frame-&gt;sample_rate,</span><br><span class="line">                                     wanted_nb_samples * is-&gt;audio_tgt.freq / </span><br><span class="line">                                     af-&gt;frame-&gt;sample_rate) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                av_log(<span class="literal">NULL</span>, AV_LOG_ERROR, <span class="string">&quot;swr_set_compensation() failed\n&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        av_fast_malloc(&amp;is-&gt;audio_buf1, &amp;is-&gt;audio_buf1_size, out_size);</span><br><span class="line">        <span class="keyword">if</span> (!is-&gt;audio_buf1)</span><br><span class="line">            <span class="keyword">return</span> AVERROR(ENOMEM);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//转换</span></span><br><span class="line">        len2 = swr_convert(is-&gt;swr_ctx, out, out_count, in, af-&gt;frame-&gt;nb_samples);</span><br><span class="line">        <span class="keyword">if</span> (len2 &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, AV_LOG_ERROR, <span class="string">&quot;swr_convert() failed\n&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (len2 == out_count) &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, AV_LOG_WARNING, <span class="string">&quot;audio buffer is probably too small\n&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (swr_init(is-&gt;swr_ctx) &lt; <span class="number">0</span>)</span><br><span class="line">                swr_free(&amp;is-&gt;swr_ctx);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        is-&gt;audio_buf = is-&gt;audio_buf1;</span><br><span class="line">        resampled_data_size = len2 * is-&gt;audio_tgt.channels * av_get_bytes_per_sample(is-&gt;audio_tgt.fmt);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        is-&gt;audio_buf = af-&gt;frame-&gt;data[<span class="number">0</span>];</span><br><span class="line">        resampled_data_size = data_size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    audio_clock0 = is-&gt;audio_clock;</span><br><span class="line">    <span class="comment">/* update the audio clock with the pts */</span></span><br><span class="line">    <span class="keyword">if</span> (!isnan(af-&gt;pts))</span><br><span class="line">        is-&gt;audio_clock = af-&gt;pts + (<span class="type">double</span>) af-&gt;frame-&gt;nb_samples / af-&gt;frame-&gt;sample_rate;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        is-&gt;audio_clock = NAN;</span><br><span class="line">    is-&gt;audio_clock_serial = af-&gt;serial;</span><br><span class="line">    <span class="keyword">return</span> resampled_data_size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><h2 id="FFmpeg函数"><a href="#FFmpeg函数" class="headerlink" title="FFmpeg函数"></a>FFmpeg函数</h2><h3 id="av-get-default-channel-layout"><a href="#av-get-default-channel-layout" class="headerlink" title="av_get_default_channel_layout"></a>av_get_default_channel_layout</h3><p>获取默认的音频通道布局。</p>
+<p>声道数表示音频流中的声道数量，而音频通道布局定义了这些声道的位置和排列方式。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int64_t</span> <span class="title function_">av_get_default_channel_layout</span><span class="params">(<span class="type">int</span> nb_channels)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>nb_channels</code>：要获取默认通道布局的声道数。通常，这是音频流的声道数。</p>
+<p>返回值是一个 <code>uint64_t</code> 整数，表示默认的音频通道布局。</p>
+<h3 id="av-samples-get-buffer-size"><a href="#av-samples-get-buffer-size" class="headerlink" title="av_samples_get_buffer_size"></a>av_samples_get_buffer_size</h3><p>用于计算音频样本数据的缓冲区大小。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">av_samples_get_buffer_size</span><span class="params">(<span class="type">int</span> *linesize, <span class="type">int</span> nb_channels, <span class="type">int</span> nb_samples,</span></span><br><span class="line"><span class="params">                               <span class="keyword">enum</span> AVSampleFormat sample_fmt, <span class="type">int</span> align)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>linesize</code>：这个值有函数内部填充，计算一行所占字节数，可以设置为NULL。</p>
+<p><code>nb_channels</code>：音频数据的声道数。</p>
+<p><code>nb_samples</code>：音频数据的样本数量。</p>
+<p><code>sample_fmt</code>：音频数据的采样格式，使用枚举类型 <code>enum AVSampleFormat</code> 表示。</p>
+<p><code>align</code>：对齐要求，通常为0，表示不需要特定的对齐。如果非零，表示要求按指定的字节对齐。</p>
+<p>该函数计算并返回所需缓冲区的大小（以字节为单位），并将结果存储在 <code>linesize</code> 指针指向的位置。</p>
+<h3 id="av-gettime-relative"><a href="#av-gettime-relative" class="headerlink" title="av_gettime_relative"></a>av_gettime_relative</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int64_t</span> <span class="title function_">av_gettime_relative</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>用于获取相对时间（relative time）。它返回一个 <code>int64_t</code> 类型的整数，表示当前系统时钟的相对时间，通常以微秒（μs）为单位。</p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://ffmpeg.xianwaizhiyin.net/ffplay/video_sync.html">https://ffmpeg.xianwaizhiyin.net/ffplay/video_sync.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/09/09/FFplay%E9%9F%B3%E8%A7%86%E9%A2%91%E8%A7%A3%E7%A0%81%E7%BA%BF%E7%A8%8B/" rel="prev" title="FFplay音视频解码线程">
+                  <i class="fa fa-angle-left"></i> FFplay音视频解码线程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/09/10/FFplay%E8%A7%86%E9%A2%91%E8%BE%93%E5%87%BA%E5%92%8C%E5%B0%BA%E2%BC%A8%E5%8F%98%E6%8D%A2/" rel="next" title="FFplay视频输出和尺⼨变换">
+                  FFplay视频输出和尺⼨变换 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

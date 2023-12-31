@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="去中心化技术分享与 P2P 框架的实现 什么是STUN RFC5389 STUN介绍STUN 最早是在 RFC3489 中定义（Simple Traversal of UDP Through NATs），即用 UDP简单的穿透 NAT，作为一个完整的 NAT 穿透解决方案。在 RFC5389 中废弃了 RFC3489，而是把 STUN 协议定义为穿透 NAT 提供工具，而不是一个完整的解决方案。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STUN协议">
+<meta property="og:url" content="https://fang0407.github.io/2023/11/12/STUN%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="去中心化技术分享与 P2P 框架的实现 什么是STUN RFC5389 STUN介绍STUN 最早是在 RFC3489 中定义（Simple Traversal of UDP Through NATs），即用 UDP简单的穿透 NAT，作为一个完整的 NAT 穿透解决方案。在 RFC5389 中废弃了 RFC3489，而是把 STUN 协议定义为穿透 NAT 提供工具，而不是一个完整的解决方案。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fang0407.github.io/2023/11/12/STUN%E5%8D%8F%E8%AE%AE/STUN-binding-request.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/11/12/STUN%E5%8D%8F%E8%AE%AE/STUN-binding-success-response.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/11/12/STUN%E5%8D%8F%E8%AE%AE/SRS%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D%E6%8A%A5%E6%96%87.png">
+<meta property="article:published_time" content="2023-11-12T01:14:02.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:37:13.578Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang0407.github.io/2023/11/12/STUN%E5%8D%8F%E8%AE%AE/STUN-binding-request.png">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/11/12/STUN%E5%8D%8F%E8%AE%AE/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/11/12/STUN%E5%8D%8F%E8%AE%AE/","path":"2023/11/12/STUN协议/","title":"STUN协议"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>STUN协议 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#STUN%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">STUN介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#STUN%E6%B6%88%E6%81%AF%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">STUN消息格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#STUN%E6%B6%88%E6%81%AF%E5%A4%B4"><span class="nav-number">2.1.</span> <span class="nav-text">STUN消息头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#STUN%E5%B1%9E%E6%80%A7%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">STUN属性类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#STUN%E9%83%A8%E5%88%86%E5%B1%9E%E6%80%A7"><span class="nav-number">2.2.1.</span> <span class="nav-text">STUN部分属性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#STUN%E6%8A%93%E5%8C%85"><span class="nav-number">3.</span> <span class="nav-text">STUN抓包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#STUN%E4%BA%A4%E4%BA%92%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">STUN交互过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#STUN-SRS%E6%BA%90%E7%A0%81"><span class="nav-number">5.</span> <span class="nav-text">STUN-SRS源码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E8%A7%A3%E6%9E%90"><span class="nav-number">5.1.</span> <span class="nav-text">请求解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E8%A7%A3%E6%9E%90"><span class="nav-number">5.2.</span> <span class="nav-text">响应解析</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/11/12/STUN%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="STUN协议 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          STUN协议
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-11-12 09:14:02" itemprop="dateCreated datePublished" datetime="2023-11-12T09:14:02+08:00">2023-11-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:37:13" itemprop="dateModified" datetime="2023-12-30T22:37:13+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/134045027">去中心化技术分享与 P2P 框架的实现</a></p>
+<p><a target="_blank" rel="noopener" href="https://info.support.huawei.com/info-finder/encyclopedia/zh/STUN.html">什么是STUN</a></p>
+<p><a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc5389">RFC5389</a></p>
+<h1 id="STUN介绍"><a href="#STUN介绍" class="headerlink" title="STUN介绍"></a>STUN介绍</h1><p>STUN 最早是在 RFC3489 中定义（Simple Traversal of UDP Through NATs），即用 UDP简单的穿透 NAT，作为一个完整的 NAT 穿透解决方案。在 RFC5389 中废弃了 RFC3489，而是把 STUN 协议定义为穿透 NAT 提供工具，而不是一个完整的解决方案。</p>
+<p>在 RFC5389 中定义 STUN（Session Traversal Utilities forNAT，NAT 会话穿越应用程序）是一种网络轻量级协议，它允许网络设备找出通信端点经NAT设备后的IP地址和端口号。</p>
+<p>STUN 是一种 Client&#x2F;Server 的协议，也是一种 Request&#x2F;Response的协议，默认端口 3478。</p>
+<p>完整的 NAT 传输解决方案则使用 STUN 的工具性质，ICE 就是一个基于 offer&#x2F;answer 方法的完整NAT传输方案。</p>
+<h1 id="STUN消息格式"><a href="#STUN消息格式" class="headerlink" title="STUN消息格式"></a>STUN消息格式</h1><h2 id="STUN消息头"><a href="#STUN消息头" class="headerlink" title="STUN消息头"></a>STUN消息头</h2><p><strong>STUN 消息头为 20 字节</strong>，后面紧跟 0 或多个属性。STUN 头部包含——STUN 消息类型、magic cookie、事务 ID 和消息长度。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">|  0                     1                 2                   3</span><br><span class="line">|  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|0 0|      STUN Message Type      |     Message Length            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                         Magic Cookie                            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                                                                 |</span><br><span class="line">|                    Transaction ID (64 bits)                     |</span><br><span class="line">|                                                                 |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>最高的两位必须为0，当 STUN 和其他协议复用的时候，用来区分 STUN 包和其他数据包。</p>
+</li>
+<li><p><strong>消息类型 (2字节)：</strong>表示 STUN 消息的类型（请求，指示，成功响应，或错误响应）。</p>
+<ul>
+<li>0b00 表示request；客户端发送的请求消息，用于向 STUN 服务器请求信息。</li>
+<li>0b01 表示indication；客户端发送的指示消息，不需要响应。主要用于保持 NAT 映射活动，但不需要获得新的映射。</li>
+<li>0b10 表示success response；STUN 服务器成功处理了客户端的请求，将返回一个成功响应。</li>
+<li>0b11 表示error response；STUN 服务器无法成功处理客户端的请求，将返回一个错误响应。错误响应包括一个错误代码，指示请求失败的原因。</li>
+</ul>
+</li>
+<li><p><strong>消息长度 (2字节)：</strong> 指定 STUN 消息的总长度，包括20字节的头部。</p>
+</li>
+<li><p><strong>魔术Cookie (4字节):</strong> 一个固定值（0x2112A442），用于区分 STUN 数据包和其他协议。</p>
+</li>
+<li><p><strong>事务ID (12字节):</strong> 用于标识 STUN 事务的唯一标识符。用于关联请求和响应。</p>
+</li>
+</ul>
+<h2 id="STUN属性类型"><a href="#STUN属性类型" class="headerlink" title="STUN属性类型"></a>STUN属性类型</h2><p>STUN 消息头后跟着多个属性，每个属性都采用 TLV 编码，type 为 16 位的类型、lenght 为 16 位的长度、value 为属性值。</p>
+<p>每个 STUN 属性必须是 4 字节对齐。lenght 字段的值只表示 TLV 中 V(Value) 的长度，既不包括 T(Type) 和 L(length)，又不包括 padding 填充数据的长度。具体如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">|  0                     1                 2                   3</span><br><span class="line">|  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|               Type              |             Length            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                        Value(variable)                          |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<h3 id="STUN部分属性"><a href="#STUN部分属性" class="headerlink" title="STUN部分属性"></a>STUN部分属性</h3><p><strong>MAPPED-ADDRESS：</strong>用于表示客户端外部 IP 地址，如果没有 NAT ，那么外部 IP 地址和内部 IP 地址是相同的。前8位保留，之后8位用于表示IP类型（IPV4&#x2F;6）。之后16位表示端口号。</p>
+<p><strong>USERNAME：</strong>用户名，用于消息完整性，在 webrtc 中的规则为 “对端的 ice-ufrag ：自己的 ice-ufrag ”，其中 ice-ufrag 已通过offer&#x2F;answer 的 SDP 信息进行交互。</p>
+<p><strong>MESSAGE-INTEGRITY：</strong>STUN 消息的 HMAC-SHA1 值，长度 20 字节，用于消息完整性认证。</p>
+<p><strong>FINGERPRINT：</strong>指纹认证，此属性可以出现在所有的 STUN 消息中，该属性用于区分 STUN 数据包与其他协议的包。属性的值为采用 CRC32 方式计算 STUN 消息直到但不包括FINGERPRINT 属性的的结果，并与 32 位的值 0x5354554e 异或。</p>
+<p><strong>XOR-MAPPED-ADDRESS：</strong>与 MAPPED-ADDRESS 属性基本相同，区别在于反射地址经过一次异或（XOR）处理，异或运算是其自身的逆运算，客户端经过一次异或运算获得真实的反射地址。解决 ALG 篡改地址和端口的问题。</p>
+<p><strong>PRIORITY 和 USE-CANDIDATE</strong>：终端必须在其 request 中包含 PRIORITY 属性，指明其优先级，优先级由公式计算而得。如果有需要也可以给出特别指定的候选（即 USE-CANDIDATE 属性）。第一开始 Binding 时，可能没有 USE-CANDIDATE 这个字段，当这个通道可以使用的时候，也就是 ICE 提名使用时，STUN 消息添加该字段，表示使用该通道开始建联 DTLS 链接，这时候服务端开始和客户端握手建立安全加密 UDP 链接。</p>
+<p><strong>ICE-CONTROLLED和ICE-CONTROLLING</strong>：ICE流程中定义了两种角色：controlling 和 controlled 。一般流程下，会话的双发各自的角色选择是与会话协商的流程相关的。offerer 是 controlling，answerer 是 controlled。ICE-CONTROLLED  或者是 ICE-CONTROLLING，这两个属性都会携带一个 Tie breaker 这样的字段，其中包含 一个本机产生的随机值。收到该 bind request 的一方会检查这两个字段，如果和当前本机的 role 冲突，则检查本机的 tie breaker 值和消息中携带的 tie breaker 值进行判定本机合适的 role。判定的方法为 Tie breaker 值大的一方为 controlling。如果判定本端变更角色，这直接修改；如果判定对端变更角色，则对此 bind request 发送487错误响应，收到此错误响应的一方变更角色即可。</p>
+<h1 id="STUN抓包"><a href="#STUN抓包" class="headerlink" title="STUN抓包"></a>STUN抓包</h1><ul>
+<li>客户端请求，Binding Request</li>
+</ul>
+<img src="/2023/11/12/STUN%E5%8D%8F%E8%AE%AE/STUN-binding-request.png" alt="STUN-binding-request" style="zoom:50%;">
+
+<ul>
+<li>服务端成功响应，Binding Ssuccess Response</li>
+</ul>
+<img src="/2023/11/12/STUN%E5%8D%8F%E8%AE%AE/STUN-binding-success-response.png" alt="STUN-binding-success-response" style="zoom:50%;">
+
+<ul>
+<li>SRS一对一通话建立流程</li>
+</ul>
+<img src="/2023/11/12/STUN%E5%8D%8F%E8%AE%AE/SRS一对一通话报文.png" alt="SRS一对一通话报文" style="zoom:50%;">
+
+<h1 id="STUN交互过程"><a href="#STUN交互过程" class="headerlink" title="STUN交互过程"></a>STUN交互过程</h1><ul>
+<li>在 WebRTC 中，STUN 客户端内置在浏览器用户代理中，在会话建立之前，先发送 stun 测试报文，以便浏览器确定其是否位于 NAT 之后并发现映射地址和端口。</li>
+<li>当 STUN 服务器收到 STUN Binding 请求时，它会记录 Binding 请求来自哪个 IP 地址和端口号，此地址和端口号随后将以 STUN Binding 响应的形式返回客户端。（通过XOR-MAPPED-ADDRESS属性）。</li>
+<li>客户端将响应中发来的 IP 地址和端口与其发送的 IP 地址和端口进行比较，以此来判断客户端和服务器之间有没有 NAT ，若不同，则说明至少有一个 NAT ，客户端能够识别由最外层的 NAT 分配的 IP 地址和端口。存在多个 NAT 时，STUN 只能识别最外层 NAT 的相关信息。</li>
+<li>STUN 服务器将源传输地址复制到 STUN Binding 响应中 XOR-MAPPED-ADDRESS 属性中，并将绑定响应发送回 STUN 客户端。当这个数据包通过 NAT 返回时，NAT 将修改 IP 报头中的目的传输地址，但是 STUN 响应主体中 XOR-MAPPED-ADDRESS 属性中的传输地址将保持不变。通过这种方式，客户端可以了解最外面的 NAT 相对于 STUN 服务器分配的反射传输地址。</li>
+</ul>
+<h1 id="STUN-SRS源码"><a href="#STUN-SRS源码" class="headerlink" title="STUN-SRS源码"></a>STUN-SRS源码</h1><p>SRS版本为<code>v6.0.75</code></p>
+<h2 id="请求解析"><a href="#请求解析" class="headerlink" title="请求解析"></a>请求解析</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsStunPacket::decode</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* buf, <span class="type">const</span> <span class="type">int</span> nb_buf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line"></span><br><span class="line">    SrsBuffer* stream = <span class="keyword">new</span> <span class="built_in">SrsBuffer</span>(<span class="built_in">const_cast</span>&lt;<span class="type">char</span>*&gt;(buf), nb_buf);</span><br><span class="line">    <span class="built_in">SrsAutoFree</span>(SrsBuffer, stream);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (stream-&gt;<span class="built_in">left</span>() &lt; <span class="number">20</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_new</span>(ERROR_RTC_STUN, <span class="string">&quot;invalid stun packet, size=%d&quot;</span>, stream-&gt;<span class="built_in">size</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//解析stun消息头</span></span><br><span class="line">    message_type = stream-&gt;<span class="built_in">read_2bytes</span>();</span><br><span class="line">    <span class="type">uint16_t</span> message_len = stream-&gt;<span class="built_in">read_2bytes</span>();</span><br><span class="line">    string magic_cookie = stream-&gt;<span class="built_in">read_string</span>(<span class="number">4</span>);</span><br><span class="line">    transcation_id = stream-&gt;<span class="built_in">read_string</span>(<span class="number">12</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//20字节是消息头</span></span><br><span class="line">    <span class="keyword">if</span> (nb_buf != <span class="number">20</span> + message_len) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_new</span>(ERROR_RTC_STUN, </span><br><span class="line">                             <span class="string">&quot;invalid stun packet, message_len=%d, nb_buf=%d&quot;</span>,</span><br><span class="line">                             message_len, nb_buf);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//stun属性 type len value 格式</span></span><br><span class="line">    <span class="keyword">while</span> (stream-&gt;<span class="built_in">left</span>() &gt;= <span class="number">4</span>) &#123;</span><br><span class="line">        <span class="type">uint16_t</span> type = stream-&gt;<span class="built_in">read_2bytes</span>();</span><br><span class="line">        <span class="type">uint16_t</span> len = stream-&gt;<span class="built_in">read_2bytes</span>();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (stream-&gt;<span class="built_in">left</span>() &lt; len) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_new</span>(ERROR_RTC_STUN, <span class="string">&quot;invalid stun packet&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        string val = stream-&gt;<span class="built_in">read_string</span>(len);</span><br><span class="line">        <span class="comment">// padding</span></span><br><span class="line">        <span class="keyword">if</span> (len % <span class="number">4</span> != <span class="number">0</span>) &#123;</span><br><span class="line">            stream-&gt;<span class="built_in">read_string</span>(<span class="number">4</span> - (len % <span class="number">4</span>));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//解析属性</span></span><br><span class="line">        <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">            <span class="keyword">case</span> Username: &#123;</span><br><span class="line">                username = val;</span><br><span class="line">                <span class="type">size_t</span> p = val.<span class="built_in">find</span>(<span class="string">&quot;:&quot;</span>);    <span class="comment">//以:分割本地和远程ufrag  610f5ir6:Dw56</span></span><br><span class="line">                <span class="keyword">if</span> (p != string::npos) &#123;</span><br><span class="line">                    local_ufrag = val.<span class="built_in">substr</span>(<span class="number">0</span>, p);</span><br><span class="line">                    remote_ufrag = val.<span class="built_in">substr</span>(p + <span class="number">1</span>);</span><br><span class="line">                    <span class="built_in">srs_verbose</span>(<span class="string">&quot;stun packet local_ufrag=%s, remote_ufrag=%s&quot;</span>,</span><br><span class="line">                                local_ufrag.<span class="built_in">c_str</span>(), remote_ufrag.<span class="built_in">c_str</span>());</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//开始建立DTLS连接</span></span><br><span class="line">			<span class="keyword">case</span> UseCandidate: &#123;</span><br><span class="line">                use_candidate = <span class="literal">true</span>;</span><br><span class="line">                <span class="built_in">srs_verbose</span>(<span class="string">&quot;stun use-candidate&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// @see: https://tools.ietf.org/html/draft-ietf-ice-rfc5245bis-00#section-5.1.2</span></span><br><span class="line">			<span class="comment">// One agent full, one lite:  The full agent MUST take the controlling</span></span><br><span class="line">            <span class="comment">// role, and the lite agent MUST take the controlled role.  The full</span></span><br><span class="line">            <span class="comment">// agent will form check lists, run the ICE state machines, and</span></span><br><span class="line">            <span class="comment">// generate connectivity checks.</span></span><br><span class="line">            <span class="comment">//接收端</span></span><br><span class="line">            <span class="keyword">case</span> IceControlled: &#123;</span><br><span class="line">                ice_controlled = <span class="literal">true</span>;</span><br><span class="line">                <span class="built_in">srs_verbose</span>(<span class="string">&quot;stun ice-controlled&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//发起端，不会解析值，SRS作为SFU，都是由web发起请求</span></span><br><span class="line">            <span class="keyword">case</span> IceControlling: &#123;</span><br><span class="line">                ice_controlling = <span class="literal">true</span>;</span><br><span class="line">                <span class="built_in">srs_verbose</span>(<span class="string">&quot;stun ice-controlling&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">                </span><br><span class="line">            <span class="keyword">default</span>: &#123;</span><br><span class="line">                <span class="built_in">srs_verbose</span>(<span class="string">&quot;stun type=%u, no process&quot;</span>, type);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="响应解析"><a href="#响应解析" class="headerlink" title="响应解析"></a>响应解析</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsRtcUdpNetwork::on_binding_request</span><span class="params">(SrsStunPacket* r, string ice_pwd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line"></span><br><span class="line">    SrsStunPacket stun_binding_response;</span><br><span class="line">    <span class="type">char</span> buf[kRtpPacketSize];</span><br><span class="line">    SrsBuffer* stream = <span class="keyword">new</span> <span class="built_in">SrsBuffer</span>(buf, <span class="built_in">sizeof</span>(buf));</span><br><span class="line">    <span class="built_in">SrsAutoFree</span>(SrsBuffer, stream);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//响应类型</span></span><br><span class="line">    stun_binding_response.<span class="built_in">set_message_type</span>(BindingResponse);</span><br><span class="line">    <span class="comment">//设置响应头字段，在请求中解析</span></span><br><span class="line">    stun_binding_response.<span class="built_in">set_local_ufrag</span>(r-&gt;<span class="built_in">get_remote_ufrag</span>());</span><br><span class="line">    stun_binding_response.<span class="built_in">set_remote_ufrag</span>(r-&gt;<span class="built_in">get_local_ufrag</span>());</span><br><span class="line">    stun_binding_response.<span class="built_in">set_transcation_id</span>(r-&gt;<span class="built_in">get_transcation_id</span>());</span><br><span class="line">    <span class="comment">// <span class="doctag">FIXME:</span> inet_addr is deprecated, IPV6 support</span></span><br><span class="line">    <span class="comment">//设置NAT映射的外网IP端口</span></span><br><span class="line">    stun_binding_response.<span class="built_in">set_mapped_address</span>(<span class="built_in">be32toh</span>(<span class="built_in">inet_addr</span>(<span class="built_in">get_peer_ip</span>().<span class="built_in">c_str</span>())));</span><br><span class="line">    stun_binding_response.<span class="built_in">set_mapped_port</span>(<span class="built_in">get_peer_port</span>());</span><br><span class="line"></span><br><span class="line">    <span class="comment">//stun response encode</span></span><br><span class="line">    <span class="keyword">if</span> ((err = stun_binding_response.<span class="built_in">encode</span>(ice_pwd, stream)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;stun binding response encode failed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((err = <span class="built_in">write</span>(stream-&gt;<span class="built_in">data</span>(), stream-&gt;<span class="built_in">pos</span>(), <span class="literal">NULL</span>)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;stun binding response send failed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (state_ == SrsRtcNetworkStateWaitingStun) &#123;</span><br><span class="line">        state_ = SrsRtcNetworkStateDtls;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> Add cost.</span></span><br><span class="line">        <span class="built_in">srs_trace</span>(<span class="string">&quot;RTC: session STUN done, waiting DTLS handshake.&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>((err = transport_-&gt;<span class="built_in">start_active_handshake</span>()) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;fail to dtls handshake&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_srs_blackhole-&gt;blackhole) &#123;</span><br><span class="line">        _srs_blackhole-&gt;<span class="built_in">sendto</span>(stream-&gt;<span class="built_in">data</span>(), stream-&gt;<span class="built_in">pos</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsStunPacket::encode</span><span class="params">(<span class="type">const</span> string&amp; pwd, SrsBuffer* stream)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">is_binding_response</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">encode_binding_response</span>(pwd, stream);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">srs_error_new</span>(ERROR_RTC_STUN, <span class="string">&quot;unknown stun type=%d&quot;</span>, <span class="built_in">get_message_type</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// <span class="doctag">FIXME:</span> make this function easy to read</span></span><br><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsStunPacket::encode_binding_response</span><span class="params">(<span class="type">const</span> string&amp; pwd, SrsBuffer* stream)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line"></span><br><span class="line">    string property_username = <span class="built_in">encode_username</span>();</span><br><span class="line">    string mapped_address = <span class="built_in">encode_mapped_address</span>();</span><br><span class="line"></span><br><span class="line">    stream-&gt;<span class="built_in">write_2bytes</span>(BindingResponse);</span><br><span class="line">    stream-&gt;<span class="built_in">write_2bytes</span>(property_username.<span class="built_in">size</span>() + mapped_address.<span class="built_in">size</span>());</span><br><span class="line">    stream-&gt;<span class="built_in">write_4bytes</span>(kStunMagicCookie);</span><br><span class="line">    stream-&gt;<span class="built_in">write_string</span>(transcation_id);</span><br><span class="line">    stream-&gt;<span class="built_in">write_string</span>(property_username);</span><br><span class="line">    stream-&gt;<span class="built_in">write_string</span>(mapped_address);</span><br><span class="line"></span><br><span class="line">    stream-&gt;<span class="built_in">data</span>()[<span class="number">2</span>] = ((stream-&gt;<span class="built_in">pos</span>() - <span class="number">20</span> + <span class="number">20</span> + <span class="number">4</span>) &amp; <span class="number">0x0000FF00</span>) &gt;&gt; <span class="number">8</span>;</span><br><span class="line">    stream-&gt;<span class="built_in">data</span>()[<span class="number">3</span>] = ((stream-&gt;<span class="built_in">pos</span>() - <span class="number">20</span> + <span class="number">20</span> + <span class="number">4</span>) &amp; <span class="number">0x000000FF</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置MESSAGE-INTEGRIT字段，用于ice-pwd检验</span></span><br><span class="line">    <span class="type">char</span> hmac_buf[<span class="number">20</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> hmac_buf_len = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> ((err = <span class="built_in">hmac_encode</span>(<span class="string">&quot;sha1&quot;</span>, pwd.<span class="built_in">c_str</span>(), pwd.<span class="built_in">size</span>(), </span><br><span class="line">                           stream-&gt;<span class="built_in">data</span>(), stream-&gt;<span class="built_in">pos</span>(), hmac_buf, hmac_buf_len)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;hmac encode failed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    string hmac = <span class="built_in">encode_hmac</span>(hmac_buf, hmac_buf_len);</span><br><span class="line"></span><br><span class="line">    stream-&gt;<span class="built_in">write_string</span>(hmac);</span><br><span class="line">    stream-&gt;<span class="built_in">data</span>()[<span class="number">2</span>] = ((stream-&gt;<span class="built_in">pos</span>() - <span class="number">20</span> + <span class="number">8</span>) &amp; <span class="number">0x0000FF00</span>) &gt;&gt; <span class="number">8</span>;</span><br><span class="line">    stream-&gt;<span class="built_in">data</span>()[<span class="number">3</span>] = ((stream-&gt;<span class="built_in">pos</span>() - <span class="number">20</span> + <span class="number">8</span>) &amp; <span class="number">0x000000FF</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置FINGERPRINT字段，CRC-32检验，防止篡改</span></span><br><span class="line">    <span class="type">uint32_t</span> crc32 = <span class="built_in">srs_crc32_ieee</span>(stream-&gt;<span class="built_in">data</span>(), stream-&gt;<span class="built_in">pos</span>(), <span class="number">0</span>) ^ <span class="number">0x5354554E</span>;</span><br><span class="line"></span><br><span class="line">    string fingerprint = <span class="built_in">encode_fingerprint</span>(crc32);</span><br><span class="line"></span><br><span class="line">    stream-&gt;<span class="built_in">write_string</span>(fingerprint);</span><br><span class="line"></span><br><span class="line">    stream-&gt;<span class="built_in">data</span>()[<span class="number">2</span>] = ((stream-&gt;<span class="built_in">pos</span>() - <span class="number">20</span>) &amp; <span class="number">0x0000FF00</span>) &gt;&gt; <span class="number">8</span>;</span><br><span class="line">    stream-&gt;<span class="built_in">data</span>()[<span class="number">3</span>] = ((stream-&gt;<span class="built_in">pos</span>() - <span class="number">20</span>) &amp; <span class="number">0x000000FF</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/11/SRS%E9%85%8D%E7%BD%AE%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/" rel="prev" title="SRS配置一对一通话">
+                  <i class="fa fa-angle-left"></i> SRS配置一对一通话
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/15/SDP%E8%AF%A6%E8%A7%A3/" rel="next" title="SDP详解">
+                  SDP详解 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

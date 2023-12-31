@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Forward集群原理和配置Forward集群简介在SRS中可以理解为把Master节点获得直播流广播给所有的Slave节点。我觉得广播这个词可能要比Forward更容易理解。也可以理解为转发，即Master把接收到的所有流都转发给Slave节点，即Master节点由多少路直播流，那么在每个Slave节点也会多少路直播流。 注：在SRS中还有另外一种集群方式，Edge方式。注意两种方式的用词不同。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SRS流媒体服务器之Forward集群">
+<meta property="og:url" content="https://fang0407.github.io/2023/10/05/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BForward%E9%9B%86%E7%BE%A4/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="Forward集群原理和配置Forward集群简介在SRS中可以理解为把Master节点获得直播流广播给所有的Slave节点。我觉得广播这个词可能要比Forward更容易理解。也可以理解为转发，即Master把接收到的所有流都转发给Slave节点，即Master节点由多少路直播流，那么在每个Slave节点也会多少路直播流。 注：在SRS中还有另外一种集群方式，Edge方式。注意两种方式的用词不同。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fang0407.github.io/2023/10/05/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BForward%E9%9B%86%E7%BE%A4/Forward%E9%9B%86%E7%BE%A4.png">
+<meta property="article:published_time" content="2023-10-05T01:17:48.000Z">
+<meta property="article:modified_time" content="2023-12-30T14:37:32.322Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang0407.github.io/2023/10/05/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BForward%E9%9B%86%E7%BE%A4/Forward%E9%9B%86%E7%BE%A4.png">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2023/10/05/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BForward%E9%9B%86%E7%BE%A4/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2023/10/05/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BForward%E9%9B%86%E7%BE%A4/","path":"2023/10/05/SRS流媒体服务器之Forward集群/","title":"SRS流媒体服务器之Forward集群"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SRS流媒体服务器之Forward集群 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Forward%E9%9B%86%E7%BE%A4%E5%8E%9F%E7%90%86%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">Forward集群原理和配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Forward%E9%9B%86%E7%BE%A4%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">Forward集群简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Forward%E9%9B%86%E7%BE%A4%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text">Forward集群适用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Forward%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.3.</span> <span class="nav-text">Forward集群部署实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">1.3.1.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">1.3.2.</span> <span class="nav-text">测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Forward%E9%9B%86%E7%BE%A4%E6%BA%90%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">Forward集群源码</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/10/05/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BForward%E9%9B%86%E7%BE%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SRS流媒体服务器之Forward集群 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SRS流媒体服务器之Forward集群
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-10-05 09:17:48" itemprop="dateCreated datePublished" datetime="2023-10-05T09:17:48+08:00">2023-10-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:37:32" itemprop="dateModified" datetime="2023-12-30T22:37:32+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SRS/" itemprop="url" rel="index"><span itemprop="name">SRS</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Forward集群原理和配置"><a href="#Forward集群原理和配置" class="headerlink" title="Forward集群原理和配置"></a>Forward集群原理和配置</h1><h2 id="Forward集群简介"><a href="#Forward集群简介" class="headerlink" title="Forward集群简介"></a>Forward集群简介</h2><p>在SRS中可以理解为把Master节点获得直播流广播给所有的Slave节点。我觉得广播这个词可能要比Forward更容易理解。也可以理解为转发，即Master把接收到的所有流都转发给Slave节点，即Master节点由多少路直播流，那么在每个Slave节点也会多少路直播流。</p>
+<p>注：在SRS中还有另外一种集群方式，Edge方式。注意两种方式的用词不同。</p>
+<ul>
+<li>Forward模式中，中心节点叫Master，边缘节点叫Slave。</li>
+<li>Edge模式中，中心节点叫Origin（源站），边缘节点叫做Edge（边缘）。</li>
+</ul>
+<h2 id="Forward集群适用场景"><a href="#Forward集群适用场景" class="headerlink" title="Forward集群适用场景"></a>Forward集群适用场景</h2><p>Forward适合搭建小型集群，为什么这么说呢？因为每个slave节点都和master节点有相同数量的直播流，那么请看下图（从右往左，1、2、3是步骤）：</p>
+<img src="/2023/10/05/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BForward%E9%9B%86%E7%BE%A4/Forward集群.png" alt="Forward集群" style="zoom:50%;">
+
+<p>推流者推流给Master，那么Master就会Forward到每一个Slave。那么在Slave节点上不论需不需要都会有Master过来的流。试想一下，如果推流者的数量为10，那么Master到Slave之间的带宽就是：带宽&#x3D;10 * Slave的个数 *直播流码率，随着Slave的增多，Master的出口带宽会不断提高。而现实是，在某些Slave节点其实根本没有人看……这样就造成了Master到Slave之间的带宽浪费。</p>
+<h2 id="Forward集群部署实例"><a href="#Forward集群部署实例" class="headerlink" title="Forward集群部署实例"></a>Forward集群部署实例</h2><h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>修改<code>conf/forward.master.conf</code>，启动<code>./objs/srs -c conf/forward.master.conf</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">listen              1935;</span><br><span class="line">max_connections     1000;</span><br><span class="line">pid                 ./objs/srs.master.pid;</span><br><span class="line">daemon              off;</span><br><span class="line">srs_log_tank        console;</span><br><span class="line">vhost __defaultVhost__ &#123;</span><br><span class="line">    forward &#123;</span><br><span class="line">        enabled on;</span><br><span class="line">        destination 127.0.0.1:19350;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改<code>conf/forward.slave.conf</code>，<code>./objs/srs -c conf/forward.slave.conf</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">listen              19350;</span><br><span class="line">max_connections     1000;</span><br><span class="line">pid                 ./objs/srs.slave.pid;</span><br><span class="line">daemon              off;</span><br><span class="line">srs_log_tank        console;</span><br><span class="line">vhost __defaultVhost__ &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改<code>conf/forward.slave2.conf</code>，<code>./objs/srs -c conf/forward.slave2.conf</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">listen              19351;</span><br><span class="line">max_connections     1000;</span><br><span class="line">pid                 ./objs/srs.slave2.pid;</span><br><span class="line">daemon              off;</span><br><span class="line">srs_log_tank        console;</span><br><span class="line">vhost __defaultVhost__ &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>推流到Master</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -re  -i test.flv  -vcodec copy -acodec copy -f flv -y rtmp://127.0.0.1/live/livestream</span><br></pre></td></tr></table></figure>
+
+<p>拉流测试</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Master</span></span><br><span class="line">ffplay rtmp://127.0.0.1/live/livestream</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Slave</span></span><br><span class="line">ffplay rtmp://127.0.0.1:19350/live/livestream</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Slave2</span></span><br><span class="line">ffplay rtmp://127.0.0.1:19351/live/livestream</span><br></pre></td></tr></table></figure>
+
+<h1 id="Forward集群源码"><a href="#Forward集群源码" class="headerlink" title="Forward集群源码"></a>Forward集群源码</h1><p>Forward集群模式只能将流推送到Master结点，所以Slave结点没有推流端，只有拉流端。</p>
+<ul>
+<li>断点<code>SrsConfig::get_forward_enabled</code>。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">#0  SrsConfig::get_forward_enabled (this=0xa0fcf0, vhost=&quot;defaultVhost&quot;) at</span><br><span class="line">src/app/srs_app_config.cpp:4821</span><br><span class="line">#1  0x00000000004e1aa2 in SrsOriginHub::create_forwarders (this=0xa3a5b0) at</span><br><span class="line">src/app/srs_app_source.cpp:1467</span><br><span class="line">#2  0x00000000004e053c in SrsOriginHub::on_publish (this=0xa3a5b0) at</span><br><span class="line">src/app/srs_app_source.cpp:1120</span><br><span class="line">#3  0x00000000004e6a0b in SrsSource::on_publish (this=0xa3a120) at</span><br><span class="line">src/app/srs_app_source.cpp:2460</span><br><span class="line">#4  0x00000000004d89f2 in SrsRtmpConn::acquire_publish (this=0xa2fca0, source=0xa3a120)</span><br><span class="line">bool SrsConfig::get_forward_enabled(string vhost) &#123; static bool DEFAULT = false; SrsConfDirective* conf = get_vhost(vhost); if (!conf) &#123; return DEFAULT; &#125;conf = conf-&gt;get(&quot;forward&quot;); if (!conf) &#123; return DEFAULT; &#125;conf = conf-&gt;get(&quot;enabled&quot;); if (!conf || conf-&gt;arg0().empty()) &#123; return DEFAULT; &#125;return SRS_CONF_PERFER_FALSE(conf-&gt;arg0()); &#125;SrsConfDirective* SrsConfig::get_forwards(string vhost) &#123; SrsConfDirective* conf = get_vhost(vhost); if (!conf) &#123; return NULL; &#125;conf = conf-&gt;get(&quot;forward&quot;); if (!conf) &#123; return NULL; &#125;return conf-&gt;get(&quot;destination&quot;); &#125;</span><br><span class="line">    at src/app/srs_app_rtmp_conn.cpp:940</span><br><span class="line">#5  0x00000000004d7a74 in SrsRtmpConn::publishing (this=0xa2fca0, source=0xa3a120)</span><br><span class="line">    at src/app/srs_app_rtmp_conn.cpp:822</span><br><span class="line">#6  0x00000000004d5229 in SrsRtmpConn::stream_service_cycle (this=0xa2fca0) </span><br><span class="line">    at src/app/srs_app_rtmp_conn.cpp:534</span><br><span class="line">#7  0x00000000004d4141 in SrsRtmpConn::service_cycle (this=0xa2fca0) at src/app/srs_app_rtmp_conn.cpp:388</span><br><span class="line">#8  0x00000000004d2f09 in SrsRtmpConn::do_cycle (this=0xa2fca0) at src/app/srs_app_rtmp_conn.cpp:209</span><br><span class="line">#9  0x00000000004d10fb in SrsConnection::cycle (this=0xa2fd18) at src/app/srs_app_conn.cpp:171</span><br><span class="line">#10 0x0000000000509c88 in SrsSTCoroutine::cycle (this=0xa2ff50) at src/app/srs_app_st.cpp:198</span><br><span class="line">#11 0x0000000000509cfd in SrsSTCoroutine::pfn (arg=0xa2ff50) at src/app/srs_app_st.cpp:213</span><br><span class="line">#12 0x00000000005bdd9d in st_thread_main () at sched.c:337</span><br><span class="line">#13 0x00000000005be515 in st_thread_create (start=0x5bd719 &lt;st_vp_schedule+170&gt;,</span><br><span class="line">    arg=0x700000001, joinable=1, stk_size=1) at sched.c:616</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>根据断点，看下<code>SrsRtmpConn::acquire_publish</code>其中<code>info-&gt;edge</code>分支是用来edge边缘推流的，该流程处理另一个分支内<code>source-&gt;on_publish</code>。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsRtmpConn::acquire_publish</span><span class="params">(SrsSource* source)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    SrsRequest* req = info-&gt;req;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!source-&gt;<span class="built_in">can_publish</span>(info-&gt;edge)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_new</span>(ERROR_SYSTEM_STREAM_BUSY, </span><br><span class="line">                             <span class="string">&quot;rtmp: stream %s is busy&quot;</span>, </span><br><span class="line">                             req-&gt;<span class="built_in">get_stream_url</span>().<span class="built_in">c_str</span>());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// when edge, ignore the publish event, directly proxy it.</span></span><br><span class="line">    <span class="keyword">if</span> (info-&gt;edge) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((err = source-&gt;<span class="built_in">on_edge_start_publish</span>()) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;rtmp: edge start publish&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> ((err = source-&gt;<span class="built_in">on_publish</span>()) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;rtmp: source publish&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>调用<code>source-&gt;on_publish</code>进入<code>SrsOriginHub::on_publish</code>，创建<code>SrsForwarder</code>。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsOriginHub::on_publish</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// create forwarders</span></span><br><span class="line">    <span class="keyword">if</span> ((err = <span class="built_in">create_forwarders</span>()) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;create forwarders&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> use initialize to set req.</span></span><br><span class="line">    <span class="keyword">if</span> ((err = encoder-&gt;<span class="built_in">on_publish</span>(req)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;encoder publish&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((err = hls-&gt;<span class="built_in">on_publish</span>()) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;hls publish&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((err = dash-&gt;<span class="built_in">on_publish</span>()) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;dash publish&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((err = dvr-&gt;<span class="built_in">on_publish</span>()) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;dvr publish&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> use initialize to set req.</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> SRS_AUTO_HDS</span></span><br><span class="line">    <span class="keyword">if</span> ((err = hds-&gt;<span class="built_in">on_publish</span>(req)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;hds publish&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> use initialize to set req.</span></span><br><span class="line">    <span class="keyword">if</span> ((err = ng_exec-&gt;<span class="built_in">on_publish</span>(req)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;exec publish&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    is_active = <span class="literal">true</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>create_forwarders</code>读取配置文件创建<code>SrsForwarder</code>，并通过<code>forwarder-&gt;on_publish</code>启动协程。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsOriginHub::create_forwarders</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//是否开启enable</span></span><br><span class="line">    <span class="keyword">if</span> (!_srs_config-&gt;<span class="built_in">get_forward_enabled</span>(req-&gt;vhost)) &#123;</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//多个forwards</span></span><br><span class="line">    SrsConfDirective* conf = _srs_config-&gt;<span class="built_in">get_forwards</span>(req-&gt;vhost);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; conf &amp;&amp; i &lt; (<span class="type">int</span>)conf-&gt;args.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">        std::string forward_server = conf-&gt;args.<span class="built_in">at</span>(i);</span><br><span class="line">        </span><br><span class="line">        SrsForwarder* forwarder = <span class="keyword">new</span> <span class="built_in">SrsForwarder</span>(<span class="keyword">this</span>);</span><br><span class="line">        forwarders.<span class="built_in">push_back</span>(forwarder);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// initialize the forwarder with request.</span></span><br><span class="line">        <span class="keyword">if</span> ((err = forwarder-&gt;<span class="built_in">initialize</span>(req, forward_server)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;init forwarder&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">srs_utime_t</span> queue_size = _srs_config-&gt;<span class="built_in">get_queue_length</span>(req-&gt;vhost);</span><br><span class="line">        forwarder-&gt;<span class="built_in">set_queue_size</span>(queue_size);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//on_publish启动协程</span></span><br><span class="line">        <span class="keyword">if</span> ((err = forwarder-&gt;<span class="built_in">on_publish</span>()) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;start forwarder failed, vhost=%s, app=%s, stream=%s, forward-to=%s&quot;</span>,</span><br><span class="line">                req-&gt;vhost.<span class="built_in">c_str</span>(), req-&gt;app.<span class="built_in">c_str</span>(), req-&gt;stream.<span class="built_in">c_str</span>(), forward_server.<span class="built_in">c_str</span>());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动<code>SrsForwarder</code>协程，进入回调<code>SrsForwarder::do_cycle</code>，主要在<code>forward</code>中循环读取队列中的数据，并转发给客户端。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsForwarder::do_cycle</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    std::string url;</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        std::string server;</span><br><span class="line">        <span class="type">int</span> port = SRS_CONSTS_RTMP_DEFAULT_PORT;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// parse host:port from hostport.</span></span><br><span class="line">        <span class="built_in">srs_parse_hostport</span>(ep_forward, server, port);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// generate url</span></span><br><span class="line">        url = <span class="built_in">srs_generate_rtmp_url</span>(server, port, req-&gt;host, req-&gt;vhost, req-&gt;app, req-&gt;stream, req-&gt;param);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">srs_freep</span>(sdk);</span><br><span class="line">    <span class="type">srs_utime_t</span> cto = SRS_FORWARDER_CIMS;</span><br><span class="line">    <span class="type">srs_utime_t</span> sto = SRS_CONSTS_RTMP_TIMEOUT;</span><br><span class="line">    sdk = <span class="keyword">new</span> <span class="built_in">SrsSimpleRtmpClient</span>(url, cto, sto);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((err = sdk-&gt;<span class="built_in">connect</span>()) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;sdk connect url=%s, cto=%dms, sto=%dms.&quot;</span>, </span><br><span class="line">                              url.<span class="built_in">c_str</span>(), <span class="built_in">srsu2msi</span>(cto), <span class="built_in">srsu2msi</span>(sto));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((err = sdk-&gt;<span class="built_in">publish</span>(_srs_config-&gt;<span class="built_in">get_chunk_size</span>(req-&gt;vhost))) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;sdk publish&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((err = hub-&gt;<span class="built_in">on_forwarder_start</span>(<span class="keyword">this</span>)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;notify hub start&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((err = forward()) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;forward&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>sdk-&gt;recv_message</code>用来处理客户端消息命令，<code>queue-&gt;dump_packets</code>获取音视频数据，<code>sdk-&gt;send_and_free_messages</code>发送给客户端。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsForwarder::forward</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    sdk-&gt;<span class="built_in">set_recv_timeout</span>(SRS_CONSTS_RTMP_PULSE);</span><br><span class="line">    </span><br><span class="line">    SrsPithyPrint* pprint = SrsPithyPrint::<span class="built_in">create_forwarder</span>();</span><br><span class="line">    <span class="built_in">SrsAutoFree</span>(SrsPithyPrint, pprint);</span><br><span class="line">    </span><br><span class="line">    <span class="function">SrsMessageArray <span class="title">msgs</span><span class="params">(SYS_MAX_FORWARD_SEND_MSGS)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// update sequence header</span></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> maybe need to zero the sequence header timestamp.</span></span><br><span class="line">    <span class="keyword">if</span> (sh_video) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((err = sdk-&gt;<span class="built_in">send_and_free_message</span>(sh_video-&gt;<span class="built_in">copy</span>())) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;send video sh&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (sh_audio) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((err = sdk-&gt;<span class="built_in">send_and_free_message</span>(sh_audio-&gt;<span class="built_in">copy</span>())) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;send audio sh&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((err = trd-&gt;<span class="built_in">pull</span>()) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;thread quit&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        pprint-&gt;<span class="built_in">elapse</span>();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// read from client.</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            SrsCommonMessage* msg = <span class="literal">NULL</span>;</span><br><span class="line">            err = sdk-&gt;<span class="built_in">recv_message</span>(&amp;msg);</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (err != srs_success &amp;&amp; <span class="built_in">srs_error_code</span>(err) != ERROR_SOCKET_TIMEOUT) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;receive control message&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">srs_error_reset</span>(err);</span><br><span class="line">            </span><br><span class="line">            <span class="built_in">srs_freep</span>(msg);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// forward all messages.</span></span><br><span class="line">        <span class="comment">// each msg in msgs.msgs must be free, for the SrsMessageArray never free them.</span></span><br><span class="line">        <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> ((err = queue-&gt;<span class="built_in">dump_packets</span>(msgs.max, msgs.msgs, count)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;dump packets&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// pithy print</span></span><br><span class="line">        <span class="keyword">if</span> (pprint-&gt;<span class="built_in">can_print</span>()) &#123;</span><br><span class="line">            sdk-&gt;<span class="built_in">kbps_sample</span>(SRS_CONSTS_LOG_FOWARDER, pprint-&gt;<span class="built_in">age</span>(), count);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// ignore when no messages.</span></span><br><span class="line">        <span class="keyword">if</span> (count &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// sendout messages, all messages are freed by send_and_free_messages().</span></span><br><span class="line">        <span class="keyword">if</span> ((err = sdk-&gt;<span class="built_in">send_and_free_messages</span>(msgs.msgs, count)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;send messages&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>继续跟踪从哪里放数据到队列中，可以找到<code>SrsForwarder::on_meta_data</code>、<code>SrsForwarder::on_audio</code>和<code>SrsForwarder::on_video</code>中调用<code>queue-&gt;enqueue</code>，以<code>SrsForwarder::on_meta_data</code>为例，打个断点，看下堆栈：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#0  SrsForwarder::on_meta_data (this=0xa3b960, shared_metadata=0xa45f00) at src/app/srs_app_forward.cpp:114</span><br><span class="line">#1  0x00000000004dea69 in SrsOriginHub::on_meta_data (this=0xa3a5b0, </span><br><span class="line">    shared_metadata=0xa45f00, packet=0xa45e60 at src/app/srs_app_source.cpp:924</span><br><span class="line">#2  0x00000000004e516f in SrsSource::on_meta_data (this=0xa3a120, msg=0xa45c80, metadata=0xa45e60)</span><br><span class="line">    at src/app/srs_app_source.cpp:2116</span><br><span class="line">#3  0x00000000004d91bb in SrsRtmpConn::process_publish_message (this=0xa2fca0, source=0xa3a120, msg=0xa45c80)</span><br><span class="line">    at src/app/srs_app_rtmp_conn.cpp:1045</span><br><span class="line">#4  0x00000000004d8dce in SrsRtmpConn::handle_publish_message (this=0xa2fca0, source=0xa3a120, msg=0xa45c80)</span><br><span class="line">    at src/app/srs_app_rtmp_conn.cpp:993</span><br><span class="line">#5  0x00000000005810b6 in SrsPublishRecvThread::consume (this=0x7ffff7f66800, msg=0xa45c80)</span><br><span class="line">    at src/app/srs_app_recv_thread.cpp:389</span><br><span class="line">#6  0x000000000057fbd4 in SrsRecvThread::do_cycle (this=0x7ffff7f66808) </span><br><span class="line">    at src/app/srs_app_recv_thread.cpp:146</span><br><span class="line">#7  0x000000000057fa25 in SrsRecvThread::cycle (this=0x7ffff7f66808) at src/app/srs_app_recv_thread.cpp:115</span><br><span class="line">#8  0x0000000000509c88 in SrsSTCoroutine::cycle (this=0xa3a840) at src/app/srs_app_st.cpp:198</span><br><span class="line">#9  0x0000000000509cfd in SrsSTCoroutine::pfn (arg=0xa3a840) at src/app/srs_app_st.cpp:213</span><br><span class="line">#10 0x00000000005bdd9d in _st_thread_main () at sched.c:337</span><br><span class="line">#11 0x00000000005be515 in st_thread_create (start=0xa3bc30,</span><br><span class="line">    arg=0x7ffff7f66530, joinable=32767, stk_size=-134847200) at sched.c:616</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>对于<code>SrsSource::on_meta_data</code>、<code>SrsSource::on_audio</code>和<code>SrsSource::on_video</code>用来接收数据，例如<code>SrsSource::on_meta_data</code>继续调用<code>hub-&gt;on_meta_data</code>其中<code>SrsOriginHub</code>用来转发数据的类；下面以<code>on_meta_data</code>为例。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsSource::on_meta_data</span><span class="params">(SrsCommonMessage* msg, SrsOnMetaDataPacket* metadata)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// if allow atc_auto and bravo-atc detected, open atc for vhost.</span></span><br><span class="line">    SrsAmf0Any* prop = <span class="literal">NULL</span>;</span><br><span class="line">    atc = _srs_config-&gt;<span class="built_in">get_atc</span>(req-&gt;vhost);</span><br><span class="line">    <span class="keyword">if</span> (_srs_config-&gt;<span class="built_in">get_atc_auto</span>(req-&gt;vhost)) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((prop = metadata-&gt;metadata-&gt;<span class="built_in">get_property</span>(<span class="string">&quot;bravo_atc&quot;</span>)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (prop-&gt;<span class="built_in">is_string</span>() &amp;&amp; prop-&gt;<span class="built_in">to_str</span>() == <span class="string">&quot;true&quot;</span>) &#123;</span><br><span class="line">                atc = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Update the meta cache.</span></span><br><span class="line">    <span class="type">bool</span> updated = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> ((err = meta-&gt;<span class="built_in">update_data</span>(&amp;msg-&gt;header, metadata, updated)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;update metadata&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!updated) &#123;</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// when already got metadata, drop when reduce sequence header.</span></span><br><span class="line">    <span class="type">bool</span> drop_for_reduce = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (meta-&gt;<span class="built_in">data</span>() &amp;&amp; _srs_config-&gt;<span class="built_in">get_reduce_sequence_header</span>(req-&gt;vhost)) &#123;</span><br><span class="line">        drop_for_reduce = <span class="literal">true</span>;</span><br><span class="line">        <span class="built_in">srs_warn</span>(<span class="string">&quot;drop for reduce sh metadata, size=%d&quot;</span>, msg-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// copy to all consumer</span></span><br><span class="line">    <span class="keyword">if</span> (!drop_for_reduce) &#123;</span><br><span class="line">        std::vector&lt;SrsConsumer*&gt;::iterator it;</span><br><span class="line">        <span class="keyword">for</span> (it = consumers.<span class="built_in">begin</span>(); it != consumers.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">            SrsConsumer* consumer = *it;</span><br><span class="line">            <span class="keyword">if</span> ((err = consumer-&gt;<span class="built_in">enqueue</span>(meta-&gt;<span class="built_in">data</span>(), atc, jitter_algorithm)) != srs_success) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;consume metadata&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Copy to hub to all utilities.</span></span><br><span class="line">    <span class="keyword">return</span> hub-&gt;<span class="built_in">on_meta_data</span>(meta-&gt;<span class="built_in">data</span>(), metadata);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>SrsOriginHub::on_meta_data</code>继续调用<code>forwarder-&gt;on_meta_data</code>，转发数据给<code>SrsForwarder</code>。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsOriginHub::on_meta_data</span><span class="params">(SrsSharedPtrMessage* shared_metadata, SrsOnMetaDataPacket* packet)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((err = format-&gt;<span class="built_in">on_metadata</span>(packet)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;Format parse metadata&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// copy to all forwarders</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        std::vector&lt;SrsForwarder*&gt;::iterator it;</span><br><span class="line">        <span class="keyword">for</span> (it = forwarders.<span class="built_in">begin</span>(); it != forwarders.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">            SrsForwarder* forwarder = *it;</span><br><span class="line">            <span class="keyword">if</span> ((err = forwarder-&gt;<span class="built_in">on_meta_data</span>(shared_metadata)) != srs_success) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;Forwarder consume metadata&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((err = dvr-&gt;<span class="built_in">on_meta_data</span>(shared_metadata)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;DVR consume metadata&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最终看到<code>SrsForwarder::on_meta_data</code>将数据放入队列。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsForwarder::on_meta_data</span><span class="params">(SrsSharedPtrMessage* shared_metadata)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    SrsSharedPtrMessage* metadata = shared_metadata-&gt;<span class="built_in">copy</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> config the jitter of Forwarder.</span></span><br><span class="line">    <span class="keyword">if</span> ((err = jitter-&gt;<span class="built_in">correct</span>(metadata, SrsRtmpJitterAlgorithmOFF)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;jitter&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((err = queue-&gt;<span class="built_in">enqueue</span>(metadata)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;enqueue metadata&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/03/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BHLS/" rel="prev" title="SRS流媒体服务器之HLS">
+                  <i class="fa fa-angle-left"></i> SRS流媒体服务器之HLS
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/06/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BEdge%E9%9B%86%E7%BE%A4/" rel="next" title="SRS流媒体服务器之Edge集群">
+                  SRS流媒体服务器之Edge集群 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
