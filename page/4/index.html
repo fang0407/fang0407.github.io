@@ -840,7 +840,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-02 21:58:36" itemprop="dateModified" datetime="2024-01-02T21:58:36+08:00">2024-01-02</time>
+      <time title="Modified: 2024-01-02 22:14:21" itemprop="dateModified" datetime="2024-01-02T22:14:21+08:00">2024-01-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -862,12 +862,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="M3U8-格式"><a href="#M3U8-格式" class="headerlink" title="M3U8 格式"></a>M3U8 格式</h1><p>M3U8（也称为HLS播放列表）是一种文本文件格式，用于描述 HTTP Live Streaming（HLS）协议中的媒体播放列表。HLS 是一种流媒体传输协议，广泛用于将音频和视频内容分发到互联网上的移动设备和桌面浏览器。</p>
+          <h1 id="M3U8-格式"><a href="#M3U8-格式" class="headerlink" title="M3U8 格式"></a>M3U8 格式</h1><p>M3U8（也称为 HLS 播放列表）是一种文本文件格式，用于描述 HTTP Live Streaming（HLS）协议中的媒体播放列表。HLS 是一种流媒体传输协议，广泛用于将音频和视频内容分发到互联网上的移动设备和桌面浏览器。</p>
 <p>M3U8 文件是一个纯文本文件，其中包含了多个媒体片段的 URL 和其他相关信息，以便客户端能够按顺序下载和播放这些片段。</p>
 <h2 id="播放列表"><a href="#播放列表" class="headerlink" title="播放列表"></a>播放列表</h2><ul>
-<li>⼀个 m3u8 的播放列表（Playlist） 就是⼀个由多个独立行组成的文本⽂件，每行由回车&#x2F;换行区分。</li>
+<li>⼀个 m3u8 的播放列表（playlist） 就是⼀个由多个独立行组成的文本⽂件，每行由回车&#x2F;换行区分。</li>
 <li>每⼀行可以是⼀个 URI、空白行或是⼀个以 “#” 号开头的字符串，并且空格只能存在于一行中不同元素间的分隔。</li>
-<li>⼀个 URI 表示⼀个媒体段或是 “variant Playlist file”（最多支持⼀层嵌套，即⼀个 m3u8 文件中嵌套另⼀个 m3u8）。以 “EXT” 开头的表示⼀个 “tag”，否则表示注释，直接忽略。</li>
+<li>⼀个 URI 表示⼀个媒体段或是 “variant playlist file”（最多支持⼀层嵌套，即⼀个 m3u8 文件中嵌套另⼀个 m3u8）。以 “EXT” 开头的表示⼀个 “tag”，否则表示注释，直接忽略。</li>
 <li>每⼀个 .m3u8 文件，分别对应若干个 ts 文件，这些 <strong>ts 文件才是真正存放视频的数据</strong>。<strong>m3u8 文件只是存放了⼀些 ts 文件的配置信息和相关路径</strong>。</li>
 </ul>
 <h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>标签（Tags）提供了有关媒体流和播放列表本身的信息。</p>
@@ -1007,8 +1007,8 @@
 </li>
 <li><p>解析TS流数据的流程：</p>
 <ul>
-<li><strong>查找 PID 为 0x0 的包，解析 PAT，PAT包中的 Program Map PID 表示PMT的 PID</strong>；</li>
-<li><strong>查找 PMT，PMT包中的 Elementary PID 表示音视频包的 PID，PMT 包中的 PCR PID 表示 PCR 的 PID</strong>，有的时候 PCR 的 PID 跟音频或者视频的  PID 相同，说明 PCR 会融进音视频的包，有的时候 PCR 又是自己单独的包。</li>
+<li><strong>查找 PID 为 0x0 的包，解析 PAT，PAT 包中的 Program Map PID 表示 PMT 的 PID</strong>；</li>
+<li><strong>查找 PMT，PMT 包中的 Elementary PID 表示音视频包的 PID，PMT 包中的 PCR PID 表示 PCR 的 PID</strong>，有的时候 PCR 的 PID 跟音频或者视频的 PID 相同，说明 PCR 会融进音视频的包，有的时候 PCR 又是自己单独的包。</li>
 </ul>
 </li>
 <li><p>报文预览：</p>
@@ -1019,7 +1019,7 @@
 <h2 id="包头"><a href="#包头" class="headerlink" title="包头"></a>包头</h2><p>Header 报文格式：</p>
 <img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/tsheader报文.png" alt="tsheader报文" style="zoom:50%;">
 
-<p>MPEG2-TS 包的包头占据了4字节，用于标识包的类型和其他信息。包头的字段包括：</p>
+<p>MPEG2-TS 包的包头占据了 4 字节，用于标识包的类型和其他信息。包头的字段包括：</p>
 <table>
 <thead>
 <tr>
@@ -1069,7 +1069,7 @@
 <td>递增计数器，从0-f，起始值不⼀定取0，但必须是连续的，可用于检测丢失的包</td>
 </tr>
 </tbody></table>
-<p><strong>TS 的内容是通过 PID 值来标识的，主要内容包括：PAT 表、PMT 表、⾳频流、视频流。</strong>PAT 表的和 PMT 表需要定期插⼊ ts 流，因为⽤户随时可能加⼊ ts 流，这个间隔⽐较⼩，通常每隔⼏个视频帧就要加⼊ PAT和 PMT。PAT 和 PMT 表是必须的，还可以加⼊其它表如 SDT（业务描述表）等，不过 hls 流只要有PAT 和 PMT 就可以播放了。 </p>
+<p><strong>TS 的内容是通过 PID 值来标识的，主要内容包括：PAT 表、PMT 表、⾳频流、视频流。</strong>PAT 表的和 PMT 表需要定期插⼊ ts 流，因为⽤户随时可能加⼊ ts 流，这个间隔⽐较⼩，通常每隔⼏个视频帧就要加⼊ PAT和 PMT。PAT 和 PMT 表是必须的，还可以加⼊其它表如 SDT（业务描述表）等，不过 hls 流只要有 PAT 和 PMT 就可以播放了。 </p>
 <h2 id="自适应字段"><a href="#自适应字段" class="headerlink" title="自适应字段"></a>自适应字段</h2><p>Adaptation Field 报文格式：</p>
 <img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/AdaptationField报文.png" alt="AdaptationField报文" style="zoom:50%;">
 
@@ -1139,13 +1139,13 @@
 </tr>
 </tbody></table>
 <p>⾃适应区的⻓度要包含传输错误指示符标识的⼀个字节。</p>
-<p>打包 ts 流时 PAT 和 PMT 表是没有 adaptation field 的，<strong>不够的⻓度直接补 0xff 即可</strong>。视频流和⾳频流都需要加 adaptation field，通常加在⼀个帧的第⼀个 ts包和最后⼀个 ts 包⾥，中间的 ts 包不加。</p>
+<p>打包 ts 流时 PAT 和 PMT 表是没有 adaptation field 的，<strong>不够的⻓度直接补 0xff 即可</strong>。视频流和⾳频流都需要加 adaptation field，通常加在⼀个帧的第⼀个  ts 包和最后⼀个 ts 包⾥，中间的 ts 包不加。</p>
 <p>pcr 是节⽬时钟参考，pcr、dts、pts 都是对同⼀个系统时钟的采样值，pcr 是递增的，因此可以将其设置为 dts 值，⾳频数据不需要 pcr。如果没有字段，ipad 是可以播放的，但 vlc ⽆法播放。</p>
 <h2 id="有效负载"><a href="#有效负载" class="headerlink" title="有效负载"></a>有效负载</h2><p>有效负载（Payload）包含了音频、视频、字幕等媒体数据。有效负载的长度可以根据包头中的信息变化，通常为0到184字节。有效负载的具体格式取决于所传输的内容和编码方式。<strong>在解析 MPEG-TS 流时，需要根据 PID（Packet Identifier）字段中的标识来确定有效负载的类型，并使用相应的解码器来解析数据。</strong>不同的 PID 值对应不同的数据流类型，例如音频、视频、字幕等。</p>
-<h3 id="PAT"><a href="#PAT" class="headerlink" title="PAT"></a>PAT</h3><p>PAT报文格式：</p>
+<h3 id="PAT"><a href="#PAT" class="headerlink" title="PAT"></a>PAT</h3><p>PAT 报文格式：</p>
 <img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/PAT报文.png" alt="PAT报文" style="zoom:50%;">
 
-<p><strong>TS包头中的 PID 值为0x0，表示当前负载为PAT（Program Association Table）。</strong>PAT数据的信息可以理解为整个TS流包含的节目信息。</p>
+<p><strong>TS 包头中的 PID 值为 0x0，表示当前负载为 PAT（Program Association Table）。</strong>PAT 数据的信息可以理解为整个 TS 流包含的节目信息。</p>
 <table>
 <thead>
 <tr>
@@ -1235,10 +1235,10 @@
 <td>前面数据的CRC32校验码</td>
 </tr>
 </tbody></table>
-<h3 id="PMT"><a href="#PMT" class="headerlink" title="PMT"></a>PMT</h3><p>PMT报文格式：</p>
+<h3 id="PMT"><a href="#PMT" class="headerlink" title="PMT"></a>PMT</h3><p>PMT 报文格式：</p>
 <img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/PMT报文.png" alt="PMT报文" style="zoom:50%;">
 
-<p>PMT（Program Map Table）是 MPEG2-TS（MPEG Transport Stream）中的一种表格，用于描述一个或多个节目的组成，包括音频、视频、字幕等多个元素的信息。PMT表格的主要作用是告诉接收设备如何解析和处理特定节目的数据流。以下是 PMT 表格的基本格式：</p>
+<p>PMT（Program Map Table）是 MPEG2-TS（MPEG Transport Stream）中的一种表格，用于描述一个或多个节目的组成，包括音频、视频、字幕等多个元素的信息。PMT 表格的主要作用是告诉接收设备如何解析和处理特定节目的数据流。以下是 PMT 表格的基本格式：</p>
 <table>
 <thead>
 <tr>
@@ -1358,25 +1358,32 @@
 <td>前面数据的CRC32校验码</td>
 </tr>
 </tbody></table>
-<h3 id="PES"><a href="#PES" class="headerlink" title="PES"></a>PES</h3><p><strong>PES（Packetized Elementary Stream）用于传输和存储音频、视频和其他媒体数据。</strong>PES将媒体数据分成小包，每个包包含了媒体数据及其相关信息，使其易于传输和解析。以下是PES包的基本格式：</p>
+<h3 id="PES"><a href="#PES" class="headerlink" title="PES"></a>PES</h3><p><strong>PES（Packetized Elementary Stream）用于传输和存储音频、视频和其他媒体数据。</strong>PES 将媒体数据分成小包，每个包包含了媒体数据及其相关信息，使其易于传输和解析。以下是 PES 包的基本格式：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">----------------------------------------------------------------</span><br><span class="line">|    PES Header (optional)                                     |</span><br><span class="line">----------------------------------------------------------------</span><br><span class="line">|    PES Packet Data (Payload)                                 |</span><br><span class="line">|                                                              |</span><br><span class="line">|    (Elementary Stream Data)                                  |</span><br><span class="line">|                                                              |</span><br><span class="line">----------------------------------------------------------------</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><p>PES Header（可选的）：PES包头是一个可选的部分，包含有关媒体数据的信息，通常包括以下字段：</p>
+<li><p>PES Header（可选的）：PES 包头是一个可选的部分，包含有关媒体数据的信息，通常包括以下字段：</p>
 <ul>
-<li><p>Start Code Prefix：3字节的起始码前缀，通常为<code>0x000001</code>，用于标识PES包的开始。</p>
+<li><p>Start Code Prefix：3字节的起始码前缀，通常为<code>0x000001</code>，用于标识 PES 包的开始。</p>
 </li>
-<li><p>Stream ID：8位字段，用于标识该PES包中包含的数据流类型（音频、视频等）。</p>
+<li><p>Stream ID：8位字段，用于标识该 PES 包中包含的数据流类型（音频、视频等）。</p>
 </li>
-<li><p>PES Packet Length：16位字段，指示PES包的长度，包括包头和有效负载。</p>
+<li><p>PES Packet Length：16位字段，指示 PES 包的长度，包括包头和有效负载。</p>
 </li>
 <li><p>Optional Header Data：可选的头部数据，包括时间戳、数据流识别信息等。</p>
 </li>
 </ul>
 </li>
-<li><p>PES Packet Data：PES包的有效负载，也称为”Elementary Stream Data”，包含了音频、视频或其他媒体数据。这部分数据的具体格式和编码方式取决于所传输的媒体类型。对于H264和AAC，打包 H264 数据时必须给视频数据加上⼀个 NALU，NALU 包括 nalu header 和 nalu type，nalu header 固定为 0x00000001（帧开始）或 0x000001（帧中）。H264 的数据是由 slice 组成的，slice 的内容包括：视频、sps、pps 等。nalu type 决定了后⾯的 H264 数据内容；打包AAC⾳频必须加上⼀个 ADTS。</p>
+<li><p>PES Packet Data：</p>
+<ul>
+<li>PES 包的有效负载，也称为 “Elementary Stream Data”，包含了音频、视频或其他媒体数据。</li>
+<li>这部分数据的具体格式和编码方式取决于所传输的媒体类型。</li>
+<li>打包 H264 数据时必须给视频数据加上⼀个 NALU，NALU 包括 nalu header 和 nalu type，nalu header 固定为 0x00000001（帧开始）或 0x000001（帧中）。</li>
+<li>H264 的数据是由 slice 组成的，slice 的内容包括：视频、sps、pps 等。nalu type 决定了后⾯的 H264 数据内容。</li>
+<li>打包 AAC ⾳频必须加上⼀个 ADTS。</li>
+</ul>
 </li>
-<li><p>PES包的具体字段取决于媒体类型（音频或视频）和编码方式（例如，H264视频或AAC音频），因此字段的含义和格式会有所不同。以下是一些常见的PES包字段，根据不同媒体类型和编码方式可能会有变化：</p>
+<li><p>PES 包的具体字段取决于媒体类型（音频或视频）和编码方式（例如，H264 视频或 AAC 音频），因此字段的含义和格式会有所不同。以下是一些常见的 PES 包字段，根据不同媒体类型和编码方式可能会有变化：</p>
 <ul>
 <li><p>PTS（Presentation Time Stamp）和DTS（Decoding Time Stamp）：这些时间戳字段指示了媒体数据的显示时间和解码时间，以便正确同步音视频。</p>
 </li>
@@ -1384,17 +1391,17 @@
 </li>
 <li><p>ES Rate：指示数据流的速率。</p>
 </li>
-<li><p>PES Header Data Length：描述PES头部的长度。</p>
+<li><p>PES Header Data Length：描述 PES 头部的长度。</p>
 </li>
 <li><p>PES Scrambling Control：指示数据是否进行了加密或打乱。</p>
 </li>
-<li><p>PES Priority：指示PES包的优先级。</p>
+<li><p>PES Priority：指示 PES 包的优先级。</p>
 </li>
 <li><p>Data Alignment Indicator：指示数据对齐。</p>
 </li>
 <li><p>PES Private Data：可选的私有数据字段，用于传输特定于应用程序的信息。</p>
 </li>
-<li><p>Stuffing Bytes：用于填充PES包以达到固定长度的填充字节。</p>
+<li><p>Stuffing Bytes：用于填充 PES 包以达到固定长度的填充字节。</p>
 </li>
 </ul>
 </li>
