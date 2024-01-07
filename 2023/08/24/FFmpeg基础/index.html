@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="播放器框架123456789101112graph LR	媒体文件--&gt;解复用器	解复用器--&gt;音频包队列	音频包队列--&gt;音频解码	音频解码--&gt;采样帧队列	采样帧队列--&gt;音频处理	音频处理--&gt;扬声器	解复用器--&gt;视频包队列	视频包队列--&gt;视频解码	视频解码--&gt;图像帧队列	图像帧队列--&gt;图像处理	图像处理--&gt;显示器">
+    <meta name="description" content="播放器框架graph LR     媒体文件--&gt;解复用器     解复用器--&gt;音频包队列     音频包队列--&gt;音频解码     音频解码--&gt;采样帧队列     采样帧队列--&gt;音频处理     音频处理--&gt;扬声器     解复用器--&gt;视频包队列     视频包队列--&gt;视频解码     视频解码--&gt;图像帧队列     图像帧队列--&gt;图像处理     图像处理--&gt;显示器  常见音">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FFmpeg基础">
 <meta property="og:url" content="https://fang0407.github.io/2023/08/24/FFmpeg%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="播放器框架123456789101112graph LR	媒体文件--&gt;解复用器	解复用器--&gt;音频包队列	音频包队列--&gt;音频解码	音频解码--&gt;采样帧队列	采样帧队列--&gt;音频处理	音频处理--&gt;扬声器	解复用器--&gt;视频包队列	视频包队列--&gt;视频解码	视频解码--&gt;图像帧队列	图像帧队列--&gt;图像处理	图像处理--&gt;显示器">
+<meta property="og:description" content="播放器框架graph LR     媒体文件--&gt;解复用器     解复用器--&gt;音频包队列     音频包队列--&gt;音频解码     音频解码--&gt;采样帧队列     采样帧队列--&gt;音频处理     音频处理--&gt;扬声器     解复用器--&gt;视频包队列     视频包队列--&gt;视频解码     视频解码--&gt;图像帧队列     图像帧队列--&gt;图像处理     图像处理--&gt;显示器  常见音">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-08-24T13:45:15.000Z">
 <meta property="article:modified_time" content="2023-12-30T14:40:57.018Z">
@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -215,7 +215,18 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="播放器框架"><a href="#播放器框架" class="headerlink" title="播放器框架"></a>播放器框架</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">	媒体文件--&gt;解复用器</span><br><span class="line">	解复用器--&gt;音频包队列</span><br><span class="line">	音频包队列--&gt;音频解码</span><br><span class="line">	音频解码--&gt;采样帧队列</span><br><span class="line">	采样帧队列--&gt;音频处理</span><br><span class="line">	音频处理--&gt;扬声器</span><br><span class="line">	解复用器--&gt;视频包队列</span><br><span class="line">	视频包队列--&gt;视频解码</span><br><span class="line">	视频解码--&gt;图像帧队列</span><br><span class="line">	图像帧队列--&gt;图像处理</span><br><span class="line">	图像处理--&gt;显示器</span><br></pre></td></tr></table></figure>
+    <div class="post-body" itemprop="articleBody"><h1 id="播放器框架"><a href="#播放器框架" class="headerlink" title="播放器框架"></a>播放器框架</h1><pre class="mermaid">graph LR
+    媒体文件-->解复用器
+    解复用器-->音频包队列
+    音频包队列-->音频解码
+    音频解码-->采样帧队列
+    采样帧队列-->音频处理
+    音频处理-->扬声器
+    解复用器-->视频包队列
+    视频包队列-->视频解码
+    视频解码-->图像帧队列
+    图像帧队列-->图像处理
+    图像处理-->显示器</pre>
 
 <h1 id="常见音视频概念"><a href="#常见音视频概念" class="headerlink" title="常见音视频概念"></a>常见音视频概念</h1><h2 id="常用音视频术语"><a href="#常用音视频术语" class="headerlink" title="常用音视频术语"></a>常用音视频术语</h2><ul>
 <li><p>容器／文件（Conainer&#x2F;File）：即特定格式的多媒体文件，比如mp4、flv、mkv等。</p>
@@ -227,13 +238,27 @@
 <li><p>编解码器：编解码器是以帧为单位实现压缩数据和原始数据之间的相互转换的。</p>
 </li>
 </ul>
-<h2 id="复用器"><a href="#复用器" class="headerlink" title="复用器"></a>复用器</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">	音频流--&gt;按一定规则组合</span><br><span class="line">	视频流--&gt;按一定规则组合</span><br><span class="line">	字幕流--&gt;按一定规则组合</span><br><span class="line">	其他成分--&gt;按一定规则组合</span><br><span class="line">	按一定规则组合--&gt;视频文件</span><br></pre></td></tr></table></figure>
+<h2 id="复用器"><a href="#复用器" class="headerlink" title="复用器"></a>复用器</h2><pre class="mermaid">graph LR
+    音频流-->按一定规则组合
+    视频流-->按一定规则组合
+    字幕流-->按一定规则组合
+    其他成分-->按一定规则组合
+    按一定规则组合-->视频文件</pre>
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">	视频文件--&gt;按一定规则拆分</span><br><span class="line">	按一定规则拆分--&gt;音频流</span><br><span class="line">	按一定规则拆分--&gt;视频流</span><br><span class="line">	按一定规则拆分--&gt;字幕流</span><br><span class="line">	按一定规则拆分--&gt;其他成分</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph LR
+    视频文件-->按一定规则拆分
+    按一定规则拆分-->音频流
+    按一定规则拆分-->视频流
+    按一定规则拆分-->字幕流
+    按一定规则拆分-->其他成分</pre>
 
-<h2 id="编解码器"><a href="#编解码器" class="headerlink" title="编解码器"></a>编解码器</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">	图像YUV数据--H264编码器--&gt;H264帧</span><br><span class="line">	H264帧--H264解码器--&gt;图像YUV数据</span><br></pre></td></tr></table></figure>
+<h2 id="编解码器"><a href="#编解码器" class="headerlink" title="编解码器"></a>编解码器</h2><pre class="mermaid">graph LR
+    图像YUV数据--H264编码器-->H264帧
+    H264帧--H264解码器-->图像YUV数据</pre>
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">	声音PCM数据--AAC编码器--&gt;AAC帧</span><br><span class="line">	AAC帧--AAC解码器--&gt;声音PCM数据</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph LR
+    声音PCM数据--AAC编码器-->AAC帧
+    AAC帧--AAC解码器-->声音PCM数据</pre>
 
 <h1 id="FFmpeg库简介"><a href="#FFmpeg库简介" class="headerlink" title="FFmpeg库简介"></a>FFmpeg库简介</h1><h2 id="FFmpeg的整体结构"><a href="#FFmpeg的整体结构" class="headerlink" title="FFmpeg的整体结构"></a>FFmpeg的整体结构</h2><ul>
 <li>二进制程序：ffplay，ffprobe，ffmpeg</li>
@@ -268,7 +293,12 @@
 <li>avformat_seek_file()：定位文件。</li>
 <li>av_seek_frame()：定位文件。</li>
 </ul>
-<h2 id="解封装流程"><a href="#解封装流程" class="headerlink" title="解封装流程"></a>解封装流程</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">	A[分配解复用器上下文 avformat_alloc_context]--&gt;B[根据url打开本地文件或网络流 avformat_open_input]</span><br><span class="line">	B--&gt;C[读取媒体的部分数据包以获取码流信息 avformat_find_stream_info]</span><br><span class="line">	C--&gt;D[定位文件 avformat_seek_file或av_seek_frame]</span><br><span class="line">	D--&gt;E[从文件中循环读取数据包 av_read_frame]</span><br><span class="line">	E--&gt;F[关闭解复用器 avformat_close_input]</span><br></pre></td></tr></table></figure>
+<h2 id="解封装流程"><a href="#解封装流程" class="headerlink" title="解封装流程"></a>解封装流程</h2><pre class="mermaid">graph TB
+    A[分配解复用器上下文 avformat_alloc_context]-->B[根据url打开本地文件或网络流 avformat_open_input]
+    B-->C[读取媒体的部分数据包以获取码流信息 avformat_find_stream_info]
+    C-->D[定位文件 avformat_seek_file或av_seek_frame]
+    D-->E[从文件中循环读取数据包 av_read_frame]
+    E-->F[关闭解复用器 avformat_close_input]</pre>
 
 <h2 id="解码器函数"><a href="#解码器函数" class="headerlink" title="解码器函数"></a>解码器函数</h2><ul>
 <li>avcodec_alloc_context3()：分配解码器上下文。</li>
@@ -282,7 +312,13 @@
 <li>avcodec_free_context()：释放解码器上下文，包含了avcodec_close()。</li>
 <li>avcodec_close()：关闭解码器。</li>
 </ul>
-<h2 id="解码流程"><a href="#解码流程" class="headerlink" title="解码流程"></a>解码流程</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">	A[分配编解码器上下文 avcodec_alloc_context3]--&gt;B[将码流中的编解码器信息拷贝到AVCodecContex avcodec_parameters_to_context]</span><br><span class="line">	B--&gt;C[根据编解码器信息查找相应的解码器或指定解码器 avcodec_find_decoder/avcodec_find_decoder_by_name]</span><br><span class="line">	C--&gt;D[打开编解码器并关联到AVCodecContex avcodec_open2]</span><br><span class="line">	D--&gt;E[循环向解码器发送数据包 avcodec_send_packet]</span><br><span class="line">	E--&gt;F[循环接收解码后的帧 avcodec_receive_frame]</span><br><span class="line">	F--&gt;G[关闭解码器和释放上下文avcodec_close avcodec_free_context]</span><br></pre></td></tr></table></figure>
+<h2 id="解码流程"><a href="#解码流程" class="headerlink" title="解码流程"></a>解码流程</h2><pre class="mermaid">graph TB
+    A[分配编解码器上下文 avcodec_alloc_context3]-->B[将码流中的编解码器信息拷贝到AVCodecContex avcodec_parameters_to_context]
+    B-->C[根据编解码器信息查找相应的解码器或指定解码器 avcodec_find_decoder/avcodec_find_decoder_by_name]
+    C-->D[打开编解码器并关联到AVCodecContex avcodec_open2]
+    D-->E[循环向解码器发送数据包 avcodec_send_packet]
+    E-->F[循环接收解码后的帧 avcodec_receive_frame]
+    F-->G[关闭解码器和释放上下文avcodec_close avcodec_free_context]</pre>
 
 <h1 id="FFmpeg组件注册方式"><a href="#FFmpeg组件注册方式" class="headerlink" title="FFmpeg组件注册方式"></a>FFmpeg组件注册方式</h1><h2 id="FFmpeg-3-x-组件注册方式"><a href="#FFmpeg-3-x-组件注册方式" class="headerlink" title="FFmpeg 3.x 组件注册方式"></a>FFmpeg 3.x 组件注册方式</h2><p>使用ffmpeg，首先要执行av_register_all，把全局的解码器、编码器等结构体注册到<strong>各自全局的对象链表里</strong>，以便后面查找调用。</p>
 <h2 id="FFmpeg-4-x-组件注册方式"><a href="#FFmpeg-4-x-组件注册方式" class="headerlink" title="FFmpeg 4.x 组件注册方式"></a>FFmpeg 4.x 组件注册方式</h2><p>FFmpeg内部去做，不需要用户调用API去注册。</p>
@@ -358,13 +394,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/08/23/SDL%E9%9F%B3%E8%A7%86%E9%A2%91%E6%B8%B2%E6%9F%93/" rel="prev" title="SDL音视频渲染">
-                  <i class="fa fa-angle-left"></i> SDL音视频渲染
+                <a href="/2023/08/24/FFmpeg%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" rel="prev" title="FFmpeg内存模型">
+                  <i class="fa fa-angle-left"></i> FFmpeg内存模型
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/08/24/FFmpeg%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" rel="next" title="FFmpeg内存模型">
-                  FFmpeg内存模型 <i class="fa fa-angle-right"></i>
+                <a href="/2023/08/26/%E9%9F%B3%E8%A7%86%E9%A2%91%E8%A7%A3%E5%B0%81%E8%A3%85/" rel="next" title="音视频解封装">
+                  音视频解封装 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>

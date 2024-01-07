@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="ECMAScript 简称 ES 它提供了一套语言标准规范，如变量、数据类型、表达式、语句、函数等语法规则都是由 ECMAScript 规定的。浏览器将 ECMAScript 大部分的规范加以实现，并且在此基础上又扩展一些实用的功能，这些被扩展出来的内容我们称为 Web APIs。 ECMAScript 运行在浏览器中然后再结合 Web APIs 才是真正的 JavaScript，Web APIs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebAPIs">
+<meta property="og:url" content="https://fang0407.github.io/2024/01/05/WebAPIs/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="ECMAScript 简称 ES 它提供了一套语言标准规范，如变量、数据类型、表达式、语句、函数等语法规则都是由 ECMAScript 规定的。浏览器将 ECMAScript 大部分的规范加以实现，并且在此基础上又扩展一些实用的功能，这些被扩展出来的内容我们称为 Web APIs。 ECMAScript 运行在浏览器中然后再结合 Web APIs 才是真正的 JavaScript，Web APIs">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fang0407.github.io/2024/01/05/WebAPIs/01/05/WebAPIs/guide.png">
+<meta property="og:image" content="https://fang0407.github.io/2024/01/05/WebAPIs/01/05/WebAPIs/web-api.jpg">
+<meta property="og:image" content="https://fang0407.github.io/2024/01/05/WebAPIs/01/05/WebAPIs/event.png">
+<meta property="article:published_time" content="2024-01-05T13:06:20.000Z">
+<meta property="article:modified_time" content="2024-01-07T13:08:35.401Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang0407.github.io/2024/01/05/WebAPIs/01/05/WebAPIs/guide.png">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2024/01/05/WebAPIs/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2024/01/05/WebAPIs/","path":"2024/01/05/WebAPIs/","title":"WebAPIs"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>WebAPIs | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DOM-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">DOM 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DOM-%E6%A0%91"><span class="nav-number">1.1.</span> <span class="nav-text">DOM 树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DOM-%E8%8A%82%E7%82%B9"><span class="nav-number">1.2.</span> <span class="nav-text">DOM 节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#document"><span class="nav-number">1.3.</span> <span class="nav-text">document</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DOM-%E6%93%8D%E4%BD%9C%E5%85%83%E7%B4%A0"><span class="nav-number">2.</span> <span class="nav-text">DOM 操作元素</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96-DOM-%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.1.</span> <span class="nav-text">获取 DOM 对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E5%85%83%E7%B4%A0%E5%86%85%E5%AE%B9"><span class="nav-number">2.2.</span> <span class="nav-text">操作元素内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E5%85%83%E7%B4%A0%E5%B1%9E%E6%80%A7"><span class="nav-number">2.3.</span> <span class="nav-text">操作元素属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%B1%9E%E6%80%A7%E4%BF%AE%E6%94%B9"><span class="nav-number">2.3.1.</span> <span class="nav-text">常用属性修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E5%BC%8F%E5%B1%9E%E6%80%A7%E4%BF%AE%E6%94%B9"><span class="nav-number">2.3.2.</span> <span class="nav-text">样式属性修改</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-style-%E5%B1%9E%E6%80%A7%E6%93%8D%E4%BD%9C-CSS"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">通过 style 属性操作 CSS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-className-%E6%93%8D%E4%BD%9C-CSS"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">通过 className 操作 CSS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-classList-%E6%93%8D%E4%BD%9C-CSS"><span class="nav-number">2.3.2.3.</span> <span class="nav-text">通过 classList 操作 CSS</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E5%8D%95%E5%85%83%E7%B4%A0%E5%B1%9E%E6%80%A7"><span class="nav-number">2.3.3.</span> <span class="nav-text">表单元素属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B1%9E%E6%80%A7"><span class="nav-number">2.3.4.</span> <span class="nav-text">自定义属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%B4%E6%AD%87%E5%87%BD%E6%95%B0"><span class="nav-number">2.4.</span> <span class="nav-text">间歇函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DOM-%E4%BA%8B%E4%BB%B6%E5%9F%BA%E7%A1%80"><span class="nav-number">3.</span> <span class="nav-text">DOM 事件基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC"><span class="nav-number">3.1.</span> <span class="nav-text">事件监听</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">事件类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.3.</span> <span class="nav-text">事件对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.4.</span> <span class="nav-text">环境对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DOM-%E4%BA%8B%E4%BB%B6%E8%BF%9B%E9%98%B6"><span class="nav-number">4.</span> <span class="nav-text">DOM 事件进阶</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E6%B5%81"><span class="nav-number">4.1.</span> <span class="nav-text">事件流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E6%8D%95%E8%8E%B7%E5%92%8C%E5%86%92%E6%B3%A1"><span class="nav-number">4.1.1.</span> <span class="nav-text">事件捕获和冒泡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%BB%E6%AD%A2%E5%86%92%E6%B3%A1"><span class="nav-number">4.1.2.</span> <span class="nav-text">阻止冒泡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E7%BB%91%E4%BA%8B%E4%BB%B6"><span class="nav-number">4.1.3.</span> <span class="nav-text">解绑事件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%A7%94%E6%89%98"><span class="nav-number">4.2.</span> <span class="nav-text">事件委托</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E4%BA%8B%E4%BB%B6"><span class="nav-number">4.3.</span> <span class="nav-text">其他事件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E4%BA%8B%E4%BB%B6"><span class="nav-number">4.3.1.</span> <span class="nav-text">页面加载事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E6%BB%9A%E5%8A%A8%E4%BA%8B%E4%BB%B6"><span class="nav-number">4.3.2.</span> <span class="nav-text">页面滚动事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E5%B0%BA%E5%AF%B8%E4%BA%8B%E4%BB%B6"><span class="nav-number">4.3.3.</span> <span class="nav-text">页面尺寸事件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%83%E7%B4%A0%E5%B0%BA%E5%AF%B8%E4%B8%8E%E4%BD%8D%E7%BD%AE"><span class="nav-number">4.4.</span> <span class="nav-text">元素尺寸与位置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DOM-%E6%93%8D%E4%BD%9C%E8%8A%82%E7%82%B9"><span class="nav-number">5.</span> <span class="nav-text">DOM 操作节点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BOM-%E6%93%8D%E4%BD%9C%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="nav-number">6.</span> <span class="nav-text">BOM 操作浏览器</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/01/05/WebAPIs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="WebAPIs | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          WebAPIs
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-01-05 21:06:20" itemprop="dateCreated datePublished" datetime="2024-01-05T21:06:20+08:00">2024-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-07 21:08:35" itemprop="dateModified" datetime="2024-01-07T21:08:35+08:00">2024-01-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>ECMAScript 简称 ES 它提供了一套语言标准规范，如变量、数据类型、表达式、语句、函数等语法规则都是由 ECMAScript 规定的。浏览器将 ECMAScript 大部分的规范加以实现，并且在此基础上又扩展一些实用的功能，这些被扩展出来的内容我们称为 Web APIs。</p>
+<p>ECMAScript 运行在浏览器中然后再结合 Web APIs 才是真正的 JavaScript，Web APIs 的核心是 DOM 和 BOM。</p>
+<p>扩展阅读：ECMAScript 规范在不断的更新中，存在多个不同的版本，早期的版本号采用数字顺序编号如 ECMAScript3、ECMAScript5，后来由于更新速度较快便采用年份做为版本号，如 ECMAScript2017、ECMAScript2018 这种格式，ECMAScript6 是 2015 年发布的，常叫做 EMCAScript2015。</p>
+<p>关于 JavaScript 历史的<a target="_blank" rel="noopener" href="https://javascript.ruanyifeng.com/introduction/history.html">扩展阅读</a>。</p>
+<img src="/2024/01/05/WebAPIs/01/05/WebAPIs/guide.png" class title="guide">
+
+<h1 id="DOM-简介"><a href="#DOM-简介" class="headerlink" title="DOM 简介"></a>DOM 简介</h1><p>DOM（Document Object Model）是将整个 HTML 文档的每一个标签元素视为一个对象，这个对象下包含了许多的属性和方法，通过操作这些属性或者调用这些方法实现对 HTML 的动态更新，为实现网页特效以及用户交互提供技术支撑。</p>
+<p>简言之 DOM 是用来动态修改 HTML 的，其目的是开发网页特效及用户交互。</p>
+<h2 id="DOM-树"><a href="#DOM-树" class="headerlink" title="DOM 树"></a>DOM 树</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>标题<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    文本</span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&quot;</span>&gt;</span>链接名<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;&quot;</span> <span class="attr">class</span>=<span class="string">&quot;&quot;</span>&gt;</span>文本<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如下图所示，将 HTML 文档以树状结构直观的表现出来，我们称之为文档树或 DOM 树，<strong>文档树直观的体现了标签与标签之间的关系。</strong></p>
+<img src="/2024/01/05/WebAPIs/01/05/WebAPIs/web-api.jpg" class title="dom">
+
+<h2 id="DOM-节点"><a href="#DOM-节点" class="headerlink" title="DOM 节点"></a>DOM 节点</h2><p>节点是文档树的组成部分，<strong>每一个节点都是一个 DOM 对象</strong>，主要分为元素节点、属性节点、文本节点等。</p>
+<ol>
+<li>【元素节点】其实就是 HTML 标签，如上图中 <code>head</code>、<code>div</code>、<code>body</code> 等都属于元素节点。</li>
+<li>【属性节点】是指 HTML 标签中的属性，如上图中 <code>a</code> 标签的 <code>href</code> 属性、<code>div</code> 标签的 <code>class</code> 属性。</li>
+<li>【文本节点】是指 HTML 标签的文字内容，如 <code>title</code> 标签中的文字。</li>
+<li>【根节点】特指 <code>html</code> 标签。</li>
+<li>其它…</li>
+</ol>
+<h2 id="document"><a href="#document" class="headerlink" title="document"></a>document</h2><p><code>document</code> 是 JavaScript 内置的专门用于 DOM 的对象，该对象包含了若干的属性和方法，<code>document</code> 是学习 DOM 的核心。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// document 是内置的对象</span></span><br><span class="line"><span class="comment">// console.log(typeof document);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 通过 document 获取根节点</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">document</span>.<span class="property">documentElement</span>); <span class="comment">// 对应 html 标签</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 通过 document 节取 body 节点</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">document</span>.<span class="property">body</span>); <span class="comment">// 对应 body 标签</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 通过 document.write 方法向网页输出内容</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;Hello World!&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>上述列举了 <code>document</code> 对象的部分属性和方法，我们先对 <code>document</code> 有一个整体的认识。</p>
+<h1 id="DOM-操作元素"><a href="#DOM-操作元素" class="headerlink" title="DOM 操作元素"></a>DOM 操作元素</h1><p>DOM 允许 JavaScript 改变 HTML 元素的内容以及改变元素的属性。</p>
+<h2 id="获取-DOM-对象"><a href="#获取-DOM-对象" class="headerlink" title="获取 DOM 对象"></a>获取 DOM 对象</h2><p>根据 CSS 选择器来获取 DOM 元素。</p>
+<ol>
+<li><p>选择匹配的第一个元素</p>
+<ol>
+<li>语法：<code>document.querySelector(&#39;CSS选择器&#39;)</code></li>
+<li>参数：包含一个或多个有效的 CSS 选择器字符串</li>
+<li>返回值：CSS 选择器匹配到的<strong>第一个元素</strong>，一个 <code>HTMLElement</code> 对象。如果没有匹配到，则返回 null</li>
+</ol>
+</li>
+<li><p>选择匹配的多个元素</p>
+<ol>
+<li>语法：<code>document.querySelectorAll(&#39;CSS选择器&#39;)</code></li>
+<li>参数：包含一个或多个有效的 CSS 选择器字符串</li>
+<li>返回值：CSS 选择器匹配到的 <code>NodeList</code> 对象集合。</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">&quot;nav&quot;</span>&gt;</span>p标签<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;box&quot;</span>&gt;</span>div标签<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>item1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>item2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>item3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>item4<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> p = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;p&quot;</span>); <span class="comment">// 获取第一个p元素</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> p = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;#nav&quot;</span>); <span class="comment">// 获取第一个p元素</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> box = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.box&quot;</span>);  <span class="comment">// 获取第一个div元素</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> li = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;ul li:nth-child(1)&quot;</span>); <span class="comment">// 获取第一个li元素</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">console</span>.<span class="title function_">log</span>(li);</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> lis = <span class="variable language_">document</span>.<span class="title function_">querySelectorAll</span>(<span class="string">&quot;ul li&quot;</span>); <span class="comment">// 获取所有li元素</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">console</span>.<span class="title function_">log</span>(lis);</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; lis.<span class="property">length</span>; i++) &#123;</span></span><br><span class="line"><span class="language-javascript">          <span class="variable language_">console</span>.<span class="title function_">log</span>(lis[i])  <span class="comment">//每个li对象</span></span></span><br><span class="line"><span class="language-javascript">      &#125;</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>其他获取 DOM 元素的方法</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 根据id获取第一个元素</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;nav&#x27;</span>);</span><br><span class="line"><span class="comment">// 根据标签获取一类元素，获取页面所有p标签</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;p&#x27;</span>);</span><br><span class="line"><span class="comment">// 根据类名获取元素，获取页面所有类名为box的标签</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">getElementsByClassName</span>(<span class="string">&#x27;box&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="操作元素内容"><a href="#操作元素内容" class="headerlink" title="操作元素内容"></a>操作元素内容</h2><p>通过修改 DOM 的文本内容，动态改变网页的内容。</p>
+<ol>
+<li><code>innerText</code> 将文本内容添加&#x2F;更新到任意标签位置，<strong>文本中包含的标签不会被解析。</strong></li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// innerText 将文本内容添加/更新到任意标签位置</span></span><br><span class="line"><span class="keyword">const</span> intro = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;.intro&#x27;</span>)</span><br><span class="line"><span class="comment">// intro.innerText = &#x27;我叫小明&#x27;</span></span><br><span class="line"><span class="comment">// intro.innerText = &#x27;&lt;h4&gt;我叫小明&lt;/h4&gt;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><code>innerHTML</code> 将文本内容添加&#x2F;更新到任意标签位置，<strong>文本中包含的标签会被解析。</strong></li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// innerHTML 将文本内容添加/更新到任意标签位置</span></span><br><span class="line"><span class="keyword">const</span> intro = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;.intro&#x27;</span>)</span><br><span class="line">intro.<span class="property">innerHTML</span> = <span class="string">&#x27;我叫小明&#x27;</span></span><br><span class="line">intro.<span class="property">innerHTML</span> = <span class="string">&#x27;&lt;h4&gt;我叫小明&lt;/h4&gt;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>总结：如果文本内容中包含 <code>html</code> 标签时推荐使用 <code>innerHTML</code>，否则建议使用 <code>innerText</code> 属性。</p>
+<h2 id="操作元素属性"><a href="#操作元素属性" class="headerlink" title="操作元素属性"></a>操作元素属性</h2><p>操作元素属性包含<strong>元素常用属性、元素样式属性、表单元素属性和自定义属性</strong>。</p>
+<h3 id="常用属性修改"><a href="#常用属性修改" class="headerlink" title="常用属性修改"></a>常用属性修改</h3><p>语法：<code>对象.属性 = 值</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 获取 img 对应的 DOM 元素</span></span><br><span class="line"><span class="keyword">const</span> pic = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;.pic&#x27;</span>)</span><br><span class="line"><span class="comment">// 2. 修改属性</span></span><br><span class="line">pic.<span class="property">src</span> = <span class="string">&#x27;./images/lion.webp&#x27;</span></span><br><span class="line">pic.<span class="property">width</span> = <span class="number">400</span>;</span><br><span class="line">pic.<span class="property">alt</span> = <span class="string">&#x27;图片不见了...&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="样式属性修改"><a href="#样式属性修改" class="headerlink" title="样式属性修改"></a>样式属性修改</h3><h4 id="通过-style-属性操作-CSS"><a href="#通过-style-属性操作-CSS" class="headerlink" title="通过 style 属性操作 CSS"></a>通过 style 属性操作 CSS</h4><p>通过元素节点获得的 <code>style</code> 属性本身的数据类型也是对象，如 <code>box.style.color</code>、<code>box.style.width</code> 分别用来获取元素节点 CSS 样式的 <code>color</code> 和 <code>width</code> 的值。</p>
+<p>语法：<code>对象.style.样式属性 = 值</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;box&quot;</span>&gt;</span>随便一些文本内容<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 获取 DOM 节点</span></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">const</span> box = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;.intro&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">    box.<span class="property">style</span>.<span class="property">color</span> = <span class="string">&#x27;red&#x27;</span></span></span><br><span class="line"><span class="language-javascript">    box.<span class="property">style</span>.<span class="property">width</span> = <span class="string">&#x27;300px&#x27;</span></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// css 属性的 - 连接符与JavaScript的 减运算符冲突，所以要改成驼峰法</span></span></span><br><span class="line"><span class="language-javascript">    box.<span class="property">style</span>.<span class="property">backgroundColor</span> = <span class="string">&#x27;pink&#x27;</span></span></span><br><span class="line"><span class="language-javascript">  </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ol>
+<li>DOM 对象的 <code>style</code> 属性可控制 <code>style</code> 行内样式，操作 CSS 属性需要遵循小驼峰命名</li>
+<li>修改样式比较少的情况有优势</li>
+<li>生成的是<strong>行内样式表</strong>，权重比较高</li>
+</ol>
+<h4 id="通过-className-操作-CSS"><a href="#通过-className-操作-CSS" class="headerlink" title="通过 className 操作 CSS"></a>通过 className 操作 CSS</h4><p>如果修改的样式比较多，直接通过 <code>style</code> 属性修改比较繁琐，我们可以通过借助于 css 类名的形式。</p>
+<p>语法：<code>元素.className = &#39;CSS类名&#39;</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">      <span class="selector-class">.box</span> &#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">400px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">400px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background-color</span>: blue;</span></span><br><span class="line"><span class="language-css">      &#125;</span></span><br><span class="line"><span class="language-css">      <span class="selector-class">.pink</span> &#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">200px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">200px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background</span>: pink;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">color</span>: hotpink;</span></span><br><span class="line"><span class="language-css">      &#125;</span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;box&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 获取 DOM 节点</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> box = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.box&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      box.<span class="property">className</span> = <span class="string">&quot;pink&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ol>
+<li><p>由于 <code>class</code> 是关键字，所以使用 <code>className</code> 去代替</p>
+</li>
+<li><p><code>className</code> 是使用<strong>新值替换旧值</strong>，如果需要添加一个类，需要保留之前的类名</p>
+</li>
+</ol>
+<h4 id="通过-classList-操作-CSS"><a href="#通过-classList-操作-CSS" class="headerlink" title="通过 classList 操作 CSS"></a>通过 classList 操作 CSS</h4><p>为了解决 <code>className</code> 容易覆盖以前的类名，我们可以通过 <code>classList</code> 方式追加和删除类名。</p>
+<p>语法：</p>
+<ol>
+<li>追加：<code>元素.classList.add(&#39;类名&#39;)</code></li>
+<li>删除：<code>元素.classList.remove(&#39;类名&#39;)</code></li>
+<li>切换：<code>元素.classList.toggle(&#39;类名&#39;)</code></li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">      <span class="selector-class">.box</span> &#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">200px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">200px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background-color</span>: blue;</span></span><br><span class="line"><span class="language-css">      &#125;</span></span><br><span class="line"><span class="language-css"></span></span><br><span class="line"><span class="language-css">      <span class="selector-class">.active</span> &#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">300px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">300px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background-color</span>: hotpink;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">margin-left</span>: <span class="number">100px</span>;</span></span><br><span class="line"><span class="language-css">      &#125;</span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;box&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> box = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.box&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      box.<span class="property">classList</span>.<span class="title function_">add</span>(<span class="string">&quot;active&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      box.<span class="property">classList</span>.<span class="title function_">remove</span>(<span class="string">&quot;active&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      box.<span class="property">classList</span>.<span class="title function_">toggle</span>(<span class="string">&quot;active&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="表单元素属性"><a href="#表单元素属性" class="headerlink" title="表单元素属性"></a>表单元素属性</h3><p>表单很多情况，也需要修改属性，比如点击眼睛，可以看到密码，本质是把表单类型转换为文本框。</p>
+<p>正常的有属性有取值的跟其他的标签属性没有任何区别。</p>
+<p>表单属性中添加有效果，移除没有效果，一律使用布尔值表示；比如<code>disabled</code>、<code>checked</code>、<code>selected</code>。</p>
+<p>语法：<code>DOM对象.属性名 = 新值</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">value</span>=<span class="string">&quot;请输入&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;cbox&quot;</span> <span class="attr">type</span>=<span class="string">&quot;checkbox&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;btn&quot;</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">//输入</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> input = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;input&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      input.<span class="property">value</span> = <span class="string">&quot;小明&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">      input.<span class="property">type</span> = <span class="string">&quot;password&quot;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">//复选框</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> checkbox = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.cbox&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      checkbox.<span class="property">checked</span> = <span class="literal">true</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">//按钮</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> btn = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.btn&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      btn.<span class="property">disabled</span> = <span class="literal">true</span>;</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="自定义属性"><a href="#自定义属性" class="headerlink" title="自定义属性"></a>自定义属性</h3><p><strong>标准属性</strong>：标签天生自带的属性 比如 <code>class</code> <code>id</code> <code>title</code> 等。</p>
+<p><strong>自定义属性</strong>：</p>
+<ol>
+<li>在 HTML5 中推出来了专门的 <code>data-</code> 自定义属性  </li>
+<li>在标签上一律以 <code>data-</code> 开头</li>
+<li>在 DOM 对象上一律以 <code>dataset</code> 对象方式获取</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">data-id</span>=<span class="string">&quot;1&quot;</span>&gt;</span>自定义属性<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 1. 获取元素</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> div = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;div&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 2. 获取自定义属性值</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">console</span>.<span class="title function_">log</span>(div.<span class="property">dataset</span>.<span class="property">id</span>);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="间歇函数"><a href="#间歇函数" class="headerlink" title="间歇函数"></a>间歇函数</h2><p>网页中经常需要一种功能：每隔一段时间自动执行一段代码，不需要我们手动去触发。</p>
+<p>语法：</p>
+<ol>
+<li>开启定时器：<code>var 间隔ID = setInterval(定时回调, 毫秒时间)</code></li>
+<li>关闭定时器：<code>clearInterval(间隔ID)</code></li>
+</ol>
+<p><code>setInterval</code> 是 JavaScript 中内置的函数，它的作用是间隔固定的时间自动重复执行另一个函数，也叫定时器函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 定义一个普通函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">repeat</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;不知疲倦的执行下去....&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 使用 setInterval 调用 repeat 函数</span></span><br><span class="line"><span class="comment">// 间隔 1000 毫秒，重复调用 repeat，返回值是一个 id 数字</span></span><br><span class="line"><span class="keyword">let</span> id = <span class="built_in">setInterval</span>(repeat, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 关闭定时器</span></span><br><span class="line"><span class="built_in">clearInterval</span>(id);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 4. 重新开启定时器</span></span><br><span class="line">id = <span class="built_in">setInterval</span>(repeat, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+
+<h1 id="DOM-事件基础"><a href="#DOM-事件基础" class="headerlink" title="DOM 事件基础"></a>DOM 事件基础</h1><h2 id="事件监听"><a href="#事件监听" class="headerlink" title="事件监听"></a>事件监听</h2><ul>
+<li>什么是事件？<ol>
+<li>事件是编程语言中的术语，它是用来描述程序的行为或状态的</li>
+<li>例如：用户使用鼠标点击网页中的一个按钮、用户使用鼠标拖拽网页中的一张图片</li>
+</ol>
+</li>
+<li>什么是事件监听？<ol>
+<li>事件监听就是让程序检测是否有事件产生，一旦行为或状态发生改变，便立即调用一个函数做出响应，也称为绑定事件或注册事件</li>
+<li>比如鼠标经过显示下拉菜单，鼠标点击后可以播放轮播图</li>
+</ol>
+</li>
+</ul>
+<p>结合 DOM 使用事件时，需要为 DOM 对象<strong>添加事件监听</strong>，<strong>等待事件发生</strong>（触发）时，便<strong>立即调用一个函数</strong>。</p>
+<p>语法：<code>元素对象.addEventListener(&#39;事件类型&#39;, 事件回调)</code></p>
+<p>事件监听三要素：</p>
+<ol>
+<li>事件源：那个 DOM 元素被事件触发了</li>
+<li>事件类型：用什么方式触发，比如鼠标点击 click、鼠标经过 mouseover</li>
+<li>事件回调函数：要做什么事</li>
+</ol>
+<p>事件监听版本</p>
+<ol>
+<li>DOM L0：事件源.on事件 &#x3D; function() {}</li>
+<li>DOM L2：事件源.addEventListener(事件，事件回调)</li>
+<li>区别：on 方式会被覆盖，addEventListener 方式可绑定多次，拥有事件多种特性</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">class</span>=<span class="string">&quot;btn&quot;</span>&gt;</span>按钮<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> btn = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.btn&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      btn.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="title function_">alert</span>(<span class="string">&quot;按钮被点击&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      &#125;);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="事件类型"><a href="#事件类型" class="headerlink" title="事件类型"></a>事件类型</h2><p>将众多的事件类型分类可分为：鼠标事件、键盘事件、表单事件、焦点事件等，我们逐一展开学习。</p>
+<ol>
+<li><p>鼠标事件：鼠标触发</p>
+<ol>
+<li><code>click</code>：鼠标点击</li>
+<li><code>mouseenter</code>：鼠标经过</li>
+<li><code>mouseleave</code>：鼠标离开</li>
+</ol>
+</li>
+<li><p>键盘事件：键盘触发</p>
+<ol>
+<li><code>keydown</code> ：键盘按下触发</li>
+<li><code>keyup</code> ：键盘抬起触发</li>
+</ol>
+</li>
+<li><p>焦点事件：表单获得光标</p>
+<ol>
+<li><code>focus</code> ：获得焦点</li>
+<li><code>blur</code>：失去焦点</li>
+</ol>
+</li>
+<li><p>文本框输入事件：表单输入触发</p>
+<ol>
+<li><code>input</code> ：用户输入事件</li>
+</ol>
+</li>
+</ol>
+<h2 id="事件对象"><a href="#事件对象" class="headerlink" title="事件对象"></a>事件对象</h2><p>任意事件类型被触发时与事件相关的信息会被以对象的形式记录下来，我们称这个对象为事件对象。</p>
+<p>事件回调函数的<strong>第一个参数</strong>即所谓的事件对象，可以命名为 <code>event</code> 。</p>
+<p>接下来简单看一下事件对象中包含了哪些有用的信息：</p>
+<ol>
+<li><code>event.type</code>：当前事件的类型</li>
+<li><code>event.clientX/Y</code>：光标相对浏览器窗口的位置</li>
+<li><code>event.offsetX/Y</code> ：光标相于当前 DOM 元素的位置</li>
+<li><code>event.key</code>：键盘按下的值</li>
+</ol>
+<p>注：在事件回调函数内部通过 <code>window.event</code> 同样可以获取事件对象。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> input = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;input&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      input.<span class="title function_">addEventListener</span>(<span class="string">&quot;keyup&quot;</span>, <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">if</span> (e.<span class="property">key</span> === <span class="string">&quot;Enter&quot;</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">          <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Press Enter&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">      &#125;);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="环境对象"><a href="#环境对象" class="headerlink" title="环境对象"></a>环境对象</h2><p>环境对象指的是函数内部特殊的变量 <code>this</code> ，它代表着当前函数运行时所处的环境。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sayHi</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// this 是一个变量</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明一个对象</span></span><br><span class="line"><span class="keyword">let</span> user = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;张三&#x27;</span>,</span><br><span class="line">    <span class="attr">sayHi</span>: sayHi <span class="comment">// 此处把 sayHi 函数，赋值给 sayHi 属性</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 直接调用</span></span><br><span class="line"><span class="title function_">sayHi</span>() <span class="comment">// window</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="title function_">sayHi</span>() <span class="comment">// window</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 做为对象方法调用</span></span><br><span class="line">user.<span class="title function_">sayHi</span>()  <span class="comment">// user</span></span><br></pre></td></tr></table></figure>
+
+<p>结论：</p>
+<ol>
+<li><code>this</code> 本质上是一个变量，数据类型为对象</li>
+<li>函数的调用方式不同 <code>this</code> 变量的值也不同</li>
+<li>谁调用 <code>this</code> 就是指向谁，是判断 <code>this</code> 值的粗略规则</li>
+<li>函数直接调用时实际上 <code>window.sayHi()</code> 所以 <code>this</code> 的值为 <code>window</code></li>
+</ol>
+<h1 id="DOM-事件进阶"><a href="#DOM-事件进阶" class="headerlink" title="DOM 事件进阶"></a>DOM 事件进阶</h1><h2 id="事件流"><a href="#事件流" class="headerlink" title="事件流"></a>事件流</h2><p>事件流指的是事件完整执行过程中的流动路径。</p>
+<p>事件流只会在父子元素具有相同事件类型时才会产生影响。</p>
+<img src="/2024/01/05/WebAPIs/01/05/WebAPIs/event.png" class title="event">
+
+<p>如上图所示，任意事件被触发时总会经历两个阶段：<strong>捕获阶段和冒泡阶段</strong>。</p>
+<p>简言之，捕获阶段是从父到子的传导过程，冒泡阶段是从子向父的传导过程。</p>
+<h3 id="事件捕获和冒泡"><a href="#事件捕获和冒泡" class="headerlink" title="事件捕获和冒泡"></a>事件捕获和冒泡</h3><p>捕获概念：从 DOM 的根元素开始去执行对应的事件（从外到里）。</p>
+<p>冒泡概念：当一个元素的事件被触发时，同样的事件将会在该元素的所有祖先元素中依次触发。</p>
+<p>语法：<code>元素.addEventListener(事件类型, 事件回调, 是否使用捕获机制)</code></p>
+<ol>
+<li>第三个参数默认是 false，代表冒泡阶段触发；true 代表捕获阶段触发</li>
+<li>若使用 L0 事件监听，则只有冒泡阶段，没有捕获阶段</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">      <span class="selector-class">.box</span> &#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">300px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">300px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background-color</span>: blue;</span></span><br><span class="line"><span class="language-css">      &#125;</span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;box&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> box = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.box&quot;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// html 元素添加事件</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="title function_">addEventListener</span>(</span></span><br><span class="line"><span class="language-javascript">        <span class="string">&quot;click&quot;</span>,</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">          <span class="title function_">alert</span>(<span class="string">&quot;html...&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">        &#125;,</span></span><br><span class="line"><span class="language-javascript">        <span class="literal">true</span></span></span><br><span class="line"><span class="language-javascript">      );</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// body 元素添加事件</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">addEventListener</span>(</span></span><br><span class="line"><span class="language-javascript">        <span class="string">&quot;click&quot;</span>,</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">          <span class="title function_">alert</span>(<span class="string">&quot;body...&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">        &#125;,</span></span><br><span class="line"><span class="language-javascript">        <span class="literal">true</span></span></span><br><span class="line"><span class="language-javascript">      );</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 盒子添加事件</span></span></span><br><span class="line"><span class="language-javascript">      box.<span class="title function_">addEventListener</span>(</span></span><br><span class="line"><span class="language-javascript">        <span class="string">&quot;click&quot;</span>,</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">          <span class="title function_">alert</span>(<span class="string">&quot;box...&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">        &#125;,</span></span><br><span class="line"><span class="language-javascript">        <span class="literal">true</span></span></span><br><span class="line"><span class="language-javascript">      );</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="阻止冒泡"><a href="#阻止冒泡" class="headerlink" title="阻止冒泡"></a>阻止冒泡</h3><p>阻止冒泡是指阻断事件的流动，保证事件只在当前元素被执行，而不再去影响到其对应的祖先元素。</p>
+<p>语法：<code>事件对象.stopPropagetion()</code></p>
+<p>注意：此方法可以阻断事件的传播，不光在冒泡阶段有效，捕获阶段也有效。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">      <span class="selector-class">.box</span> &#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">300px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">height</span>: <span class="number">300px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background-color</span>: blue;</span></span><br><span class="line"><span class="language-css">      &#125;</span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;box&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> box = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.box&quot;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// html 元素添加事件</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="title function_">alert</span>(<span class="string">&quot;html...&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// body 元素添加事件</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="title function_">alert</span>(<span class="string">&quot;body...&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 盒子添加事件</span></span></span><br><span class="line"><span class="language-javascript">      box.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        e.<span class="title function_">stopPropagation</span>();</span></span><br><span class="line"><span class="language-javascript">        <span class="title function_">alert</span>(<span class="string">&quot;box...&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      &#125;);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>补充：鼠标经过事件</p>
+<blockquote>
+<p>mouseover 和 mouseout 会有冒泡效果</p>
+<p>mouseenter 和 mouseleave 没有冒泡效果 (推荐)</p>
+</blockquote>
+<p>补充：阻止元素默认行为</p>
+<p>某些情况下需要阻止默认元素行为，比如阻止链接跳转，表单域跳转。</p>
+<p>语法：<code>事件对象.preventDefault()</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&quot;https://www.baidu.com&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;跳转&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> form = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;form&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      form.<span class="title function_">addEventListener</span>(<span class="string">&quot;submit&quot;</span>, <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        e.<span class="title function_">preventDefault</span>();</span></span><br><span class="line"><span class="language-javascript">      &#125;);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="解绑事件"><a href="#解绑事件" class="headerlink" title="解绑事件"></a>解绑事件</h3><ol>
+<li>on 事件写法，直接使用 <code>null</code> 覆盖就可以解绑事件。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">btn.<span class="property">onclick</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&#x27;click&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//解绑事件</span></span><br><span class="line">btn.<span class="property">onclick</span> = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><code>addEventListener</code> 方式，必须使用 <code>removeEventListener</code> 函数。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">click</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&#x27;click&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line">btn.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, click);</span><br><span class="line"><span class="comment">//解绑事件</span></span><br><span class="line">btn.<span class="title function_">removeEventListener</span>(<span class="string">&#x27;click&#x27;</span>, click);</span><br></pre></td></tr></table></figure>
+
+<p>注意：匿名函数无法解除绑定。</p>
+<h2 id="事件委托"><a href="#事件委托" class="headerlink" title="事件委托"></a>事件委托</h2><p>事件委托是利用事件流的特征解决一些现实开发需求的知识技巧，主要的作用是提升程序效率。</p>
+<p>优点：减少注册次数，可以提高程序性能</p>
+<p>原理：事件委托其实是利用事件冒泡特点，给父元素注册事件，当我们触发子元素的是时候，会冒泡到父元素上，从而触发父元素的事件。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>p标签<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> ul = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;ul&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      ul.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">//this.style.color = &quot;red&quot;;</span></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// target 是点击对象</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">if</span> (e.<span class="property">target</span>.<span class="property">tagName</span> === <span class="string">&quot;LI&quot;</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">          e.<span class="property">target</span>.<span class="property">style</span>.<span class="property">color</span> = <span class="string">&quot;red&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">      &#125;);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>事件对象中的属性 <code>target</code> 或 <code>srcElement</code>属性表示真正触发事件的元素，它是一个元素类型的节点。</p>
+<h2 id="其他事件"><a href="#其他事件" class="headerlink" title="其他事件"></a>其他事件</h2><h3 id="页面加载事件"><a href="#页面加载事件" class="headerlink" title="页面加载事件"></a>页面加载事件</h3><p>加载外部资源（如图片、外联 CSS 和 JavaScript 等）加载完毕时触发的事件。</p>
+<p>有些时候需要等页面资源全部处理完了做一些事情。</p>
+<p>老代码喜欢把 <code>script</code> 写在 <code>head</code> 中，这时候直接找 DOM 元素找不到。</p>
+<p><strong>事件名：load</strong></p>
+<p>监听页面所有资源加载完毕：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;load&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// xxxxx</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>注意：不光可以监听整个页面资源加载完毕，也可以针对某个资源绑定 <code>load</code> 事件。</p>
+<p><strong>事件名：DOMContentLoaded</strong></p>
+<p>当初始的 HTML 文档被完全加载解析完成之后，<code>DOMContentLoaded</code> 事件被触发，而无需等待样式表、图像等完全加载完毕。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;DOMContentLoaded&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// xxxxx</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="页面滚动事件"><a href="#页面滚动事件" class="headerlink" title="页面滚动事件"></a>页面滚动事件</h3><p>滚动条在滚动的时候持续触发的事件。</p>
+<p>很多网页需要检测用户把页面滚动到某个区域后做一些处理，比如固定导航栏，比如返回顶部。</p>
+<p><strong>事件名：scroll</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;scroll&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// xxxxx</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>windows</code> 对象或者 <code>document</code> 添加都可以。</p>
+<p>注意：不光可以监听整个页面滚动，也可以针对某个资源绑定 <code>scroll</code> 事件。</p>
+<p><strong>获取标签位置属性：</strong></p>
+<ol>
+<li><code>scrollLeft</code> 和 <code>scrollTop</code></li>
+<li>获取被卷去的大小</li>
+<li>获取元素内容往左、往上滚出去看不到的距离</li>
+<li>获取的值是可以读写的，是数值型的</li>
+</ol>
+<p>在 <code>scroll</code> 事件里面获取被卷去的距离，才会实时更新</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;scroll&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="页面尺寸事件"><a href="#页面尺寸事件" class="headerlink" title="页面尺寸事件"></a>页面尺寸事件</h3><p>会在窗口尺寸改变的时候触发事件。</p>
+<p><strong>事件名：resize</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;resize&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// xxxxx</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>获取屏幕宽高：</strong></p>
+<ol>
+<li><code>clientWidth</code> 和 <code>clientHeight</code></li>
+<li>获得可视区域宽高</li>
+<li>不包含边框</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;resize&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">clientWidth</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="元素尺寸与位置"><a href="#元素尺寸与位置" class="headerlink" title="元素尺寸与位置"></a>元素尺寸与位置</h2><p>使用场景：通过 JavaScript 的方式，得到元素在页面中的位置</p>
+<p>获取宽高：</p>
+<ol>
+<li><code>offsetWidth</code> 和 <code>offsetHeight</code></li>
+<li>获取元素的自身宽高、包含元素自身设置的宽高、<code>padding</code>、<code>border</code></li>
+<li>获取的是数值型的</li>
+</ol>
+<p>获取位置：</p>
+<ol>
+<li><code>offsetLeft</code> 和 <code>offsetTop</code> </li>
+<li>获取元素距离自己<strong>定位父级</strong>（CSS 设置 <code>position: relative</code> 属性）元素的左、上距离</li>
+<li>注意是只读属性</li>
+</ol>
+<h1 id="DOM-操作节点"><a href="#DOM-操作节点" class="headerlink" title="DOM 操作节点"></a>DOM 操作节点</h1><h1 id="BOM-操作浏览器"><a href="#BOM-操作浏览器" class="headerlink" title="BOM 操作浏览器"></a>BOM 操作浏览器</h1>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/12/30/JavaScript%E5%9F%BA%E7%A1%80/" rel="prev" title="JavaScript基础">
+                  <i class="fa fa-angle-left"></i> JavaScript基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

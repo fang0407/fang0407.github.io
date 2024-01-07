@@ -127,7 +127,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -317,7 +317,15 @@
 <ul>
 <li><code>consume</code>消息处理。</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">	F1[SrsPublishRecvThread::consume]--&gt;F2[SrsRtmpConn::handle_publish_message]</span><br><span class="line">	F2--&gt;F3[SrsRtmpConn::process_publish_message]</span><br><span class="line">	F3--&gt;F3_1[SrsSource::on_audio]</span><br><span class="line">	F3--&gt;F3_2[SrsSource::on_video]</span><br><span class="line">	F3--&gt;F3_3[SrsSource::on_meta_data]</span><br><span class="line">	F3_1--&gt;F3_1_1[SrsSource::on_audio_imp]</span><br><span class="line">	F3_1_1--&gt;F3_1_1_1[SrsMetaCache::update_ash]</span><br><span class="line">	F3_1_1--&gt;F3_1_1_2[SrsConsumer::enqueue]</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph TB
+    F1[SrsPublishRecvThread::consume]-->F2[SrsRtmpConn::handle_publish_message]
+    F2-->F3[SrsRtmpConn::process_publish_message]
+    F3-->F3_1[SrsSource::on_audio]
+    F3-->F3_2[SrsSource::on_video]
+    F3-->F3_3[SrsSource::on_meta_data]
+    F3_1-->F3_1_1[SrsSource::on_audio_imp]
+    F3_1_1-->F3_1_1_1[SrsMetaCache::update_ash]
+    F3_1_1-->F3_1_1_2[SrsConsumer::enqueue]</pre>
 
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsPublishRecvThread::consume</span><span class="params">(SrsCommonMessage* msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    err = _conn-&gt;<span class="built_in">handle_publish_message</span>(_source, msg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 

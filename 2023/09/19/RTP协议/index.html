@@ -127,7 +127,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -271,7 +271,11 @@
 <li><p>若⼀个RTP包流的源，对由RTP混频器⽣成的组合流起了作⽤，则它就是⼀个作⽤源。对特定包的⽣成起作⽤的源，其SSRC标识符组成的列表，被混频器插⼊到包的RTP报头中。这个列表叫做CSRC表。⽤图表示⼤概是这样：</p>
 </li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">SSRC1--RTP1--&gt;混合器SSRC4</span><br><span class="line">SSRC2--RTP1--&gt;混合器SSRC4</span><br><span class="line">SSRC3--RTP1--&gt;混合器SSRC4</span><br><span class="line">混合器SSRC4--RTP--&gt;接收端</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph LR
+SSRC1--RTP1-->混合器SSRC4
+SSRC2--RTP1-->混合器SSRC4
+SSRC3--RTP1-->混合器SSRC4
+混合器SSRC4--RTP-->接收端</pre>
 
 <p>例如，有三个信号源各发出⼀路rtp流，RTP1携带的SSRC是SSRC1，RTP2携带的SSRC是SSRC2，RTP3携带SSRC3，这三路RTP流到达混合器时，混合器会将这三路流混合成⼀路流发出去，它会把这三路流的SSRC记录下来，形成⼀个列表，叫CSRC表，在发送的混合RTP流中，<strong>SSRC域填充的字段是混合器本身的SSRC4</strong>，<strong>⽽CSRC字段则会根据该包的负载的源来填⼊</strong>。</p>
 <p>例如当前的RTP包的负载是来⾃SSRC1的，那么在当前RTP包的CSRC字段填⼊SSRC1。这样接收者就可以根据CSRC来区分不同的信源；⼀般的，混合的RTP流中，每隔⼀段时间，就会有⼀个RTP报⽂包含了完整的CSRC表。例如在发送混合流时的第⼀个RTP包，它的CSRC域把CSRC表都填⼊，此时该包的负载可能是⽆意义或者并不是媒体流；此后的RTP报⽂中则根据负载的来源来填⼊CSRC域。</p>

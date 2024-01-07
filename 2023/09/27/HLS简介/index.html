@@ -20,17 +20,17 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="SRC流媒体服务器安装编译 123git clone https:&#x2F;&#x2F;github.com&#x2F;ossrs&#x2F;srs.gitcd srs&#x2F;trunk.&#x2F;configure &amp;&amp; make  配置⽂件 conf&#x2F;srs.conf 启动 1.&#x2F;objs&#x2F;srs -c conf&#x2F;srs.conf  日志 1tail -n 30 -f .&#x2F;objs&#x2F;srs.log  测试推流 1ffmpeg -">
+    <meta name="description" content="SRC 流媒体服务器安装编译 123git clone https:&#x2F;&#x2F;github.com&#x2F;ossrs&#x2F;srs.gitcd srs&#x2F;trunk.&#x2F;configure &amp;&amp; make  配置⽂件 conf&#x2F;srs.conf 启动 1.&#x2F;objs&#x2F;srs -c conf&#x2F;srs.conf  日志 1tail -n 30 -f .&#x2F;objs&#x2F;srs.log  测试推流 1ffmpeg">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HLS简介">
 <meta property="og:url" content="https://fang0407.github.io/2023/09/27/HLS%E7%AE%80%E4%BB%8B/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="SRC流媒体服务器安装编译 123git clone https:&#x2F;&#x2F;github.com&#x2F;ossrs&#x2F;srs.gitcd srs&#x2F;trunk.&#x2F;configure &amp;&amp; make  配置⽂件 conf&#x2F;srs.conf 启动 1.&#x2F;objs&#x2F;srs -c conf&#x2F;srs.conf  日志 1tail -n 30 -f .&#x2F;objs&#x2F;srs.log  测试推流 1ffmpeg -">
+<meta property="og:description" content="SRC 流媒体服务器安装编译 123git clone https:&#x2F;&#x2F;github.com&#x2F;ossrs&#x2F;srs.gitcd srs&#x2F;trunk.&#x2F;configure &amp;&amp; make  配置⽂件 conf&#x2F;srs.conf 启动 1.&#x2F;objs&#x2F;srs -c conf&#x2F;srs.conf  日志 1tail -n 30 -f .&#x2F;objs&#x2F;srs.log  测试推流 1ffmpeg">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fang0407.github.io/2023/09/27/HLS%E7%AE%80%E4%BB%8B/HLS%E6%A1%86%E6%9E%B6.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/09/27/HLS%E7%AE%80%E4%BB%8B/HLS%E6%B5%81%E7%A8%8B.png">
 <meta property="article:published_time" content="2023-09-27T12:26:58.000Z">
-<meta property="article:modified_time" content="2023-12-30T14:39:33.678Z">
+<meta property="article:modified_time" content="2024-01-07T13:14:00.092Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fang0407.github.io/2023/09/27/HLS%E7%AE%80%E4%BB%8B/HLS%E6%A1%86%E6%9E%B6.png">
@@ -115,7 +115,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SRC%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">SRC流媒体服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">1.2.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HLS%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">HLS框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HLS%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">HLS简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E5%88%86%E5%8F%91"><span class="nav-number">2.3.</span> <span class="nav-text">内容分发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">2.4.</span> <span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%B9%E7%BB%9C%E2%BE%83%E9%80%82%E5%BA%94%E7%9A%84%E6%B5%81%E9%97%B4%E5%88%87%E6%8D%A2%E5%92%8C%E6%95%85%E9%9A%9C%E4%BF%9D%E6%8A%A4"><span class="nav-number">2.5.</span> <span class="nav-text">⽹络⾃适应的流间切换和故障保护</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HLS%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">HLS协议</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SRC-%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">SRC 流媒体服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">1.2.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HLS-%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">HLS 框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HLS%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">HLS简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E5%88%86%E5%8F%91"><span class="nav-number">2.3.</span> <span class="nav-text">内容分发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">2.4.</span> <span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BD%B9%E7%BB%9C%E2%BE%83%E9%80%82%E5%BA%94%E7%9A%84%E6%B5%81%E9%97%B4%E5%88%87%E6%8D%A2%E5%92%8C%E6%95%85%E9%9A%9C%E4%BF%9D%E6%8A%A4"><span class="nav-number">2.5.</span> <span class="nav-text">⽹络⾃适应的流间切换和故障保护</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HLS-%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">HLS 协议</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -197,7 +197,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:39:33" itemprop="dateModified" datetime="2023-12-30T22:39:33+08:00">2023-12-30</time>
+      <time title="Modified: 2024-01-07 21:14:00" itemprop="dateModified" datetime="2024-01-07T21:14:00+08:00">2024-01-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -218,7 +218,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="SRC流媒体服务器"><a href="#SRC流媒体服务器" class="headerlink" title="SRC流媒体服务器"></a>SRC流媒体服务器</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><strong>编译</strong></p>
+    <div class="post-body" itemprop="articleBody"><h1 id="SRC-流媒体服务器"><a href="#SRC-流媒体服务器" class="headerlink" title="SRC 流媒体服务器"></a>SRC 流媒体服务器</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><strong>编译</strong></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/ossrs/srs.git</span><br><span class="line">cd srs/trunk</span><br><span class="line">./configure &amp;&amp; make</span><br></pre></td></tr></table></figure>
 
 <p><strong>配置⽂件</strong></p>
@@ -237,7 +237,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">HLS</span></span><br><span class="line">ffplay http://127.0.0.1:8080/live/test.m3u8</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">RTMP</span></span><br><span class="line">ffplay rtmp://127.0.0.1/live/live/test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">HTTP FLV</span></span><br><span class="line">ffplay http://127.0.0.1:8080/live/test.flv</span><br></pre></td></tr></table></figure>
 
 <p>SRC播放器：<a target="_blank" rel="noopener" href="http://ossrs.net/srs.release/trunk/research/players/srs_player.html">http://ossrs.net/srs.release/trunk/research/players/srs_player.html</a> </p>
-<h1 id="HLS框架"><a href="#HLS框架" class="headerlink" title="HLS框架"></a>HLS框架</h1><img src="/2023/09/27/HLS%E7%AE%80%E4%BB%8B/HLS框架.png" alt="HLS框架" style="zoom:50%;">
+<h1 id="HLS-框架"><a href="#HLS-框架" class="headerlink" title="HLS 框架"></a>HLS 框架</h1><img src="/2023/09/27/HLS%E7%AE%80%E4%BB%8B/HLS框架.png" alt="HLS框架" style="zoom:50%;">
 
 <img src="/2023/09/27/HLS%E7%AE%80%E4%BB%8B/HLS流程.png" alt="HLS流程" style="zoom:50%;">
 
@@ -296,7 +296,7 @@
 <li><p>相对于常⻅的流媒体直播协议，例如 RTMP 协议、 RTSP 协议、 MMS 协议等， HLS 直播最⼤的不同在于，直播客户端获取到的，并不是⼀个完整的数据流。<strong>HLS 协议在服务器端将直播数据流存储为连续的、很短时⻓的媒体⽂件</strong>（MPEG-TS格式），⽽客户端则不断的下载并播放这些⼩⽂件，因为服务器端总是会将最新的直播数据⽣成新的⼩⽂件，这样客户端只要不停的按顺序播放从服务器获取到的⽂件，就实现了直播。由此可⻅，基本上可以认为，<strong>HLS 是以点播的技术⽅式来实现直播</strong>。由于数据通过 HTTP协议 传输，所以完全不⽤考虑防⽕墙或者代理的问题，⽽且分段⽂件的时⻓很短，客户端可以很快的选择和切换码率，以适应不同带宽条件下的播放。不过 HLS 的这种技术特点，决定了它的延迟⼀般总是会⾼于普通的流媒体直播协议。</p>
 </li>
 </ul>
-<h1 id="HLS协议"><a href="#HLS协议" class="headerlink" title="HLS协议"></a>HLS协议</h1><ul>
+<h1 id="HLS-协议"><a href="#HLS-协议" class="headerlink" title="HLS 协议"></a>HLS 协议</h1><ul>
 <li><p>作为 Apple 提出的⼀种基于 HTTP 的协议，HLS（HTTP Live Streaming）⽤于解决实时⾳视频流的传输。尤其是在移动端，由于 iOS &#x2F;H5 不⽀持 flash，使得 HLS 成了移动端实时视频流传输的⾸选。</p>
 </li>
 <li><p>HLS（HTTP Live Streaming） 把整个流分成⼀个个⼩的基于 HTTP 的⽂件来下载，每次只下载⼀些。HLS 协议由三部分组成：HTTP、M3U8、TS。这三部分中，<strong>HTTP 是传输协议，M3U8 是索引⽂件，TS 是⾳视频的媒体信息</strong>。</p>

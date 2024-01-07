@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -240,7 +240,26 @@
 <h2 id="avcodec-receive-packet"><a href="#avcodec-receive-packet" class="headerlink" title="avcodec_receive_packet"></a>avcodec_receive_packet</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Read encoded data from the encoder.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param avctx codec context</span></span><br><span class="line"><span class="comment"> * @param avpkt This will be set to a reference-counted packet allocated by the</span></span><br><span class="line"><span class="comment"> *              encoder. Note that the function will always call</span></span><br><span class="line"><span class="comment"> *              av_packet_unref(avpkt) before doing anything else.</span></span><br><span class="line"><span class="comment"> * @return 0 on success, otherwise negative error code:</span></span><br><span class="line"><span class="comment"> *      AVERROR(EAGAIN):   output is not available in the current state - user</span></span><br><span class="line"><span class="comment"> *                         must try to send input</span></span><br><span class="line"><span class="comment"> *      AVERROR_EOF:       the encoder has been fully flushed, and there will be</span></span><br><span class="line"><span class="comment"> *                         no more output packets</span></span><br><span class="line"><span class="comment"> *      AVERROR(EINVAL):   codec not opened, or it is a decoder</span></span><br><span class="line"><span class="comment"> *      other errors: legitimate encoding errors</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">avcodec_receive_packet</span><span class="params">(AVCodecContext *avctx, AVPacket *avpkt)</span>;</span><br></pre></td></tr></table></figure>
 
 <h1 id="音频编码流程"><a href="#音频编码流程" class="headerlink" title="音频编码流程"></a>音频编码流程</h1><p>从本地⽂件读取PCM数据进⾏AAC格式编码，然后将编码后的AAC数据存储到本地⽂件。</p>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">	A(开始)--&gt;B[avcodec_find_encoder]</span><br><span class="line">	B--&gt;C[avcodec_alloc_context3]</span><br><span class="line">	C--&gt;D[设置编码器参数]</span><br><span class="line">	D--&gt;E[检测编码器参数]</span><br><span class="line">	E--&gt;F[avcodec_open2]</span><br><span class="line">	F--&gt;G[av_packet_alloc]</span><br><span class="line">	G--&gt;H[av_frame_alloc]</span><br><span class="line">	H--&gt;I[av_frame_get_buffer]</span><br><span class="line">	I--&gt;J&#123;读取PCM数据&#125;</span><br><span class="line">	J--&gt;|有数据|K[av_frame_make_writable]</span><br><span class="line">	K--&gt;L[av_sample_fill_arrays]</span><br><span class="line">	L--&gt;M[avcodec_send_frame]</span><br><span class="line">	M--&gt;N[avcodec_receive_packet]</span><br><span class="line">	N--&gt;O&#123;EAGAIN or EOF&#125;</span><br><span class="line">	O--&gt;|否|P[写入AAC数据]</span><br><span class="line">	O--&gt;|是|J</span><br><span class="line">	J--&gt;|无数据|Q[刷新编码器缓冲]</span><br><span class="line">	Q--&gt;R[释放各种资源]</span><br><span class="line">	R--&gt;S(结束)</span><br></pre></td></tr></table></figure>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><pre class="mermaid">graph TB
+    A(开始)-->B[avcodec_find_encoder]
+    B-->C[avcodec_alloc_context3]
+    C-->D[设置编码器参数]
+    D-->E[检测编码器参数]
+    E-->F[avcodec_open2]
+    F-->G[av_packet_alloc]
+    G-->H[av_frame_alloc]
+    H-->I[av_frame_get_buffer]
+    I-->J{读取PCM数据}
+    J-->|有数据|K[av_frame_make_writable]
+    K-->L[av_sample_fill_arrays]
+    L-->M[avcodec_send_frame]
+    M-->N[avcodec_receive_packet]
+    N-->O{EAGAIN or EOF}
+    O-->|否|P[写入AAC数据]
+    O-->|是|J
+    J-->|无数据|Q[刷新编码器缓冲]
+    Q-->R[释放各种资源]
+    R-->S(结束)</pre>
 
 
 

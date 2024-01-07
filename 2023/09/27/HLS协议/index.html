@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/PAT%E6%8A%A5%E6%96%87.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/PMT%E6%8A%A5%E6%96%87.png">
 <meta property="article:published_time" content="2023-09-27T14:59:19.000Z">
-<meta property="article:modified_time" content="2024-01-02T14:14:21.139Z">
+<meta property="article:modified_time" content="2024-01-07T13:13:27.624Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/ts%E2%BD%82%E4%BB%B6%E5%88%86%E5%B1%82.png">
@@ -132,7 +132,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -201,7 +201,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-02 22:14:21" itemprop="dateModified" datetime="2024-01-02T22:14:21+08:00">2024-01-02</time>
+      <time title="Modified: 2024-01-07 21:13:27" itemprop="dateModified" datetime="2024-01-07T21:13:27+08:00">2024-01-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -226,15 +226,17 @@
 <p>M3U8 文件是一个纯文本文件，其中包含了多个媒体片段的 URL 和其他相关信息，以便客户端能够按顺序下载和播放这些片段。</p>
 <h2 id="播放列表"><a href="#播放列表" class="headerlink" title="播放列表"></a>播放列表</h2><ul>
 <li>⼀个 m3u8 的播放列表（playlist） 就是⼀个由多个独立行组成的文本⽂件，每行由回车&#x2F;换行区分。</li>
-<li>每⼀行可以是⼀个 URI、空白行或是⼀个以 “#” 号开头的字符串，并且空格只能存在于一行中不同元素间的分隔。</li>
+<li>每⼀行可以是⼀个 uri、空白行或是⼀个以 “#” 号开头的字符串，并且空格只能存在于一行中不同元素间的分隔。</li>
 <li>⼀个 URI 表示⼀个媒体段或是 “variant playlist file”（最多支持⼀层嵌套，即⼀个 m3u8 文件中嵌套另⼀个 m3u8）。以 “EXT” 开头的表示⼀个 “tag”，否则表示注释，直接忽略。</li>
 <li>每⼀个 .m3u8 文件，分别对应若干个 ts 文件，这些 <strong>ts 文件才是真正存放视频的数据</strong>。<strong>m3u8 文件只是存放了⼀些 ts 文件的配置信息和相关路径</strong>。</li>
 </ul>
 <h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>标签（Tags）提供了有关媒体流和播放列表本身的信息。</p>
 <p><strong>#EXTM3U</strong></p>
 <ul>
-<li>格式：<code>#EXTM3U</code></li>
-<li>作用：每个 M3U ⽂件第⼀⾏必须是这个 tag，请标示作⽤。</li>
+<li><p>格式：<code>#EXTM3U</code></p>
+</li>
+<li><p>作用：每个 M3U ⽂件第⼀⾏必须是这个 tag，请标示作⽤。</p>
+</li>
 </ul>
 <p><strong>#EXT-X-VERSION</strong></p>
 <ul>
@@ -244,32 +246,32 @@
 <p><strong>#EXT-X-TARGETDURATION</strong></p>
 <ul>
 <li>格式： <code>#EXT-X-TARGETDURATION:&lt;s&gt;</code></li>
-<li>作用：指定当前视频流中的单个切⽚（即 ts）⽂件的最⼤时⻓（秒）。所以 #EXTINF 中指定的时间⻓度必须⼩于或是等于这个最⼤值。这个 tag 在整个 Playlist ⽂件中只能出现 ⼀次（在嵌套的情况下，⼀般有真正ts url 的 m3u8 才会出现该 tag）。</li>
+<li>作用：指定当前视频流中的单个切⽚（即 ts）⽂件的最⼤时⻓（秒）。所以 #EXTINF 中指定的时间⻓度必须⼩于或是等于这个最⼤值。这个 tag 在整个 playlist ⽂件中只能出现 ⼀次（在嵌套的情况下，⼀般有真正 ts url 的 m3u8 才会出现该 tag）。</li>
 </ul>
 <p><strong>#EXT-X-MEDIA-SEQUENCE</strong></p>
 <ul>
 <li>格式：<code>#EXT-X-MEDIA-SEQUENCE:&lt;number&gt;</code></li>
-<li>作用：指定 Meida Segment 的开始序号，每⼀个 media URI 在 Playlist 中只有唯⼀的序号，相邻之间序号 +1。 ⼀个 media URI 并不是必须要包含的，如果没有，默认为 0。</li>
+<li>作用：指定 meida segment 的开始序号，每⼀个 media uri 在 playlist 中只有唯⼀的序号，相邻之间序号 +1。 ⼀个 media uri 并不是必须要包含的，如果没有，默认为 0。</li>
 </ul>
 <p><strong>#EXT-X-ALLOW-CACHE</strong></p>
 <ul>
 <li>格式：<code>#EXT-X-ALLOW-CACHE:&lt;YES|NO&gt;</code></li>
-<li>作用：指示客户端是否被允许缓存媒体片段，可以在 m3u8 ⽂件 中任意地⽅出现，并且最多只出现⼀次，作⽤效果是所有的媒体段。</li>
+<li>作用：指示客户端是否被允许缓存媒体片段，可以在 m3u8 ⽂件中任意地⽅出现，并且最多只出现⼀次，作⽤效果是所有的媒体段。</li>
 </ul>
 <p><strong>#EXTINF</strong></p>
 <ul>
 <li>格式：<code>#EXTINF:&lt;duration&gt;,&lt;title&gt;</code></li>
-<li>作用：指定每个媒体段（ts）的持续时间（单位秒），这个仅对其后⾯的 URI 有效，每两个媒体段 URI 间被这个 tag 分隔开；⽐如<code>#EXTINF:14.357, no desc</code>。</li>
+<li>作用：指定每个媒体段（ts）的持续时间（单位秒），这个仅对其后⾯的 uri 有效，每两个媒体段 uri 间被这个 tag 分隔开；⽐如<code>#EXTINF:14.357, no desc</code>。</li>
 </ul>
 <p><strong>#EXT-X-ENDLIST</strong></p>
 <ul>
 <li>格式：<code>#EXT-X-ENDLIST</code></li>
-<li>作用：表示 m3u8 ⽂件的结束，live m3u8 没有该 tag。它可以在 Playlist 中任意位置出现，但是只能出现⼀个。</li>
+<li>作用：表示 m3u8 ⽂件的结束，live m3u8 没有该 tag。它可以在 playlist 中任意位置出现，但是只能出现⼀个。</li>
 </ul>
 <p><strong>#EXT-X-STREAM-INF</strong></p>
 <ul>
 <li>格式：<code>#EXT-X-STREAM-INF:&lt;attribute-list&gt;</code></li>
-<li>作用：指定⼀个包含多媒体信息的 media URI 作为 Playlist，⼀般做 m3u8 的嵌套使⽤，它只对紧跟后⾯的 URI 有效。</li>
+<li>作用：指定⼀个包含多媒体信息的 media uri 作为 playlist，⼀般做 m3u8 的嵌套使⽤，它只对紧跟后⾯的 uri 有效。</li>
 <li>常⽤的属性如下：<ul>
 <li>BANDWIDTH：带宽，必须有。</li>
 <li>CODECS：指定流的编码类型，不是必须的。</li>
@@ -287,11 +289,11 @@
 </li>
 <li><p>例子：</p>
 <ul>
-<li><p><code>#EXT-X-KEY:METHOD=AES-128,URI=&quot;http://hls.videocc.net/4adf37ccc0/7/4adf37ccc048da15dd93d60358cb7d27_2.key&quot;,IV=0xfae721f7c61ccb9f8d986454e8e923b9</code></p>
+<li><p><code>#EXT-X-KEY:METHOD=AES-128,URI=&quot;http://hls.videocc.net.key&quot;,IV=0xfae721f7c61ccb9f8d986454e8e923b9</code></p>
 </li>
-<li><p>METHOD 是视频加密方式；METHOD可以为 NONE 或者 AES-128。</p>
+<li><p>METHOD 是视频加密方式；METHOD 可以为 NONE 或者 AES-128。</p>
 </li>
-<li><p>KEY 的地址：<code>http://hls.videocc.net/4adf37ccc0/7/4adf37ccc048da15dd93d60358cb7d27_2.key</code>（需要下载该文件）。</p>
+<li><p>KEY 的地址：<code>http://hls.videocc.net.key</code>（需要下载该文件）。</p>
 </li>
 <li><p>IV 是偏移量：<code>0xfae721f7c61ccb9f8d986454e8e923b9</code>。</p>
 </li>
@@ -353,12 +355,12 @@
 
 <h1 id="TS-格式"><a href="#TS-格式" class="headerlink" title="TS 格式"></a>TS 格式</h1><h2 id="TS-格式介绍"><a href="#TS-格式介绍" class="headerlink" title="TS 格式介绍"></a>TS 格式介绍</h2><p>TS 全称为 <strong>MPEG2-TS</strong>，是一种封装的格式，视频编码主要格式为 H264&#x2F;MPEG4，⾳频为 AAC&#x2F;MP3。</p>
 <ul>
-<li>TS分层格式：</li>
+<li>TS 分层格式：</li>
 </ul>
 <img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/ts⽂件分层.png" alt="ts⽂件分层" style="zoom:50%;">
 
 <ul>
-<li><p>TS 包⼤⼩<strong>固定为188字节</strong>，TS ⽂件分为三层：</p>
+<li><p>TS 包⼤⼩<strong>固定为 188 字节</strong>，TS ⽂件分为三层：</p>
 <ul>
 <li>ts 层：Transport Stream，<strong>是在 pes 层的基础上加⼊数据流的识别和传输必须的信息</strong>。</li>
 <li>pes 层： Packet Elemental Stream，<strong>是在⾳视频数据上加了时间戳等对数据帧的说明信息</strong>。</li>
@@ -429,7 +431,7 @@
 <td>递增计数器，从0-f，起始值不⼀定取0，但必须是连续的，可用于检测丢失的包</td>
 </tr>
 </tbody></table>
-<p><strong>TS 的内容是通过 PID 值来标识的，主要内容包括：PAT 表、PMT 表、⾳频流、视频流。</strong>PAT 表的和 PMT 表需要定期插⼊ ts 流，因为⽤户随时可能加⼊ ts 流，这个间隔⽐较⼩，通常每隔⼏个视频帧就要加⼊ PAT和 PMT。PAT 和 PMT 表是必须的，还可以加⼊其它表如 SDT（业务描述表）等，不过 hls 流只要有 PAT 和 PMT 就可以播放了。 </p>
+<p><strong>TS 的内容是通过 PID 值来标识的，主要内容包括：PAT 表、PMT 表、⾳频流、视频流。</strong>PAT 表的和 PMT 表需要定期插⼊ ts 流，因为⽤户随时可能加⼊ ts 流，这个间隔⽐较⼩，通常每隔⼏个视频帧就要加⼊ PAT 和 PMT。PAT 和 PMT 表是必须的，还可以加⼊其它表如 SDT（业务描述表）等，不过 hls 流只要有 PAT 和 PMT 就可以播放了。 </p>
 <h2 id="自适应字段"><a href="#自适应字段" class="headerlink" title="自适应字段"></a>自适应字段</h2><p>Adaptation Field 报文格式：</p>
 <img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/AdaptationField报文.png" alt="AdaptationField报文" style="zoom:50%;">
 
@@ -501,7 +503,7 @@
 <p>⾃适应区的⻓度要包含传输错误指示符标识的⼀个字节。</p>
 <p>打包 ts 流时 PAT 和 PMT 表是没有 adaptation field 的，<strong>不够的⻓度直接补 0xff 即可</strong>。视频流和⾳频流都需要加 adaptation field，通常加在⼀个帧的第⼀个  ts 包和最后⼀个 ts 包⾥，中间的 ts 包不加。</p>
 <p>pcr 是节⽬时钟参考，pcr、dts、pts 都是对同⼀个系统时钟的采样值，pcr 是递增的，因此可以将其设置为 dts 值，⾳频数据不需要 pcr。如果没有字段，ipad 是可以播放的，但 vlc ⽆法播放。</p>
-<h2 id="有效负载"><a href="#有效负载" class="headerlink" title="有效负载"></a>有效负载</h2><p>有效负载（Payload）包含了音频、视频、字幕等媒体数据。有效负载的长度可以根据包头中的信息变化，通常为0到184字节。有效负载的具体格式取决于所传输的内容和编码方式。<strong>在解析 MPEG-TS 流时，需要根据 PID（Packet Identifier）字段中的标识来确定有效负载的类型，并使用相应的解码器来解析数据。</strong>不同的 PID 值对应不同的数据流类型，例如音频、视频、字幕等。</p>
+<h2 id="有效负载"><a href="#有效负载" class="headerlink" title="有效负载"></a>有效负载</h2><p>有效负载（Payload）包含了音频、视频、字幕等媒体数据。有效负载的长度可以根据包头中的信息变化，通常为 0 到 184 字节。有效负载的具体格式取决于所传输的内容和编码方式。<strong>在解析 MPEG-TS 流时，需要根据 PID（Packet Identifier）字段中的标识来确定有效负载的类型，并使用相应的解码器来解析数据。</strong>不同的 PID 值对应不同的数据流类型，例如音频、视频、字幕等。</p>
 <h3 id="PAT"><a href="#PAT" class="headerlink" title="PAT"></a>PAT</h3><p>PAT 报文格式：</p>
 <img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/PAT报文.png" alt="PAT报文" style="zoom:50%;">
 
@@ -745,7 +747,7 @@
 </li>
 <li><p>PES 包的具体字段取决于媒体类型（音频或视频）和编码方式（例如，H264 视频或 AAC 音频），因此字段的含义和格式会有所不同。以下是一些常见的 PES 包字段，根据不同媒体类型和编码方式可能会有变化：</p>
 <ul>
-<li><p>PTS（Presentation Time Stamp）和DTS（Decoding Time Stamp）：这些时间戳字段指示了媒体数据的显示时间和解码时间，以便正确同步音视频。</p>
+<li><p>PTS（Presentation Time Stamp）和 DTS（Decoding Time Stamp）：这些时间戳字段指示了媒体数据的显示时间和解码时间，以便正确同步音视频。</p>
 </li>
 <li><p>ESCR（Elementary Stream Clock Reference）：用于指示音频或视频数据的时钟参考。</p>
 </li>

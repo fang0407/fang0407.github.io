@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="视频编码流程从本地⽂件读取YUV数据进⾏H264格式编码，然后将编码后的H264数据存储到本地⽂件。 流程图1234567891011121314151617181920graph TB	A(开始)--&gt;F1[avcodec_find_encoder]	F1--&gt;F2[avcodec_alloc_context3]	F2--&gt;F3[设置编码器参数]	F3--&gt;F5[avco">
+    <meta name="description" content="视频编码流程从本地⽂件读取YUV数据进⾏H264格式编码，然后将编码后的H264数据存储到本地⽂件。 流程图graph TB     A(开始)--&gt;F1[avcodec_find_encoder]     F1--&gt;F2[avcodec_alloc_context3]     F2--&gt;F3[设置编码器参数]     F3--&gt;F5[avcodec_open2 关联编码器上下文]     F5-">
 <meta property="og:type" content="article">
 <meta property="og:title" content="视频编码">
 <meta property="og:url" content="https://fang0407.github.io/2023/09/04/%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="视频编码流程从本地⽂件读取YUV数据进⾏H264格式编码，然后将编码后的H264数据存储到本地⽂件。 流程图1234567891011121314151617181920graph TB	A(开始)--&gt;F1[avcodec_find_encoder]	F1--&gt;F2[avcodec_alloc_context3]	F2--&gt;F3[设置编码器参数]	F3--&gt;F5[avco">
+<meta property="og:description" content="视频编码流程从本地⽂件读取YUV数据进⾏H264格式编码，然后将编码后的H264数据存储到本地⽂件。 流程图graph TB     A(开始)--&gt;F1[avcodec_find_encoder]     F1--&gt;F2[avcodec_alloc_context3]     F2--&gt;F3[设置编码器参数]     F3--&gt;F5[avcodec_open2 关联编码器上下文]     F5-">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-09-04T13:19:56.000Z">
 <meta property="article:modified_time" content="2023-12-30T14:42:01.940Z">
@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -216,7 +216,26 @@
     
     
     <div class="post-body" itemprop="articleBody"><h1 id="视频编码流程"><a href="#视频编码流程" class="headerlink" title="视频编码流程"></a>视频编码流程</h1><p>从本地⽂件读取YUV数据进⾏H264格式编码，然后将编码后的H264数据存储到本地⽂件。</p>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">	A(开始)--&gt;F1[avcodec_find_encoder]</span><br><span class="line">	F1--&gt;F2[avcodec_alloc_context3]</span><br><span class="line">	F2--&gt;F3[设置编码器参数]</span><br><span class="line">	F3--&gt;F5[avcodec_open2 关联编码器上下文]</span><br><span class="line">	F5--&gt;F6[av_packet_alloc]</span><br><span class="line">	F6--&gt;F7[av_frame_alloc]</span><br><span class="line">	F7--&gt;F8[av_frame_get_buffer 分配frame buffer]</span><br><span class="line">	F8--&gt;F9[av_image_get_buffer_size 计算一帧数据大小]</span><br><span class="line">	F9--&gt;F10&#123;读取YUV数据 fread&#125;</span><br><span class="line">	F10--&gt;|有数据|F11[av_frame_make_writable]</span><br><span class="line">	F11--&gt;F12[av_image_fill_arrays]</span><br><span class="line">	F12--&gt;F13[avcodec_send_frame]</span><br><span class="line">	F13--&gt;F14[avcodec_receive_packet]</span><br><span class="line">	F14--&gt;F15&#123;EAGAIN or EOF&#125;</span><br><span class="line">	F15--&gt;|否|F16[写入H264数据 fwrite]</span><br><span class="line">	F15--&gt;|是|F10</span><br><span class="line">	F10--&gt;|无数据|F17[刷新编码器缓冲]</span><br><span class="line">	F17--&gt;F18[释放各种资源]</span><br><span class="line">	F18--&gt;E(结束)</span><br></pre></td></tr></table></figure>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><pre class="mermaid">graph TB
+    A(开始)-->F1[avcodec_find_encoder]
+    F1-->F2[avcodec_alloc_context3]
+    F2-->F3[设置编码器参数]
+    F3-->F5[avcodec_open2 关联编码器上下文]
+    F5-->F6[av_packet_alloc]
+    F6-->F7[av_frame_alloc]
+    F7-->F8[av_frame_get_buffer 分配frame buffer]
+    F8-->F9[av_image_get_buffer_size 计算一帧数据大小]
+    F9-->F10{读取YUV数据 fread}
+    F10-->|有数据|F11[av_frame_make_writable]
+    F11-->F12[av_image_fill_arrays]
+    F12-->F13[avcodec_send_frame]
+    F13-->F14[avcodec_receive_packet]
+    F14-->F15{EAGAIN or EOF}
+    F15-->|否|F16[写入H264数据 fwrite]
+    F15-->|是|F10
+    F10-->|无数据|F17[刷新编码器缓冲]
+    F17-->F18[释放各种资源]
+    F18-->E(结束)</pre>
 
 
 

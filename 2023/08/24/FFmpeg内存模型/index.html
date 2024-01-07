@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -234,7 +234,29 @@
 <li><p>AVFrame也是采用同样的机制。</p>
 </li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">classDiagram</span><br><span class="line">class AVBuffer &#123;</span><br><span class="line">	+uint8_t* data</span><br><span class="line">	+int size</span><br><span class="line">	+atomic_uint refcount</span><br><span class="line">&#125;</span><br><span class="line">class AVBufferRef &#123;</span><br><span class="line">	+AVBuffer* buffer</span><br><span class="line">	+uint8_t* data</span><br><span class="line">	+int size</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class AVPacket &#123;</span><br><span class="line">	+AVBufferRef* buf</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class AVFrame &#123;</span><br><span class="line">	+AVBufferRef* buf[AV_NUM_DATA_POINTERS]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AVBufferRef *-- AVBuffer</span><br><span class="line">AVPacket *-- AVBufferRef</span><br><span class="line">AVFrame *-- AVBufferRef</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">classDiagram
+class AVBuffer {
+    +uint8_t* data
+    +int size
+    +atomic_uint refcount
+}
+class AVBufferRef {
+    +AVBuffer* buffer
+    +uint8_t* data
+    +int size
+}
+
+class AVPacket {
+    +AVBufferRef* buf
+}
+
+class AVFrame {
+    +AVBufferRef* buf[AV_NUM_DATA_POINTERS]
+}
+
+AVBufferRef *-- AVBuffer
+AVPacket *-- AVBufferRef
+AVFrame *-- AVBufferRef</pre>
 
 <h1 id="AVPacket函数"><a href="#AVPacket函数" class="headerlink" title="AVPacket函数"></a>AVPacket函数</h1><h2 id="AVPacket相关函数"><a href="#AVPacket相关函数" class="headerlink" title="AVPacket相关函数"></a>AVPacket相关函数</h2><ul>
 <li><p>AVPacket *av_packet_alloc(void)：分配AVPacket这个时候和buffer没有关系。</p>
@@ -288,13 +310,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/08/24/FFmpeg%E5%9F%BA%E7%A1%80/" rel="prev" title="FFmpeg基础">
-                  <i class="fa fa-angle-left"></i> FFmpeg基础
+                <a href="/2023/08/23/SDL%E9%9F%B3%E8%A7%86%E9%A2%91%E6%B8%B2%E6%9F%93/" rel="prev" title="SDL音视频渲染">
+                  <i class="fa fa-angle-left"></i> SDL音视频渲染
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/08/26/%E9%9F%B3%E8%A7%86%E9%A2%91%E8%A7%A3%E5%B0%81%E8%A3%85/" rel="next" title="音视频解封装">
-                  音视频解封装 <i class="fa fa-angle-right"></i>
+                <a href="/2023/08/24/FFmpeg%E5%9F%BA%E7%A1%80/" rel="next" title="FFmpeg基础">
+                  FFmpeg基础 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>

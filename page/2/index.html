@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,144 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">WebRtc通信架构</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-12-04 21:43:00" itemprop="dateCreated datePublished" datetime="2023-12-04T21:43:00+08:00">2023-12-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:37:05" itemprop="dateModified" datetime="2023-12-30T22:37:05+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="Mesh"><a href="#Mesh" class="headerlink" title="Mesh"></a>Mesh</h1><p>Mesh ⽅案的结构如下图所示： </p>
+<img src="/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/Mesh架构.png" alt="Mesh架构" style="zoom:50%;">
+
+<p>在上图中，B1、B2、B3、B4 分别表示 4 个浏览器，它们之间两两相连，同时还分别与 STUN&#x2F;TURN 服务器进⾏连接（此时的 STUN&#x2F;TURN 服务器不能进⾏数据中转，否则情况会变得⾮常复杂），这样就形成了⼀个⽹格拓扑结构。当某个浏览器想要共享它的⾳视频流时，它会将共享的媒体流分别发送给其他 3 个浏览器，这样就实现了多⼈通信。</p>
+<p><strong>优点</strong></p>
+<ul>
+<li>充分利⽤了客户端的带宽资源。 </li>
+<li>节省了服务器资源，因为服务器带宽往往是专线，价格昂贵，所以这种⽅案可以很好地控制成本。</li>
+<li>不需要服务器中转数据，STUN&#x2F;TUTN 只是负责 NAT 穿越，这样利⽤现有 WebRTC 通信模型就可以实现，⽽不需要开发媒体服务器。</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>共享端共享媒体流的时候，需要给每⼀个参与⼈都转发⼀份媒体流，这样对上⾏带宽的占⽤很⼤。参与⼈越多，占⽤的带宽就越⼤。除此之外，对 CPU、Memory 等资源也是极⼤的考验。⼀般来说，客户端的机器资源、带宽资源往往是有限的，资源占⽤和参与⼈数是线性相关的。这样导致多⼈通信的规模⾮常有限，通过实践来看，这种⽅案在超过 4 个⼈时，就会有⾮常⼤的问题。</li>
+<li>在多⼈通信时，如果有部分⼈不能实现 NAT 穿越，但还想让这些⼈与其他⼈互通，就显得很麻烦，需要做出更多的可靠性设计。</li>
+</ul>
+<h1 id="MCU"><a href="#MCU" class="headerlink" title="MCU"></a>MCU</h1><p>MCU 主要的处理逻辑是：接收每个共享端的⾳视频流，经过解码、与其他解码后的⾳视频进⾏混流、重新编码，之后再将混好的⾳视频流发送给房间⾥的所有⼈。</p>
+<p>MCU ⽅案的模型是⼀个星形结构，如下图所示：</p>
+<img src="/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/MCU架构.png" alt="MCU架构" style="zoom:50%;">
+
+<p><strong>优点</strong></p>
+<ul>
+<li>技术⾮常成熟，在硬件视频会议中应⽤⾮常⼴泛。</li>
+<li>作为⾳视频⽹关，通过解码、再编码可以屏蔽不同编解码设备的差异化，满⾜更多客户的集成需求，提升⽤户体验和产品竞争⼒。</li>
+<li>将多路视频混合成⼀路，所有参与⼈看到的是相同的画⾯，客户体验⾮常好。</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>重新解码、编码、混流，需要⼤量的运算，对 CPU 资源的消耗很⼤。</li>
+<li>重新解码、编码、混流还会带来延迟。</li>
+<li>由于机器资源耗费很⼤，所以 MCU 所提供的容量有限，⼀般⼗⼏路视频就是上限了。</li>
+</ul>
+<h1 id="SFU"><a href="#SFU" class="headerlink" title="SFU"></a>SFU</h1><p>SFU 像是⼀个媒体流路由器，接收终端的⾳视频流，根据需要转发给其他终端。SFU 在⾳视频会议中应⽤⾮常⼴泛，尤其是 WebRTC 普及以后。⽀持 WebRTC 多⽅通信的媒体服务器基本都是 SFU 结构。SFU的拓扑机构和功能模型如下图： </p>
+<img src="/2023/12/04/WebRtc%E9%80%9A%E4%BF%A1%E6%9E%B6%E6%9E%84/SFU架构.png" alt="SFU架构" style="zoom:50%;">
+
+<p>在这个图中，B1、B2、B3、B4 分别代表 4 个浏览器，每⼀个浏览器都会共享⼀路流发给 SFU，SFU 会将每⼀路流转发给共享者之外的 3 个浏览器。 </p>
+<p><strong>优点</strong></p>
+<ul>
+<li>⾸先由于是数据包直接转发，不需要编码、解码，对 CPU 资源消耗很⼩。</li>
+<li>其次是 直接转发也极⼤地降低了延迟，提⾼了实时性。</li>
+<li>最后 带来了很⼤的灵活性，能够更好地适应不同的⽹络状况和终端类型。</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>由于是数据包直接转发，参与⼈观看多路视频的时候可能会出现不同步（mesh、mcu实际上也是可能出现这种情况）；相同的视频流，不同的参与⼈看到的画⾯也可能不⼀致。 </li>
+<li>参与⼈同时观看多路视频，在多路视频窗⼝显示、渲染等会带来很多麻烦，尤其对多⼈实时通信进⾏录制，多路流也会带来很多回放的困难。总之，整体在通⽤性、⼀致性⽅⾯⽐较差。</li>
+</ul>
+<p>⽬前许多 SFU 实现都⽀持 SVC 模式和 Simulcast 模式，⽤于适配 WiFi、4G 等不同⽹络状况，以及 Phone、Pad、PC 等不同终端设备。</p>
+<p><strong>Simulcast 模式</strong></p>
+<p>Simulcast 模式就是指视频的共享者可以同时向 SFU 发送多路不同分辨率的视频流（⼀般为三路，如 1080P、720P、360P）。⽽ SFU 可以将接收到的三路流根据各终端的情况⽽选择其中某⼀路发送出去。例如，由于 PC 端⽹络特别好，给 PC 端发送 1080P 分辨率的视频；⽽移动⽹络较差，就给 Phone 发送 360P 分辨率的视频。 </p>
+<p>Simulcast 模式对移动端的终端类型⾮常有⽤，它可以灵活⽽⼜智能地适应不同的⽹络环境。</p>
+<p><strong>SVC 模式</strong></p>
+<p>SVC（Scalable Video Coding） 是可伸缩的视频编码模式。与 Simulcast 模式的同时传多路流不同， </p>
+<p>SVC 模式是在视频编码时做“⼿脚”。 它在视频编码时将视频分成多层——核⼼层、中间层和扩展层。上层依赖于底层，⽽且越上层越清晰，越底层越模糊。在带宽不好的情况下，可以只传输底层，即核⼼层，在带宽充⾜的情况下，可以将三层全部传输过去。 </p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/466172240">https://zhuanlan.zhihu.com/p/466172240</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1405,14 +1543,35 @@
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsGoApiRtcPlay::do_serve_http</span><span class="params">(ISrsHttpResponseWriter* w, ISrsHttpMessage* r, SrsJsonObject* res)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// For each RTC session, we use short-term HTTP connection.</span></span><br><span class="line">    SrsHttpHeader* hdr = w-&gt;<span class="built_in">header</span>();</span><br><span class="line">    hdr-&gt;<span class="built_in">set</span>(<span class="string">&quot;Connection&quot;</span>, <span class="string">&quot;Close&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Parse req, the request json object, from body.</span></span><br><span class="line">    SrsJsonObject* req = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="built_in">SrsAutoFree</span>(SrsJsonObject, req);</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        string req_json;</span><br><span class="line">        <span class="keyword">if</span> ((err = r-&gt;<span class="built_in">body_read_all</span>(req_json)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;read body&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        SrsJsonAny* json = SrsJsonAny::<span class="built_in">loads</span>(req_json);</span><br><span class="line">        <span class="keyword">if</span> (!json || !json-&gt;<span class="built_in">is_object</span>()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_new</span>(ERROR_RTC_API_BODY, <span class="string">&quot;invalid body %s&quot;</span>, req_json.<span class="built_in">c_str</span>());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        req = json-&gt;<span class="built_in">to_object</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Fetch params from req object.</span></span><br><span class="line">    SrsJsonAny* prop = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> ((prop = req-&gt;<span class="built_in">ensure_property_string</span>(<span class="string">&quot;sdp&quot;</span>)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;not sdp&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    string remote_sdp_str = prop-&gt;<span class="built_in">to_str</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((prop = req-&gt;<span class="built_in">ensure_property_string</span>(<span class="string">&quot;streamurl&quot;</span>)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;not streamurl&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    string streamurl = prop-&gt;<span class="built_in">to_str</span>();</span><br><span class="line"></span><br><span class="line">    string clientip;</span><br><span class="line">    <span class="keyword">if</span> ((prop = req-&gt;<span class="built_in">ensure_property_string</span>(<span class="string">&quot;clientip&quot;</span>)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        clientip = prop-&gt;<span class="built_in">to_str</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (clientip.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        clientip = <span class="built_in">dynamic_cast</span>&lt;SrsHttpMessage*&gt;(r)-&gt;<span class="built_in">connection</span>()-&gt;<span class="built_in">remote_ip</span>();</span><br><span class="line">        <span class="comment">// Overwrite by ip from proxy.        </span></span><br><span class="line">        string oip = <span class="built_in">srs_get_original_ip</span>(r);</span><br><span class="line">        <span class="keyword">if</span> (!oip.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">            clientip = oip;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    string api;</span><br><span class="line">    <span class="keyword">if</span> ((prop = req-&gt;<span class="built_in">ensure_property_string</span>(<span class="string">&quot;api&quot;</span>)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        api = prop-&gt;<span class="built_in">to_str</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    string tid;</span><br><span class="line">    <span class="keyword">if</span> ((prop = req-&gt;<span class="built_in">ensure_property_string</span>(<span class="string">&quot;tid&quot;</span>)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        tid = prop-&gt;<span class="built_in">to_str</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The RTC user config object.</span></span><br><span class="line">    SrsRtcUserConfig ruc;</span><br><span class="line">    ruc.req_-&gt;ip = clientip;</span><br><span class="line">    ruc.api_ = api;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">srs_parse_rtmp_url</span>(streamurl, ruc.req_-&gt;tcUrl, ruc.req_-&gt;stream);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">srs_discovery_tc_url</span>(ruc.req_-&gt;tcUrl, ruc.req_-&gt;schema, ruc.req_-&gt;host, ruc.req_-&gt;vhost,</span><br><span class="line">                         ruc.req_-&gt;app, ruc.req_-&gt;stream, ruc.req_-&gt;port, ruc.req_-&gt;param);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// discovery vhost, resolve the vhost from config</span></span><br><span class="line">    SrsConfDirective* parsed_vhost = _srs_config-&gt;<span class="built_in">get_vhost</span>(ruc.req_-&gt;vhost);</span><br><span class="line">    <span class="keyword">if</span> (parsed_vhost) &#123;</span><br><span class="line">        ruc.req_-&gt;vhost = parsed_vhost-&gt;<span class="built_in">arg0</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// For client to specifies the candidate(EIP) of server.</span></span><br><span class="line">    string eip = r-&gt;<span class="built_in">query_get</span>(<span class="string">&quot;eip&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (eip.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        eip = r-&gt;<span class="built_in">query_get</span>(<span class="string">&quot;candidate&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    string codec = r-&gt;<span class="built_in">query_get</span>(<span class="string">&quot;codec&quot;</span>);</span><br><span class="line">    <span class="comment">// For client to specifies whether encrypt by SRTP.</span></span><br><span class="line">    string srtp = r-&gt;<span class="built_in">query_get</span>(<span class="string">&quot;encrypt&quot;</span>);</span><br><span class="line">    string dtls = r-&gt;<span class="built_in">query_get</span>(<span class="string">&quot;dtls&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">srs_trace</span>(</span><br><span class="line">            <span class="string">&quot;RTC play %s, api=%s, tid=%s, clientip=%s, app=%s, stream=%s, offer=%dB, eip=%s, codec=%s, srtp=%s, dtls=%s&quot;</span>,</span><br><span class="line">            streamurl.<span class="built_in">c_str</span>(), api.<span class="built_in">c_str</span>(), tid.<span class="built_in">c_str</span>(), clientip.<span class="built_in">c_str</span>(), ruc.req_-&gt;app.<span class="built_in">c_str</span>(),</span><br><span class="line">            ruc.req_-&gt;stream.<span class="built_in">c_str</span>(), remote_sdp_str.<span class="built_in">length</span>(),</span><br><span class="line">            eip.<span class="built_in">c_str</span>(), codec.<span class="built_in">c_str</span>(), srtp.<span class="built_in">c_str</span>(), dtls.<span class="built_in">c_str</span>()</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    ruc.eip_ = eip;</span><br><span class="line">    ruc.codec_ = codec;</span><br><span class="line">    ruc.publish_ = <span class="literal">false</span>;</span><br><span class="line">    ruc.dtls_ = (dtls != <span class="string">&quot;false&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (srtp.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        ruc.srtp_ = _srs_config-&gt;<span class="built_in">get_rtc_server_encrypt</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ruc.srtp_ = (srtp != <span class="string">&quot;false&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> It seems remote_sdp doesn&#x27;t represents the full SDP information.</span></span><br><span class="line">    ruc.remote_sdp_str_ = remote_sdp_str;</span><br><span class="line">    <span class="keyword">if</span> ((err = ruc.remote_sdp_.<span class="built_in">parse</span>(remote_sdp_str)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;parse sdp failed: %s&quot;</span>, remote_sdp_str.<span class="built_in">c_str</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((err = <span class="built_in">serve_http</span>(w, r, &amp;ruc)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;serve&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;code&quot;</span>, SrsJsonAny::<span class="built_in">integer</span>(ERROR_SUCCESS));</span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;server&quot;</span>, SrsJsonAny::<span class="built_in">str</span>(SrsStatistic::<span class="built_in">instance</span>()-&gt;<span class="built_in">server_id</span>().<span class="built_in">c_str</span>()));</span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;service&quot;</span>, SrsJsonAny::<span class="built_in">str</span>(SrsStatistic::<span class="built_in">instance</span>()-&gt;<span class="built_in">service_id</span>().<span class="built_in">c_str</span>()));</span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;pid&quot;</span>, SrsJsonAny::<span class="built_in">str</span>(SrsStatistic::<span class="built_in">instance</span>()-&gt;<span class="built_in">service_pid</span>().<span class="built_in">c_str</span>()));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> add candidates in response json?</span></span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;sdp&quot;</span>, SrsJsonAny::<span class="built_in">str</span>(ruc.local_sdp_str_.<span class="built_in">c_str</span>()));</span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;sessionid&quot;</span>, SrsJsonAny::<span class="built_in">str</span>(ruc.session_id_.<span class="built_in">c_str</span>()));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h4 id="SrsRtcServer-create-session"><a href="#SrsRtcServer-create-session" class="headerlink" title="SrsRtcServer::create_session()"></a>SrsRtcServer::create_session()</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">	F1[SrsRtcServer::create_session]--&gt;F2[new SrsRtcConnection]</span><br><span class="line">	F1--&gt;F3[SrsRtcServer::do_create_session]</span><br><span class="line">	F3--&gt;F4[SrsRtcConnection::add_publisher]</span><br><span class="line">	F3--&gt;F5[SrsRtcConnection::add_player]</span><br><span class="line">	F3--&gt;F6[SrsResourceManager::add_with_name]</span><br><span class="line">	F5--&gt;F7[SrsRtcConnection::create_player]</span><br><span class="line">	F7--&gt;F8[new SrsRtcPlayStream]</span><br><span class="line">	F7--&gt;F9[SrsRtcPlayStream::initialize]</span><br><span class="line">	F9--&gt;F10[new SrsRtcAudioSendTrack]</span><br><span class="line">	F9--&gt;F11[new SrsRtcVideoSendTrack]</span><br></pre></td></tr></table></figure>
+<h4 id="SrsRtcServer-create-session"><a href="#SrsRtcServer-create-session" class="headerlink" title="SrsRtcServer::create_session()"></a>SrsRtcServer::create_session()</h4><pre class="mermaid">graph TB
+    F1[SrsRtcServer::create_session]-->F2[new SrsRtcConnection]
+    F1-->F3[SrsRtcServer::do_create_session]
+    F3-->F4[SrsRtcConnection::add_publisher]
+    F3-->F5[SrsRtcConnection::add_player]
+    F3-->F6[SrsResourceManager::add_with_name]
+    F5-->F7[SrsRtcConnection::create_player]
+    F7-->F8[new SrsRtcPlayStream]
+    F7-->F9[SrsRtcPlayStream::initialize]
+    F9-->F10[new SrsRtcAudioSendTrack]
+    F9-->F11[new SrsRtcVideoSendTrack]</pre>
 
 <h3 id="UDP连接"><a href="#UDP连接" class="headerlink" title="UDP连接"></a>UDP连接</h3><ul>
 <li>断点<code>b SrsRtcServer::on_udp_packet(SrsUdpMuxSocket*)</code>。</li>
 </ul>
 <img src="/2023/11/10/SRS-RTMP%E8%BD%ACRTC/SrsRtcServer中on_udp_packet断点.png" alt="SrsRtcServer中on_udp_packet断点" style="zoom:50%;">
 
-<h4 id="SrsRtcServer-on-udp-packet"><a href="#SrsRtcServer-on-udp-packet" class="headerlink" title="SrsRtcServer::on_udp_packet()"></a>SrsRtcServer::on_udp_packet()</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">	F1[SrsRtcServer::on_udp_packet]--&gt;F2[SrsRtcUdpNetwork::on_dtls]</span><br><span class="line">	F2--&gt;F3[SrsSecurityTransport::on_dtls]</span><br><span class="line">	F3--&gt;F4[SrsDtls::on_dtls]</span><br><span class="line">	F4--&gt;F5[SrsDtlsImpl::on_dtls]</span><br><span class="line">	F5--&gt;F6[SrsDtlsImpl::do_on_dtls]</span><br><span class="line">	F6--&gt;F7[SrsDtlsServerImpl::on_handshake_done]</span><br><span class="line">	F7--&gt;F8[SrsSecurityTransport::on_dtls_handshake_done]</span><br><span class="line">	F8--&gt;F9[SrsRtcUdpNetwork::on_dtls_handshake_done]</span><br><span class="line">	F9--&gt;F10[SrsRtcConnection::on_dtls_handshake_done]</span><br><span class="line">	F10--&gt;F11[SrsRtcPlayStream::start]</span><br><span class="line">	F11--&gt;F12[SrsRtcPlayStream::cycle]</span><br></pre></td></tr></table></figure>
+<h4 id="SrsRtcServer-on-udp-packet"><a href="#SrsRtcServer-on-udp-packet" class="headerlink" title="SrsRtcServer::on_udp_packet()"></a>SrsRtcServer::on_udp_packet()</h4><pre class="mermaid">graph TB
+    F1[SrsRtcServer::on_udp_packet]-->F2[SrsRtcUdpNetwork::on_dtls]
+    F2-->F3[SrsSecurityTransport::on_dtls]
+    F3-->F4[SrsDtls::on_dtls]
+    F4-->F5[SrsDtlsImpl::on_dtls]
+    F5-->F6[SrsDtlsImpl::do_on_dtls]
+    F6-->F7[SrsDtlsServerImpl::on_handshake_done]
+    F7-->F8[SrsSecurityTransport::on_dtls_handshake_done]
+    F8-->F9[SrsRtcUdpNetwork::on_dtls_handshake_done]
+    F9-->F10[SrsRtcConnection::on_dtls_handshake_done]
+    F10-->F11[SrsRtcPlayStream::start]
+    F11-->F12[SrsRtcPlayStream::cycle]</pre>
 
 <h2 id="推流端取转换数据"><a href="#推流端取转换数据" class="headerlink" title="推流端取转换数据"></a>推流端取转换数据</h2><ul>
 <li>断点<code>b SrsRtcConsumer::dump_packet(SrsRtpPacket**)</code>，查看堆栈。</li>
@@ -1833,109 +1992,6 @@
 <li>接收数据后存放到队列中，具体<code>SrsRtmpConn::process_play_control_msg</code>处理。</li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsQueueRecvThread::consume</span><span class="params">(SrsCommonMessage* msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// put into queue, the send thread will get and process it,</span></span><br><span class="line">    <span class="comment">// @see SrsRtmpConn::process_play_control_msg</span></span><br><span class="line">    queue.<span class="built_in">push_back</span>(msg);</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> SRS_PERF_QUEUE_COND_WAIT</span></span><br><span class="line">    <span class="keyword">if</span> (_consumer) &#123;</span><br><span class="line">        _consumer-&gt;<span class="built_in">wakeup</span>();</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="keyword">return</span> srs_success;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/10/28/SRS%E9%85%8D%E7%BD%AE%E6%94%AF%E6%8C%81WebRTC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/10/28/SRS%E9%85%8D%E7%BD%AE%E6%94%AF%E6%8C%81WebRTC/" class="post-title-link" itemprop="url">SRS配置支持WebRTC</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-10-28 21:32:53" itemprop="dateCreated datePublished" datetime="2023-10-28T21:32:53+08:00">2023-10-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:37:16" itemprop="dateModified" datetime="2023-12-30T22:37:16+08:00">2023-12-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/SRS/" itemprop="url" rel="index"><span itemprop="name">SRS</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="SRS环境搭建"><a href="#SRS环境搭建" class="headerlink" title="SRS环境搭建"></a>SRS环境搭建</h1><p>SRS官⽹：<a target="_blank" rel="noopener" href="http://www.ossrs.net/">http://www.ossrs.net/</a></p>
-<p>官⽅Wiki：<a target="_blank" rel="noopener" href="https://ossrs.net/lts/zh-cn/docs/v5/tutorial/srs-server">https://ossrs.net/lts/zh-cn/docs/v5/tutorial/srs-server</a></p>
-<h2 id="安装SRS"><a href="#安装SRS" class="headerlink" title="安装SRS"></a>安装SRS</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/ossrs/srs.git srs</span><br><span class="line">cd srs/trunk</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编译debug模式调试</span></span><br><span class="line">./configure --debug=on --debug-stats=on --prefix=`pwd`/install</span><br><span class="line">make -j4</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装到当前目录下的install</span></span><br><span class="line">make instal</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动</span></span><br><span class="line">cd install</span><br><span class="line">./objs/srs -c conf/srs.conf</span><br></pre></td></tr></table></figure>
-
-<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><p>conf目录下有多个配置文件，<code>srs.conf如下</code>，其中详细信息在<code>full.conf</code>。</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># main config for srs.</span></span><br><span class="line"><span class="comment"># @see full.conf for detail config.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># RTMP监听端口</span></span><br><span class="line"><span class="attribute">listen</span>              <span class="number">1935</span>;</span><br><span class="line"><span class="attribute">max_connections</span>     <span class="number">1000</span>;</span><br><span class="line"><span class="comment">#srs_log_tank        file;</span></span><br><span class="line"><span class="comment">#srs_log_file        ./objs/srs.log;</span></span><br><span class="line"><span class="comment"># off 前台启动</span></span><br><span class="line"><span class="attribute">daemon</span>              <span class="literal">off</span>;</span><br><span class="line"><span class="attribute">srs_log_tank</span>        console;</span><br><span class="line"></span><br><span class="line"><span class="comment"># http api服务，可以通过Web查看SRS相关的状态信息</span></span><br><span class="line"><span class="section">http_api</span> &#123;</span><br><span class="line">    <span class="attribute">enabled</span>         <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">listen</span>          <span class="number">1985</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">http_server</span> &#123;</span><br><span class="line">    <span class="attribute">enabled</span>         <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">listen</span>          <span class="number">8080</span>;</span><br><span class="line">    <span class="attribute">dir</span>             ./objs/nginx/html;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">rtc_server</span> &#123;</span><br><span class="line">    <span class="attribute">enabled</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8000</span>; <span class="comment"># UDP port</span></span><br><span class="line">    <span class="comment"># @see https://ossrs.net/lts/zh-cn/docs/v4/doc/webrtc#config-candidate</span></span><br><span class="line">    <span class="attribute">candidate</span> <span class="variable">$CANDIDATE</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="attribute">vhost</span> __defaultVhost__ &#123;</span><br><span class="line">    <span class="section">hls</span> &#123;</span><br><span class="line">        <span class="attribute">enabled</span>         <span class="literal">on</span>;</span><br><span class="line"><span class="comment">#       hlt_path        ./objs/nginx/html;</span></span><br><span class="line"><span class="comment">#       hls_fragment    5;</span></span><br><span class="line"><span class="comment">#       hls_window      25;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">http_remux</span> &#123;</span><br><span class="line">        <span class="attribute">enabled</span>     <span class="literal">on</span>;</span><br><span class="line">        <span class="attribute">mount</span>       [vhost]/[app]/[stream].flv;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">rtc</span> &#123;</span><br><span class="line">        <span class="attribute">enabled</span>     <span class="literal">on</span>;</span><br><span class="line">        <span class="comment"># @see https://ossrs.net/lts/zh-cn/docs/v4/doc/webrtc#rtmp-to-rtc</span></span><br><span class="line">        <span class="attribute">rtmp_to_rtc</span> <span class="literal">off</span>;</span><br><span class="line">        <span class="comment"># @see https://ossrs.net/lts/zh-cn/docs/v4/doc/webrtc#rtc-to-rtmp</span></span><br><span class="line">        <span class="attribute">rtc_to_rtmp</span> <span class="literal">off</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    play&#123;</span><br><span class="line">        <span class="attribute">gop_cache_max_frames</span> <span class="number">2500</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="测试SRS"><a href="#测试SRS" class="headerlink" title="测试SRS"></a>测试SRS</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">RTMP推流</span></span><br><span class="line">ffmpeg -re -i test.flv -codec copy -f flv -y rtmp://127.0.0.1/live/livestream</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">RTMP流地址：rtmp://127.0.0.1/live/livestream</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">HTTP-FLV地址：http://127.0.0.1:8080/live/livestream.flv</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">HLS流地址：http://127.0.0.1:8080/live/livestream.m3u8</span></span><br></pre></td></tr></table></figure>
-
-<p>使⽤在线srs播放器拉流</p>
-<p><a target="_blank" rel="noopener" href="http://127.0.0.1:8080/players/srs_player.html">http://127.0.0.1:8080/players/srs_player.html</a></p>
-<p><a target="_blank" rel="noopener" href="http://ossrs.net/srs.release/trunk/research/players/srs_player.html%EF%BC%88%E5%AE%98%E2%BD%85%E6%8F%90%E4%BE%9B%E7%9A%84%E9%93%BE%E6%8E%A5%EF%BC%89">http://ossrs.net/srs.release/trunk/research/players/srs_player.html（官⽅提供的链接）</a></p>
-<h1 id="SRS配置WebRTC"><a href="#SRS配置WebRTC" class="headerlink" title="SRS配置WebRTC"></a>SRS配置WebRTC</h1><h2 id="配置支持WebRTC"><a href="#配置支持WebRTC" class="headerlink" title="配置支持WebRTC"></a>配置支持WebRTC</h2><p>SRS 的 webrtc 是默认⽀持的（<code>--rtc=on</code>），使用默认<code>rtc2rtmp.conf</code>配置启动。</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">listen</span>              <span class="number">1935</span>;</span><br><span class="line"><span class="attribute">max_connections</span>     <span class="number">1000</span>;</span><br><span class="line"><span class="attribute">daemon</span>              <span class="literal">off</span>;</span><br><span class="line"><span class="attribute">srs_log_tank</span>        console;</span><br><span class="line"></span><br><span class="line"><span class="section">http_server</span> &#123;</span><br><span class="line">    <span class="attribute">enabled</span>         <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">listen</span>          <span class="number">8080</span>;</span><br><span class="line">    <span class="attribute">dir</span>             ./objs/nginx/html;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">http_api</span> &#123;</span><br><span class="line">    <span class="attribute">enabled</span>         <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">listen</span>          <span class="number">1985</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">stats</span> &#123;</span><br><span class="line">    <span class="attribute">network</span>         <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="section">rtc_server</span> &#123;</span><br><span class="line">    <span class="attribute">enabled</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8000</span>; <span class="comment"># UDP port</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># The $CANDIDATE means fetch from env, if not configed, use * as default.</span></span><br><span class="line">    <span class="comment"># @see https://ossrs.net/lts/zh-cn/docs/v4/doc/webrtc#config-candidate</span></span><br><span class="line">    <span class="comment"># candidate $CANDIDATE;</span></span><br><span class="line">    </span><br><span class="line">    <span class="attribute">candidate</span> xxx.xxx.xxx.xxx; <span class="comment"># 在公网测试，需要设置为公⽹的地址</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">vhost</span> __defaultVhost__ &#123;</span><br><span class="line">    <span class="section">rtc</span> &#123;</span><br><span class="line">        <span class="attribute">enabled</span>     <span class="literal">on</span>;</span><br><span class="line">        <span class="comment"># @see https://ossrs.net/lts/zh-cn/docs/v4/doc/webrtc#rtmp-to-rtc</span></span><br><span class="line">        <span class="attribute">rtmp_to_rtc</span> <span class="literal">on</span>;</span><br><span class="line">        <span class="comment"># @see https://ossrs.net/lts/zh-cn/docs/v4/doc/webrtc#rtc-to-rtmp</span></span><br><span class="line">        <span class="attribute">rtc_to_rtmp</span> <span class="literal">on</span>;  <span class="comment"># ⽀持RTC推流，RTMP拉流</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">http_remux</span> &#123;</span><br><span class="line">        <span class="attribute">enabled</span>     <span class="literal">on</span>;</span><br><span class="line">        <span class="attribute">mount</span>       [vhost]/[app]/[stream].flv;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>$CANDIDATE</code>在服务器⼀般默认会选中172（之类）的局域⽹络，若是推流地址和拉流地址不在⼀个局域中会异常，解决⽅法设置为公⽹ip。</p>
-<h2 id="WebRTC推拉流测试"><a href="#WebRTC推拉流测试" class="headerlink" title="WebRTC推拉流测试"></a>WebRTC推拉流测试</h2><h3 id="WebRTC拉流"><a href="#WebRTC拉流" class="headerlink" title="WebRTC拉流"></a>WebRTC拉流</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推流端使用RTMP</span></span><br><span class="line">ffmpeg -re -i test.flv -codec copy -f flv -y rtmp://127.0.0.1/live/livestream</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">拉流端使用RTC</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使⽤srs⾃带的rtc_player播放器进⾏播放，直接请求srs服务的8080端⼝即可</span></span><br><span class="line">http://127.0.0.1:8080/players/srs_player.html</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">选择RTC播放器</span></span><br><span class="line">URL：webrtc://127.0.0.1/live/livestream</span><br></pre></td></tr></table></figure>
-
-<h3 id="WebRTC推流"><a href="#WebRTC推流" class="headerlink" title="WebRTC推流"></a>WebRTC推流</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推流端使用RTC</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使⽤srs⾃带的rtc_player播放器进⾏播放，直接请求srs服务的8080端⼝即可</span></span><br><span class="line">http://127.0.0.1:8080/players/srs_player.html</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">选择RTC推流</span></span><br><span class="line">URL：webrtc://127.0.0.1/live/livestream</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">拉流端也使用RTC</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">选择RTC播放器</span></span><br><span class="line">URL：webrtc://127.0.0.1/live/livestream</span><br></pre></td></tr></table></figure>
 
       
     </div>

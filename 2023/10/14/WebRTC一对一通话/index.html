@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -376,7 +376,11 @@
 
 
 
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">	F1[客户端]--https port=443--&gt;F2[Web服务]</span><br><span class="line">	F2--wss port=8098 path=/ws--&gt;F3[nginx代理信令服务]</span><br><span class="line">	F3--http port=8099--&gt;F4[信令服务]</span><br><span class="line">	F1--ICE port=3478--&gt;F5[Coturn服务]</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><pre class="mermaid">graph LR
+    F1[客户端]--https port=443-->F2[Web服务]
+    F2--wss port=8098 path=/ws-->F3[nginx代理信令服务]
+    F3--http port=8099-->F4[信令服务]
+    F1--ICE port=3478-->F5[Coturn服务]</pre>
 
     </div>
 

@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -779,7 +779,13 @@
 </tbody></table>
 <p><strong>MP4中轨道、数据块和样本的关系</strong></p>
 <p>在MP4（MPEG-4 Part 14）容器格式中，媒体轨道（track）、数据块（chunk）和样本（sample）之间存在以下关系：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">	A[MP4]--&gt;B[track1]</span><br><span class="line">	A--&gt;C[track2]</span><br><span class="line">	B--&gt;D[chunk1]</span><br><span class="line">	B--&gt;E[chunk2]</span><br><span class="line">	D--&gt;F[sample1]</span><br><span class="line">	D--&gt;G[sample2]</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph LR
+    A[MP4]-->B[track1]
+    A-->C[track2]
+    B-->D[chunk1]
+    B-->E[chunk2]
+    D-->F[sample1]
+    D-->G[sample2]</pre>
 
 <ul>
 <li><p>媒体轨道（Track）：</p>

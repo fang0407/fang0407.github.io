@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="音视频解码流程FFmpeg API中音频和视频解码的流程基本一致。 音频解码过程：输入音频文件（AAC文件），通过音频解码器，输出PCM数据。 视频解码过程：输入视频文件（H264文件），通过视频解码器，输出像素数据（YUV420等）。 流程图123456789101112131415graph TB	S(开始)--&gt;A	A[查找指定解码器 avcodec_find_decoder]--&amp;g">
+    <meta name="description" content="音视频解码流程FFmpeg API中音频和视频解码的流程基本一致。 音频解码过程：输入音频文件（AAC文件），通过音频解码器，输出PCM数据。 视频解码过程：输入视频文件（H264文件），通过视频解码器，输出像素数据（YUV420等）。 流程图graph TB     S(开始)--&gt;A     A[查找指定解码器 avcodec_find_decoder]--&gt;B[根据解码器ID初始化裸流解析器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="音视频解码">
 <meta property="og:url" content="https://fang0407.github.io/2023/08/30/%E9%9F%B3%E8%A7%86%E9%A2%91%E8%A7%A3%E7%A0%81/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="音视频解码流程FFmpeg API中音频和视频解码的流程基本一致。 音频解码过程：输入音频文件（AAC文件），通过音频解码器，输出PCM数据。 视频解码过程：输入视频文件（H264文件），通过视频解码器，输出像素数据（YUV420等）。 流程图123456789101112131415graph TB	S(开始)--&gt;A	A[查找指定解码器 avcodec_find_decoder]--&amp;g">
+<meta property="og:description" content="音视频解码流程FFmpeg API中音频和视频解码的流程基本一致。 音频解码过程：输入音频文件（AAC文件），通过音频解码器，输出PCM数据。 视频解码过程：输入视频文件（H264文件），通过视频解码器，输出像素数据（YUV420等）。 流程图graph TB     S(开始)--&gt;A     A[查找指定解码器 avcodec_find_decoder]--&gt;B[根据解码器ID初始化裸流解析器">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-08-30T11:09:04.000Z">
 <meta property="article:modified_time" content="2023-12-30T14:41:35.262Z">
@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -218,7 +218,21 @@
     <div class="post-body" itemprop="articleBody"><h1 id="音视频解码流程"><a href="#音视频解码流程" class="headerlink" title="音视频解码流程"></a>音视频解码流程</h1><p>FFmpeg API中音频和视频解码的流程基本一致。</p>
 <p>音频解码过程：输入音频文件（AAC文件），通过音频解码器，输出PCM数据。</p>
 <p>视频解码过程：输入视频文件（H264文件），通过视频解码器，输出像素数据（YUV420等）。</p>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line">	S(开始)--&gt;A</span><br><span class="line">	A[查找指定解码器 avcodec_find_decoder]--&gt;B[根据解码器ID初始化裸流解析器 av_parser_init]</span><br><span class="line">	B--&gt;C[分配解码器上下文 avcodec_alloc_context3]</span><br><span class="line">	C--&gt;D[打开解码器并关联解码器上下文 avcodec_open2]</span><br><span class="line">	D--&gt;E[读取裸流 fread]</span><br><span class="line">	E--&gt;F&#123;是否读取结束&#125;</span><br><span class="line">	F--&gt;|否|G[解析一个数据包 av_parser_parse2]</span><br><span class="line">	G--&gt;H[发送给解码器 avcodec_send_packet]</span><br><span class="line">	H--&gt;I[接收解码后的帧 avcodec_receive_frame]</span><br><span class="line">	I--&gt;J&#123;EAGIN or EOF&#125;</span><br><span class="line">	J--&gt;|是|E</span><br><span class="line">	J--&gt;|否|K[将YUV数据写入文件 fwrite]</span><br><span class="line">	F--&gt;|是|L[刷新解码器获取缓存数据帧 flush decoder]</span><br><span class="line">	L--&gt;M(结束)</span><br></pre></td></tr></table></figure>
+<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><pre class="mermaid">graph TB
+    S(开始)-->A
+    A[查找指定解码器 avcodec_find_decoder]-->B[根据解码器ID初始化裸流解析器 av_parser_init]
+    B-->C[分配解码器上下文 avcodec_alloc_context3]
+    C-->D[打开解码器并关联解码器上下文 avcodec_open2]
+    D-->E[读取裸流 fread]
+    E-->F{是否读取结束}
+    F-->|否|G[解析一个数据包 av_parser_parse2]
+    G-->H[发送给解码器 avcodec_send_packet]
+    H-->I[接收解码后的帧 avcodec_receive_frame]
+    I-->J{EAGIN or EOF}
+    J-->|是|E
+    J-->|否|K[将YUV数据写入文件 fwrite]
+    F-->|是|L[刷新解码器获取缓存数据帧 flush decoder]
+    L-->M(结束)</pre>
 
 <h2 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h2><ul>
 <li>avcodec_find_decoder()：根据指定的AVCodecID查找解码器。 </li>
