@@ -1098,7 +1098,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-08 11:58:19" itemprop="dateModified" datetime="2024-01-08T11:58:19+08:00">2024-01-08</time>
+      <time title="Modified: 2024-01-08 13:54:24" itemprop="dateModified" datetime="2024-01-08T13:54:24+08:00">2024-01-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1123,10 +1123,10 @@
           <h1 id="M3U8-格式"><a href="#M3U8-格式" class="headerlink" title="M3U8 格式"></a>M3U8 格式</h1><p>M3U8（也称为 HLS 播放列表）是一种文本文件格式，用于描述 HTTP Live Streaming（HLS）协议中的媒体播放列表。HLS 是一种流媒体传输协议，广泛用于将音频和视频内容分发到互联网上的移动设备和桌面浏览器。</p>
 <p>M3U8 文件是一个纯文本文件，其中包含了多个媒体片段的 URL 和其他相关信息，以便客户端能够按顺序下载和播放这些片段。</p>
 <h2 id="播放列表"><a href="#播放列表" class="headerlink" title="播放列表"></a>播放列表</h2><ul>
-<li>一个 M3U8 的播放列表（playlist） 就是⼀个由多个独立行组成的文本文件，每行由回车&#x2F;换行区分。</li>
-<li>每⼀行可以是⼀个 URI、空白行或是⼀个以 “#” 号开头的字符串，并且空格只能存在于⼀行中不同元素间的分隔。</li>
-<li>⼀个 URI 表示⼀个媒体段或是 “variant playlist file”（最多支持⼀层嵌套，即⼀个 M3U8 文件中嵌套另⼀个 M3U8）。以 “EXT” 开头的表示⼀个 “tag”，否则表示注释，直接忽略。</li>
-<li>每⼀个 M3U8 文件，分别对应若干个 TS 文件，这些 <strong>TS 文件才是真正存放视频的数据</strong>。<strong>M3U8 文件只是存放了⼀些 TS 文件的配置信息和相关路径</strong>。</li>
+<li>一个 M3U8 的播放列表（playlist） 就是一个由多个独立行组成的文本文件，每行由回车&#x2F;换行区分。</li>
+<li>每一行可以是一个 URI、空白行或是一个以 “#” 号开头的字符串，并且空格只能存在于一行中不同元素间的分隔。</li>
+<li>一个 URI 表示一个媒体段或是 “variant playlist file”（最多支持一层嵌套，即一个 M3U8 文件中嵌套另一个 M3U8）。以 “EXT” 开头的表示一个 “tag”，否则表示注释，直接忽略。</li>
+<li>每一个 M3U8 文件，分别对应若干个 TS 文件，这些 <strong>TS 文件才是真正存放视频的数据</strong>。<strong>M3U8 文件只是存放了一些 TS 文件的配置信息和相关路径</strong>。</li>
 </ul>
 <h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>标签（Tags）提供了有关媒体流和播放列表本身的信息。</p>
 <p><strong>#EXTM3U</strong></p>
@@ -1144,17 +1144,17 @@
 <p><strong>#EXT-X-TARGETDURATION</strong></p>
 <ul>
 <li>格式： <code>#EXT-X-TARGETDURATION:&lt;s&gt;</code></li>
-<li>作用：指定当前视频流中的单个切片（即 ts）文件的最大时长（秒）。所以 #EXTINF 中指定的时间长度必须小于或是等于这个最大值。这个 tag 在整个 playlist 文件中只能出现⼀次（在嵌套的情况下，⼀般有真正 ts url 的 m3u8 才会出现该 tag）。</li>
+<li>作用：指定当前视频流中的单个切片（即 ts）文件的最大时长（秒）。所以 #EXTINF 中指定的时间长度必须小于或是等于这个最大值。这个 tag 在整个 playlist 文件中只能出现一次（在嵌套的情况下，一般有真正 ts url 的 m3u8 才会出现该 tag）。</li>
 </ul>
 <p><strong>#EXT-X-MEDIA-SEQUENCE</strong></p>
 <ul>
 <li>格式：<code>#EXT-X-MEDIA-SEQUENCE:&lt;number&gt;</code></li>
-<li>作用：指定 meida segment 的开始序号，每⼀个 media uri 在 playlist 中只有唯⼀的序号，相邻之间序号 +1。 ⼀个 media uri 并不是必须要包含的，如果没有，默认为 0。</li>
+<li>作用：指定 meida segment 的开始序号，每一个 media uri 在 playlist 中只有唯一的序号，相邻之间序号 +1。 一个 media uri 并不是必须要包含的，如果没有，默认为 0。</li>
 </ul>
 <p><strong>#EXT-X-ALLOW-CACHE</strong></p>
 <ul>
 <li>格式：<code>#EXT-X-ALLOW-CACHE:&lt;YES|NO&gt;</code></li>
-<li>作用：指示客户端是否被允许缓存媒体片段，可以在 m3u8 文件中任意地方出现，并且最多只出现⼀次，作用效果是所有的媒体段。</li>
+<li>作用：指示客户端是否被允许缓存媒体片段，可以在 m3u8 文件中任意地方出现，并且最多只出现一次，作用效果是所有的媒体段。</li>
 </ul>
 <p><strong>#EXTINF</strong></p>
 <ul>
@@ -1164,12 +1164,12 @@
 <p><strong>#EXT-X-ENDLIST</strong></p>
 <ul>
 <li>格式：<code>#EXT-X-ENDLIST</code></li>
-<li>作用：表示 m3u8 文件的结束，live m3u8 没有该 tag。它可以在 playlist 中任意位置出现，但是只能出现⼀个。</li>
+<li>作用：表示 m3u8 文件的结束，live m3u8 没有该 tag。它可以在 playlist 中任意位置出现，但是只能出现一个。</li>
 </ul>
 <p><strong>#EXT-X-STREAM-INF</strong></p>
 <ul>
 <li>格式：<code>#EXT-X-STREAM-INF:&lt;attribute-list&gt;</code></li>
-<li>作用：指定⼀个包含多媒体信息的 media uri 作为 playlist，⼀般做 m3u8 的嵌套使用，它只对紧跟后面的 uri 有效。</li>
+<li>作用：指定一个包含多媒体信息的 media uri 作为 playlist，一般做 m3u8 的嵌套使用，它只对紧跟后面的 uri 有效。</li>
 <li>常用的属性如下：<ul>
 <li>BANDWIDTH：带宽，必须有。</li>
 <li>CODECS：指定流的编码类型，不是必须的。</li>
@@ -1279,12 +1279,12 @@
 <tr>
 <td>Transport Error Indicator</td>
 <td>1b</td>
-<td>传输错误指示符，表明在 ts 头的 adapt 域后有⼀个无用字节，通常都为 0，这个字节算在 adapt 域⻓度内</td>
+<td>传输错误指示符，表明在 ts 头的 adapt 域后有一个无用字节，通常都为 0，这个字节算在 adapt 域⻓度内</td>
 </tr>
 <tr>
 <td>Payload Unit Start Indicator</td>
 <td>1b</td>
-<td>负载单元起始标示符，⼀个完整的数据包开始时标记为 1</td>
+<td>负载单元起始标示符，一个完整的数据包开始时标记为 1</td>
 </tr>
 <tr>
 <td>Transport Priority</td>
@@ -1309,7 +1309,7 @@
 <tr>
 <td>Continuity Counter</td>
 <td>4b</td>
-<td>递增计数器，从 0-f，起始值不⼀定取 0，但必须是连续的，可用于检测丢失的包</td>
+<td>递增计数器，从 0-f，起始值不一定取 0，但必须是连续的，可用于检测丢失的包</td>
 </tr>
 </tbody></table>
 <p><strong>TS 的内容是通过 PID 值来标识的，主要内容包括：PAT 表、PMT 表、音频流、视频流。</strong>PAT 表的和 PMT 表需要定期插入 TS 流，因为用户随时可能加入 TS 流，这个间隔比较小，通常每隔几个视频帧就要加入 PAT 和 PMT。PAT 和 PMT 表是必须的，还可以加入其它表如 SDT（业务描述表）等，不过 HLS 流只要有 PAT 和 PMT 就可以播放了。 </p>
@@ -1381,8 +1381,8 @@
 <td>…</td>
 </tr>
 </tbody></table>
-<p>自适应区的长度要包含传输错误指示符标识的⼀个字节。</p>
-<p>打包 TS 流时 PAT 和 PMT 表是没有 adaptation field 的，<strong>不够的长度直接补 0xff 即可</strong>。视频流和音频流都需要加 adaptation field，通常加在⼀个帧的第⼀个  TS 包和最后⼀个 TS 包里，中间的 TS 包不加。</p>
+<p>自适应区的长度要包含传输错误指示符标识的一个字节。</p>
+<p>打包 TS 流时 PAT 和 PMT 表是没有 adaptation field 的，<strong>不够的长度直接补 0xff 即可</strong>。视频流和音频流都需要加 adaptation field，通常加在一个帧的第一个  TS 包和最后一个 TS 包里，中间的 TS 包不加。</p>
 <p>pcr 是节目时钟参考，pcr、dts、pts 都是对同一个系统时钟的采样值，pcr 是递增的，因此可以将其设置为 dts 值，音频数据不需要 pcr。如果没有字段，ipad 是可以播放的，但 vlc 无法播放。</p>
 <h2 id="有效负载"><a href="#有效负载" class="headerlink" title="有效负载"></a>有效负载</h2><p>有效负载（Payload）包含了音频、视频、字幕等媒体数据。有效负载的长度可以根据包头中的信息变化，通常为 0 到 184 字节。有效负载的具体格式取决于所传输的内容和编码方式。<strong>在解析 MPEG-TS 流时，需要根据 PID（Packet Identifier）字段中的标识来确定有效负载的类型，并使用相应的解码器来解析数据。</strong>不同的 PID 值对应不同的数据流类型，例如音频、视频、字幕等。</p>
 <h3 id="PAT"><a href="#PAT" class="headerlink" title="PAT"></a>PAT</h3><p>PAT 报文格式：</p>
