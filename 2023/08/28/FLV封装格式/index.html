@@ -20,15 +20,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="FLV 格式简介FLV（Flash Video）是 Adobe 公司推出的⼀种流媒体格式，由于其封装后的⾳视频⽂件体积⼩、 封装简单等特点，⾮常适合于互联⽹上使⽤。⽬前主流的视频⽹站基本都⽀持 FLV。采⽤ FLV 格式封装的⽂件后缀为 .flv。  FLV 封装格式是由⼀个⽂件头（file header）和⽂件体（file Body）组成。其中，FLV body 由⼀对对的（Previous T">
+    <meta name="description" content="FLV 格式简介FLV（Flash Video）是 Adobe 公司推出的一种流媒体格式，由于其封装后的音视频文件体积小、 封装简单等特点，非常适合于互联网上使用。⽬前主流的视频网站基本都⽀持 FLV。采用 FLV 格式封装的文件后缀为 .flv。  FLV 封装格式是由一个文件头（file header）和文件体（file Body）组成。其中，FLV body 由一对对的（Previous T">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FLV封装格式">
 <meta property="og:url" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="FLV 格式简介FLV（Flash Video）是 Adobe 公司推出的⼀种流媒体格式，由于其封装后的⾳视频⽂件体积⼩、 封装简单等特点，⾮常适合于互联⽹上使⽤。⽬前主流的视频⽹站基本都⽀持 FLV。采⽤ FLV 格式封装的⽂件后缀为 .flv。  FLV 封装格式是由⼀个⽂件头（file header）和⽂件体（file Body）组成。其中，FLV body 由⼀对对的（Previous T">
+<meta property="og:description" content="FLV 格式简介FLV（Flash Video）是 Adobe 公司推出的一种流媒体格式，由于其封装后的音视频文件体积小、 封装简单等特点，非常适合于互联网上使用。⽬前主流的视频网站基本都⽀持 FLV。采用 FLV 格式封装的文件后缀为 .flv。  FLV 封装格式是由一个文件头（file header）和文件体（file Body）组成。其中，FLV body 由一对对的（Previous T">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV%E2%BD%82%E4%BB%B6%E7%BB%93%E6%9E%84.png">
-<meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV%E2%BD%82%E4%BB%B6%E7%9A%84%E8%AF%A6%E7%BB%86%E5%86%85%E5%AE%B9%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV%E6%96%87%E4%BB%B6%E7%9A%84%E8%AF%A6%E7%BB%86%E5%86%85%E5%AE%B9%E7%BB%93%E6%9E%84.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-Header.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-BODY.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-Tag-Header.png">
@@ -39,10 +39,10 @@
 <meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-AVC_sequence_header.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-AVC_NALU.png">
 <meta property="article:published_time" content="2023-08-28T11:09:49.000Z">
-<meta property="article:modified_time" content="2024-01-07T13:15:58.818Z">
+<meta property="article:modified_time" content="2024-01-08T07:44:09.957Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV%E2%BD%82%E4%BB%B6%E7%BB%93%E6%9E%84.png">
+<meta name="twitter:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84.png">
 
 
 <link rel="canonical" href="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/">
@@ -206,7 +206,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-07 21:15:58" itemprop="dateModified" datetime="2024-01-07T21:15:58+08:00">2024-01-07</time>
+      <time title="Modified: 2024-01-08 15:44:09" itemprop="dateModified" datetime="2024-01-08T15:44:09+08:00">2024-01-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -227,13 +227,13 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="FLV-格式简介"><a href="#FLV-格式简介" class="headerlink" title="FLV 格式简介"></a>FLV 格式简介</h1><p>FLV（Flash Video）是 Adobe 公司推出的⼀种流媒体格式，由于其封装后的⾳视频⽂件体积⼩、 封装简单等特点，⾮常适合于互联⽹上使⽤。⽬前主流的视频⽹站基本都⽀持 FLV。采⽤ FLV 格式封装的⽂件后缀为 .flv。 </p>
-<p>FLV 封装格式是由⼀个<strong>⽂件头</strong>（file header）和<strong>⽂件体</strong>（file Body）组成。其中，FLV body 由⼀对对的（<strong>Previous Tag Size 字段 + tag</strong>）组成。Previous Tag Size 字段排列在 Tag 之前，占⽤ 4 个字节。Previous Tag Size 记录了前⾯⼀个 Tag 的⼤⼩，⽤于逆向读取处理。FLV header 后的第⼀个 Pervious Tag Size 的值为 0。 </p>
-<p>Tag ⼀般可以分为 3 种类型：脚本（帧）数据类型、⾳频数据类型、视频数据。FLV 数据以⼤端序进⾏存储，在解析时需要注意。⼀个标准 FLV ⽂件结构如下图： </p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV⽂件结构.png" alt="FLV⽂件结构" style="zoom:50%;">
+    <div class="post-body" itemprop="articleBody"><h1 id="FLV-格式简介"><a href="#FLV-格式简介" class="headerlink" title="FLV 格式简介"></a>FLV 格式简介</h1><p>FLV（Flash Video）是 Adobe 公司推出的一种流媒体格式，由于其封装后的音视频文件体积小、 封装简单等特点，非常适合于互联网上使用。⽬前主流的视频网站基本都⽀持 FLV。采用 FLV 格式封装的文件后缀为 .flv。 </p>
+<p>FLV 封装格式是由一个<strong>文件头</strong>（file header）和<strong>文件体</strong>（file Body）组成。其中，FLV body 由一对对的（<strong>Previous Tag Size 字段 + tag</strong>）组成。Previous Tag Size 字段排列在 Tag 之前，占用 4 个字节。Previous Tag Size 记录了前面一个 Tag 的大小，用于逆向读取处理。FLV header 后的第一个 Pervious Tag Size 的值为 0。 </p>
+<p>Tag 一般可以分为 3 种类型：脚本（帧）数据类型、音频数据类型、视频数据。FLV 数据以大端序进⾏存储，在解析时需要注意。一个标准 FLV 文件结构如下图： </p>
+<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV文件结构.png" alt="FLV文件结构" style="zoom:50%;">
 
-<p>FLV ⽂件的详细内容结构如下图：</p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV⽂件的详细内容结构.png" alt="FLV⽂件的详细内容结构" style="zoom:50%;">
+<p>FLV 文件的详细内容结构如下图：</p>
+<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV文件的详细内容结构.png" alt="FLV文件的详细内容结构" style="zoom:50%;">
 
 <h1 id="FLV-解析框架"><a href="#FLV-解析框架" class="headerlink" title="FLV 解析框架"></a>FLV 解析框架</h1><pre class="mermaid">graph TB
     A(解析FLV)-->B[解析Header 9字节]
@@ -250,8 +250,8 @@
     K-->N[AVC sequence header]
     K-->O[AVC NALU]</pre>
 
-<h2 id="FLV-Header"><a href="#FLV-Header" class="headerlink" title="FLV Header"></a>FLV Header</h2><p>注：在下⾯的数据类型中，<strong>UI 表示⽆符号整形</strong>，后⾯跟的数字表示其⻓度是多少位。⽐如 UI8，表示⽆符号整形，⻓度⼀个字节。UI24 是三个字节，UI[8 * n]表示多个字节。<strong>UB 表示位域</strong>，UB5 表示⼀个字节的 5 位。可以参考 C 语言中的位域结构体。</p>
-<p>FLV 头占 9 个字节，⽤来标识⽂件为 FLV 类型，以及后续存储的⾳视频流。⼀个 FLV ⽂件，每种类型的 tag 都属于⼀个流，也就是⼀个  flv ⽂件最多只有⼀个⾳频流，⼀个视频流，不存在多个独⽴的⾳视频流在⼀个⽂件的情况。 </p>
+<h2 id="FLV-Header"><a href="#FLV-Header" class="headerlink" title="FLV Header"></a>FLV Header</h2><p>注：在下面的数据类型中，<strong>UI 表示无符号整形</strong>，后面跟的数字表示其长度是多少位。比如 UI8，表示无符号整形，长度一个字节。UI24 是三个字节，UI[8 * n]表示多个字节。<strong>UB 表示位域</strong>，UB5 表示一个字节的 5 位。可以参考 C 语言中的位域结构体。</p>
+<p>FLV 头占 9 个字节，用来标识文件为 FLV 类型，以及后续存储的音视频流。一个 FLV 文件，每种类型的 tag 都属于一个流，也就是一个  flv 文件最多只有一个音频流，一个视频流，不存在多个独⽴的音视频流在一个文件的情况。 </p>
 <p><strong>FLV Header 内容结构</strong></p>
 <img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-Header.png" alt="FLV-Header" style="zoom:70%;">
 
@@ -289,9 +289,9 @@
 <td>前五位都为0</td>
 </tr>
 <tr>
-<td>⾳频流标识</td>
+<td>音频流标识</td>
 <td>UB1</td>
-<td>是否存在⾳频流</td>
+<td>是否存在音频流</td>
 </tr>
 <tr>
 <td>保留字段</td>
@@ -304,19 +304,19 @@
 <td>是否存在视频流</td>
 </tr>
 <tr>
-<td>⽂件头⼤⼩</td>
+<td>文件头大小</td>
 <td>UI32</td>
-<td>FLV版本1时填写9，表明的是FLV头的⼤⼩，为后期的FLV版本扩展使⽤。<br>包括这四个字节。数据的起始位置就是从⽂件开头偏移这么多的⼤小。</td>
+<td>FLV版本1时填写9，表明的是FLV头的大小，为后期的FLV版本扩展使用。<br>包括这四个字节。数据的起始位置就是从文件开头偏移这么多的大小。</td>
 </tr>
 </tbody></table>
-<h2 id="FLV-Body"><a href="#FLV-Body" class="headerlink" title="FLV Body"></a>FLV Body</h2><p>FLV Header 之后，就是 FLV File Body。FLV File Body 是由⼀连串的 back-pointers + tags 构成。Back-pointer 表示 Previous Tag Size（前⼀个 tag 的字节数据⻓度），占<strong>4</strong>个字节。 </p>
+<h2 id="FLV-Body"><a href="#FLV-Body" class="headerlink" title="FLV Body"></a>FLV Body</h2><p>FLV Header 之后，就是 FLV File Body。FLV File Body 是由一连串的 back-pointers + tags 构成。Back-pointer 表示 Previous Tag Size（前一个 tag 的字节数据长度），占<strong>4</strong>个字节。 </p>
 <img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-BODY.png" alt="FLV-BODY" style="zoom:50%;">
 
-<h3 id="FLV-Tag"><a href="#FLV-Tag" class="headerlink" title="FLV Tag"></a>FLV Tag</h3><p>每⼀个 tag 也是由两部分组成：tag header 和 tag data。Tag Header ⾥存放的是当前 tag 的类型、数据区（tag data）的⻓度等信息。 </p>
+<h3 id="FLV-Tag"><a href="#FLV-Tag" class="headerlink" title="FLV Tag"></a>FLV Tag</h3><p>每一个 tag 也是由两部分组成：tag header 和 tag data。Tag Header 里存放的是当前 tag 的类型、数据区（tag data）的长度等信息。 </p>
 <h4 id="Tag-Header"><a href="#Tag-Header" class="headerlink" title="Tag Header"></a>Tag Header</h4><p><strong>FLV Tag Header 内容结构</strong></p>
 <img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-Tag-Header.png" alt="FLV-Tag-Header" style="zoom:70%;">
 
-<p>Tag Header ⼀般占11个字节（上图 15 直接是多加了 PreviousTagSize 的 4 字节）的内存空间。FLV Tag 结构如下： </p>
+<p>Tag Header 一般占11个字节（上图 15 直接是多加了 PreviousTagSize 的 4 字节）的内存空间。FLV Tag 结构如下： </p>
 <table>
 <thead>
 <tr>
@@ -328,22 +328,22 @@
 <tbody><tr>
 <td>Tag类型 Type</td>
 <td>UI8</td>
-<td>8: audio<br>9: video<br>18: script data<br>other: reserved 其他所有值未使⽤</td>
+<td>8: audio<br>9: video<br>18: script data<br>other: reserved 其他所有值未使用</td>
 </tr>
 <tr>
-<td>数据区⼤⼩</td>
+<td>数据区大小</td>
 <td>UI24</td>
-<td>当前tag的数据域的⼤⼩，不包含tag header。Length of the data in the Data field</td>
+<td>当前tag的数据域的大小，不包含tag header。Length of the data in the Data field</td>
 </tr>
 <tr>
 <td>时间戳 Timestamp</td>
 <td>UI24</td>
-<td>当前帧时戳，单位是毫秒。相对值，第⼀个tag的时戳总是为0</td>
+<td>当前帧时戳，单位是毫秒。相对值，第一个tag的时戳总是为0</td>
 </tr>
 <tr>
 <td>时戳扩展字段 TimestampExtended</td>
 <td>UI8</td>
-<td>如果时戳⼤于0xFFFFFF，将会使⽤这个字节。这个字节是时戳的⾼8位，上⾯的三个字节是低24位。</td>
+<td>如果时戳大于0xFFFFFF，将会使用这个字节。这个字节是时戳的高8位，上面的三个字节是低24位。</td>
 </tr>
 <tr>
 <td>StreamID</td>
@@ -356,13 +356,13 @@
 <td>数据域数据</td>
 </tr>
 </tbody></table>
-<h4 id="Script-Tag-Data"><a href="#Script-Tag-Data" class="headerlink" title="Script Tag Data"></a>Script Tag Data</h4><p>Script data 脚本数据就是描述视频或⾳频的信息的数据，如宽度、⾼度、时间等等，⼀个⽂件中通常只有⼀个元数据，⾳频 tag 和视频 tag 就是⾳视频信息了，采样、声道、频率，编码等信息。 </p>
-<p>该类型 tag ⼜被称为 MetaDataTag ，存放⼀些关于 FLV 视频和⾳频的元信息，⽐如：duration、width、height 等。通常该类型 tag 会作为 FLV ⽂件的第⼀个 tag，并且只有⼀个，跟在 File Header 后。</p>
+<h4 id="Script-Tag-Data"><a href="#Script-Tag-Data" class="headerlink" title="Script Tag Data"></a>Script Tag Data</h4><p>Script data 脚本数据就是描述视频或音频的信息的数据，如宽度、高度、时间等等，一个文件中通常只有一个元数据，音频 tag 和视频 tag 就是音视频信息了，采样、声道、频率，编码等信息。 </p>
+<p>该类型 tag ⼜被称为 MetaDataTag ，存放一些关于 FLV 视频和音频的元信息，比如：duration、width、height 等。通常该类型 tag 会作为 FLV 文件的第一个 tag，并且只有一个，跟在 File Header 后。</p>
 <p><strong>FLV Script Tag Data 内容结构</strong></p>
 <img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-Script_Tag_Data.png" alt="FLV-Script_Tag_Data" style="zoom:70%;">
 
-<p>第⼀个 AMF 包：第 1 个字节表示 AMF 包类型，⼀般总是 0x02，表示字符串。第 2-3 个字节为 UI16 类型值，标识字符串的⻓度，⼀般总是 0x000A（“onMetaData”⻓度）。后⾯字节为具体的字符串，⼀般总为“onMetaData”（6F,6E,4D,65,74,61,44,61,74,61）。</p>
-<p>第⼆个 AMF 包：第 1 个字节表示 AMF 包类型，⼀般总是 0x08，表示数组。第 2-5 个字节为 UI32 类型值，表示数组元素的个数。后⾯即为各数组元素的封装，数组元素为元素名称和值组成的对。常⻅的数组元素如下表所示。</p>
+<p>第一个 AMF 包：第 1 个字节表示 AMF 包类型，一般总是 0x02，表示字符串。第 2-3 个字节为 UI16 类型值，标识字符串的长度，一般总是 0x000A（“onMetaData”长度）。后面字节为具体的字符串，一般总为“onMetaData”（6F,6E,4D,65,74,61,44,61,74,61）。</p>
+<p>第二个 AMF 包：第 1 个字节表示 AMF 包类型，一般总是 0x08，表示数组。第 2-5 个字节为 UI32 类型值，表示数组元素的个数。后面即为各数组元素的封装，数组元素为元素名称和值组成的对。常见的数组元素如下表所示。</p>
 <table>
 <thead>
 <tr>
@@ -373,7 +373,7 @@
 </thead>
 <tbody><tr>
 <td>duration</td>
-<td>时⻓(秒)</td>
+<td>时长(秒)</td>
 <td>210.732</td>
 </tr>
 <tr>
@@ -383,7 +383,7 @@
 </tr>
 <tr>
 <td>height</td>
-<td>视频⾼度</td>
+<td>视频高度</td>
 <td>320.000</td>
 </tr>
 <tr>
@@ -403,12 +403,12 @@
 </tr>
 <tr>
 <td>audiodatarate</td>
-<td>⾳频码率</td>
+<td>音频码率</td>
 <td>29.329</td>
 </tr>
 <tr>
 <td>audiosamplerate</td>
-<td>⾳频采样率</td>
+<td>音频采样率</td>
 <td>44100.000</td>
 </tr>
 <tr>
@@ -418,7 +418,7 @@
 </tr>
 <tr>
 <td>audiocodecid</td>
-<td>⾳频编码ID</td>
+<td>音频编码ID</td>
 <td>10.000 (AAC为10)</td>
 </tr>
 <tr>
@@ -443,15 +443,15 @@
 </tr>
 <tr>
 <td>filesize</td>
-<td>⽂件⼤⼩（字节）</td>
+<td>文件大小（字节）</td>
 <td>6636853.000</td>
 </tr>
 </tbody></table>
 <p>注：Lavf54.63.104 即是 Libavformat version 54.63.104。即是 ffmpeg 对于库的版本 。</p>
 <h4 id="Audio-Tag-Data"><a href="#Audio-Tag-Data" class="headerlink" title="Audio Tag Data"></a>Audio Tag Data</h4><ul>
-<li><p>第⼀个字节包含了⾳频数据的参数信息。</p>
+<li><p>第一个字节包含了音频数据的参数信息。</p>
 </li>
-<li><p>第⼆个字节开始为⾳频流数据。</p>
+<li><p>第二个字节开始为音频流数据。</p>
 </li>
 </ul>
 <p>注：（这两个字节属于 tag 的 data 部分，不是 header 部分）</p>
@@ -461,7 +461,7 @@
 <p><strong>FLV Audio Tag Data 的 AAC Raw 内容结构</strong></p>
 <img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-AAC_Raw.png" alt="FLV-AAC_Raw" style="zoom:70%;">
 
-<p>第⼀个字节为⾳频的信息（仔细看 spec 发现对于 AAC ⽽⾔，⽐较有⽤的字段是 SoundFormat），格式如下：</p>
+<p>第一个字节为音频的信息（仔细看 spec 发现对于 AAC ⽽言，比较有用的字段是 SoundFormat），格式如下：</p>
 <table>
 <thead>
 <tr>
@@ -471,27 +471,27 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>⾳频格式 SoundFormat</td>
+<td>音频格式 SoundFormat</td>
 <td>UB4</td>
 <td>0&#x3D;Linear PCM, platform endian <br>1&#x3D;ADPCM <br>2&#x3D;MP3 <br>3&#x3D;Linear PCM, little endian <br>4&#x3D; Nellymoser 16-kHz mono <br>5&#x3D;Nellymoser 8-kHz mono <br>6&#x3D;Nellymoser <br>7&#x3D;G.711 A-law logarithmic PCM <br>8&#x3D;G.711 mu-law logarithmic PCM <br>9&#x3D;reserved <br>10&#x3D;AAC <br>11&#x3D;Speex <br>14&#x3D;MP3 8-Khz <br>15&#x3D;Device-specific sound</td>
 </tr>
 <tr>
 <td>采样率 SoundRate</td>
 <td>UB2</td>
-<td>0 &#x3D; 5.5kHz <br>1 &#x3D; 11kHz <br>2 &#x3D; 22.05kHz <br>3 &#x3D; 44.1kHz <br>对于AAC总是3。但实际上AAC是可以⽀持到48khz以上的频率(这个参数对于AAC意义不⼤)</td>
+<td>0 &#x3D; 5.5kHz <br>1 &#x3D; 11kHz <br>2 &#x3D; 22.05kHz <br>3 &#x3D; 44.1kHz <br>对于AAC总是3。但实际上AAC是可以⽀持到48khz以上的频率(这个参数对于AAC意义不大)</td>
 </tr>
 <tr>
 <td>采样精度 SoundSize</td>
 <td>UB1</td>
-<td>0&#x3D;snd8Bit <br>1&#x3D;snd16Bit <br>此参数仅适⽤于未压缩的格式，压缩后的格式都是将其设为1</td>
+<td>0&#x3D;snd8Bit <br>1&#x3D;snd16Bit <br>此参数仅适用于未压缩的格式，压缩后的格式都是将其设为1</td>
 </tr>
 <tr>
-<td>⾳频声道 SoundType</td>
+<td>音频声道 SoundType</td>
 <td>UB1</td>
 <td>0 &#x3D; sndMono 单声道 <br>1&#x3D;sndStereo ⽴体声，双声道 <br>对于AAC总是1</td>
 </tr>
 </tbody></table>
-<p>第⼆个字节开始为⾳频数据（需要判断该数据是真正的⾳频数据，还是⾳频 config 信息）。</p>
+<p>第二个字节开始为音频数据（需要判断该数据是真正的音频数据，还是音频 config 信息）。</p>
 <table>
 <thead>
 <tr>
@@ -501,7 +501,7 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>⾳频数据</td>
+<td>音频数据</td>
 <td>UI[8*n]</td>
 <td>if SoundFormat &#x3D;&#x3D; 10 (AAC类型) <br>{AAC AUDIO DATA} <br>else <br>{Sound data—varies by format}</td>
 </tr>
@@ -529,8 +529,8 @@
 <img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/AudioSpecificConfig.png" alt="AudioSpecificConfig" style="zoom:50%;">
 
 <h4 id="Video-Tag-Data"><a href="#Video-Tag-Data" class="headerlink" title="Video Tag Data"></a>Video Tag Data</h4><ul>
-<li>第⼀个字节包含视频数据的参数信息。</li>
-<li>第⼆个字节开始为视频流数据。</li>
+<li>第一个字节包含视频数据的参数信息。</li>
+<li>第二个字节开始为视频流数据。</li>
 </ul>
 <p><strong>FLV Video Tag Data 的 AVC sequelence header 内容结构</strong></p>
 <img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-AVC_sequence_header.png" alt="FLV-AVC_sequence_header" style="zoom:70%;">
@@ -538,7 +538,7 @@
 <p><strong>FLV Video Tag Data 的 AVC NALU 内容结构</strong></p>
 <img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-AVC_NALU.png" alt="FLV-AVC_NALU" style="zoom:70%;">
 
-<p>第⼀个字节包含视频信息，格式如下：</p>
+<p>第一个字节包含视频信息，格式如下：</p>
 <table>
 <thead>
 <tr>
@@ -555,10 +555,10 @@
 <tr>
 <td>编码ID</td>
 <td>UB4</td>
-<td>使⽤哪种编码类型：<br>1: JPEG (currently unused) <br>2: Sorenson H.263 <br>3: Screen video <br>4: On2 VP6 <br>5: On2 VP6 with alpha channel <br>6: Screen video version 2 <br>7: AVC</td>
+<td>使用哪种编码类型：<br>1: JPEG (currently unused) <br>2: Sorenson H.263 <br>3: Screen video <br>4: On2 VP6 <br>5: On2 VP6 with alpha channel <br>6: Screen video version 2 <br>7: AVC</td>
 </tr>
 </tbody></table>
-<p>第⼆个字节开始为视频数据：</p>
+<p>第二个字节开始为视频数据：</p>
 <table>
 <thead>
 <tr>
@@ -597,7 +597,7 @@
 <td>if AVCPacketType &#x3D;&#x3D; 0 <br>{AVCDecoderConfigurationRecord} <br>else if AVCPacketType &#x3D;&#x3D; 1 <br>{One or more NALUs (can be individual slices pre FLV packets; this is, full frames are not strictlyctly required)} <br>else if AVCPacketType &#x3D;&#x3D; 2 <br>{Empty}</td>
 </tr>
 </tbody></table>
-<p>AVC sequence header 就是 AVCDecoderConfigurationRecord 结构，该结构在标准⽂档“ISO-14496-15 AVC file format” 。</p>
+<p>AVC sequence header 就是 AVCDecoderConfigurationRecord 结构，该结构在标准文档“ISO-14496-15 AVC file format” 。</p>
 
     </div>
 
