@@ -2237,7 +2237,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-09 11:15:30" itemprop="dateModified" datetime="2024-01-09T11:15:30+08:00">2024-01-09</time>
+      <time title="Modified: 2024-01-09 15:23:44" itemprop="dateModified" datetime="2024-01-09T15:23:44+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -2259,7 +2259,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>RTSP（Real-Time Stream Protocol）是一种基于文本的应用层协议，在语法及一些消息参数等方面，RTSP协议与HTTP协议类似。其他的关于RTSP的介绍后面补充吧，直接通过抓包会更加直观了解到RTSP协议的一个交互流程。</p>
+          <p>RTSP（Real-Time Stream Protocol）是一种基于文本的应用层协议，在语法及一些消息参数等方面，RTSP 协议与 HTTP 协议类似。其他的关于 RTSP 的介绍后面补充吧，直接通过抓包会更加直观了解到 RTSP 协议的一个交互流程。</p>
 <h1 id="推流过程"><a href="#推流过程" class="headerlink" title="推流过程"></a>推流过程</h1><h2 id="OPTION"><a href="#OPTION" class="headerlink" title="OPTION"></a>OPTION</h2><p>client-&gt;server：option 查询服务器端可用方法。</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">OPTIONS rtsp://192.168.2.101:554/live/test RTSP/1.0</span><br><span class="line"><span class="attribute">CSeq</span><span class="punctuation">: </span>1</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Lavf59.30.100</span><br></pre></td></tr></table></figure>
 
@@ -2269,7 +2269,7 @@
 <h2 id="ANNOUNCE"><a href="#ANNOUNCE" class="headerlink" title="ANNOUNCE"></a>ANNOUNCE</h2><p>client-&gt;server：客户端发送媒体描述信息给服务器。</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">ANNOUNCE rtsp://192.168.2.101:554/live/test RTSP/1.0</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/sdp</span><br><span class="line"><span class="attribute">CSeq</span><span class="punctuation">: </span>2</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Lavf59.30.100</span><br><span class="line"><span class="attribute">Content-Length</span><span class="punctuation">: </span>492</span><br><span class="line"></span><br><span class="line">v=0</span><br><span class="line">o=- 0 0 IN IP4 127.0.0.1</span><br><span class="line">s=No Name</span><br><span class="line">c=IN IP4 192.168.2.101</span><br><span class="line">t=0 0</span><br><span class="line">a=tool:libavformat 59.30.100</span><br><span class="line">m=video 0 RTP/AVP 96</span><br><span class="line">b=AS:200</span><br><span class="line">a=rtpmap:96 H264/90000</span><br><span class="line">a=fmtp:96 packetization-mode=1; sprop-parameter-sets=J2QAH6xWgNg95+agICAgQA==,KO48sA==; profile-level-id=64001F</span><br><span class="line">a=control:streamid=0</span><br><span class="line">m=audio 0 RTP/AVP 97</span><br><span class="line">b=AS:128</span><br><span class="line">a=rtpmap:97 MPEG4-GENERIC/44100/2</span><br><span class="line">a=fmtp:97 profile-level-id=1;mode=AAC-hbr;sizelength=13;indexlength=3;indexdeltalength=3; config=121056E500</span><br><span class="line">a=control:streamid=1</span><br></pre></td></tr></table></figure>
 
-<p>server-&gt;client：回应媒体描述信息，并返回了Session ID。</p>
+<p>server-&gt;client：回应媒体描述信息，并返回了 Session ID。</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RTSP/1.0 200 OK</span><br><span class="line"><span class="attribute">CSeq</span><span class="punctuation">: </span>2</span><br><span class="line"><span class="attribute">Date</span><span class="punctuation">: </span>Fri, Sep 22 2023 10:07:06 GMT</span><br><span class="line"><span class="attribute">Server</span><span class="punctuation">: </span>ZLMediaKit(git hash:f69f3b3/2023-09-09T10:59:27+08:00,branch:master,build time:2023-09-19T18:24:32)</span><br><span class="line"><span class="attribute">Session</span><span class="punctuation">: </span>viBkiUQCL9ES</span><br></pre></td></tr></table></figure>
 
 <h2 id="SETUP"><a href="#SETUP" class="headerlink" title="SETUP"></a>SETUP</h2><p>client-&gt;server：通过 Transport 头字段列出可接受的传输选项，请求建立会话。</p>
@@ -2294,7 +2294,7 @@
 <h2 id="TERDOWN"><a href="#TERDOWN" class="headerlink" title="TERDOWN"></a>TERDOWN</h2><p>client-&gt;server：请求关闭会话。</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TEARDOWN rtsp://192.168.2.101:554/live/test RTSP/1.0</span><br><span class="line"><span class="attribute">CSeq</span><span class="punctuation">: </span>6</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Lavf59.30.100</span><br><span class="line"><span class="attribute">Session</span><span class="punctuation">: </span>viBkiUQCL9ES</span><br></pre></td></tr></table></figure>
 
-<p>server-&gt;client：回应该请求，200正常关闭。</p>
+<p>server-&gt;client：回应该请求，200 正常关闭。</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RTSP/1.0 200 OK</span><br><span class="line"><span class="attribute">CSeq</span><span class="punctuation">: </span>6</span><br><span class="line"><span class="attribute">Date</span><span class="punctuation">: </span>Fri, Sep 22 2023 10:07:10 GMT</span><br><span class="line"><span class="attribute">Server</span><span class="punctuation">: </span>ZLMediaKit(git hash:f69f3b3/2023-09-09T10:59:27+08:00,branch:master,build time:2023-09-19T18:24:32)</span><br><span class="line"><span class="attribute">Session</span><span class="punctuation">: </span>viBkiUQCL9ES</span><br></pre></td></tr></table></figure>
 
 <h1 id="拉流过程"><a href="#拉流过程" class="headerlink" title="拉流过程"></a>拉流过程</h1><h2 id="OPTION-1"><a href="#OPTION-1" class="headerlink" title="OPTION"></a>OPTION</h2><p>client-&gt;server：查询哪些方法可用。</p>
@@ -2332,7 +2332,7 @@
 <h2 id="TERDOWN-1"><a href="#TERDOWN-1" class="headerlink" title="TERDOWN"></a>TERDOWN</h2><p>client-&gt;server：请求关闭会话。</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TEARDOWN rtsp://192.168.2.101:554/live/test RTSP/1.0</span><br><span class="line"><span class="attribute">CSeq</span><span class="punctuation">: </span>6</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Lavf59.30.100</span><br><span class="line"><span class="attribute">Session</span><span class="punctuation">: </span>CdplhrJIUmWx</span><br></pre></td></tr></table></figure>
 
-<p>server-&gt;client：回应该请求，200正常关闭。</p>
+<p>server-&gt;client：回应该请求，200 正常关闭。</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RTSP/1.0 200 OK</span><br><span class="line"><span class="attribute">CSeq</span><span class="punctuation">: </span>6</span><br><span class="line"><span class="attribute">Date</span><span class="punctuation">: </span>Fri, Sep 22 2023 11:22:10 GMT</span><br><span class="line"><span class="attribute">Server</span><span class="punctuation">: </span>ZLMediaKit(git hash:f69f3b3/2023-09-09T10:59:27+08:00,branch:master,build time:2023-09-19T18:24:32)</span><br><span class="line"><span class="attribute">Session</span><span class="punctuation">: </span>CdplhrJIUmWx</span><br></pre></td></tr></table></figure>
 
       

@@ -20,15 +20,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="RTP 的 AAC 打包打包过程 需要将 AAC 的前 7 个（或 9 个）字节的 ADTS 去掉，即是跳过 ADTS Header。 添加 RTP Header。 添加 2 字节的 AU_HEADER_LENGTH。 添加 2 字节的 AU_HEADER。 从第 17 字节开始就是 payload（去掉 ADTS 的 AAC 数据）数据了。  音频 AAC 打包格式12345670">
+    <meta name="description" content="RTP 的 AAC 打包打包过程 需要将 AAC 的前 7 个（或 9 个）字节的 ADTS 去掉，即是跳过 ADTS Header。 添加 RTP Header（一般 12 字节）。 添加 2 字节的 AU_HEADER_LENGTH。 添加 2 字节的 AU_HEADER。 从第 17 字节开始就是 payload（去掉 ADTS 的 AAC 数据）数据了。  音频 AAC 打包格式12345">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RTP之AAC封包和解包">
 <meta property="og:url" content="https://fang0407.github.io/2023/09/21/RTP%E4%B9%8BAAC%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="RTP 的 AAC 打包打包过程 需要将 AAC 的前 7 个（或 9 个）字节的 ADTS 去掉，即是跳过 ADTS Header。 添加 RTP Header。 添加 2 字节的 AU_HEADER_LENGTH。 添加 2 字节的 AU_HEADER。 从第 17 字节开始就是 payload（去掉 ADTS 的 AAC 数据）数据了。  音频 AAC 打包格式12345670">
+<meta property="og:description" content="RTP 的 AAC 打包打包过程 需要将 AAC 的前 7 个（或 9 个）字节的 ADTS 去掉，即是跳过 ADTS Header。 添加 RTP Header（一般 12 字节）。 添加 2 字节的 AU_HEADER_LENGTH。 添加 2 字节的 AU_HEADER。 从第 17 字节开始就是 payload（去掉 ADTS 的 AAC 数据）数据了。  音频 AAC 打包格式12345">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-09-21T12:57:45.000Z">
-<meta property="article:modified_time" content="2024-01-09T06:18:43.047Z">
+<meta property="article:modified_time" content="2024-01-09T07:56:23.623Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 
@@ -194,7 +194,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-09 14:18:43" itemprop="dateModified" datetime="2024-01-09T14:18:43+08:00">2024-01-09</time>
+      <time title="Modified: 2024-01-09 15:56:23" itemprop="dateModified" datetime="2024-01-09T15:56:23+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -217,7 +217,7 @@
     
     <div class="post-body" itemprop="articleBody"><h1 id="RTP-的-AAC-打包"><a href="#RTP-的-AAC-打包" class="headerlink" title="RTP 的 AAC 打包"></a>RTP 的 AAC 打包</h1><h2 id="打包过程"><a href="#打包过程" class="headerlink" title="打包过程"></a>打包过程</h2><ul>
 <li>需要将 AAC 的前 7 个（或 9 个）字节的 ADTS 去掉，即是跳过 ADTS Header。</li>
-<li>添加 RTP Header。</li>
+<li>添加 RTP Header（一般 12 字节）。</li>
 <li>添加 2 字节的 AU_HEADER_LENGTH。</li>
 <li>添加 2 字节的 AU_HEADER。</li>
 <li>从第 17 字节开始就是 payload（去掉 ADTS 的 AAC 数据）数据了。</li>
@@ -231,14 +231,14 @@
 <li>n 个 AU，是 AAC 去掉 ADTS 的载荷。</li>
 </ul>
 <p>注意：一个 RTP 包中可以有一个 AU-headers-length 和 n 个 AU-header 和 n 个 AU（AU 每包实际音频数据流）。</p>
-<h3 id="AU-headers-length"><a href="#AU-headers-length" class="headerlink" title="AU-headers-length"></a>AU-headers-length</h3><p>头两个字节表示 AU-header  的长度，单位是bit。 一个 AU-header 长度是两个字节（16 bit）因为可以有多个 AU-header 所以 AU-headers-length 的值是 16 的倍数，<strong>一般音频都是单个音频数据流的发送</strong>，所以 AU-headers-length 的值是 16。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AU_HEADER_LENGTH</span></span><br><span class="line">bytes[<span class="number">12</span>] = <span class="number">0x00</span>; <span class="comment">//⾼位</span></span><br><span class="line">bytes[<span class="number">13</span>] = <span class="number">0x10</span>; <span class="comment">//低位 只有一个AU_HEADER</span></span><br></pre></td></tr></table></figure>
+<h3 id="AU-headers-length"><a href="#AU-headers-length" class="headerlink" title="AU-headers-length"></a>AU-headers-length</h3><p>头两个字节表示 AU-header  的长度，单位是 bit。 一个 AU-header 长度是两个字节（16 bit）因为可以有多个 AU-header 所以 AU-headers-length 的值是 16 的倍数，<strong>一般音频都是单个音频数据流的发送</strong>，所以 AU-headers-length 的值是 16。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AU_HEADER_LENGTH</span></span><br><span class="line">bytes[<span class="number">12</span>] = <span class="number">0x00</span>; <span class="comment">//高位</span></span><br><span class="line">bytes[<span class="number">13</span>] = <span class="number">0x10</span>; <span class="comment">//低位 只有一个AU_HEADER</span></span><br></pre></td></tr></table></figure>
 
-<p>因为单位是 bit, 除以 8 就是 AU-Header 的字节长度；又因为单个 AU-header 字节长度 2 字节，所以再除以 2 就是 AU-header 的个数。</p>
-<h3 id="AU-header"><a href="#AU-header" class="headerlink" title="AU-header"></a>AU-header</h3><p>一个 AU-header 长度是两个字节，<strong>AU-header 的⾼ 13 个 bits 是 AU-size，就是一个 AU 的字节长度</strong>；<strong>低 3 bits 是 AU-Index（或者AU-Index-delta），就是 AU 的索引（或者索引增量）</strong>。如下获取 AU 的字节长度：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AU_HEADER</span></span><br><span class="line">bytes[<span class="number">14</span>] = (byte)(len &gt;&gt; <span class="number">5</span>); <span class="comment">//⾼位</span></span><br><span class="line">bytes[<span class="number">15</span>] = (byte)((len &amp; <span class="number">0x1f</span>) &lt;&lt; <span class="number">3</span>); <span class="comment">//低位</span></span><br></pre></td></tr></table></figure>
+<p>因为单位是 bit，除以 8 就是 AU-header 的字节长度；又因为单个 AU-header 字节长度 2 字节，所以再除以 2 就是 AU-header 的个数。</p>
+<h3 id="AU-header"><a href="#AU-header" class="headerlink" title="AU-header"></a>AU-header</h3><p>一个 AU-header 长度是两个字节，<strong>AU-header 的高 13 个 bits 是 AU-size，就是一个 AU 的字节长度</strong>；<strong>低 3 bits 是 AU-Index（或者AU-Index-delta），就是 AU 的索引（或者索引增量）</strong>。如下获取 AU 的字节长度：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AU_HEADER</span></span><br><span class="line">bytes[<span class="number">14</span>] = (byte)(len &gt;&gt; <span class="number">5</span>); <span class="comment">//高位</span></span><br><span class="line">bytes[<span class="number">15</span>] = (byte)((len &amp; <span class="number">0x1f</span>) &lt;&lt; <span class="number">3</span>); <span class="comment">//低位</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="RTSP-SDP-中的-AAC-配置"><a href="#RTSP-SDP-中的-AAC-配置" class="headerlink" title="RTSP&#x2F;SDP 中的 AAC 配置"></a>RTSP&#x2F;SDP 中的 AAC 配置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a=fmtp:96 streamtype=5; profile-level-id=1; mode=AAC-hbr; config =138856e500; sizeLength=13; indexLength=3; indexDeltaLength=3; Profile=1;</span><br></pre></td></tr></table></figure>
+<h3 id="RTSP-SDP-中的-AAC-配置"><a href="#RTSP-SDP-中的-AAC-配置" class="headerlink" title="RTSP&#x2F;SDP 中的 AAC 配置"></a>RTSP&#x2F;SDP 中的 AAC 配置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a=fmtp:96 streamtype=5; profile-level-id=1; mode=AAC-hbr; config=138856e500; sizeLength=13; indexLength=3; indexDeltaLength=3; Profile=1;</span><br></pre></td></tr></table></figure>
 
 <p>如下将简述 config，SizeLength，IndexLength，IndexDeltaLength 的作用。</p>
 <h4 id="config"><a href="#config" class="headerlink" title="config"></a>config</h4><p>config 是 16 进制的，前两个字节 1388，前两个字节的为 ios-14996-3 中定义的 AudioSpecificConfig，前 13 个 bits 的格式为：</p>
@@ -331,11 +331,11 @@
 <td>表示自定义的采样频率, 一般不会出现</td>
 </tr>
 </tbody></table>
-<p>根据上述表格比对：1388 转换成2进制为 0001 0011 1000 1000。</p>
-<p>audioObjectType为 00010，即 2。</p>
-<p>samplingFrequencyIndex为 0111，即 7，对应的采样频率为 22050。</p>
-<p>channelConfiguration为 0001，表示 channel 数量为 1。</p>
-<p>所以 config 前两个字节 1388 ，表示采样率为 22050，1 个channel。</p>
+<p>根据上述表格比对：1388 转换成二进制为 0001 0011 1000 1000。</p>
+<p>audioObjectType 为 00010，即 2。</p>
+<p>samplingFrequencyIndex 为 0111，即 7，对应的采样频率为 22050。</p>
+<p>channelConfiguration 为 0001，表示 channel 数量为 1。</p>
+<p>所以 config 前两个字节 1388 ，表示采样率为 22050，1 个 channel。</p>
 <h4 id="sizeLength、indexLength-和-indexDeltaLength"><a href="#sizeLength、indexLength-和-indexDeltaLength" class="headerlink" title="sizeLength、indexLength 和 indexDeltaLength"></a>sizeLength、indexLength 和 indexDeltaLength</h4><p>sizeLength 表示 AU-size 占用的比特数量。</p>
 <p>indexLength 表示 AU-Index 占用的比特数量。</p>
 <p>indexDeltaLength 表示 AU-Index-delta 占用的比特数量。</p>
