@@ -188,7 +188,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:38:12" itemprop="dateModified" datetime="2023-12-30T22:38:12+08:00">2023-12-30</time>
+      <time title="Modified: 2024-01-09 14:18:43" itemprop="dateModified" datetime="2024-01-09T14:18:43+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -210,58 +210,58 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="RTP的AAC打包"><a href="#RTP的AAC打包" class="headerlink" title="RTP的AAC打包"></a>RTP的AAC打包</h1><h2 id="打包过程"><a href="#打包过程" class="headerlink" title="打包过程"></a>打包过程</h2><ul>
-<li>需要将aac的前7个（或9个）字节的ADTS去掉，即是跳过adts header。</li>
-<li>添加RTP Header。</li>
-<li>添加2字节的AU_HEADER_LENGTH。</li>
-<li>添加2字节的AU_HEADER。</li>
-<li>从第17字节开始就是payload（去掉ADTS的aac数据）数据了。</li>
+          <h1 id="RTP-的-AAC-打包"><a href="#RTP-的-AAC-打包" class="headerlink" title="RTP 的 AAC 打包"></a>RTP 的 AAC 打包</h1><h2 id="打包过程"><a href="#打包过程" class="headerlink" title="打包过程"></a>打包过程</h2><ul>
+<li>需要将 AAC 的前 7 个（或 9 个）字节的 ADTS 去掉，即是跳过 ADTS Header。</li>
+<li>添加 RTP Header。</li>
+<li>添加 2 字节的 AU_HEADER_LENGTH。</li>
+<li>添加 2 字节的 AU_HEADER。</li>
+<li>从第 17 字节开始就是 payload（去掉 ADTS 的 AAC 数据）数据了。</li>
 </ul>
-<h2 id="⾳频aac打包格式"><a href="#⾳频aac打包格式" class="headerlink" title="⾳频aac打包格式"></a>⾳频aac打包格式</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0                   1                   2                   3</span><br><span class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|       AU-headers-length       |         AU-header(1)          |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|         AU-header(2)          |         AU-header(n)          |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<h2 id="音频-AAC-打包格式"><a href="#音频-AAC-打包格式" class="headerlink" title="音频 AAC 打包格式"></a>音频 AAC 打包格式</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0                   1                   2                   3</span><br><span class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|       AU-headers-length       |         AU-header(1)          |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|         AU-header(2)          |         AU-header(n)          |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
 
-<p>RTP承载aac的格式由两部分组成：</p>
+<p>RTP 承载 AAC 的格式由两部分组成：</p>
 <ul>
-<li>2个字节的AU-headers-length。</li>
-<li>n个AU-header，每个2字节。</li>
-<li>n个AU，是aac去掉adts的载荷。</li>
+<li>2 个字节的 AU-headers-length。</li>
+<li>n 个 AU-header，每个 2 字节。</li>
+<li>n 个 AU，是 AAC 去掉 ADTS 的载荷。</li>
 </ul>
-<p>注意：⼀个RTP包中可以有⼀个AU-headers-length 和 n个AU-header和 n个AU（AU每包实际⾳频数据流）。</p>
-<h3 id="AU-headers-length"><a href="#AU-headers-length" class="headerlink" title="AU-headers-length"></a>AU-headers-length</h3><p>头两个字节表示au-header的⻓度，单位是bit。 ⼀个AU-header⻓度是两个字节（16bit）因为可以有多个AU-header所以AU-headers-length的值是16的倍数，<strong>⼀般⾳频都是单个⾳频数据流的发送</strong>，所以AU-headers-length的值是16。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AU_HEADER_LENGTH</span></span><br><span class="line">bytes[<span class="number">12</span>] = <span class="number">0x00</span>; <span class="comment">//⾼位</span></span><br><span class="line">bytes[<span class="number">13</span>] = <span class="number">0x10</span>; <span class="comment">//低位 只有⼀个AU_HEADER</span></span><br></pre></td></tr></table></figure>
+<p>注意：一个 RTP 包中可以有一个 AU-headers-length 和 n 个 AU-header 和 n 个 AU（AU 每包实际音频数据流）。</p>
+<h3 id="AU-headers-length"><a href="#AU-headers-length" class="headerlink" title="AU-headers-length"></a>AU-headers-length</h3><p>头两个字节表示 AU-header  的长度，单位是bit。 一个 AU-header 长度是两个字节（16 bit）因为可以有多个 AU-header 所以 AU-headers-length 的值是 16 的倍数，<strong>一般音频都是单个音频数据流的发送</strong>，所以 AU-headers-length 的值是 16。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AU_HEADER_LENGTH</span></span><br><span class="line">bytes[<span class="number">12</span>] = <span class="number">0x00</span>; <span class="comment">//⾼位</span></span><br><span class="line">bytes[<span class="number">13</span>] = <span class="number">0x10</span>; <span class="comment">//低位 只有一个AU_HEADER</span></span><br></pre></td></tr></table></figure>
 
-<p>因为单位是bit, 除以8就是AU-Header的字节⻓度；⼜因为单个AU-header字节⻓度2字节，所以再除以2就是AU-header的个数。</p>
-<h3 id="AU-header"><a href="#AU-header" class="headerlink" title="AU-header"></a>AU-header</h3><p>⼀个AU-header⻓度是两个字节，<strong>AU-header的⾼13个bits是AU-size，就是⼀个AU的字节⻓度</strong>；<strong>低3bits是AU-Index（或者AU-Index-delta），就是AU的索引（或者索引增量）</strong>。如下获取AU的字节长度：</p>
+<p>因为单位是 bit, 除以 8 就是 AU-Header 的字节长度；又因为单个 AU-header 字节长度 2 字节，所以再除以 2 就是 AU-header 的个数。</p>
+<h3 id="AU-header"><a href="#AU-header" class="headerlink" title="AU-header"></a>AU-header</h3><p>一个 AU-header 长度是两个字节，<strong>AU-header 的⾼ 13 个 bits 是 AU-size，就是一个 AU 的字节长度</strong>；<strong>低 3 bits 是 AU-Index（或者AU-Index-delta），就是 AU 的索引（或者索引增量）</strong>。如下获取 AU 的字节长度：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AU_HEADER</span></span><br><span class="line">bytes[<span class="number">14</span>] = (byte)(len &gt;&gt; <span class="number">5</span>); <span class="comment">//⾼位</span></span><br><span class="line">bytes[<span class="number">15</span>] = (byte)((len &amp; <span class="number">0x1f</span>) &lt;&lt; <span class="number">3</span>); <span class="comment">//低位</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="RTSP-SDP中的AAC配置"><a href="#RTSP-SDP中的AAC配置" class="headerlink" title="RTSP&#x2F;SDP中的AAC配置"></a>RTSP&#x2F;SDP中的AAC配置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a=fmtp:96 streamtype=5; profile-level-id=1; mode=AAC-hbr; config =138856e500; sizeLength=13; indexLength=3; indexDeltaLength=3; Profile=1;</span><br></pre></td></tr></table></figure>
+<h3 id="RTSP-SDP-中的-AAC-配置"><a href="#RTSP-SDP-中的-AAC-配置" class="headerlink" title="RTSP&#x2F;SDP 中的 AAC 配置"></a>RTSP&#x2F;SDP 中的 AAC 配置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a=fmtp:96 streamtype=5; profile-level-id=1; mode=AAC-hbr; config =138856e500; sizeLength=13; indexLength=3; indexDeltaLength=3; Profile=1;</span><br></pre></td></tr></table></figure>
 
-<p>如下将简述config，SizeLength，IndexLength，IndexDeltaLength的作⽤。</p>
-<h4 id="config"><a href="#config" class="headerlink" title="config"></a>config</h4><p>config是16进制的，前两个字节 1388，前两个字节的为ios-14996-3中定义的AudioSpecificConfig，前13个bits的格式为：</p>
+<p>如下将简述 config，SizeLength，IndexLength，IndexDeltaLength 的作用。</p>
+<h4 id="config"><a href="#config" class="headerlink" title="config"></a>config</h4><p>config 是 16 进制的，前两个字节 1388，前两个字节的为 ios-14996-3 中定义的 AudioSpecificConfig，前 13 个 bits 的格式为：</p>
 <table>
 <thead>
 <tr>
 <th>字段</th>
-<th>⽐特数量</th>
+<th>比特数量</th>
 <th>说明</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>audioObjectType</td>
 <td>5</td>
-<td>aac的profile, 通常情况是1, 或者2</td>
+<td>aac 的 profile, 通常情况是 1, 或者 2</td>
 </tr>
 <tr>
 <td>samplingFrequencyIndex</td>
 <td>4</td>
-<td>aac的采样频率的索引, ⻅下表</td>
+<td>aac 的采样频率的索引, ⻅下表</td>
 </tr>
 <tr>
 <td>channelConfiguration</td>
 <td>4</td>
-<td>aac的通道数，1~6表示为相应的通道数量，7表示8通道</td>
+<td>aac 的通道数，1~6 表示为相应的通道数量，7 表示 8 通道</td>
 </tr>
 </tbody></table>
-<p>samplingFrequencyIndex的取值如下表：</p>
+<p>samplingFrequencyIndex 的取值如下表：</p>
 <table>
 <thead>
 <tr>
@@ -323,44 +323,44 @@
 </tr>
 <tr>
 <td>15</td>
-<td>表示⾃定义的采样频率, ⼀般不会出现</td>
+<td>表示自定义的采样频率, 一般不会出现</td>
 </tr>
 </tbody></table>
 <p>根据上述表格比对：1388 转换成2进制为 0001 0011 1000 1000。</p>
-<p>audioObjectType为 00010，即2。</p>
-<p>samplingFrequencyIndex为 0111，即7，对应的采样频率为 22050。</p>
-<p>channelConfiguration为 0001，表示channel数量为1。</p>
-<p>所以config前两个字节 1388 ，表示采样率为22050，1个channel。</p>
-<h4 id="sizeLength、indexLength和indexDeltaLength"><a href="#sizeLength、indexLength和indexDeltaLength" class="headerlink" title="sizeLength、indexLength和indexDeltaLength"></a>sizeLength、indexLength和indexDeltaLength</h4><p>sizeLength表示AU-size占用的比特数量。</p>
-<p>indexLength表示AU-Index占用的比特数量。</p>
-<p>indexDeltaLength表示AU-Index-delta占用的比特数量。</p>
+<p>audioObjectType为 00010，即 2。</p>
+<p>samplingFrequencyIndex为 0111，即 7，对应的采样频率为 22050。</p>
+<p>channelConfiguration为 0001，表示 channel 数量为 1。</p>
+<p>所以 config 前两个字节 1388 ，表示采样率为 22050，1 个channel。</p>
+<h4 id="sizeLength、indexLength-和-indexDeltaLength"><a href="#sizeLength、indexLength-和-indexDeltaLength" class="headerlink" title="sizeLength、indexLength 和 indexDeltaLength"></a>sizeLength、indexLength 和 indexDeltaLength</h4><p>sizeLength 表示 AU-size 占用的比特数量。</p>
+<p>indexLength 表示 AU-Index 占用的比特数量。</p>
+<p>indexDeltaLength 表示 AU-Index-delta 占用的比特数量。</p>
 <table>
 <thead>
 <tr>
 <th>字段</th>
-<th>⽐特数量</th>
+<th>比特数量</th>
 <th>说明</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>AU-headers-length</td>
-<td>0或16</td>
-<td>如果没有AU-Header, 即fmtp中不出现SizeLength等参数时, 此字段不存在。<br>否则, 使⽤两个字节来存储所有AU-Header所占⽤的⽐特数(不包含⾃⼰, 不包含padding字段), ⽹络字节序。</td>
+<td>0 或 16</td>
+<td>如果没有 AU-Header, 即 fmtp 中不出现 SizeLength 等参数时, 此字段不存在。<br>否则, 使用两个字节来存储所有 AU-Header 所占用的比特数(不包含自己, 不包含 padding 字段), ⽹络字节序。</td>
 </tr>
 <tr>
 <td>AU-size</td>
-<td>由sizeLengthda决定</td>
-<td>表示本段⾳频数据占⽤的字节数</td>
+<td>sizeLengthda 决定</td>
+<td>表示本段音频数据占用的字节数</td>
 </tr>
 <tr>
 <td>AU-Index</td>
-<td>由indexLength决定</td>
-<td>表示本段的序号, 通常0开始</td>
+<td>indexLength 决定</td>
+<td>表示本段的序号, 通常 0 开始</td>
 </tr>
 <tr>
 <td>AU-Index-delta</td>
-<td>由indexDeltaLength决定</td>
-<td>表示本段序号与上⼀段序号的差值</td>
+<td>indexDeltaLength 决定</td>
+<td>表示本段序号与上一段序号的差值</td>
 </tr>
 </tbody></table>
 <p>参考链接：</p>
@@ -427,7 +427,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:38:09" itemprop="dateModified" datetime="2023-12-30T22:38:09+08:00">2023-12-30</time>
+      <time title="Modified: 2024-01-09 14:20:53" itemprop="dateModified" datetime="2024-01-09T14:20:53+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -449,8 +449,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="NALU格式"><a href="#NALU格式" class="headerlink" title="NALU格式"></a>NALU格式</h1><p>H.264标准协议定义了两种不同的类型：⼀种是VCL即Video Coding Layer ， ⼀ 种是NAL即Network Abstraction Layer。其中前者就是编码器吐出来的原始编码数据，没有考虑传输和存储问题。后⾯这种就是为了展现H.264的⽹络亲和性，对VCL输出的slice⽚数据进⾏了封装为NALUs(NAL Units)，然后再封装为RTP包进⾏传输，这些都是H.264的基础。</p>
-<p>NALU的基本格式是：NALU Header + NALU Data,其中NALU的头由⼀个字节组成如下所示：</p>
+          <h1 id="NALU-格式"><a href="#NALU-格式" class="headerlink" title="NALU 格式"></a>NALU 格式</h1><p>H.264 标准协议定义了两种不同的类型：一种是 VCL 即 Video Coding Layer ， 一种是 NAL 即 Network Abstraction Layer。其中前者就是编码器吐出来的原始编码数据，没有考虑传输和存储问题。后面这种就是为了展现 H.264 的网络亲和性，对 VCL 输出的 slice 片数据进行了封装为 NALUs(NAL Units)，然后再封装为 RTP 包进行传输，这些都是 H.264 的基础。</p>
+<p>NALU 的基本格式是：NALU Header + NALU Data，其中 NALU 的头由一个字节组成如下所示：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|0|1|2|3|4|5|6|7|</span><br><span class="line">+-+-+-+-+-+-+-+-+</span><br><span class="line">|F|NRI|  Type   |</span><br><span class="line">+---------------+</span><br></pre></td></tr></table></figure>
 
 <table>
@@ -462,15 +462,15 @@
 </thead>
 <tbody><tr>
 <td>F(1 bit)</td>
-<td>如果是坏帧，则置1，其余H.264固定为0。</td>
+<td>如果是坏帧，则置 1，其余 H.264 固定为 0。</td>
 </tr>
 <tr>
 <td>NRI(2 bit)</td>
-<td>⽤来指示该NALU 的重要性等级。值越⼤，表示当前NALU越重要。具体⼤于0 时取何值，没有具体规定。<br>例如：如果是00，则表示此帧即使丢失了，也不影响解码；其他值则表示此帧如果丢失了，会影响解码，这个字段指明了该NALU的重要性，但是实际我们不太关⼼这个字段。</td>
+<td>用来指示该 NALU 的重要性等级。值越大，表示当前 NALU 越重要。具体大于 0 时取何值，没有具体规定。<br>例如：如果是 00，则表示此帧即使丢失了，也不影响解码；其他值则表示此帧如果丢失了，会影响解码，这个字段指明了该 NALU 的重要性，但是实际我们不太关心这个字段。</td>
 </tr>
 <tr>
 <td>Nalu_Type(5 bit)</td>
-<td>NAL Unit的类型，这个值指明了NALU的类型，其中NALU的类型⻅下表。</td>
+<td>NAL Unit 的类型，这个值指明了 NALU 的类型，其中 NALU 的类型见下表。</td>
 </tr>
 </tbody></table>
 <table>
@@ -488,33 +488,33 @@
 </tr>
 <tr>
 <td>1</td>
-<td>⾮IDR图像编码的slice</td>
-<td>⽐如普通I、P、B帧</td>
+<td>⾮ IDR 图像编码的 slice</td>
+<td>比如普通 I、P、B 帧</td>
 </tr>
 <tr>
 <td>2</td>
-<td>编码slice数据划分A</td>
-<td>2类型时，只传递⽚中最重要的信息，如⽚头，⽚中宏块的预测模式等；⼀般不会⽤到</td>
+<td>编码 slice 数据划分 A</td>
+<td>2 类型时，只传递片中最重要的信息，如片头，片中宏块的预测模式等；一般不会用到</td>
 </tr>
 <tr>
 <td>3</td>
-<td>编码slice数据划分B</td>
-<td>3类型是只传输残差；⼀般不会⽤到</td>
+<td>编码 slice 数据划分 B</td>
+<td>3 类型是只传输残差；一般不会用到</td>
 </tr>
 <tr>
 <td>4</td>
-<td>编码slice数据划分C</td>
-<td>4时则只可以传输残差中的AC系数；⼀般不会⽤到</td>
+<td>编码 slice 数据划分 C</td>
+<td>4 时则只可以传输残差中的 AC 系数；一般不会用到</td>
 </tr>
 <tr>
 <td>5</td>
-<td>IDR图像中的编码slice</td>
-<td>IDR帧，IDR⼀定是I帧但是I帧不⼀定是IDR帧</td>
+<td>IDR 图像中的编码 slice</td>
+<td>IDR 帧，IDR 一定是 I 帧但是 I 帧不一定是 IDR 帧</td>
 </tr>
 <tr>
 <td>6</td>
-<td>SEI补充增强信息单元</td>
-<td>可以存⼀些私有数据等</td>
+<td>SEI 补充增强信息单元</td>
+<td>可以存一些私有数据等</td>
 </tr>
 <tr>
 <td>7</td>
@@ -549,17 +549,17 @@
 <tr>
 <td>24</td>
 <td>STAP-A</td>
-<td>单⼀时间聚合包模式，意味着⼀个RTP包可以传输多个NALU，但是这些NALU的编码时间要⼀样才能聚合到⼀个RTP。</td>
+<td>单一时间聚合包模式，意味着一个RTP包可以传输多个 NALU，但是这些 NALU 的编码时间要一样才能聚合到一个 RTP。</td>
 </tr>
 <tr>
 <td>25</td>
 <td>STAP-B</td>
-<td>单⼀时间聚合包模式，⽐STAP-B多⼀个DON。</td>
+<td>单一时间聚合包模式，比 STAP-B 多一个 DON。</td>
 </tr>
 <tr>
 <td>26</td>
 <td>MTAP 16</td>
-<td>多个时间聚合包模式：意味着⼀个RTP包可以传输多个NALU，但是这些NALU的编码时间有可能不⼀样。</td>
+<td>多个时间聚合包模式：意味着一个RTP包可以传输多个 NALU，但是这些 NALU 的编码时间有可能不一样。</td>
 </tr>
 <tr>
 <td>27</td>
@@ -569,7 +569,7 @@
 <tr>
 <td>28</td>
 <td>FU-A</td>
-<td>分包模式：当⼀个RTP容纳不下⼀个NALU时，就需要FUs这种格式。</td>
+<td>分包模式：当一个 RTP 容纳不下一个 NALU 时，就需要 FUs 这种格式。</td>
 </tr>
 <tr>
 <td>29</td>
@@ -582,76 +582,76 @@
 <td></td>
 </tr>
 </tbody></table>
-<p>我们看到1-11就是NALU的单个包类型，但是⼀个NALU的⼤⼩是不⼀样的，如果是⾮视频数据的SPS PPS才⼗⼏个字节，对于IDR帧，则有可能⼏⼗KB。 </p>
-<h1 id="RTP的H264打包"><a href="#RTP的H264打包" class="headerlink" title="RTP的H264打包"></a>RTP的H264打包</h1><p>把NALU打包到RTP⽅式就很多，分为： </p>
+<p>我们看到 1-11 就是NALU的单个包类型，但是一个 NALU 的大小是不一样的，如果是⾮视频数据的 SPS PPS 才十⼏个字节，对于 IDR 帧，则有可能⼏十 KB。 </p>
+<h1 id="RTP-的-H264-打包"><a href="#RTP-的-H264-打包" class="headerlink" title="RTP 的 H264 打包"></a>RTP 的 H264 打包</h1><p>把 NALU 打包到 RTP 方式就很多，分为： </p>
 <ul>
-<li>⼀个RTP包承载⼀个NALU</li>
-<li>多个NALU合并到⼀个RTP</li>
-<li>⼀个⼤的NALU切分成多个RTP</li>
+<li>一个 RTP 包承载一个 NALU</li>
+<li>多个 NALU 合并到一个 RTP</li>
+<li>一个大的 NALU 切分成多个 RTP</li>
 </ul>
-<p>同时由于时间戳的问题，就有了24-29⼏种类型。 </p>
-<p>但是对于发送端组RTP包的⼀⽅来说，尽可能找简单的打包⽅式。对于接受端则需要适配各种发送端的打包⽅式，因为⽆法决定输⼊源的打包⽅式。比较简单的打包方式：</p>
+<p>同时由于时间戳的问题，就有了 24-29 ⼏种类型。 </p>
+<p>但是对于发送端组RTP包的一方来说，尽可能找简单的打包方式。对于接受端则需要适配各种发送端的打包方式，因为无法决定输⼊源的打包方式。比较简单的打包方式：</p>
 <ul>
-<li>我们对于<strong>NALU的⻓度&lt;&#x3D;1400</strong>（rtp payload size）的则采⽤的是<strong>单⼀NALU打包到单⼀的RTP包中</strong>。</li>
-<li>我们对于<strong>NALU的⻓度&gt;1400</strong>的则采⽤了<strong>FU-A的⽅式</strong>进⾏了打包，这种就是把⼀个⼤的NALU进⾏了切分，最后接收⽅则进⾏了合并，把多个RTP包合并成⼀个完整的NALU即可。</li>
+<li>我们对于 <strong>NALU 的⻓度&lt;&#x3D;1400</strong>（rtp payload size）的则采用的是<strong>单一 NALU 打包到单一的 RTP 包中</strong>。</li>
+<li>我们对于 <strong>NALU的⻓度&gt;1400</strong>的则采用了 <strong>FU-A 的方式</strong>进行了打包，这种就是把一个大的NALU进行了切分，最后接收方则进行了合并，把多个RTP包合并成一个完整的NALU即可。</li>
 </ul>
-<p><strong>为什么NALU的⻓度⼤于1400字节就要进⾏FU-A切⽚</strong>，是因为底层MTU⼤⼩值固定为1500，从传输效率讲，这⾥⽤1400作为切分条件。</p>
+<p><strong>为什么 NALU 的⻓度大于 1400 字节就要进行 FU-A 切片</strong>，是因为底层 MTU 大小值固定为 1500，从传输效率讲，这里用 1400 作为切分条件。</p>
 <p>如下图所示： </p>
 <img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/RTP协议.png" alt="RTP协议" style="zoom:50%;">
 
 <ul>
-<li>28、29、30三个RTP分别传输的SPS、PPS、SEI这三种NALU，其中⼀个NALU分到⼀个RTP包，这是单⼀打包⽅式。</li>
-<li>31、32三个RTP包分别传输了IDR帧的NALU单元，由于⽐较⼤，发送⽅采⽤了FU-A的打包⽅式。</li>
-<li>上图还显示了SPS、PPS、SEI的RTP包固定头，Seq初始值不为0，为随机值，并且⼀个RTP包就顺序+1，这跟上⾯分析的⼀致。</li>
-<li>上⾯SPS、PPS、SEI本身不涉及时间戳，但是这⾥头填充为和⾃⼰后⾯的第⼀个RTP保持⼀致，同样IDR的NALU切分的不同RTP包时间戳也是⼀样的。</li>
+<li>28、29、30 三个 RTP 分别传输的 SPS、PPS、SEI 这三种 NALU，其中一个 NALU 分到一个 RTP 包，这是单一打包方式。</li>
+<li>31、32 三个RTP包分别传输了 IDR 帧的 NALU 单元，由于比较大，发送方采用了 FU-A 的打包方式。</li>
+<li>上图还显示了 SPS、PPS、SEI 的 RTP 包固定头，Seq 初始值不为 0，为随机值，并且一个 RTP 包就顺序+1，这跟上面分析的一致。</li>
+<li>上面 SPS、PPS、SEI 本身不涉及时间戳，但是这里头填充为和自己后面的第一个RTP保持一致，同样 IDR 的 NALU 切分的不同 RTP 包时间戳也是一样的。</li>
 </ul>
-<h2 id="单一NALU打包"><a href="#单一NALU打包" class="headerlink" title="单一NALU打包"></a>单一NALU打包</h2><p>就是⼀个RTP包打包⼀个单独的NALU⽅式，其实最好理解，就是在RTP固定头后⾯<strong>直接填充NLAU单元数据</strong>即可，即： </p>
-<p>RTP Header + NALU Header + NALU Data; （不包括startcode） </p>
+<h2 id="单一-NALU-打包"><a href="#单一-NALU-打包" class="headerlink" title="单一 NALU 打包"></a>单一 NALU 打包</h2><p>就是一个 RTP 包打包一个单独的 NALU 方式，其实最好理解，就是在RTP固定头后面<strong>直接填充 NALU 单元数据</strong>即可，即： </p>
+<p>RTP Header + NALU Header + NALU Data; （<strong>不包括startcode</strong>） </p>
 <img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/单一NALU打包.png" alt="单一NALU打包" style="zoom:50%;">
 
-<p>抓包可以看到第一个字节为67即SPS，后面开始就是NALU Data部分。</p>
-<h2 id="FU-A打包"><a href="#FU-A打包" class="headerlink" title="FU-A打包"></a>FU-A打包</h2><p>FU-A（Fragmentation Unit - Type A）的荷载格式用于传输H.264视频编码的分片数据。在RTP FU-A中，NALU（Network Abstraction Layer Unit）帧被分成小片段并封装成RTP包。以下是RTP FU-A的格式：</p>
+<p>抓包可以看到第一个字节为 67 即 SPS，后面开始就是 NALU Data 部分。</p>
+<h2 id="FU-A-打包"><a href="#FU-A-打包" class="headerlink" title="FU-A 打包"></a>FU-A 打包</h2><p>FU-A（Fragmentation Unit - Type A）的荷载格式用于传输 H.264 视频编码的分片数据。在 RTP FU-A 中，NALU（Network Abstraction Layer Unit）帧被分成小片段并封装成 RTP 包。以下是 RTP FU-A 的格式：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">0                   1                   2                   3</span><br><span class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">| FU indicator  |   FU header   |                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |</span><br><span class="line">|                                                               |</span><br><span class="line">|                         FU payload                            |</span><br><span class="line">|                                                               |</span><br><span class="line">|                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                               :...OPTIONAL RTP padding        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
 
-<p>这种打包⽅式也不复杂，为了解释清楚，需要了解下⾯两个数据包头即FU indicator和Fu header。</p>
+<p>这种打包方式也不复杂，为了解释清楚，需要了解下面两个数据包头即 FU indicator 和 Fu header。</p>
 <h3 id="FU-indication"><a href="#FU-indication" class="headerlink" title="FU indication"></a>FU indication</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|0|1|2|3|4|5|6|7|</span><br><span class="line">+-+-+-+-+-+-+-+-+</span><br><span class="line">|F|NRI|  Type   |</span><br><span class="line">+---------------+</span><br></pre></td></tr></table></figure>
 
-<p>这⾥⾯的的F和NRI已经在NALU的Header解释清楚了，就是NALU头的前⾯三个bit位，<strong>后⾯的TYPE就是NALU的FU-A类型28</strong>，这样在RTP固定头后⾯第⼀字节的后⾯5bit提取出来就确认了该RTP包承载的不是⼀个完整的NALU，是其⼀部分。</p>
-<p>那么问题来了，⼀个NALU切分成多个RTP包传输，那么到底从哪⼉开始哪⼉结束呢？可能有⼈说RTP包固定头不是有mark标记么，注意区分那个是以<strong>帧图像的结束标记</strong>，这⾥要确定是NALU结束的标记，其次NALU的类型呢？那么就需要<strong>RTP固定12字节后⾯的Fu Header来进⾏区分</strong>。</p>
+<p>这里面的的 F 和 NRI 已经在 NALU 的 Header 解释清楚了，就是 NALU 头的前面三个 bit 位，<strong>后面的 TYPE 就是 NALU 的 FU-A 类型 28</strong>，这样在 RTP 固定头后面第一字节的后面 5 bit 提取出来就确认了该 RTP 包承载的不是一个完整的 NALU，是其一部分。</p>
+<p>那么问题来了，一个 NALU 切分成多个 RTP 包传输，那么到底从哪儿开始哪儿结束呢？可能有⼈说 RTP 包固定头不是有 mark 标记么，注意区分那个是以<strong>帧图像的结束标记</strong>，这里要确定是 NALU 结束的标记，其次 NALU 的类型呢？那么就需要 <strong>RTP 固定 12 字节后面的 Fu Header 来进行区分</strong>。</p>
 <h3 id="FU-header"><a href="#FU-header" class="headerlink" title="FU header"></a>FU header</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|0|1|2|3|4|5|6|7|</span><br><span class="line">+-+-+-+-+-+-+-+-+</span><br><span class="line">|S|E|R|  Type   |</span><br><span class="line">+---------------+</span><br></pre></td></tr></table></figure>
 
 <p>字段解释：</p>
 <ul>
-<li><p>S: 1 bit，当设置成1，开始位指示分⽚NAL单元的开始。当跟随的FU荷载不是分⽚NAL单元荷载的开始，开始位设为0。</p>
+<li><p>S: 1 bit，当设置成 1，开始位指示分片 NAL 单元的开始。当跟随的 FU 荷载不是分片 NAL 单元荷载的开始，开始位设为 0。</p>
 </li>
-<li><p>E: 1 bit，当设置成1，结束位指示分⽚NAL单元的结束，即, 荷载的最后字节也是分⽚NAL单元的最后 ⼀个字节，当跟随的FU荷载不是分⽚NAL单元的最后分⽚,结束位设置为0。也就是说⼀个NALU切⽚时，<strong>第⼀个切⽚的SE是10，然后中间的切⽚是00，最后⼀个切⽚时01</strong>。 </p>
+<li><p>E: 1 bit，当设置成 1，结束位指示分片 NAL 单元的结束，即, 荷载的最后字节也是分片 NAL 单元的最后一个字节，当跟随的FU荷载不是分片 NAL 单元的最后分片，结束位设置为 0。也就是说一个 NALU 切片时，<strong>第一个切片的 SE 是 10，然后中间的切片是 00，最后一个切片时 01</strong>。 </p>
 </li>
-<li><p>R: 1 bit，保留位必须设置为0，接收者必须忽略该位。</p>
+<li><p>R: 1 bit，保留位必须设置为 0，接收者必须忽略该位。</p>
 </li>
-<li><p>Type: 5 bits，此处的Type就是NALU头中的Type，取1-23的那个值，表示NAL单元荷载类型定义。</p>
+<li><p>Type: 5 bits，此处的 Type 就是 NALU 头中的 Type，取 1-23 的那个值，表示 NAL单 元荷载类型定义。</p>
 </li>
 </ul>
-<p>为了验证这种打包⽅式，我们同样进⾏了写⽂件和抓包，对第⼀个IDR帧的NLAU采取的这种分⽚进⾏了研究。 </p>
-<h4 id="IDR帧的NALU第⼀个切⽚"><a href="#IDR帧的NALU第⼀个切⽚" class="headerlink" title="IDR帧的NALU第⼀个切⽚"></a>IDR帧的NALU第⼀个切⽚</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包第一个切片.png" alt="FU-A打包第一个切片" style="zoom:50%;">
+<p>为了验证这种打包方式，我们同样进行了写文件和抓包，对第一个 IDR 帧的 NLAU 采取的这种分片进行了研究。 </p>
+<h4 id="IDR帧的NALU第一个切片"><a href="#IDR帧的NALU第一个切片" class="headerlink" title="IDR帧的NALU第一个切片"></a>IDR帧的NALU第一个切片</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包第一个切片.png" alt="FU-A打包第一个切片" style="zoom:50%;">
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">⼗六机制：0x7C </span><br><span class="line">⼆进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">⼗六进制：0x85</span><br><span class="line">⼆进制：1000 0101</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">十六机制：0x7C </span><br><span class="line">二进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">十六进制：0x85</span><br><span class="line">二进制：1000 0101</span><br></pre></td></tr></table></figure>
 
-<p>这⾥的SE是10，则说明该RTP包承载的NALU的第⼀个切⽚。</p>
-<p>FU indication字节的前3bit位和Fu header字节后5bit位则为0110 0101即0x65这刚好符合IDR帧的NALU Header定义，后⾯的b8 00 00 03等⼆进制就是NALU的DATA字段。 </p>
-<h4 id="IDR帧的NALU第⼆个切⽚"><a href="#IDR帧的NALU第⼆个切⽚" class="headerlink" title="IDR帧的NALU第⼆个切⽚"></a>IDR帧的NALU第⼆个切⽚</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包中间切片.png" alt="FU-A打包中间切片" style="zoom:50%;">
+<p>这里的 SE 是 10，则说明该 RTP 包承载的 NALU 的第一个切片。</p>
+<p>FU indication 字节的前 3 bit 位和 Fu header 字节后 5 bit 位则为 0110 0101 即 0x65 这刚好符合 IDR 帧的 NALU Header 定义，后面的 b8 00 00 03 等二进制就是 NALU 的 DATA 字段。 </p>
+<h4 id="IDR帧的NALU第二个切片"><a href="#IDR帧的NALU第二个切片" class="headerlink" title="IDR帧的NALU第二个切片"></a>IDR帧的NALU第二个切片</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包中间切片.png" alt="FU-A打包中间切片" style="zoom:50%;">
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">⼗六机制：0x7C</span><br><span class="line">⼆进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">⼗六进制：0x05</span><br><span class="line">⼆进制：0000 0101</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">十六机制：0x7C</span><br><span class="line">二进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">十六进制：0x05</span><br><span class="line">二进制：0000 0101</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>这⾥的SE是00，则说明该RTP包承载的NALU的中间切⽚。</li>
-<li>按照同样⽅法提取，则NALU Header的⼆进制为0110 0101即0x65，同样说明是IDR帧类型，类似这种的中间切⽚有很多，从31-56RTP包都是中间切⽚，直到最后⼀个NALU的切⽚。</li>
+<li>这里的 SE 是 00，则说明该 RTP 包承载的 NALU 的中间切片。</li>
+<li>按照同样方法提取，则 NALU Header 的二进制为 0110 0101 即 0x65，同样说明是 IDR 帧类型，类似这种的中间切片有很多，从 31-56 RTP 包都是中间切片，直到最后一个 NALU 的切片。</li>
 </ul>
-<h4 id="IDR帧的NALU最后⼀个切⽚"><a href="#IDR帧的NALU最后⼀个切⽚" class="headerlink" title="IDR帧的NALU最后⼀个切⽚"></a>IDR帧的NALU最后⼀个切⽚</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包最后切片.png" alt="FU-A打包最后切片" style="zoom:50%;">
+<h4 id="IDR帧的NALU最后一个切片"><a href="#IDR帧的NALU最后一个切片" class="headerlink" title="IDR帧的NALU最后一个切片"></a>IDR帧的NALU最后一个切片</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包最后切片.png" alt="FU-A打包最后切片" style="zoom:50%;">
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">⼗六机制：0x7C</span><br><span class="line">⼆进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">⼗六进制：0x45</span><br><span class="line">⼆进制：0100 0101</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">十六机制：0x7C</span><br><span class="line">二进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">十六进制：0x45</span><br><span class="line">二进制：0100 0101</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>这⾥的SE是01，则说明该RTP包承载的NALU的最后⼀个切⽚。</li>
+<li>这里的 SE 是 01，则说明该 RTP 包承载的 NALU 的最后一个切片。</li>
 </ul>
 <h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">rtp_h264_pack_fu_a</span><span class="params">(<span class="keyword">struct</span> <span class="type">rtp_encode_h264_t</span> *packer, <span class="type">const</span> <span class="type">uint8_t</span>* nalu, <span class="type">int</span> bytes)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> r, n;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> *rtp;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// RFC6184 5.3. NAL Unit Header Usage: Table 2 (p15)</span></span><br><span class="line">    <span class="comment">// RFC6184 5.8. Fragmentation Units (FUs) (p29)</span></span><br><span class="line">    <span class="type">uint8_t</span> fu_indicator = (*nalu &amp; <span class="number">0xE0</span>) | <span class="number">28</span>; <span class="comment">// FU-A 固定的逻辑</span></span><br><span class="line">    <span class="type">uint8_t</span> fu_header = *nalu &amp; <span class="number">0x1F</span>;           </span><br><span class="line"></span><br><span class="line">    r = <span class="number">0</span>;</span><br><span class="line">    nalu += <span class="number">1</span>; <span class="comment">// skip NAL Unit Type byte</span></span><br><span class="line">    bytes -= <span class="number">1</span>;</span><br><span class="line">    assert(bytes &gt; <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// FU-A start, 设置为s置位1</span></span><br><span class="line">    <span class="keyword">for</span> (fu_header |= FU_START; <span class="number">0</span> == r &amp;&amp; bytes &gt; <span class="number">0</span>; ++packer-&gt;pkt.rtp.seq) &#123;</span><br><span class="line">        <span class="keyword">if</span> (bytes + RTP_FIXED_HEADER &lt;= packer-&gt;size - N_FU_HEADER) &#123;</span><br><span class="line">            assert(<span class="number">0</span> == (fu_header &amp; FU_START));</span><br><span class="line">            fu_header = FU_END | (fu_header &amp; <span class="number">0x1F</span>); <span class="comment">// FU-A end  整个nalu结束了</span></span><br><span class="line">            packer-&gt;pkt.payloadlen = bytes;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            packer-&gt;pkt.payloadlen = packer-&gt;size - RTP_FIXED_HEADER - N_FU_HEADER;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        packer-&gt;pkt.payload = nalu;</span><br><span class="line">        n = RTP_FIXED_HEADER + N_FU_HEADER + packer-&gt;pkt.payloadlen;</span><br><span class="line">        <span class="comment">//分配内存</span></span><br><span class="line">        rtp = (<span class="type">uint8_t</span>*)packer-&gt;handler.alloc(packer-&gt;cbparam, n);</span><br><span class="line">        <span class="keyword">if</span> (!rtp) <span class="keyword">return</span> -ENOMEM;</span><br><span class="line"></span><br><span class="line">        packer-&gt;pkt.rtp.m = (FU_END &amp; fu_header) ? <span class="number">1</span> : <span class="number">0</span>; <span class="comment">// set marker flag</span></span><br><span class="line">        n = rtp_packet_serialize_header(&amp;packer-&gt;pkt, rtp, n);</span><br><span class="line">        <span class="keyword">if</span> (n != RTP_FIXED_HEADER) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*fu_indicator + fu_header*/</span></span><br><span class="line">        rtp[n + <span class="number">0</span>] = fu_indicator;</span><br><span class="line">        rtp[n + <span class="number">1</span>] = fu_header;</span><br><span class="line">        <span class="built_in">memcpy</span>(rtp + n + N_FU_HEADER, packer-&gt;pkt.payload, packer-&gt;pkt.payloadlen);</span><br><span class="line">        </span><br><span class="line">        r = packer-&gt;handler.packet(packer-&gt;cbparam, </span><br><span class="line">                                   rtp, n + N_FU_HEADER + packer-&gt;pkt.payloadlen, </span><br><span class="line">                                   packer-&gt;pkt.rtp.timestamp, <span class="number">0</span>);</span><br><span class="line">        packer-&gt;handler.<span class="built_in">free</span>(packer-&gt;cbparam, rtp);</span><br><span class="line">        </span><br><span class="line">        bytes -= packer-&gt;pkt.payloadlen;</span><br><span class="line">        nalu += packer-&gt;pkt.payloadlen;</span><br><span class="line">        fu_header &amp;= <span class="number">0x1F</span>; <span class="comment">// clear flags</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -728,7 +728,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-08 17:13:22" itemprop="dateModified" datetime="2024-01-08T17:13:22+08:00">2024-01-08</time>
+      <time title="Modified: 2024-01-09 11:05:00" itemprop="dateModified" datetime="2024-01-09T11:05:00+08:00">2024-01-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -750,7 +750,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="RTP-简介"><a href="#RTP-简介" class="headerlink" title="RTP 简介"></a>RTP 简介</h1><p>RTP（real-time transport protocol），实时传输协议，用于在计算机网络中传输实时数据，特别是音频和视频数据。RTP通常与其伴随的协议 RTCP（RTP Control Protocol）一起使用，用于监视和管理多媒体会话。</p>
+          <h1 id="RTP-简介"><a href="#RTP-简介" class="headerlink" title="RTP 简介"></a>RTP 简介</h1><p>RTP（real-time transport protocol），实时传输协议，用于在计算机网络中传输实时数据，特别是音频和视频数据。RTP 通常与其伴随的协议 RTCP（RTP Control Protocol）一起使用，用于监视和管理多媒体会话。</p>
 <h1 id="RTP-包格式"><a href="#RTP-包格式" class="headerlink" title="RTP 包格式"></a>RTP 包格式</h1><p>RTP 报文由两部分组成：<strong>报头和有效载荷</strong>。RTP 报文格式如下图所示：</p>
 <img src="/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/RTP报文格式.png" alt="RTP报文格式" style="zoom:100%;">
 
@@ -778,7 +778,7 @@
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">rtp_header_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> v:<span class="number">2</span>;        <span class="comment">/* protocol version */</span></span><br><span class="line">    <span class="type">uint32_t</span> p:<span class="number">1</span>;        <span class="comment">/* padding flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> x:<span class="number">1</span>;        <span class="comment">/* header extension flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> cc:<span class="number">4</span>;       <span class="comment">/* CSRC count */</span></span><br><span class="line">    <span class="type">uint32_t</span> m:<span class="number">1</span>;        <span class="comment">/* marker bit */</span></span><br><span class="line">    <span class="type">uint32_t</span> pt:<span class="number">7</span>;       <span class="comment">/* payload type */</span></span><br><span class="line">    <span class="type">uint32_t</span> seq:<span class="number">16</span>;     <span class="comment">/* sequence number */</span></span><br><span class="line">    <span class="type">uint32_t</span> timestamp;  <span class="comment">/* timestamp */</span></span><br><span class="line">    <span class="type">uint32_t</span> ssrc;       <span class="comment">/* synchronization source */</span></span><br><span class="line">&#125; <span class="type">rtp_header_t</span>;</span><br></pre></td></tr></table></figure>
 
-<h1 id="RTP扩展头"><a href="#RTP扩展头" class="headerlink" title="RTP扩展头"></a>RTP扩展头</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|       defined by profile       |           length              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                        extension data                          |</span><br><span class="line">|                             ....                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<h1 id="RTP-扩展头"><a href="#RTP-扩展头" class="headerlink" title="RTP 扩展头"></a>RTP 扩展头</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|       defined by profile       |           length              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                        extension data                          |</span><br><span class="line">|                             ....                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><p>defined by profile：16 位，用于指示扩展的类型。<strong>不同的 RTP 应用可以定义不同类型的扩展</strong>。这个字段用于指示是哪种类型的扩展。</p>
@@ -795,7 +795,7 @@
 <h1 id="同步信源和特约信源"><a href="#同步信源和特约信源" class="headerlink" title="同步信源和特约信源"></a>同步信源和特约信源</h1><ul>
 <li><p>同步信源（SSRC）是<strong>指产生媒体流的信源</strong>，例如麦克风、摄像机、RTP 混合器等。它通过 RTP 报头中的一个 32 位数字 SSRC 标识符来标识，<strong>而不依赖于网络地址</strong>，接收者将根据 <strong>SSRC 标识符来区分不同的信源，进行 RTP 报文的分组</strong>。</p>
 </li>
-<li><p>特约信源（CSRC）是指当混合器接收到一个或多个同步信源的RTP报文后，<strong>经过混合处理产生一个新的组合 RTP 报文</strong>，<strong>并把混合器作为组合 RTP 报文的 SSRC</strong>，<strong>而将原来所有的 SSRC 都作为 CSRC 传送给接收者</strong>，使接收者知道组成组合报文的各个 SSRC。</p>
+<li><p>特约信源（CSRC）是指当混合器接收到一个或多个同步信源的 RTP 报文后，<strong>经过混合处理产生一个新的组合 RTP 报文</strong>，<strong>并把混合器作为组合 RTP 报文的 SSRC</strong>，<strong>而将原来所有的 SSRC 都作为 CSRC 传送给接收者</strong>，使接收者知道组成组合报文的各个 SSRC。</p>
 </li>
 <li><p>在发送端，上层应用程序以分组形式将编码后的媒体数据传给 RTP 通信模块，作为 RTP 报文的有效载荷，RTP 通信模块将根据上层应用提供的参数在有效载荷前添加 RTP 报头，形成 RTP 报文，通过 Socket 接口选择 UDP 协议发送出去。</p>
 </li>
@@ -811,7 +811,7 @@ SSRC3--RTP1-->混合器SSRC4
 混合器SSRC4--RTP-->接收端</pre>
 
 <p>例如，有三个信号源各发出一路 RTP 流，RTP1 携带的 SSRC 是 SSRC1，RTP2 携带的 SSRC 是 SSRC2，RTP3 携带 SSRC3，这三路 RTP 流到达混合器时，混合器会将这三路流混合成一路流发出去，它会把这三路流的 SSRC 记录下来，形成一个列表，叫 CSRC 表，在发送的混合 RTP 流中，<strong>SSRC 域填充的字段是混合器本身的 SSRC4</strong>，<strong>而 CSRC 字段则会根据该包的负载的源来填入</strong>。</p>
-<p>例如当前的 RTP 包的负载是来⾃ SSRC1 的，那么在当前 RTP 包的 CSRC 字段填入 SSRC1。这样接收者就可以根据 CSRC 来区分不同的信源；一般的，混合的 RTP 流中，每隔一段时间，就会有一个 RTP 报文包含了完整的 CSRC 表。例如在发送混合流时的第一个 RTP 包，它的 CSRC 域把 CSRC 表都填入，此时该包的负载可能是无意义或者并不是媒体流；此后的 RTP 报文中则根据负载的来源来填入 CSRC 域。</p>
+<p>例如当前的 RTP 包的负载是来自 SSRC1 的，那么在当前 RTP 包的 CSRC 字段填入 SSRC1。这样接收者就可以根据 CSRC 来区分不同的信源；一般的，混合的 RTP 流中，每隔一段时间，就会有一个 RTP 报文包含了完整的 CSRC 表。例如在发送混合流时的第一个 RTP 包，它的 CSRC 域把 CSRC 表都填入，此时该包的负载可能是无意义或者并不是媒体流；此后的 RTP 报文中则根据负载的来源来填入 CSRC 域。</p>
 <h1 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h1><h2 id="RTP固定头"><a href="#RTP固定头" class="headerlink" title="RTP固定头"></a>RTP固定头</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//RTP版本</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_VERSION 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//RTP固定 header的长度</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_FIXED_HEADER 12</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">rtp_header_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> v:<span class="number">2</span>;       <span class="comment">/* protocol version */</span></span><br><span class="line">    <span class="type">uint32_t</span> p:<span class="number">1</span>;       <span class="comment">/* padding flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> x:<span class="number">1</span>;       <span class="comment">/* header extension flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> cc:<span class="number">4</span>;      <span class="comment">/* CSRC count */</span></span><br><span class="line">    <span class="type">uint32_t</span> m:<span class="number">1</span>;       <span class="comment">/* marker bit */</span></span><br><span class="line">    <span class="type">uint32_t</span> pt:<span class="number">7</span>;      <span class="comment">/* payload type */</span></span><br><span class="line">    <span class="type">uint32_t</span> seq:<span class="number">16</span>;    <span class="comment">/* sequence number */</span></span><br><span class="line">    <span class="type">uint32_t</span> timestamp; <span class="comment">/* timestamp */</span></span><br><span class="line">    <span class="type">uint32_t</span> ssrc;      <span class="comment">/* synchronization source */</span></span><br><span class="line">&#125; <span class="type">rtp_header_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//封装这个RTP 包括 header + [csrc/extension] + payload</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">rtp_packet_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">rtp_header_t</span> rtp;</span><br><span class="line">    <span class="type">uint32_t</span> csrc[<span class="number">16</span>];      <span class="comment">// 最多16个csrc</span></span><br><span class="line">    <span class="type">const</span> <span class="type">void</span>* extension;  <span class="comment">// extension(valid only if rtp.x = 1)</span></span><br><span class="line">    <span class="type">uint16_t</span> extlen;        <span class="comment">// extension length in bytes</span></span><br><span class="line">    <span class="type">uint16_t</span> reserved;      <span class="comment">// extension reserved</span></span><br><span class="line">    <span class="type">const</span> <span class="type">void</span>* payload;    <span class="comment">// rtp payload</span></span><br><span class="line">    <span class="type">int</span> payloadlen;         <span class="comment">// payload length in bytes</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_V(v)    ((v &gt;&gt; 30) &amp; 0x03)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_P(v)    ((v &gt;&gt; 29) &amp; 0x01)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_X(v)    ((v &gt;&gt; 28) &amp; 0x01)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_CC(v)   ((v &gt;&gt; 24) &amp;&amp; 0x0F)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_M(v)    ((v &gt;&gt; 23) &amp;&amp; 0x01)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_PT(v)   ((v &gt;&gt; 16) &amp;&amp; 0x7F)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTP_SEQ(v)  ((v &gt;&gt; 00) &amp;&amp; 0xFFFF)</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="RTP序列化和反序列化"><a href="#RTP序列化和反序列化" class="headerlink" title="RTP序列化和反序列化"></a>RTP序列化和反序列化</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> nbo_r16 rtp_read_uint16</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> nbo_r32 rtp_read_uint32</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> nbo_w16 rtp_write_uint16</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> nbo_w32 rtp_write_uint32</span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">uint16_t</span> <span class="title function_">rtp_read_uint16</span><span class="params">(<span class="type">const</span> <span class="type">uint8_t</span>* ptr)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> (((<span class="type">uint16_t</span>)ptr[<span class="number">0</span>]) &lt;&lt; <span class="number">8</span>) | ptr[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">uint32_t</span> <span class="title function_">rtp_read_uint32</span><span class="params">(<span class="type">const</span> <span class="type">uint8_t</span>* ptr)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> (((<span class="type">uint32_t</span>)ptr[<span class="number">0</span>]) &lt;&lt; <span class="number">24</span>) | (((<span class="type">uint32_t</span>)ptr[<span class="number">1</span>]) &lt;&lt; <span class="number">16</span>) | (((<span class="type">uint32_t</span>)ptr[<span class="number">2</span>]) &lt;&lt; <span class="number">8</span>) | ptr[<span class="number">3</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">void</span> <span class="title function_">rtp_write_uint16</span><span class="params">(<span class="type">uint8_t</span>* ptr, <span class="type">uint16_t</span> val)</span></span><br><span class="line">&#123;</span><br><span class="line">    ptr[<span class="number">0</span>] = (<span class="type">uint8_t</span>)(val &gt;&gt; <span class="number">8</span>);</span><br><span class="line">    ptr[<span class="number">1</span>] = (<span class="type">uint8_t</span>)val;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">void</span> <span class="title function_">rtp_write_uint32</span><span class="params">(<span class="type">uint8_t</span>* ptr, <span class="type">uint32_t</span> val)</span></span><br><span class="line">&#123;</span><br><span class="line">    ptr[<span class="number">0</span>] = (<span class="type">uint8_t</span>)(val &gt;&gt; <span class="number">24</span>);</span><br><span class="line">    ptr[<span class="number">1</span>] = (<span class="type">uint8_t</span>)(val &gt;&gt; <span class="number">16</span>);</span><br><span class="line">    ptr[<span class="number">2</span>] = (<span class="type">uint8_t</span>)(val &gt;&gt; <span class="number">8</span>);</span><br><span class="line">    ptr[<span class="number">3</span>] = (<span class="type">uint8_t</span>)val;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">void</span> <span class="title function_">nbo_write_rtp_header</span><span class="params">(<span class="type">uint8_t</span> *ptr, <span class="type">const</span> <span class="type">rtp_header_t</span> *header)</span></span><br><span class="line">&#123;</span><br><span class="line">    ptr[<span class="number">0</span>] = (<span class="type">uint8_t</span>)((header-&gt;v &lt;&lt; <span class="number">6</span>) | (header-&gt;p &lt;&lt; <span class="number">5</span>) | (header-&gt;x &lt;&lt; <span class="number">4</span>) | header-&gt;cc);</span><br><span class="line">    ptr[<span class="number">1</span>] = (<span class="type">uint8_t</span>)((header-&gt;m &lt;&lt; <span class="number">7</span>) | header-&gt;pt);</span><br><span class="line">    ptr[<span class="number">2</span>] = (<span class="type">uint8_t</span>)(header-&gt;seq &gt;&gt; <span class="number">8</span>);</span><br><span class="line">    ptr[<span class="number">3</span>] = (<span class="type">uint8_t</span>)(header-&gt;seq &amp; <span class="number">0xFF</span>);</span><br><span class="line"></span><br><span class="line">    nbo_w32(ptr+<span class="number">4</span>, header-&gt;timestamp);</span><br><span class="line">    nbo_w32(ptr+<span class="number">8</span>, header-&gt;ssrc);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
