@@ -28,7 +28,7 @@
 <meta property="og:description" content="RTP 的 AAC 打包打包过程 需要将 AAC 的前 7 个（或 9 个）字节的 ADTS 去掉，即是跳过 ADTS Header。 添加 RTP Header（一般 12 字节）。 添加 2 字节的 AU_HEADER_LENGTH。 添加 2 字节的 AU_HEADER。 从第 17 字节开始就是 payload（去掉 ADTS 的 AAC 数据）数据了。  音频 AAC 打包格式12345">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-09-21T12:57:45.000Z">
-<meta property="article:modified_time" content="2024-01-09T07:56:23.623Z">
+<meta property="article:modified_time" content="2024-01-10T01:35:35.017Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 
@@ -194,7 +194,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-09 15:56:23" itemprop="dateModified" datetime="2024-01-09T15:56:23+08:00">2024-01-09</time>
+      <time title="Modified: 2024-01-10 09:35:35" itemprop="dateModified" datetime="2024-01-10T09:35:35+08:00">2024-01-10</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -258,7 +258,7 @@
 <tr>
 <td>samplingFrequencyIndex</td>
 <td>4</td>
-<td>aac 的采样频率的索引, ⻅下表</td>
+<td>aac 的采样频率的索引, 见下表</td>
 </tr>
 <tr>
 <td>channelConfiguration</td>
@@ -354,7 +354,7 @@
 </tr>
 <tr>
 <td>AU-size</td>
-<td>sizeLengthda 决定</td>
+<td>sizeLength 决定</td>
 <td>表示本段音频数据占用的字节数</td>
 </tr>
 <tr>

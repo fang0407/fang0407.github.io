@@ -20,15 +20,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="SDP介绍SDP（Session Description Protocol） 完全是⼀种会话描述格式，它不属于传输协议，只使⽤不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电⼦邮件以及超⽂本传输协议（HTTP）。SDP协议是也是基于⽂本的协议，这样就能保证协议的可扩展性⽐较强，这样就使其具有⼴泛的应⽤范围。SDP 不⽀持会话内">
+    <meta name="description" content="SDP 介绍SDP（Session Description Protocol） 完全是一种会话描述格式，它不属于传输协议，只使用不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电子邮件以及超文本传输协议（HTTP）。SDP 协议是也是基于文本的协议，这样就能保证协议的可扩展性⽐较强，这样就使其具有⼴泛的应用范围。SDP 不支持会">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SDP协议">
 <meta property="og:url" content="https://fang0407.github.io/2023/09/22/SDP%E5%8D%8F%E8%AE%AE/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="SDP介绍SDP（Session Description Protocol） 完全是⼀种会话描述格式，它不属于传输协议，只使⽤不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电⼦邮件以及超⽂本传输协议（HTTP）。SDP协议是也是基于⽂本的协议，这样就能保证协议的可扩展性⽐较强，这样就使其具有⼴泛的应⽤范围。SDP 不⽀持会话内">
+<meta property="og:description" content="SDP 介绍SDP（Session Description Protocol） 完全是一种会话描述格式，它不属于传输协议，只使用不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电子邮件以及超文本传输协议（HTTP）。SDP 协议是也是基于文本的协议，这样就能保证协议的可扩展性⽐较强，这样就使其具有⼴泛的应用范围。SDP 不支持会">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-09-22T12:37:35.000Z">
-<meta property="article:modified_time" content="2023-12-30T14:37:49.214Z">
+<meta property="article:modified_time" content="2024-01-10T03:59:22.740Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 
@@ -112,7 +112,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SDP%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">SDP介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SDP%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">SDP格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%85%E9%9C%80%E5%AD%97%E6%AE%B5"><span class="nav-number">2.1.</span> <span class="nav-text">必需字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E5%AD%97%E6%AE%B5"><span class="nav-number">2.2.</span> <span class="nav-text">可选字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%BC%A6%E5%AD%97%E6%AE%B5"><span class="nav-number">2.3.</span> <span class="nav-text">⼦字段</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SDP-%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">SDP 介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SDP-%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">SDP 格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%85%E9%9C%80%E5%AD%97%E6%AE%B5"><span class="nav-number">2.1.</span> <span class="nav-text">必需字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E5%AD%97%E6%AE%B5"><span class="nav-number">2.2.</span> <span class="nav-text">可选字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90%E5%AD%97%E6%AE%B5"><span class="nav-number">2.3.</span> <span class="nav-text">子字段</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -194,7 +194,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:37:49" itemprop="dateModified" datetime="2023-12-30T22:37:49+08:00">2023-12-30</time>
+      <time title="Modified: 2024-01-10 11:59:22" itemprop="dateModified" datetime="2024-01-10T11:59:22+08:00">2024-01-10</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -215,75 +215,75 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="SDP介绍"><a href="#SDP介绍" class="headerlink" title="SDP介绍"></a>SDP介绍</h1><p>SDP（Session Description Protocol） 完全是<strong>⼀种会话描述格式</strong>，它<strong>不属于传输协议</strong>，只使⽤不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电⼦邮件以及超⽂本传输协议（HTTP）。SDP协议是也是基于⽂本的协议，这样就能保证协议的可扩展性⽐较强，这样就使其具有⼴泛的应⽤范围。SDP 不⽀持会话内容或媒体编码的协商，所以在流媒体中只⽤来描述媒体信息。媒体协商这⼀块要⽤RTSP来实现．</p>
-<h1 id="SDP格式"><a href="#SDP格式" class="headerlink" title="SDP格式"></a>SDP格式</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;type&gt;=&lt;value&gt;</span><br></pre></td></tr></table></figure>
+    <div class="post-body" itemprop="articleBody"><h1 id="SDP-介绍"><a href="#SDP-介绍" class="headerlink" title="SDP 介绍"></a>SDP 介绍</h1><p>SDP（Session Description Protocol） 完全是<strong>一种会话描述格式</strong>，它<strong>不属于传输协议</strong>，只使用不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电子邮件以及超文本传输协议（HTTP）。SDP 协议是也是基于文本的协议，这样就能保证协议的可扩展性⽐较强，这样就使其具有⼴泛的应用范围。SDP 不支持会话内容或媒体编码的协商，所以在流媒体中只用来描述媒体信息。</p>
+<h1 id="SDP-格式"><a href="#SDP-格式" class="headerlink" title="SDP 格式"></a>SDP 格式</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;type&gt;=&lt;value&gt;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><p><code>&lt;type&gt;</code>：⼤⼩写敏感的⼀个字符，代表特定的属性，⽐如 v 代表版本。</p>
+<li><p><code>&lt;type&gt;</code>：大小写敏感的一个字符，代表特定的属性，⽐如 v 代表版本。</p>
 </li>
-<li><p><code>&lt;value&gt;</code>：结构化⽂本，格式与属性类型有关，UTF8编码。</p>
+<li><p><code>&lt;value&gt;</code>：结构化文本，格式与属性类型有关，UTF8 编码。</p>
 </li>
 <li><p><code>=</code> 两边不允许存在空格。</p>
 </li>
 </ul>
 <h2 id="必需字段"><a href="#必需字段" class="headerlink" title="必需字段"></a>必需字段</h2><ul>
-<li>v&#x3D;（协议版本号），⼀个会话描述的开始，前⼀个会话结束标志。</li>
-<li>o&#x3D;（会话源或者会话⽣成者，以及会话标识符）。</li>
-<li>s&#x3D;（会话名称）这个字段是个⽂本字符串，可以显示给会话参与者。</li>
+<li>v&#x3D;（协议版本号），一个会话描述的开始，前一个会话结束标志。</li>
+<li>o&#x3D;（会话源或者会话生成者，以及会话标识符）。</li>
+<li>s&#x3D;（会话名称）这个字段是个文本字符串，可以显示给会话参与者。</li>
 <li>t&#x3D;（会话时间）这个字段指明会话开始时间与结束时间。</li>
-<li>m&#x3D;（媒体）该字段⽤来指明媒体类型、数据应该发送到的传输端⼝，传输协议（例如RTP）以及媒体格式（例如RTP负载格式）。</li>
+<li>m&#x3D;（媒体）该字段用来指明媒体类型、数据应该发送到的传输端口，传输协议（例如 RTP）以及媒体格式（例如 RTP 负载格式）。</li>
 </ul>
-<h2 id="可选字段"><a href="#可选字段" class="headerlink" title="可选字段"></a>可选字段</h2><p>SDP可选字段中，⼀些只能应⽤于会话级，⼀些只能应⽤于媒体级，还有⼀些可以应⽤于两种级别。对于应⽤于两种级别的字段，在某个具体媒体上，<strong>应⽤于媒体级的字段会覆盖应⽤于会话级的字段值</strong>。例如，某个字段其会话级的字段值为X，媒体1的该字段值为Y，那么值X应⽤于会话中除媒体类型1之外的所有媒体，⽽媒体1应⽤值Y。</p>
+<h2 id="可选字段"><a href="#可选字段" class="headerlink" title="可选字段"></a>可选字段</h2><p>SDP 可选字段中，一些只能应用于会话级，一些只能应用于媒体级，还有一些可以应用于两种级别。对于应用于两种级别的字段，在某个具体媒体上，<strong>应用于媒体级的字段会覆盖应用于会话级的字段值</strong>。例如，某个字段其会话级的字段值为 X，媒体1的该字段值为 Y，那么值 X 应用于会话中除媒体类型 1 之外的所有媒体，而媒体 1 应用值 Y。</p>
 <p>可选字段如下：</p>
 <ul>
-<li>i&#x3D;（会话信息）对字段的⽂本描述，提供了⽐会话名称更多的信息。该字段既可以⽤于会话级也可以⽤于媒体级。 </li>
-<li>u&#x3D;（描述的URI地址）URI信息，通过这个地址可以获取更多会话相关信息。例如，⼀个会议可能公布在WEB⻚⾯上，所以需要该WEB的URI。每个会话只能提供⼀个URI。</li>
-<li>E&#x3D;（E-mail地址）负责会话个体的E-mail地址，可以有多个。只能⽤于会话级别。</li>
-<li>p&#x3D;（电话号码）同email⼀样，多个，会话级别。</li>
-<li>c&#x3D;（连接信息）该字段提供连接数据，包括连接类型、⽹络类型和连接地址。可应⽤于会话级也可以⽤于媒体级。</li>
-<li>b&#x3D;（带宽信息）指明带宽需求，单位kbit&#x2F;s, 可⽤于两个级别。</li>
-<li>r&#x3D;（重复次数）如果是有规律的⽇程安排活动，这个字段⽤来指明会话重复频次和时间。</li>
-<li>z&#x3D;（时区调整）⽤于按⽇程安排的有规律活动会话。会话可能会夸时区，避免时区变更造成的混乱。</li>
-<li>k&#x3D;（加密密钥）为了对媒体加密、解密，该字段提供了⼀个加密密钥或者规定了⼀个获取密钥的机制。可⽤于两个级别。</li>
-<li>a&#x3D;（属性）⽤于描述会话或者某个媒体的额外属性。</li>
+<li>i&#x3D;（会话信息）对字段的文本描述，提供了⽐会话名称更多的信息。该字段既可以用于会话级也可以用于媒体级。 </li>
+<li>u&#x3D;（描述的 URI 地址）URI 信息，通过这个地址可以获取更多会话相关信息。例如，一个会议可能公布在 WEB 页面上，所以需要该 WEB 的 URI。每个会话只能提供一个 URI。</li>
+<li>E&#x3D;（E-mail 地址）负责会话个体的 E-mail 地址，可以有多个。只能用于会话级别。</li>
+<li>p&#x3D;（电话号码）同 email 一样，多个，会话级别。</li>
+<li>c&#x3D;（连接信息）该字段提供连接数据，包括连接类型、网络类型和连接地址。可应用于会话级也可以用于媒体级。</li>
+<li>b&#x3D;（带宽信息）指明带宽需求，单位 kbit&#x2F;s, 可用于两个级别。</li>
+<li>r&#x3D;（重复次数）如果是有规律的日程安排活动，这个字段用来指明会话重复频次和时间。</li>
+<li>z&#x3D;（时区调整）用于按日程安排的有规律活动会话。会话可能会夸时区，避免时区变更造成的混乱。</li>
+<li>k&#x3D;（加密密钥）为了对媒体加密、解密，该字段提供了一个加密密钥或者规定了一个获取密钥的机制。可用于两个级别。</li>
+<li>a&#x3D;（属性）用于描述会话或者某个媒体的额外属性。</li>
 </ul>
-<p>可选字段中，连接信息字段是特别与条件相关的。因为该字段定义了数据应发送到的⽹络地址，所以必须被包含进会话描述中的某个地⽅。 </p>
-<h2 id="⼦字段"><a href="#⼦字段" class="headerlink" title="⼦字段"></a>⼦字段</h2><p>在SDP中许多字段采⽤多个⼦字段的形式，此时，这些字段值由多个以空格符间隔的多个值组成。格式如下：</p>
+<p>可选字段中，连接信息字段是特别与条件相关的。因为该字段定义了数据应发送到的网络地址，所以必须被包含进会话描述中的某个地方。 </p>
+<h2 id="子字段"><a href="#子字段" class="headerlink" title="子字段"></a>子字段</h2><p>在 SDP 中许多字段采用多个子字段的形式，此时，这些字段值由多个以空格符间隔的多个值组成。格式如下：</p>
 <ul>
-<li>字段 名称&#x3D;&lt;⼦字段1的值&gt; &lt;⼦字段2的值&gt; &lt;⼦字段3的值&gt;</li>
+<li>字段 名称&#x3D;&lt;子字段1的值&gt; &lt;子字段2的值&gt; &lt;子字段3的值&gt;</li>
 </ul>
 <p>例如：</p>
 <ul>
-<li>会话源（o） ：有6个⼦字段：⽤户名、会话ID、版本、⽹络类型、地址类型、地址。 </li>
-<li>连接信息（c）：有3个⼦字段：⽹络类型、地址类型和连接地址。同会话源中含义不同，他们表示需要接收媒体数据的⽹络和地址，⽽不是⽣成会话的⽹络和地址。</li>
-<li>媒体信息（m）：有四个⼦字段：媒体类型、端⼝、传输协议、格式。</li>
+<li>会话源（o） ：有六个子字段：用户名、会话 ID、版本、网络类型、地址类型、地址。 </li>
+<li>连接信息（c）：有三个子字段：网络类型、地址类型和连接地址。同会话源中含义不同，他们表示需要接收媒体数据的网络和地址，而不是生成会话的网络和地址。</li>
+<li>媒体信息（m）：有四个子字段：媒体类型、端口、传输协议、格式。</li>
 </ul>
 <p><strong>媒体信息</strong></p>
-<p>格式： m&#x3D;(媒体)（端⼝）（传送层）（格式列表）。</p>
-<p>媒体类型：⾳频、视频、应⽤、数据和控制。</p>
-<p>端⼝：媒体传送层端⼝。</p>
-<p>传送层：ip4上⼤多基于rtp&#x2F;udp上传送（RTP&#x2F;AVP）IETF RTP协议，在udp上传输。</p>
-<p>格式列表： 对应对应的⾳频负载类型（PT）。</p>
+<p>格式： m&#x3D;(媒体)（端口）（传送层）（格式列表）。</p>
+<p>媒体类型：音频、视频、应用、数据和控制。</p>
+<p>端口：媒体传送层端口。</p>
+<p>传送层：ip4上大多基于 rtp&#x2F;udp上传送（RTP&#x2F;AVP）IETF RTP 协议，在 udp 上传输。</p>
+<p>格式列表： 对应对应的音频负载类型（PT）。</p>
 <p>例子：m&#x3D;video 0 RTP&#x2F;AVP 96 </p>
 <p><strong>属性</strong></p>
-<p>属性有两种形式，第⼀种是特征属性，第⼆种属于值属性。SDP描述了多个建议属性。 </p>
+<p>属性有两种形式，第一种是特征属性，第⼆种属于值属性。SDP 描述了多个建议属性。 </p>
 <ul>
 <li><p>特征属性</p>
 <ul>
-<li><p>例如a&#x3D;sendonly，表明会话描述的发送者只希望发送数据⽽不打算接收数据，端⼝号⽆意义，可以置为0。 </p>
+<li><p>例如 a&#x3D;sendonly，表明会话描述的发送者只希望发送数据而不打算接收数据，端口号无意义，可以置为 0。 </p>
 </li>
-<li><p>例如a&#x3D;recvonly，表明这个会话描述的发送者只想接收数据⽽不打算发送数据。</p>
+<li><p>例如 a&#x3D;recvonly，表明这个会话描述的发送者只想接收数据而不打算发送数据。</p>
 </li>
 </ul>
 </li>
 <li><p>值属性</p>
 <ul>
-<li><p>例如a&#x3D;rtpmp:&lt;负载类型&gt;&lt;编码名称&gt;&#x2F;&lt;时钟速率&gt;[&lt;编码参数&gt;]</p>
+<li><p>例如 a&#x3D;rtpmp:&lt;负载类型&gt;&lt;编码名称&gt;&#x2F;&lt;时钟速率&gt;[&lt;编码参数&gt;]</p>
 </li>
-<li><p>rtpmap属性提供了⼀个在VoIP应⽤中的重要属性使⽤⽅法，该属性可⽤于媒体流，在媒体格式不是静态的RTP负载类型时特别有⽤。严格来说，“rtpmap”只在使⽤动态负载类型情况下才是必须的，例如标准的G.711语⾳是静态RTP负载类型，采⽤如下⽅法就可以对它完整描述：</p>
+<li><p>rtpmap 属性提供了一个在 VoIP 应用中的重要属性使用方法，该属性可用于媒体流，在媒体格式不是静态的RTP负载类型时特别有用。严格来说，“rtpmap”只在使用动态负载类型情况下才是必须的，例如标准的 G.711 语音是静态 RTP 负载类型，采用如下方法就可以对它完整描述：</p>
   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m=audio 45678 RTP/AVP 0</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>⽽对动态负载来说需要指定更多信息才能使远端完全识别到媒体编码，例如16位线性编码16kHz取样的⽴体声⾳就是⼀个动态RTP负载类型，如果我们采⽤动态负载类型98表示这个媒体流，那么SDP格式如下：</p>
+<li><p>而对动态负载来说需要指定更多信息才能使远端完全识别到媒体编码，例如 16 位线性编码 16 kHz 取样的立体声音就是一个动态 RTP 负载类型，如果我们采用动态负载类型 98 表示这个媒体流，那么 SDP 格式如下：</p>
   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m=audio 45678 RTP/AVP 98 </span><br><span class="line">a=rtpmap 98 L16/16000/2</span><br></pre></td></tr></table></figure></li>
 </ul>
 </li>
