@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-count">74</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -128,6 +128,10 @@
           <a href="/categories/">
         <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
       </div>
   </nav>
 </div>
@@ -143,6 +147,256 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/08/24/FFmpeg%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/08/24/FFmpeg%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">FFmpeg基础</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-08-24 21:45:15" itemprop="dateCreated datePublished" datetime="2023-08-24T21:45:15+08:00">2023-08-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:40:57" itemprop="dateModified" datetime="2023-12-30T22:40:57+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="播放器框架"><a href="#播放器框架" class="headerlink" title="播放器框架"></a>播放器框架</h1><pre class="mermaid">graph LR
+    媒体文件-->解复用器
+    解复用器-->音频包队列
+    音频包队列-->音频解码
+    音频解码-->采样帧队列
+    采样帧队列-->音频处理
+    音频处理-->扬声器
+    解复用器-->视频包队列
+    视频包队列-->视频解码
+    视频解码-->图像帧队列
+    图像帧队列-->图像处理
+    图像处理-->显示器</pre>
+
+<h1 id="常见音视频概念"><a href="#常见音视频概念" class="headerlink" title="常见音视频概念"></a>常见音视频概念</h1><h2 id="常用音视频术语"><a href="#常用音视频术语" class="headerlink" title="常用音视频术语"></a>常用音视频术语</h2><ul>
+<li><p>容器／文件（Conainer&#x2F;File）：即特定格式的多媒体文件，比如mp4、flv、mkv等。</p>
+</li>
+<li><p>媒体流（Stream）：表示时间轴上的一段连续数据，如一段声音数据、一段视频数据或一段字幕数据，可以是压缩的，也可以是非压缩的，压缩的数据需要关联特定的编解码器（有些码流音频他是纯PCM）。</p>
+</li>
+<li><p>数据帧／数据包（Frame&#x2F;Packet）：通常，一个媒体流是由大量的数据帧组成的，对于压缩数据，帧对应着编解码器的最小处理单元，分属于不同媒体流的数据帧交错存储于容器之中。</p>
+</li>
+<li><p>编解码器：编解码器是以帧为单位实现压缩数据和原始数据之间的相互转换的。</p>
+</li>
+</ul>
+<h2 id="复用器"><a href="#复用器" class="headerlink" title="复用器"></a>复用器</h2><pre class="mermaid">graph LR
+    音频流-->按一定规则组合
+    视频流-->按一定规则组合
+    字幕流-->按一定规则组合
+    其他成分-->按一定规则组合
+    按一定规则组合-->视频文件</pre>
+
+<pre class="mermaid">graph LR
+    视频文件-->按一定规则拆分
+    按一定规则拆分-->音频流
+    按一定规则拆分-->视频流
+    按一定规则拆分-->字幕流
+    按一定规则拆分-->其他成分</pre>
+
+<h2 id="编解码器"><a href="#编解码器" class="headerlink" title="编解码器"></a>编解码器</h2><pre class="mermaid">graph LR
+    图像YUV数据--H264编码器-->H264帧
+    H264帧--H264解码器-->图像YUV数据</pre>
+
+<pre class="mermaid">graph LR
+    声音PCM数据--AAC编码器-->AAC帧
+    AAC帧--AAC解码器-->声音PCM数据</pre>
+
+<h1 id="FFmpeg库简介"><a href="#FFmpeg库简介" class="headerlink" title="FFmpeg库简介"></a>FFmpeg库简介</h1><h2 id="FFmpeg的整体结构"><a href="#FFmpeg的整体结构" class="headerlink" title="FFmpeg的整体结构"></a>FFmpeg的整体结构</h2><ul>
+<li>二进制程序：ffplay，ffprobe，ffmpeg</li>
+<li>ffmpeg库：libavutil，libavformat，libavcodec，libswscale，libswresample，libavfilter，libpostproc</li>
+<li>第三方编解码插件：fdk-aac，voaac_enc，x264</li>
+</ul>
+<h2 id="FFmpeg常用库"><a href="#FFmpeg常用库" class="headerlink" title="FFmpeg常用库"></a>FFmpeg常用库</h2><ul>
+<li><p>AVUtil：核心工具库，下面的许多其他模块都会依赖该库做一些基本的音视频处理操作。</p>
+</li>
+<li><p>AVFormat：文件格式和协议库，该模块是最重要的模块之一，封装了Protocol层和Demuxer、Muxer层，使得协议和格式对于开发者来说是透明的。</p>
+</li>
+<li><p>AVCodec：编解码库，封装了Codec层，但是有一些Codec是具备自己的License的，<strong>FFmpeg是不会默认添加像libx264、FDK-AAC等库的</strong>，但是FFmpeg就像一个平台一样，可以将其他的第三方的Codec以插件的方式添加进来，然后为开发者提供统一的接口。</p>
+</li>
+<li><p>AVFilter：音视频滤镜库，该模块提供了包括<strong>音频特效和视频特效</strong>的处理，在使用FFmpeg的API进行编解码的过程中，直接使用该模块为音视频数据做特效处理是非常方便同时也非常高效的一种方式。</p>
+</li>
+<li><p>AVDevice：输入输出设备库，比如，需要编译出播放声音或者视频的工具ffplay，就需要确保该模块是打开的，同时也需要SDL的预先编译，因为该设备模块播放声音与播放视频使用的都是SDL库。</p>
+</li>
+<li><p>SwrRessample：该模块可用于<strong>音频重采样</strong>，可以对数字音频进行声道数、数据格式、采样率等多种基本信息的转换。</p>
+</li>
+<li><p>SWScale：该模块是将<strong>图像进行格式转换</strong>的模块，比如，可以将YUV的数据转换为RGB的数据，缩放尺寸由1280 * 720变为800 * 480。 </p>
+</li>
+<li><p>PostProc：该模块可用于进行后期处理，当我们使用AVFilter的时候需要打开该模块的开关，因为Filter中会使用到该模块的一些基础函数。</p>
+</li>
+</ul>
+<h1 id="FFmpeg函数简介"><a href="#FFmpeg函数简介" class="headerlink" title="FFmpeg函数简介"></a>FFmpeg函数简介</h1><h2 id="封装格式函数"><a href="#封装格式函数" class="headerlink" title="封装格式函数"></a>封装格式函数</h2><ul>
+<li>avformat_alloc_context()：负责申请一个AVFormatContext结构的内存,并进行简单初始化。</li>
+<li>avformat_free_context()：释放该结构里的所有东西以及该结构本身。</li>
+<li>avformat_open_input()；打开输入视频文件。</li>
+<li>avformat_close_input()；关闭解复用器。关闭后就不再需要使用avformat_free_context 进行释放。</li>
+<li>avformat_find_stream_info()：获取音视频文件信息。</li>
+<li>av_read_frame()：读取音视频包。</li>
+<li>avformat_seek_file()：定位文件。</li>
+<li>av_seek_frame()：定位文件。</li>
+</ul>
+<h2 id="解封装流程"><a href="#解封装流程" class="headerlink" title="解封装流程"></a>解封装流程</h2><pre class="mermaid">graph TB
+    A[分配解复用器上下文 avformat_alloc_context]-->B[根据url打开本地文件或网络流 avformat_open_input]
+    B-->C[读取媒体的部分数据包以获取码流信息 avformat_find_stream_info]
+    C-->D[定位文件 avformat_seek_file或av_seek_frame]
+    D-->E[从文件中循环读取数据包 av_read_frame]
+    E-->F[关闭解复用器 avformat_close_input]</pre>
+
+<h2 id="解码器函数"><a href="#解码器函数" class="headerlink" title="解码器函数"></a>解码器函数</h2><ul>
+<li>avcodec_alloc_context3()：分配解码器上下文。</li>
+<li>avcodec_find_decoder()：根据ID查找解码器。</li>
+<li>avcodec_find_decoder_by_name()：根据解码器名字查找解码器。</li>
+<li>avcodec_open2()：打开编解码器。</li>
+<li><del>avcodec_decode_video2()：解码一帧视频数据。</del></li>
+<li><del>avcodec_decode_audio4()：解码一帧音频数据。</del></li>
+<li>avcodec_send_packet()：发送编码数据包。</li>
+<li>avcodec_receive_frame()：接收解码后数据。</li>
+<li>avcodec_free_context()：释放解码器上下文，包含了avcodec_close()。</li>
+<li>avcodec_close()：关闭解码器。</li>
+</ul>
+<h2 id="解码流程"><a href="#解码流程" class="headerlink" title="解码流程"></a>解码流程</h2><pre class="mermaid">graph TB
+    A[分配编解码器上下文 avcodec_alloc_context3]-->B[将码流中的编解码器信息拷贝到AVCodecContex avcodec_parameters_to_context]
+    B-->C[根据编解码器信息查找相应的解码器或指定解码器 avcodec_find_decoder/avcodec_find_decoder_by_name]
+    C-->D[打开编解码器并关联到AVCodecContex avcodec_open2]
+    D-->E[循环向解码器发送数据包 avcodec_send_packet]
+    E-->F[循环接收解码后的帧 avcodec_receive_frame]
+    F-->G[关闭解码器和释放上下文avcodec_close avcodec_free_context]</pre>
+
+<h1 id="FFmpeg组件注册方式"><a href="#FFmpeg组件注册方式" class="headerlink" title="FFmpeg组件注册方式"></a>FFmpeg组件注册方式</h1><h2 id="FFmpeg-3-x-组件注册方式"><a href="#FFmpeg-3-x-组件注册方式" class="headerlink" title="FFmpeg 3.x 组件注册方式"></a>FFmpeg 3.x 组件注册方式</h2><p>使用ffmpeg，首先要执行av_register_all，把全局的解码器、编码器等结构体注册到<strong>各自全局的对象链表里</strong>，以便后面查找调用。</p>
+<h2 id="FFmpeg-4-x-组件注册方式"><a href="#FFmpeg-4-x-组件注册方式" class="headerlink" title="FFmpeg 4.x 组件注册方式"></a>FFmpeg 4.x 组件注册方式</h2><p>FFmpeg内部去做，不需要用户调用API去注册。</p>
+<ul>
+<li>以codec编解码器为例：<ul>
+<li>在configure的时候生成要注册的组件</li>
+<li>.&#x2F;configure:7203:print_enabled_components libavcodec&#x2F;codec_list.c AVCodec codec_list $CODEC_LIST 这里会生成一个codec_list.c 文件，里面只有static const AVCodec * const codec_list[]数组。</li>
+<li>在libavcodec&#x2F;allcodecs.c将static const AVCodec * const codec_list[]的编解码器用链表的方式组织起来。</li>
+</ul>
+</li>
+</ul>
+<h1 id="FFmpeg数据结构"><a href="#FFmpeg数据结构" class="headerlink" title="FFmpeg数据结构"></a>FFmpeg数据结构</h1><h2 id="常见数据结构简介"><a href="#常见数据结构简介" class="headerlink" title="常见数据结构简介"></a>常见数据结构简介</h2><ul>
+<li><p>AVFormatContext：封装格式上下文结构体，也是统领全局的结构体，保存了视频文件封装格式相关信息。</p>
+</li>
+<li><p>AVInputFormat：demuxer，每种封装格式（例如FLV, MKV, MP4, AVI）对应一个该结构体。</p>
+</li>
+<li><p>AVOutputFormat：muxer。</p>
+</li>
+<li><p>AVStream：视频文件中每个视频（音频）流对应一个该结构体。</p>
+</li>
+<li><p>AVCodecContext：编解码器上下文结构体，保存了视频（音频）编解码相关信息。</p>
+</li>
+<li><p>AVCodec：每种视频（音频）编解码器(例如H.264解码器)对应一个该结构体。</p>
+</li>
+<li><p>AVPacket：存储一帧压缩编码数据。</p>
+</li>
+<li><p>AVFrame：存储一帧解码后像素（采样）数据。</p>
+</li>
+</ul>
+<h2 id="FFmpeg数据结构之间的关系"><a href="#FFmpeg数据结构之间的关系" class="headerlink" title="FFmpeg数据结构之间的关系"></a>FFmpeg数据结构之间的关系</h2><ul>
+<li><p>面向对象的思想，包含数据结构和方法的结构体。</p>
+</li>
+<li><p>AVFormatContext和AVInputFormat之间的关系</p>
+<ul>
+<li><p>AVFormatContext API用户调用，AVInputFormat 主要是FFMPEG内部调用。</p>
+</li>
+<li><p>AVFormatContext 封装格式上下文结构体——&gt;数据。</p>
+</li>
+<li><p>AVInputFormat 每种封装格式（例如FLV, MKV, MP4）——&gt;方法。</p>
+</li>
+</ul>
+</li>
+<li><p>AVCodecContext和AVCodec之间的关系</p>
+<ul>
+<li>AVCodecContext 编码器上下文结构体——&gt;数据。</li>
+<li>AVCodec 每种视频（音频）编解码器——&gt;方法。</li>
+</ul>
+</li>
+<li><p>AVFormatContext, AVStream和AVCodecContext之间的关系</p>
+<ul>
+<li>AVFormatContext 包含多种AVStream。</li>
+<li>AVStream包含AVCodecParameters，通过avformat_find_stream_info()查找相应流参数。</li>
+<li>通过avcodec_parameters_to_context()拷贝AVCodecParameters到AVCodecContext中。</li>
+</ul>
+</li>
+<li><p>AVPacket和AVFrame之间的关系</p>
+<ul>
+<li>AVPacket解码获得AVFrame。</li>
+<li>AVFrame编码获得AVPacket。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 

@@ -20,15 +20,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="SDP结构SDP 描述分为两部分，分别是会话级别的描述（session level）和媒体级别的描述（media level），其具体的组成可参考 RFC4566，带星号 (*) 的是可选的。常⻅的内容如下：  12345678910111213141516Session description（会话级别描述）         v&#x3D;  (protocol version)         o&#x3D;">
+    <meta name="description" content="SDP 结构SDP 描述分为两部分，分别是会话级别的描述（session level）和媒体级别的描述（media level），其具体的组成可参考 RFC 4566，带星号 (*) 的是可选的。常见的内容如下：  12345678910111213141516Session description（会话级别描述）         v&#x3D;  (protocol version)         o&#x3D;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SDP详解">
 <meta property="og:url" content="https://fang0407.github.io/2023/11/15/SDP%E8%AF%A6%E8%A7%A3/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="SDP结构SDP 描述分为两部分，分别是会话级别的描述（session level）和媒体级别的描述（media level），其具体的组成可参考 RFC4566，带星号 (*) 的是可选的。常⻅的内容如下：  12345678910111213141516Session description（会话级别描述）         v&#x3D;  (protocol version)         o&#x3D;">
+<meta property="og:description" content="SDP 结构SDP 描述分为两部分，分别是会话级别的描述（session level）和媒体级别的描述（media level），其具体的组成可参考 RFC 4566，带星号 (*) 的是可选的。常见的内容如下：  12345678910111213141516Session description（会话级别描述）         v&#x3D;  (protocol version)         o&#x3D;">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-11-15T13:39:49.000Z">
-<meta property="article:modified_time" content="2023-12-30T14:37:52.214Z">
+<meta property="article:modified_time" content="2024-01-11T08:22:07.473Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 
@@ -112,7 +112,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SDP%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">SDP结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SDP%E5%85%B3%E9%94%AE%E5%B1%9E%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">SDP关键属性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E7%BA%A7%E5%88%AB%E5%AD%97%E6%AE%B5"><span class="nav-number">2.1.</span> <span class="nav-text">会话级别字段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E7%89%88%E6%9C%AC%E5%8F%B7-version"><span class="nav-number">2.1.1.</span> <span class="nav-text">协议版本号(version)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E5%8F%91%E8%B5%B7%E8%80%85-origin"><span class="nav-number">2.1.2.</span> <span class="nav-text">会话发起者(origin)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E5%90%8D-session-name"><span class="nav-number">2.1.3.</span> <span class="nav-text">会话名(session name)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AA%92%E4%BD%93%E7%BA%A7%E5%88%AB%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.2.</span> <span class="nav-text">媒体级别描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#m"><span class="nav-number">2.2.1.</span> <span class="nav-text">m&#x3D;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E5%AA%92%E4%BD%93%E4%BF%A1%E6%81%AF"><span class="nav-number">2.2.2.</span> <span class="nav-text">音频媒体信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-mid"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">a&#x3D;mid</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#a-rtpmap"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">a&#x3D;rtpmap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#a-fmtp"><span class="nav-number">2.2.2.3.</span> <span class="nav-text">a&#x3D;fmtp</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E5%AA%92%E4%BD%93%E4%BF%A1%E6%81%AF"><span class="nav-number">2.2.3.</span> <span class="nav-text">视频媒体信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-rtpmap-1"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">a&#x3D;rtpmap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#a-fmtp-1"><span class="nav-number">2.2.3.2.</span> <span class="nav-text">a&#x3D;fmtp</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-ssrc"><span class="nav-number">2.2.4.</span> <span class="nav-text">a&#x3D;ssrc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PlanB%E4%B8%8EUnifiedPlan"><span class="nav-number">2.2.5.</span> <span class="nav-text">PlanB与UnifiedPlan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-sendrecv"><span class="nav-number">2.2.6.</span> <span class="nav-text">a&#x3D;sendrecv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-extmap"><span class="nav-number">2.2.7.</span> <span class="nav-text">a&#x3D;extmap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.3.</span> <span class="nav-text">网络描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE-connection-data"><span class="nav-number">2.3.1.</span> <span class="nav-text">连接数据(connection data)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-candidate"><span class="nav-number">2.3.2.</span> <span class="nav-text">a&#x3D;candidate</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ICE%E7%AD%96%E7%95%A5"><span class="nav-number">2.4.</span> <span class="nav-text">ICE策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DTLS"><span class="nav-number">2.5.</span> <span class="nav-text">DTLS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Qos%E3%80%81Grouping%E4%BC%A0%E8%BE%93%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.6.</span> <span class="nav-text">Qos、Grouping传输描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-rtcp-mux"><span class="nav-number">2.6.1.</span> <span class="nav-text">a&#x3D;rtcp-mux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-group-BUNDLE"><span class="nav-number">2.6.2.</span> <span class="nav-text">a&#x3D;group:BUNDLE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-rtcp-mux-1"><span class="nav-number">2.6.3.</span> <span class="nav-text">a&#x3D;rtcp-mux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-group-BUNDLE-1"><span class="nav-number">2.6.4.</span> <span class="nav-text">a&#x3D;group:BUNDLE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-rtcp-fb"><span class="nav-number">2.6.5.</span> <span class="nav-text">a&#x3D;rtcp-fb</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SDP-%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">SDP 结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SDP-%E5%85%B3%E9%94%AE%E5%B1%9E%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">SDP 关键属性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E7%BA%A7%E5%88%AB%E5%AD%97%E6%AE%B5"><span class="nav-number">2.1.</span> <span class="nav-text">会话级别字段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E7%89%88%E6%9C%AC%E5%8F%B7-version"><span class="nav-number">2.1.1.</span> <span class="nav-text">协议版本号(version)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E5%8F%91%E8%B5%B7%E8%80%85-origin"><span class="nav-number">2.1.2.</span> <span class="nav-text">会话发起者(origin)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E5%90%8D-session-name"><span class="nav-number">2.1.3.</span> <span class="nav-text">会话名(session name)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AA%92%E4%BD%93%E7%BA%A7%E5%88%AB%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.2.</span> <span class="nav-text">媒体级别描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#m"><span class="nav-number">2.2.1.</span> <span class="nav-text">m&#x3D;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E5%AA%92%E4%BD%93%E4%BF%A1%E6%81%AF"><span class="nav-number">2.2.2.</span> <span class="nav-text">音频媒体信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-mid"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">a&#x3D;mid</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#a-rtpmap"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">a&#x3D;rtpmap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#a-fmtp"><span class="nav-number">2.2.2.3.</span> <span class="nav-text">a&#x3D;fmtp</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E5%AA%92%E4%BD%93%E4%BF%A1%E6%81%AF"><span class="nav-number">2.2.3.</span> <span class="nav-text">视频媒体信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-rtpmap-1"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">a&#x3D;rtpmap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#a-fmtp-1"><span class="nav-number">2.2.3.2.</span> <span class="nav-text">a&#x3D;fmtp</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-ssrc"><span class="nav-number">2.2.4.</span> <span class="nav-text">a&#x3D;ssrc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PlanB-%E4%B8%8E-UnifiedPlan"><span class="nav-number">2.2.5.</span> <span class="nav-text">PlanB 与 UnifiedPlan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-sendrecv"><span class="nav-number">2.2.6.</span> <span class="nav-text">a&#x3D;sendrecv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-extmap"><span class="nav-number">2.2.7.</span> <span class="nav-text">a&#x3D;extmap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.3.</span> <span class="nav-text">网络描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE-connection-data"><span class="nav-number">2.3.1.</span> <span class="nav-text">连接数据(connection data)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-candidate"><span class="nav-number">2.3.2.</span> <span class="nav-text">a&#x3D;candidate</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ICE%E7%AD%96%E7%95%A5"><span class="nav-number">2.4.</span> <span class="nav-text">ICE策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DTLS"><span class="nav-number">2.5.</span> <span class="nav-text">DTLS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Qos%E3%80%81Grouping%E4%BC%A0%E8%BE%93%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.6.</span> <span class="nav-text">Qos、Grouping传输描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-rtcp-mux"><span class="nav-number">2.6.1.</span> <span class="nav-text">a&#x3D;rtcp-mux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-group-BUNDLE"><span class="nav-number">2.6.2.</span> <span class="nav-text">a&#x3D;group:BUNDLE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-rtcp-mux-1"><span class="nav-number">2.6.3.</span> <span class="nav-text">a&#x3D;rtcp-mux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-group-BUNDLE-1"><span class="nav-number">2.6.4.</span> <span class="nav-text">a&#x3D;group:BUNDLE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#a-rtcp-fb"><span class="nav-number">2.6.5.</span> <span class="nav-text">a&#x3D;rtcp-fb</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-count">74</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -133,6 +133,10 @@
           <a href="/categories/">
         <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
       </div>
   </nav>
 </div>
@@ -194,7 +198,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:37:52" itemprop="dateModified" datetime="2023-12-30T22:37:52+08:00">2023-12-30</time>
+      <time title="Modified: 2024-01-11 16:22:07" itemprop="dateModified" datetime="2024-01-11T16:22:07+08:00">2024-01-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -215,59 +219,59 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="SDP结构"><a href="#SDP结构" class="headerlink" title="SDP结构"></a>SDP结构</h1><p>SDP 描述分为两部分，分别是会话级别的描述（session level）和媒体级别的描述（media level），其具体的组成可参考 RFC4566，带星号 (*) 的是可选的。常⻅的内容如下： </p>
+    <div class="post-body" itemprop="articleBody"><h1 id="SDP-结构"><a href="#SDP-结构" class="headerlink" title="SDP 结构"></a>SDP 结构</h1><p>SDP 描述分为两部分，分别是会话级别的描述（session level）和媒体级别的描述（media level），其具体的组成可参考 RFC 4566，带星号 (*) 的是可选的。常见的内容如下： </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Session description（会话级别描述）</span><br><span class="line">         v=  (protocol version)</span><br><span class="line">         o=  (originator and session identifier)</span><br><span class="line">         s=  (session name)</span><br><span class="line">         c=* (connection information -- not required if included in all media)</span><br><span class="line">         One or more Time descriptions (&quot;t=&quot; and &quot;r=&quot; lines; see below)</span><br><span class="line">         a=* (zero or more session attribute lines)</span><br><span class="line">         Zero or more Media descriptions</span><br><span class="line"></span><br><span class="line">Time description （时间字段）</span><br><span class="line">         t=  (time the session is active)</span><br><span class="line"></span><br><span class="line">Media description（媒体级别描述）, if present</span><br><span class="line">         m=  (media name and transport address)</span><br><span class="line">         c=* (connection information -- optional if included at session level)</span><br><span class="line">         a=* (zero or more media attribute lines)</span><br></pre></td></tr></table></figure>
 
 <p>SDP Line 是顺序相关的，比如 <code>a=rtpmap:96</code> 后面的都是它相关的设置，直到下一行是 <code>a=rtpmap</code>或者其他属性。</p>
 <p>SDP Line 没有统⼀的 Schema 描述，也就是没有⼀个固定的规则能解析所有 Line，SDP Grammer只是描述了 SDP 相关的属性，具体每个属性的表达需要根据属性定义。</p>
-<p>SDP 解析时，每个 SDP Line 都是以key&#x3D;… 形式，解析出 key 是 a 后，可能有两种⽅式。 </p>
+<p>SDP 解析时，每个 SDP Line 都是以key&#x3D;… 形式，解析出 key 是 a 后，可能有两种方式。 </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a=&lt;attribute&gt;</span><br><span class="line">a=&lt;attribute&gt;:&lt;value&gt;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>⽐如 a&#x3D;rtcp-mux，key 为 a，attribute 为 rtcp-mux，没有 value。 </li>
-<li>⽐如 a&#x3D;rtpmap:96 VP8&#x2F;90000，key 为 a，attribute 为 rtpmap，value&#x3D;96 VP8&#x2F;90000。</li>
+<li>比如 a&#x3D;rtcp-mux，key 为 a，attribute 为 rtcp-mux，没有 value。 </li>
+<li>比如 a&#x3D;rtpmap:96 VP8&#x2F;90000，key 为 a，attribute 为 rtpmap，value&#x3D;96 VP8&#x2F;90000。</li>
 </ul>
-<h1 id="SDP关键属性"><a href="#SDP关键属性" class="headerlink" title="SDP关键属性"></a>SDP关键属性</h1><h2 id="会话级别字段"><a href="#会话级别字段" class="headerlink" title="会话级别字段"></a>会话级别字段</h2><p>会话级别的 SDP 描述字段包括：v、o、s、b、t。 </p>
+<h1 id="SDP-关键属性"><a href="#SDP-关键属性" class="headerlink" title="SDP 关键属性"></a>SDP 关键属性</h1><h2 id="会话级别字段"><a href="#会话级别字段" class="headerlink" title="会话级别字段"></a>会话级别字段</h2><p>会话级别的 SDP 描述字段包括：v、o、s、b、t。 </p>
 <h3 id="协议版本号-version"><a href="#协议版本号-version" class="headerlink" title="协议版本号(version)"></a>协议版本号(version)</h3><p>SDP 协议版本，值固定为 0。</p>
 <p><code>v=0</code>。</p>
 <h3 id="会话发起者-origin"><a href="#会话发起者-origin" class="headerlink" title="会话发起者(origin)"></a>会话发起者(origin)</h3><p>代表会话的发起者。</p>
 <p>格式：<code>o=&lt;username&gt;&lt;sess-id&gt;&lt;sess-version&gt;&lt;nettype&gt;&lt;addrtype&gt;&lt;unicast-address&gt; </code></p>
 <p>各字段含义如下： </p>
 <ul>
-<li><code>username</code>：发起者的⽤户名，不允许存在空格，如果应⽤不⽀持⽤户名，则为-。 </li>
-<li><code>sess-id</code>：会话id，由应⽤⾃⾏定义，规范的建议是NTP（Network Time Protocol）时间戳。 </li>
-<li><code>sess-version</code>：会话版本，⽤途由应⽤⾃⾏定义，只要会话数据发⽣变化时（⽐如编码），sess-version随着递增就⾏。同样的，规范的建议是NTP时间戳。 </li>
-<li><code>nettype</code>：⽹络类型，⽐如IN表示Internet。</li>
-<li><code>addrtype</code>：地址类型，⽐如IP4、IV6。</li>
-<li><code>unicast-address</code>：域名，或者IP地址。</li>
+<li><code>username</code>：发起者的用户名，不允许存在空格，如果应用不支持用户名，则为<code>-</code>。 </li>
+<li><code>sess-id</code>：会话 id，由应用⾃行定义，规范的建议是 NTP（Network Time Protocol）时间戳。 </li>
+<li><code>sess-version</code>：会话版本，用途由应用⾃行定义，只要会话数据发生变化时（比如编码），sess-version 随着递增就行。同样的，规范的建议是 NTP 时间戳。 </li>
+<li><code>nettype</code>：网络类型，比如 IN 表示 Internet。</li>
+<li><code>addrtype</code>：地址类型，比如 IP4、IV6。</li>
+<li><code>unicast-address</code>：域名，或者 IP 地址。</li>
 </ul>
 <p>示例：<code>o=- 7298280855354507719 2 IN IP4 127.0.0.1 </code></p>
-<h3 id="会话名-session-name"><a href="#会话名-session-name" class="headerlink" title="会话名(session name)"></a>会话名(session name)</h3><p>会话的名称，每个 SDP 中有且仅能有一个 s 描述，其值不能为空。如果实在没有有意义的会话名，可以赋⼀个-。</p>
+<h3 id="会话名-session-name"><a href="#会话名-session-name" class="headerlink" title="会话名(session name)"></a>会话名(session name)</h3><p>会话的名称，每个 SDP 中有且仅能有一个 s 描述，其值不能为空。如果实在没有有意义的会话名，可以赋⼀个<code>-</code>。</p>
 <p>格式：<code>s=&lt;session name&gt; </code></p>
-<h2 id="媒体级别描述"><a href="#媒体级别描述" class="headerlink" title="媒体级别描述"></a>媒体级别描述</h2><h3 id="m"><a href="#m" class="headerlink" title="m&#x3D;"></a>m&#x3D;</h3><p>会话级别描述完成后，后面就是零到多个媒体级别描述，属于标准SDP中媒体描述的内容，同时也是SDP中最核心的内容。</p>
+<h2 id="媒体级别描述"><a href="#媒体级别描述" class="headerlink" title="媒体级别描述"></a>媒体级别描述</h2><h3 id="m"><a href="#m" class="headerlink" title="m&#x3D;"></a>m&#x3D;</h3><p>会话级别描述完成后，后面就是零到多个媒体级别描述，属于标准 SDP 中媒体描述的内容，同时也是 SDP 中最核心的内容。</p>
 <p>格式：<code>m=&lt;media&gt;&lt;port&gt;&lt;proto&gt;&lt;fmt&gt;...</code></p>
 <p>各字段含义如下： </p>
 <ul>
-<li><p><code>media</code>：媒体类型。包括 video、audio、text、application、message等。</p>
+<li><p><code>media</code>：媒体类型。包括 video、audio、text、application、message 等。</p>
 </li>
-<li><p><code>port</code>：传输媒体流的端⼝。对于webrtc而言由于它不适用SDP中描述的网络信息，所以该端口号对它没任何意义。</p>
+<li><p><code>port</code>：传输媒体流的端口。对于 webrtc 而言由于它不适用 SDP 中描述的网络信息，所以该端口号对它没任何意义。</p>
 </li>
-<li><p><code>proto</code>：传输协议，具体含义取决于c&#x3D;中定义的地址类型，⽐如c&#x3D;是IP4，那么这⾥的传输协议运⾏在 IP4之上。⽐如：</p>
+<li><p><code>proto</code>：传输协议，具体含义取决于 c&#x3D; 中定义的地址类型，比如 c&#x3D; 是 IP4，那么这里的传输协议运行在 IP4 之上。比如：</p>
 <ul>
-<li><code>UDP</code>：传输层协议是UDP。</li>
-<li><code>RTP/AVP</code>：针对视频、⾳频的RTP协议，跑在UDP之上。</li>
-<li><code>RTP/SAVP</code>：针对视频、⾳频的SRTP协议，跑在UDP之上。</li>
-<li><code>RTP/AVPF</code>: 应⽤场景为视频&#x2F;⾳频的 RTP 协议，⽀持 RTCP-based Feedback。参考 RFC 4585。</li>
-<li><code>RTP/SAVPF</code>: 应⽤场景为视频&#x2F;⾳频的 SRTP 协议，⽀持 RTCP-based Feedback。参考 RFC 5124。</li>
+<li><code>UDP</code>：传输层协议是 UDP。</li>
+<li><code>RTP/AVP</code>：针对视频、音频的 RTP 协议，跑在 UDP之上。</li>
+<li><code>RTP/SAVP</code>：针对视频、音频的 SRTP 协议，跑在 UDP之上。</li>
+<li><code>RTP/AVPF</code>: 应用场景为视频&#x2F;音频的 RTP 协议，支持 RTCP-based Feedback。参考 RFC 4585。</li>
+<li><code>RTP/SAVPF</code>: 应用场景为视频&#x2F;音频的 SRTP 协议，支持 RTCP-based Feedback。参考 RFC 5124。</li>
 </ul>
 </li>
-<li><p><code>fmt</code>：媒体格式的描述，可能有多个。根据 proto 的不同，fmt 的含义也不同。⽐如 proto 为 RTP&#x2F;SAVP 时，fmt 表示 RTP payload 的类型。如果有多个，表示在这次会话中，多种payload类 型可能会⽤到，且第⼀个为默认的payload类型。后面会跟着 rtpmap、rtcp-fb、fmtp 这些属性来做进一步的详细的描述。</p>
+<li><p><code>fmt</code>：媒体格式的描述，可能有多个。根据 proto 的不同，fmt 的含义也不同。比如 proto 为 RTP&#x2F;SAVP 时，fmt 表示 RTP payload 的类型。如果有多个，表示在这次会话中，多种 payload 类型可能会用到，且第⼀个为默认的 payload 类型。后面会跟着 rtpmap、rtcp-fb、fmtp 这些属性来做进一步的详细的描述。</p>
 </li>
 </ul>
-<p>对于 RTP&#x2F;SAVP，需要注意的是，payload type ⼜分两种类型：</p>
+<p>对于 RTP&#x2F;SAVP，需要注意的是，payload type 又分两种类型：</p>
 <ul>
 <li>静态类型</li>
-<li>动态类型：在a&#x3D;fmtp:⾥进⾏定义</li>
+<li>动态类型：在 a&#x3D;fmtp: 里进行定义</li>
 </ul>
 <p>示例：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 对于audio，111 是动态类型，表示opus/48000/2</span><br><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 126</span><br><span class="line">a=rtpmap:111 opus/48000/2</span><br><span class="line"></span><br><span class="line"># 对于video，122 是动态类型，表示H264/90000</span><br><span class="line">m=video</span><br><span class="line">9 UDP/TLS/RTP/SAVPF 122 102 100 101 124 120 123 119</span><br><span class="line">a=rtpmap:122 H264/90000</span><br></pre></td></tr></table></figure>
@@ -296,25 +300,25 @@
 <p>各字段说明：</p>
 <ul>
 <li><code>format</code>：类型，111。</li>
-<li><code>format specific parameters</code>：对于<code>minptime=10;useinbandfec=1</code>，意思以10ms长的音频为一帧并且数据是经FEC编码的。</li>
+<li><code>format specific parameters</code>：对于<code>minptime=10;useinbandfec=1</code>，意思以 10 ms 长的音频为一帧并且数据是经 FEC 编码的。</li>
 </ul>
 <h3 id="视频媒体信息"><a href="#视频媒体信息" class="headerlink" title="视频媒体信息"></a>视频媒体信息</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36</span><br><span class="line">...</span><br><span class="line">a=mid:1</span><br><span class="line">...</span><br><span class="line">a=rtpmap:96 VP8/90000</span><br><span class="line">...</span><br><span class="line">a=rtpmap:97 rtx/90000</span><br><span class="line">a=fmtp:97 apt=96</span><br><span class="line">a=rtpmap:98 VP9/90000</span><br><span class="line">a=fmtp:98 profile-id=0</span><br><span class="line">...</span><br><span class="line">a=rtpmap:99 rtx/90000</span><br><span class="line">a=fmtp:99 apt=98</span><br><span class="line">a=rtpmap:100 VP9/90000</span><br><span class="line">...</span><br><span class="line">a=fmtp:100 profile-id=2</span><br><span class="line">a=rtpmap:101 rtx/90000</span><br><span class="line">a=fmtp:101 apt=100</span><br><span class="line">a=rtpmap:102 H264/90000</span><br><span class="line">...</span><br><span class="line">a=fmtp:102 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f</span><br><span class="line">a=rtpmap:121 rtx/90000</span><br><span class="line">a=fmtp:121 apt=102</span><br><span class="line">a=rtpmap:127 H264/90000</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<h4 id="a-rtpmap-1"><a href="#a-rtpmap-1" class="headerlink" title="a&#x3D;rtpmap"></a>a&#x3D;rtpmap</h4><p><code>a=rtpmap:96 VP8/90000</code>；payload值为96表示媒体数据使用的编码器是VP8，其时钟频率为90000。又因为其排在m&#x3D;列表的第一位所以它是视频的默认编码器。</p>
-<p><code>a=rtpmap:97 rtx/90000</code>；payload值为97，rtx表示不再是编码器而是丢包重传，其要结合第8行代码<code>a=fmtp:97 apt=96</code>一起看。apt的值为96表示96与97是关联在一起的。所以整体含义是：当webrtc使用媒体类型是96时如果出现丢包需要重传，重传数据包类型为97。</p>
-<p><code>a=rtpmap:114 red/90000</code>；red是一种在webrtc中使用的FEC（引入前向纠错）算法，用于防止丢包；red编码流程，默认情况下webrtc会将VP8&#x2F;H264等编码器编码后的数据再交由red模块编码，生成带一些冗余信息的数据包，这样当传输中某个包丢了，就可以通过其他包将其恢复回来，而不用重传丢失的包。</p>
+<h4 id="a-rtpmap-1"><a href="#a-rtpmap-1" class="headerlink" title="a&#x3D;rtpmap"></a>a&#x3D;rtpmap</h4><p><code>a=rtpmap:96 VP8/90000</code>；payload 值为 96 表示媒体数据使用的编码器是 VP8，其时钟频率为 90000。又因为其排在 m&#x3D; 列表的第一位所以它是视频的默认编码器。</p>
+<p><code>a=rtpmap:97 rtx/90000</code>；payload 值为 97，rtx 表示不再是编码器而是丢包重传，其要结合第 8 行代码 <code>a=fmtp:97 apt=96</code>一起看。apt 的值为 96 表示 96 与 97 是关联在一起的。所以整体含义是：当 webrtc 使用媒体类型是 96 时如果出现丢包需要重传，重传数据包类型为 97。</p>
+<p><code>a=rtpmap:114 red/90000</code>；red 是一种在 webrtc 中使用的 FEC（引入前向纠错）算法，用于防止丢包；red 编码流程，默认情况下 webrtc 会将 VP8&#x2F;H264 等编码器编码后的数据再交由 red 模块编码，生成带一些冗余信息的数据包，这样当传输中某个包丢了，就可以通过其他包将其恢复回来，而不用重传丢失的包。</p>
 <h4 id="a-fmtp-1"><a href="#a-fmtp-1" class="headerlink" title="a&#x3D;fmtp"></a>a&#x3D;fmtp</h4><p><code>a=fmtp:102 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f</code></p>
 <ul>
-<li><code>level-asymmetry-allowed=1</code>指明通信双方使用的H264Level是否要保持一致，0必须一致，1可以不一致。</li>
-<li><code>packetization-mode</code>指明经H264编码后的视频数据如何打包：0单包、1非交错包、2交错包。三种打包模式中，模式0和模式1用于低延迟的实时通信领域。模式0的含义是每个包就是一帧视频数据。模式1是可以将视频帧拆分成多个顺序的RTP包发送，接收端收到数据包后再按顺序将其还原。</li>
-<li><code>profile-level-id</code>由三部分组成，即profile_idc、profile_iop以及level_idc，每个组成占8位，因此可以推测出profile_idc&#x3D;64、profile_iop&#x3D;00、level-idc&#x3D;1f</li>
+<li><code>level-asymmetry-allowed=1</code>指明通信双方使用的 H264 Level 否要保持一致，0 必须一致，1 可以不一致。</li>
+<li><code>packetization-mode</code>指明经 H264 编码后的视频数据如何打包：0 单包、1 非交错包、2 交错包。三种打包模式中，模式 0 和模式 1 用于低延迟的实时通信领域。模式0的含义是每个包就是一帧视频数据。模式 1 是可以将视频帧拆分成多个顺序的 RTP 包发送，接收端收到数据包后再按顺序将其还原。</li>
+<li><code>profile-level-id</code>由三部分组成，即 profile_idc、profile_iop 以及 level_idc，每个组成占 8 位，因此可以推测出 profile_idc&#x3D;64、profile_iop&#x3D;00、level-idc&#x3D;1f。</li>
 </ul>
-<h3 id="a-ssrc"><a href="#a-ssrc" class="headerlink" title="a&#x3D;ssrc"></a>a&#x3D;ssrc</h3><p>SSRC是媒体源的唯一标识，每一路媒体流都有一个唯一的SSRC标识它。</p>
+<h3 id="a-ssrc"><a href="#a-ssrc" class="headerlink" title="a&#x3D;ssrc"></a>a&#x3D;ssrc</h3><p>SSRC 是媒体源的唯一标识，每一路媒体流都有一个唯一的 SSRC 标识它。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36 124 119 123 118 114 115 116</span><br><span class="line">...</span><br><span class="line">a=ssrc-group:FID 3004200836 146948263</span><br><span class="line">//视频流的SSRC</span><br><span class="line">a=ssrc:3004200836 cname:hO7txeyp3DC4HQ6j</span><br><span class="line">a=ssrc:3004200836 msid:- 30c268ef-b3d0-42d2-ba35-0c8cb207505f</span><br><span class="line">a=ssrc:3004200836 mslabel:-</span><br><span class="line">a=ssrc:3004200836 label:30c268ef-b3d0-42d2-ba35-0c8cb207505f</span><br><span class="line">//丢包重传的SSRC</span><br><span class="line">a=ssrc:146948263 cname:hO7txeyp3DC4HQ6j</span><br><span class="line">a=ssrc:146948263 msid:- 30c268ef-b3d0-42d2-ba35-0c8cb207505f</span><br><span class="line">a=ssrc:146948263 mslabel:-</span><br><span class="line">a=ssrc:146948263 label:30c268ef-b3d0-42d2-ba35-0c8cb207505f</span><br></pre></td></tr></table></figure>
 
-<p><code>a=ssrc-group:FID 3004200836 146948263</code>，描述了SSRC（146948263）是SSRC（3004200836）的重传流。也就说3004200836是真正代表视频的SSRC，而146948263是视频流3004200836丢包时使用的SSRC，也就是为什么在同一个视频描述中有两个SSRC。</p>
-<p><code>cnmae</code>（canonical name）通常称为别名，可以用在很多地方，其中用的最多是在域名解析中，你想为某个域名起别名时就可以使用它。在两个SSRC中跟着同样的SSRC说明这两个SSRC属于同一个媒体流。</p>
-<h3 id="PlanB与UnifiedPlan"><a href="#PlanB与UnifiedPlan" class="headerlink" title="PlanB与UnifiedPlan"></a>PlanB与UnifiedPlan</h3><p>PlanB：只有两个媒体描述，即音频媒体描述（m&#x3D;audio…）和视频媒体描述（m&#x3D;video…）。如果要传输多路视频，则他们在视频媒体描述中需要通过SSRC来区分。</p>
+<p><code>a=ssrc-group:FID 3004200836 146948263</code>，描述了 SSRC（146948263）是 SSRC（3004200836）的重传流。也就说 3004200836 是真正代表视频的 SSRC，而 146948263 是视频流 3004200836 丢包时使用的 SSRC，也就是为什么在同一个视频描述中有两个 SSRC。</p>
+<p><code>cnmae</code>（canonical name）通常称为别名，可以用在很多地方，其中用的最多是在域名解析中，你想为某个域名起别名时就可以使用它。在两个 SSRC 中跟着同样的 SSRC 说明这两个 SSRC 属于同一个媒体流。</p>
+<h3 id="PlanB-与-UnifiedPlan"><a href="#PlanB-与-UnifiedPlan" class="headerlink" title="PlanB 与 UnifiedPlan"></a>PlanB 与 UnifiedPlan</h3><p>PlanB：只有两个媒体描述，即音频媒体描述（m&#x3D;audio…）和视频媒体描述（m&#x3D;video…）。如果要传输多路视频，则他们在视频媒体描述中需要通过 SSRC 来区分。</p>
 <p>示例：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">m=audio...</span><br><span class="line">a=ssrc:11223344</span><br><span class="line">...</span><br><span class="line">m=video ...</span><br><span class="line">...</span><br><span class="line">a=ssrc:22223333 cname:video1</span><br><span class="line">...</span><br><span class="line">a=ssrc:33334444 cname:video2</span><br></pre></td></tr></table></figure>
 
@@ -336,26 +340,26 @@
 <h3 id="连接数据-connection-data"><a href="#连接数据-connection-data" class="headerlink" title="连接数据(connection data)"></a>连接数据(connection data)</h3><p>携带了会话的连接信息，其实就是 IP 地址。</p>
 <p>SDP 的会话级别描述可以包含该字段，每一个媒体级别的描述也可以包含该字段，如果会话级别和媒体级别都有 c line，那么以媒体级别的 c line 为准。因为 WebRTC 使用 ICE candidate 交换地址信息，所以不会用到 c line，不过这并不代表 c line 没有用，在 SIP 视频会议场景中，c line 就必不可少了，文末会再次介绍该字段。</p>
 <p>格式：<code>c=&lt;nettype&gt;&lt;addrtype&gt;&lt;connection-address&gt; </code></p>
-<p>每个SDP⾄少需要包含⼀个会话级别的c&#x3D;字段，或者在每个媒体描述后⾯各包含⼀个c&#x3D;字段。（媒体描述后的c&#x3D;会覆盖会话级别的c&#x3D;）</p>
+<p>每个 SDP ⾄少需要包含⼀个会话级别的 c&#x3D; 字段，或者在每个媒体描述后⾯各包含⼀个 c&#x3D; 字段。（媒体描述后的 c&#x3D; 会覆盖会话级别的c&#x3D;）</p>
 <ul>
-<li><code>nettype</code>：⽹络类型，⽐如IN，表示 Internet。 </li>
-<li><code>addrtype</code>：地址类型，⽐如IP4、IP6。</li>
+<li><code>nettype</code>：网络类型，比如 IN，表示 Internet。 </li>
+<li><code>addrtype</code>：地址类型，比如 IP4、IP6。</li>
 <li><code>connection-address</code>：如果是⼴播，则为⼴播地址组；如果是单播，则为单播地址。</li>
 </ul>
 <p>示例：<code>c=IN IP4 224.2.36.42/127</code></p>
-<p>不过c&#x3D;字段通常在webrtc中不适用。</p>
+<p>不过 c&#x3D; 字段通常在 webrtc 中不适用。</p>
 <h3 id="a-candidate"><a href="#a-candidate" class="headerlink" title="a&#x3D;candidate"></a>a&#x3D;candidate</h3><p>格式：<code>a=candidate:&lt;foundation&gt; &lt;component-id&gt; &lt;transport&gt; &lt;priority&gt; &lt;conn-addr&gt; &lt;conn-port&gt; typ &lt;candidate-type&gt; [&lt;rel-addr&gt; &lt;rel-port&gt;]</code></p>
 <p>各字段说明：</p>
 <ul>
 <li><p><code>foundation</code>：一个字符串，用于唯一标识候选地址的基础。</p>
 </li>
-<li><p><code>component-id</code>：表示组件的ID，通常是1（对于RTP）或2（对于RTCP）。 </p>
+<li><p><code>component-id</code>：表示组件的 ID，通常是 1（对于RTP）或 2（对于RTCP）。 </p>
 </li>
 <li><p><code>transport</code>：传输协议。</p>
 </li>
-<li><p><code>priority</code>：表示优先级，用于确定首选候选地址，数值越⼤优先级越⾼。</p>
+<li><p><code>priority</code>：表示优先级，用于确定首选候选地址，数值越大优先级越高。</p>
 </li>
-<li><p><code>conn-addr</code>：候选地址的IP地址。</p>
+<li><p><code>conn-addr</code>：候选地址的 IP 地址。</p>
 </li>
 <li><p><code>conn-port</code>：候选地址的端口号。</p>
 </li>
@@ -363,20 +367,20 @@
 </li>
 <li><p><code>candidate-type</code>：表示候选地址的具体类型，例如 “typ host” 或 “typ srflx”。</p>
 </li>
-<li><p><code>rel-addr</code>和<code>rel-port</code>：可选项，用于指定相关地址和端口，通常在对称型NAT场景下使用。</p>
+<li><p><code>rel-addr</code>和<code>rel-port</code>：可选项，用于指定相关地址和端口，通常在对称型 NAT 场景下使用。</p>
 </li>
 </ul>
 <p>示例：</p>
 <p><code>a=candidate:1 1 UDP 2113937151 192.168.1.1 50000 typ host</code><br><code>a=candidate:2 1 UDP 1694498815 203.0.113.1 50000 typ srflx raddr 192.168.1.1 rport 50000</code></p>
-<p>这两个示例中，第一个是主机候选地址，第二个是服务器反射（STUN）候选地址。这些候选地址会在ICE过程中用于建立对等连接，尤其是在对抗NAT的情境下。</p>
+<p>这两个示例中，第一个是主机候选地址，第二个是服务器反射（STUN）候选地址。这些候选地址会在 ICE 过程中用于建立对等连接，尤其是在对抗 NAT 的情境下。</p>
 <p><strong>候选地址类型</strong>：</p>
 <ul>
-<li><code>host</code> 该 candidate 是⼀个真实的主机，参数中的地址和端⼝对应⼀个真实的主机地址。</li>
-<li><code>srflx</code>（server reflexive）该 candidate 是通过 Cone NAT （锥形NAT）反射的类型，参数中的地址和端⼝是端发送 Binding 请求到 STUN&#x2F;TURN server 经过 NAT 时，NAT 上分配的地址和端⼝。</li>
-<li><code>prflx</code>（peer reflexive）该 candidate 是通过 Symmetric NAT（对称NAT） 反射的类型，参数中的地址和端⼝是端发送 Binding 请求到 STUN&#x2F;TURN server 经过 NAT 时，NAT 上分配的地址和端⼝。</li>
-<li><code>relay</code> 该 candidate 是通过 TURN 服务中继的类型，参数中的地址和端⼝是 TURN 服务⽤于在两个对等点之间转发数据的地址和端⼝。</li>
+<li><code>host</code> 该 candidate 是⼀个真实的主机，参数中的地址和端口对应⼀个真实的主机地址。</li>
+<li><code>srflx</code>（server reflexive）该 candidate 是通过 Cone NAT （锥形NAT）反射的类型，参数中的地址和端口是端发送 Binding 请求到 STUN&#x2F;TURN server 经过 NAT 时，NAT 上分配的地址和端口。</li>
+<li><code>prflx</code>（peer reflexive）该 candidate 是通过 Symmetric NAT（对称NAT） 反射的类型，参数中的地址和端口是端发送 Binding 请求到 STUN&#x2F;TURN server 经过 NAT 时，NAT 上分配的地址和端口。</li>
+<li><code>relay</code> 该 candidate 是通过 TURN 服务中继的类型，参数中的地址和端口是 TURN 服务用于在两个对等点之间转发数据的地址和端口。</li>
 </ul>
-<p><code>a=end-of-candidates</code> 在 Trickle ICE 模式时，⽤于显示声明 candidate 信息的结束。</p>
+<p><code>a=end-of-candidates</code> 在 Trickle ICE 模式时，用于显示声明 candidate 信息的结束。</p>
 <h2 id="ICE策略"><a href="#ICE策略" class="headerlink" title="ICE策略"></a>ICE策略</h2><p>SDP 中和 ICE 相关的信息包括：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">a=ice-ufrag:kce9</span><br><span class="line">a=ice-pwd:M31WxfrwmrFvPws4+tPdbsCE</span><br><span class="line">a=ice-options:trickle</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 123 127 122 125 107 108 109 124</span><br><span class="line">a=ice-ufrag:kce9</span><br><span class="line">a=ice-pwd:M31WxfrwmrFvPws4+tPdbsCE</span><br><span class="line">a=ice-options:trickle</span><br></pre></td></tr></table></figure>
 
@@ -388,57 +392,57 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126B0:A2:B3:AB:0B:A3:44:22:B1:C8:69:52:ED:04:E8:5A:A4:C3:7A:A6:55:F3:BA:76:62:26:4B:F7:9F:DD:F1:BD</span><br><span class="line">a=setup:actpass</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 123 127 122 125 107 108 109 124</span><br><span class="line">a=fingerprint:sha-256 B0:A2:B3:AB:0B:A3:44:22:B1:C8:69:52:ED:04:E8:5A:A4:C3:7A:A6:55:F3:BA:76:62:26:4B:F7:9F:DD:F1:BD</span><br><span class="line">a=setup:actpass</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><code>a=fingerprint</code>：用于验证加密证书的有效性。当通信双方通过DTLS协议交换证书时，如何保障证书在网络交换的过程中没有被篡改？<ul>
+<li><code>a=fingerprint</code>：用于验证加密证书的有效性。当通信双方通过 DTLS 协议交换证书时，如何保障证书在网络交换的过程中没有被篡改？<ul>
 <li>各端会给各自的证书生成一个指纹。</li>
-<li>将指纹放到SDP中通过信令交换给对方。</li>
-<li>DTLS协议交换证书。</li>
+<li>将指纹放到 SDP 中通过信令交换给对方。</li>
+<li>DTLS 协议交换证书。</li>
 <li>将拿到的证书重新生成指纹。</li>
-<li>将生成的指纹与SDP中的指纹进行比较，如果两者一致，则说明证书在传输过程中没有被篡改可以使用，否则说明证书被篡改此时连接创建失败。</li>
+<li>将生成的指纹与 SDP 中的指纹进行比较，如果两者一致，则说明证书在传输过程中没有被篡改可以使用，否则说明证书被篡改此时连接创建失败。</li>
 </ul>
 </li>
-<li><code>a=setup:actpass</code>：决定DTLS协议时通信双方的角色。具体如下：<ul>
+<li><code>a=setup:actpass</code>：决定 DTLS 协议时通信双方的角色。具体如下：<ul>
 <li><code>active</code>：终端的角色为客户端。</li>
 <li><code>passive</code>：终端的角色为服务端。</li>
 <li><code>actpass</code>：终端既可以是客户端也可以是服务端。</li>
 </ul>
 </li>
-<li>最终的角色由另一端角色确定，一般第一个加入房间的终端默认为actpass，后来加入的终端为active。</li>
+<li>最终的角色由另一端角色确定，一般第一个加入房间的终端默认为 actpass，后来加入的终端为 active。</li>
 </ul>
-<h2 id="Qos、Grouping传输描述"><a href="#Qos、Grouping传输描述" class="headerlink" title="Qos、Grouping传输描述"></a>Qos、Grouping传输描述</h2><h3 id="a-rtcp-mux"><a href="#a-rtcp-mux" class="headerlink" title="a&#x3D;rtcp-mux"></a>a&#x3D;rtcp-mux</h3><p>传输时，可以复用媒体通道，一种是音频和视频的复用，一种是RTCP和RTP的复用。RTCP 和 RTP 复用，表示 Sender 使用一个传输通道（单一端口）发送 RTP 和 RTCP：</p>
+<h2 id="Qos、Grouping传输描述"><a href="#Qos、Grouping传输描述" class="headerlink" title="Qos、Grouping传输描述"></a>Qos、Grouping传输描述</h2><h3 id="a-rtcp-mux"><a href="#a-rtcp-mux" class="headerlink" title="a&#x3D;rtcp-mux"></a>a&#x3D;rtcp-mux</h3><p>传输时，可以复用媒体通道，一种是音频和视频的复用，一种是 RTCP 和 RTP 的复用。RTCP 和 RTP 复用，表示 Sender 使用一个传输通道（单一端口）发送 RTP 和 RTCP：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">a=rtcp-mux</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36 124 119 123 118 114 115 116</span><br><span class="line">a=rtcp-mux</span><br></pre></td></tr></table></figure>
 
 <p>此时，Receiver 必须准备好在 RTP 端口上接收 RTCP 数据，并需要预留一些资源，比如 RTCP 带宽。</p>
 <p>rtcp-mux 是与 RTC 传输相关的重要的 SDP 属性，关于它的 SDP 协商的原则如下：</p>
 <ul>
-<li>如果 Offer 携带 rtcp-mux 属性，并且 Answer ⽅希望复⽤ RTP 和 RTCP 到单⼀端⼝，那么 Answer 必须也要携带该rtcp-mux 属性。 </li>
-<li>如果 Offer 没有携带 rtcp-mux 属性，那么 Answer 也⼀定不能携带 rtcp-mux 属性，⽽且 Answer ⽅禁⽌ RTP 和 RTCP 复⽤单⼀端⼝。 </li>
-<li>rtcp-mux 的协商和使⽤必须是双向的。</li>
+<li>如果 Offer 携带 rtcp-mux 属性，并且 Answer 方希望复用 RTP 和 RTCP 到单⼀端口，那么 Answer 必须也要携带该rtcp-mux 属性。 </li>
+<li>如果 Offer 没有携带 rtcp-mux 属性，那么 Answer 也⼀定不能携带 rtcp-mux 属性，而且 Answer 方禁止 RTP 和 RTCP 复用单⼀端口。 </li>
+<li>rtcp-mux 的协商和使用必须是双向的。</li>
 </ul>
-<h3 id="a-group-BUNDLE"><a href="#a-group-BUNDLE" class="headerlink" title="a&#x3D;group:BUNDLE"></a>a&#x3D;group:BUNDLE</h3><p>BUNDLE 又将多路媒体流复用到同一端口进行传输，如下代表本次会话将对 mid 为 0 和 1的 M 描述进行复用传输。</p>
+<h3 id="a-group-BUNDLE"><a href="#a-group-BUNDLE" class="headerlink" title="a&#x3D;group:BUNDLE"></a>a&#x3D;group:BUNDLE</h3><p>BUNDLE 又将多路媒体流复用到同一端口进行传输，如下代表本次会话将对 mid 为 0 和 1 的 M 描述进行复用传输。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a=group:BUNDLE 0 1</span><br><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">a=mid:0</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36 124 119 123 118 114 115 116</span><br><span class="line">a=mid:1</span><br></pre></td></tr></table></figure>
 
-<h3 id="a-rtcp-mux-1"><a href="#a-rtcp-mux-1" class="headerlink" title="a&#x3D;rtcp-mux"></a>a&#x3D;rtcp-mux</h3><p>传输时，可以复用媒体通道，一种是音频和视频的复用，一种是RTCP和RTP的复用。RTCP 和 RTP 复用，表示 Sender 使用一个传输通道（单一端口）发送 RTP 和 RTCP：</p>
+<h3 id="a-rtcp-mux-1"><a href="#a-rtcp-mux-1" class="headerlink" title="a&#x3D;rtcp-mux"></a>a&#x3D;rtcp-mux</h3><p>传输时，可以复用媒体通道，一种是音频和视频的复用，一种是 RTCP 和 RTP 的复用。RTCP 和 RTP 复用，表示 Sender 使用一个传输通道（单一端口）发送 RTP 和 RTCP：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">a=rtcp-mux</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36 124 119 123 118 114 115 116</span><br><span class="line">a=rtcp-mux</span><br></pre></td></tr></table></figure>
 
 <p>此时，Receiver 必须准备好在 RTP 端口上接收 RTCP 数据，并需要预留一些资源，比如 RTCP 带宽。</p>
 <p>rtcp-mux 是与 RTC 传输相关的重要的 SDP 属性，关于它的 SDP 协商的原则如下：</p>
 <ul>
-<li>如果 Offer 携带 rtcp-mux 属性，并且 Answer ⽅希望复⽤ RTP 和 RTCP 到单⼀端⼝，那么 Answer 必须也要携带该rtcp-mux 属性。 </li>
-<li>如果 Offer 没有携带 rtcp-mux 属性，那么 Answer 也⼀定不能携带 rtcp-mux 属性，⽽且 Answer ⽅禁⽌ RTP 和 RTCP 复⽤单⼀端⼝。 </li>
-<li>rtcp-mux 的协商和使⽤必须是双向的。</li>
+<li>如果 Offer 携带 rtcp-mux 属性，并且 Answer 方希望复用 RTP 和 RTCP 到单⼀端口，那么 Answer 必须也要携带该 rtcp-mux 属性。 </li>
+<li>如果 Offer 没有携带 rtcp-mux 属性，那么 Answer 也⼀定不能携带 rtcp-mux 属性，而且 Answer 方禁止 RTP 和 RTCP 复用单⼀端口。 </li>
+<li>rtcp-mux 的协商和使用必须是双向的。</li>
 </ul>
 <h3 id="a-group-BUNDLE-1"><a href="#a-group-BUNDLE-1" class="headerlink" title="a&#x3D;group:BUNDLE"></a>a&#x3D;group:BUNDLE</h3><p>BUNDLE 又将多路媒体流复用到同一端口进行传输，如下代表本次会话将对 mid 为 0 和 1的 M 描述进行复用传输。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a=group:BUNDLE 0 1</span><br><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">a=mid:0</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36 124 119 123 118 114 115 116</span><br><span class="line">a=mid:1</span><br></pre></td></tr></table></figure>
 
-<h3 id="a-rtcp-fb"><a href="#a-rtcp-fb" class="headerlink" title="a&#x3D;rtcp-fb"></a>a&#x3D;rtcp-fb</h3><p>媒体描述中服务质量是由<code>a=rtcp-fb</code>描述的。rtcp-fb有两层含义</p>
+<h3 id="a-rtcp-fb"><a href="#a-rtcp-fb" class="headerlink" title="a&#x3D;rtcp-fb"></a>a&#x3D;rtcp-fb</h3><p>媒体描述中服务质量是由<code>a=rtcp-fb</code>描述的。rtcp-fb 有两层含义</p>
 <ul>
-<li>RTCP消息中专门反馈信息的消息。</li>
-<li>设置webrtc支持哪些rtcp feedback消息。</li>
+<li>RTCP 消息中专门反馈信息的消息。</li>
+<li>设置 webrtc 支持哪些 rtcp feedback 消息。</li>
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">...</span><br><span class="line">a=rtcp-fb:111 transport-cc</span><br><span class="line">...</span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36 124 119 123 118 114 115 116</span><br><span class="line">...</span><br><span class="line">a=rtcp-fb:96 goog-remb</span><br><span class="line">a=rtcp-fb:96 transport-cc</span><br><span class="line">a=rtcp-fb:96 ccm fir</span><br><span class="line">a=rtcp-fb:96 nack</span><br><span class="line">a=rtcp-fb:96 nack pli</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><p><code>a=rtcp-fb:111 transport-cc</code>：在使用 payload 类型为111的编解码器时，支持 transport-cc 类型的 rtcp feedback 报文，同时也说明 webrtc 在使用 opus 编解码器时开启了 transport-cc 拥塞控制算法。</p>
+<li><p><code>a=rtcp-fb:111 transport-cc</code>：在使用 payload 类型为 111 的编解码器时，支持 transport-cc 类型的 rtcp feedback 报文，同时也说明 webrtc 在使用 opus 编解码器时开启了 transport-cc 拥塞控制算法。</p>
 </li>
 <li><p><code>a=rtcp-fb:96 goog-remb</code>和<code>a=rtcp-fb:96 transport-cc</code>：webrtc 使用 VP8 编解码器时，既支持 Goog-REMB 的 RTCP 报文，也支持 transport-cc 的 RTCP 报文。</p>
 </li>
