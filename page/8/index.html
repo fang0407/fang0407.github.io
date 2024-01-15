@@ -188,7 +188,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-15 10:07:53" itemprop="dateModified" datetime="2024-01-15T10:07:53+08:00">2024-01-15</time>
+      <time title="Modified: 2024-01-15 10:42:42" itemprop="dateModified" datetime="2024-01-15T10:42:42+08:00">2024-01-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -255,12 +255,12 @@
     声音PCM数据--AAC编码器-->AAC帧
     AAC帧--AAC解码器-->声音PCM数据</pre>
 
-<h1 id="FFmpeg库简介"><a href="#FFmpeg库简介" class="headerlink" title="FFmpeg库简介"></a>FFmpeg库简介</h1><h2 id="FFmpeg的整体结构"><a href="#FFmpeg的整体结构" class="headerlink" title="FFmpeg的整体结构"></a>FFmpeg的整体结构</h2><ul>
+<h1 id="FFmpeg-库简介"><a href="#FFmpeg-库简介" class="headerlink" title="FFmpeg 库简介"></a>FFmpeg 库简介</h1><h2 id="FFmpeg-的整体结构"><a href="#FFmpeg-的整体结构" class="headerlink" title="FFmpeg 的整体结构"></a>FFmpeg 的整体结构</h2><ul>
 <li>二进制程序：ffplay，ffprobe，ffmpeg</li>
 <li>ffmpeg库：libavutil，libavformat，libavcodec，libswscale，libswresample，libavfilter，libpostproc</li>
 <li>第三方编解码插件：fdk-aac，voaac_enc，x264</li>
 </ul>
-<h2 id="FFmpeg常用库"><a href="#FFmpeg常用库" class="headerlink" title="FFmpeg常用库"></a>FFmpeg常用库</h2><ul>
+<h2 id="FFmpeg-常用库"><a href="#FFmpeg-常用库" class="headerlink" title="FFmpeg 常用库"></a>FFmpeg 常用库</h2><ul>
 <li><p>AVUtil：核心工具库，下面的许多其他模块都会依赖该库做一些基本的音视频处理操作。</p>
 </li>
 <li><p>AVFormat：文件格式和协议库，该模块是最重要的模块之一，封装了 Protocol层 和 Demuxer、Muxer 层，使得协议和格式对于开发者来说是透明的。</p>
@@ -278,7 +278,7 @@
 <li><p>PostProc：该模块可用于进行后期处理，当我们使用 AVFilter 的时候需要打开该模块的开关，因为 Filter 中会使用到该模块的一些基础函数。</p>
 </li>
 </ul>
-<h1 id="FFmpeg函数简介"><a href="#FFmpeg函数简介" class="headerlink" title="FFmpeg函数简介"></a>FFmpeg函数简介</h1><h2 id="封装格式函数"><a href="#封装格式函数" class="headerlink" title="封装格式函数"></a>封装格式函数</h2><ul>
+<h1 id="FFmpeg-函数简介"><a href="#FFmpeg-函数简介" class="headerlink" title="FFmpeg 函数简介"></a>FFmpeg 函数简介</h1><h2 id="封装格式函数"><a href="#封装格式函数" class="headerlink" title="封装格式函数"></a>封装格式函数</h2><ul>
 <li>avformat_alloc_context()：负责申请一个 AVFormatContext 结构的内存，并进行简单初始化。</li>
 <li>avformat_free_context()：释放该结构里的所有东西以及该结构本身。</li>
 <li>avformat_open_input()；打开输入视频文件。</li>
@@ -315,7 +315,7 @@
     E-->F[循环接收解码后的帧 avcodec_receive_frame]
     F-->G[关闭解码器和释放上下文avcodec_close avcodec_free_context]</pre>
 
-<h1 id="FFmpeg组件注册方式"><a href="#FFmpeg组件注册方式" class="headerlink" title="FFmpeg组件注册方式"></a>FFmpeg组件注册方式</h1><h2 id="FFmpeg-3-x-组件注册方式"><a href="#FFmpeg-3-x-组件注册方式" class="headerlink" title="FFmpeg 3.x 组件注册方式"></a>FFmpeg 3.x 组件注册方式</h2><p>使用 ffmpeg，首先要执行 av_register_all，把全局的解码器、编码器等结构体注册到<strong>各自全局的对象链表里</strong>，以便后面查找调用。</p>
+<h1 id="FFmpeg-组件注册方式"><a href="#FFmpeg-组件注册方式" class="headerlink" title="FFmpeg 组件注册方式"></a>FFmpeg 组件注册方式</h1><h2 id="FFmpeg-3-x-组件注册方式"><a href="#FFmpeg-3-x-组件注册方式" class="headerlink" title="FFmpeg 3.x 组件注册方式"></a>FFmpeg 3.x 组件注册方式</h2><p>使用 ffmpeg，首先要执行 av_register_all，把全局的解码器、编码器等结构体注册到<strong>各自全局的对象链表里</strong>，以便后面查找调用。</p>
 <h2 id="FFmpeg-4-x-组件注册方式"><a href="#FFmpeg-4-x-组件注册方式" class="headerlink" title="FFmpeg 4.x 组件注册方式"></a>FFmpeg 4.x 组件注册方式</h2><p>FFmpeg内部去做，不需要用户调用API去注册。</p>
 <ul>
 <li>以codec编解码器为例：<ul>
@@ -325,7 +325,7 @@
 </ul>
 </li>
 </ul>
-<h1 id="FFmpeg数据结构"><a href="#FFmpeg数据结构" class="headerlink" title="FFmpeg数据结构"></a>FFmpeg数据结构</h1><h2 id="常见数据结构简介"><a href="#常见数据结构简介" class="headerlink" title="常见数据结构简介"></a>常见数据结构简介</h2><ul>
+<h1 id="FFmpeg-数据结构"><a href="#FFmpeg-数据结构" class="headerlink" title="FFmpeg 数据结构"></a>FFmpeg 数据结构</h1><h2 id="常见数据结构简介"><a href="#常见数据结构简介" class="headerlink" title="常见数据结构简介"></a>常见数据结构简介</h2><ul>
 <li><p>AVFormatContext：封装格式上下文结构体，也是统领全局的结构体，保存了视频文件封装格式相关信息。</p>
 </li>
 <li><p>AVInputFormat：demuxer，每种封装格式（例如 FLV, MKV, MP4, AVI）对应一个该结构体。</p>
@@ -343,7 +343,7 @@
 <li><p>AVFrame：存储一帧解码后像素（采样）数据。</p>
 </li>
 </ul>
-<h2 id="FFmpeg数据结构之间的关系"><a href="#FFmpeg数据结构之间的关系" class="headerlink" title="FFmpeg数据结构之间的关系"></a>FFmpeg数据结构之间的关系</h2><ul>
+<h2 id="FFmpeg-数据结构之间的关系"><a href="#FFmpeg-数据结构之间的关系" class="headerlink" title="FFmpeg 数据结构之间的关系"></a>FFmpeg 数据结构之间的关系</h2><ul>
 <li><p>面向对象的思想，包含数据结构和方法的结构体。</p>
 </li>
 <li><p>AVFormatContext 和 AVInputFormat 之间的关系</p>
@@ -362,14 +362,14 @@
 <li>AVCodec 每种视频（音频）编解码器——&gt;方法。</li>
 </ul>
 </li>
-<li><p>AVFormatContext, AVStream 和 AVCodecContext 之间的关系</p>
+<li><p>AVFormatContext，AVStream 和 AVCodecContext 之间的关系</p>
 <ul>
 <li>AVFormatContext 包含多种 AVStream。</li>
 <li>AVStream 包含 AVCodecParameters，通过 avformat_find_stream_info() 查找相应流参数。</li>
 <li>通过 avcodec_parameters_to_context() 拷贝 AVCodecParameters 到 AVCodecContext 中。</li>
 </ul>
 </li>
-<li><p>AVPacket和AVFrame之间的关系</p>
+<li><p>AVPacket 和 AVFrame 之间的关系</p>
 <ul>
 <li>AVPacket 解码获得 AVFrame。</li>
 <li>AVFrame 编码获得 AVPacket。</li>

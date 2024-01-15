@@ -20,15 +20,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="音视频解码流程FFmpeg API中音频和视频解码的流程基本一致。 音频解码过程：输入音频文件（AAC文件），通过音频解码器，输出PCM数据。 视频解码过程：输入视频文件（H264文件），通过视频解码器，输出像素数据（YUV420等）。 流程图graph TB     S(开始)--&gt;A     A[查找指定解码器 avcodec_find_decoder]--&gt;B[根据解码器ID初始化裸流解析器">
+    <meta name="description" content="音视频解码流程FFmpeg API 中音频和视频解码的流程基本一致。 音频解码过程：输入音频文件（AAC 文件），通过音频解码器，输出 PCM 数据。 视频解码过程：输入视频文件（H264 文件），通过视频解码器，输出像素数据（YUV420 等）。 流程图graph TB     S(开始)--&gt;A     A[查找指定解码器 avcodec_find_decoder]--&gt;B[根据解码器ID初始">
 <meta property="og:type" content="article">
 <meta property="og:title" content="音视频解码">
 <meta property="og:url" content="https://fang0407.github.io/2023/08/30/%E9%9F%B3%E8%A7%86%E9%A2%91%E8%A7%A3%E7%A0%81/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="音视频解码流程FFmpeg API中音频和视频解码的流程基本一致。 音频解码过程：输入音频文件（AAC文件），通过音频解码器，输出PCM数据。 视频解码过程：输入视频文件（H264文件），通过视频解码器，输出像素数据（YUV420等）。 流程图graph TB     S(开始)--&gt;A     A[查找指定解码器 avcodec_find_decoder]--&gt;B[根据解码器ID初始化裸流解析器">
+<meta property="og:description" content="音视频解码流程FFmpeg API 中音频和视频解码的流程基本一致。 音频解码过程：输入音频文件（AAC 文件），通过音频解码器，输出 PCM 数据。 视频解码过程：输入视频文件（H264 文件），通过视频解码器，输出像素数据（YUV420 等）。 流程图graph TB     S(开始)--&gt;A     A[查找指定解码器 avcodec_find_decoder]--&gt;B[根据解码器ID初始">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-08-30T11:09:04.000Z">
-<meta property="article:modified_time" content="2023-12-30T14:41:35.262Z">
+<meta property="article:modified_time" content="2024-01-15T03:05:24.199Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 
@@ -194,7 +194,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:41:35" itemprop="dateModified" datetime="2023-12-30T22:41:35+08:00">2023-12-30</time>
+      <time title="Modified: 2024-01-15 11:05:24" itemprop="dateModified" datetime="2024-01-15T11:05:24+08:00">2024-01-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -215,9 +215,9 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="音视频解码流程"><a href="#音视频解码流程" class="headerlink" title="音视频解码流程"></a>音视频解码流程</h1><p>FFmpeg API中音频和视频解码的流程基本一致。</p>
-<p>音频解码过程：输入音频文件（AAC文件），通过音频解码器，输出PCM数据。</p>
-<p>视频解码过程：输入视频文件（H264文件），通过视频解码器，输出像素数据（YUV420等）。</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="音视频解码流程"><a href="#音视频解码流程" class="headerlink" title="音视频解码流程"></a>音视频解码流程</h1><p>FFmpeg API 中音频和视频解码的流程基本一致。</p>
+<p>音频解码过程：输入音频文件（AAC 文件），通过音频解码器，输出 PCM 数据。</p>
+<p>视频解码过程：输入视频文件（H264 文件），通过视频解码器，输出像素数据（YUV420 等）。</p>
 <h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><pre class="mermaid">graph TB
     S(开始)-->A
     A[查找指定解码器 avcodec_find_decoder]-->B[根据解码器ID初始化裸流解析器 av_parser_init]
@@ -235,20 +235,20 @@
     L-->M(结束)</pre>
 
 <h2 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h2><ul>
-<li>avcodec_find_decoder()：根据指定的AVCodecID查找解码器。 </li>
-<li>av_parser_init()：初始化AVCodecParserContext。 </li>
-<li>avcodec_alloc_context3()：为AVCodecContext分配内存，进行初始化。</li>
+<li>avcodec_find_decoder()：根据指定的 AVCodecID 查找解码器。 </li>
+<li>av_parser_init()：初始化 AVCodecParserContext。 </li>
+<li>avcodec_alloc_context3()：为 AVCodecContext 分配内存，进行初始化。</li>
 <li>avcodec_open2()：打开解码器。 </li>
-<li>av_parser_parse2()：解析获得⼀个Packet。 </li>
-<li>avcodec_send_packet()：将AVPacket压缩数据送给解码器。</li>
-<li>avcodec_receive_frame()：获取到解码后的AVFrame数据。</li>
-<li>av_get_bytes_per_sample(): 获取每个sample中的字节数。</li>
+<li>av_parser_parse2()：解析获得⼀个 Packet。 </li>
+<li>avcodec_send_packet()：将 AVPacket 压缩数据送给解码器。</li>
+<li>avcodec_receive_frame()：获取到解码后的 AVFrame 数据。</li>
+<li>av_get_bytes_per_sample(): 获取每个 sample 中的字节数。</li>
 </ul>
 <h2 id="相关数据结构"><a href="#相关数据结构" class="headerlink" title="相关数据结构"></a>相关数据结构</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//aac解析器</span></span><br><span class="line">AVCodecParser ff_aac_parser = &#123;</span><br><span class="line">	.codec_ids = &#123; AV_CODEC_ID_AAC &#125;,</span><br><span class="line">	.priv_data_size = <span class="keyword">sizeof</span>(AACAC3ParseContext),</span><br><span class="line">	.parser_init = aac_parse_init,</span><br><span class="line">	.parser_parse = ff_aac_ac3_parse,</span><br><span class="line">	.parser_close = ff_parse_close,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//h264解析器</span></span><br><span class="line">AVCodecParser ff_h264_parser = &#123;</span><br><span class="line">    .codec_ids = &#123; AV_CODEC_ID_H264 &#125;, </span><br><span class="line">    .priv_data_size = <span class="keyword">sizeof</span>(H264ParseContext), </span><br><span class="line">    .parser_init = init, </span><br><span class="line">    .parser_parse = h264_parse, </span><br><span class="line">    .parser_close = h264_close, </span><br><span class="line">    .split = h264_split,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>AVCodecParser：⽤于解析输⼊的数据流并把它分成⼀帧⼀帧的压缩编码数据。</li>
-<li>不同编码类型的parser是和CODE_ID进⾏绑定的，因此可以通过CODE_ID查找到对应的码流 parser。</li>
+<li>不同编码类型的 parser 是和 CODE_ID 进⾏绑定的，因此可以通过 CODE_ID 查找到对应的码流 parser。</li>
 </ul>
 <h1 id="音视频解码函数"><a href="#音视频解码函数" class="headerlink" title="音视频解码函数"></a>音视频解码函数</h1><p>FFmpeg提供了两组函数，分别⽤于编码和解码： </p>
 <ul>
@@ -267,26 +267,26 @@
 <li>avctx：解码上下⽂。</li>
 <li>avpkt：<ul>
 <li>输⼊AVPakcet，通常情况下，<strong>输⼊数据是⼀个单⼀的视频帧或者⼏个完整的⾳频帧</strong>。调⽤者保留包的原有属性，解码器不会修改包的内容。</li>
-<li>解码器可能创建对包的引⽤。<strong>如果包没有引⽤计数将拷⻉⼀份</strong>。跟以往的API不⼀样，输⼊的包的数据将被完全地消耗，如果包含有多个帧，要求多次调⽤avcodec_recvive_frame()，直到avcodec_recvive_frame()返回AVERROR(EAGAIN)或AVERROR_EOF。</li>
-<li>输⼊参数可以为NULL，或者AVPacket的data域设置为NULL或者size域设置为0，表示将刷新所有的包，意味着数据流已经结束了。第⼀次发送刷新会总会成功，第⼆次发送刷新包是没有必要的，并且返回AVERROR_EOF，如果解码器缓存了⼀些帧，返回⼀个刷新包，将会返回所有的解码包。</li>
+<li>解码器可能创建对包的引⽤。<strong>如果包没有引⽤计数将拷⻉⼀份</strong>。跟以往的API不⼀样，输⼊的包的数据将被完全地消耗，如果包含有多个帧，要求多次调⽤ avcodec_recvive_frame()，直到 avcodec_recvive_frame() 返回 AVERROR(EAGAIN) 或AVERROR_EOF。</li>
+<li>输⼊参数可以为 NULL，或者 AVPacket 的 data 域设置为 NULL 或者 size 域设置为 0，表示将刷新所有的包，意味着数据流已经结束了。第⼀次发送刷新会总会成功，第⼆次发送刷新包是没有必要的，并且返回 AVERROR_EOF，如果解码器缓存了⼀些帧，返回⼀个刷新包，将会返回所有的解码包。</li>
 </ul>
 </li>
 </ul>
 <p><strong>返回值</strong></p>
 <ul>
 <li>0: 表示成功。</li>
-<li>AVERROR(EAGAIN)：当前状态不接受输⼊，⽤户必须先使⽤avcodec_receive_frame() 读取数据帧。</li>
+<li>AVERROR(EAGAIN)：当前状态不接受输⼊，⽤户必须先使⽤ avcodec_receive_frame() 读取数据帧。</li>
 <li>AVERROR_EOF：解码器已刷新，不能再向其发送新包。</li>
 <li>AVERROR(EINVAL)：没有打开解码器，或者这是⼀个编码器，或者要求刷新。</li>
 <li>AVERRO(ENOMEN)：⽆法将数据包添加到内部队列。</li>
 </ul>
 <p><strong>警告</strong></p>
 <ul>
-<li><p>输⼊的avpkt-data缓冲区必须⼤于AV_INPUT_PADDING_SIZE，因为优化的字节流读取器必须⼀次读取32或者64⽐特的数据。 </p>
+<li><p>输⼊的avpkt-data缓冲区必须⼤于 AV_INPUT_PADDING_SIZE，因为优化的字节流读取器必须⼀次读取 32 或者 64 ⽐特的数据。 </p>
 </li>
-<li><p>不能跟之前的API(例如avcodec_decode_video2)混⽤，否则会返回不可预知的错误。</p>
+<li><p>不能跟之前的 API(例如 avcodec_decode_video2)混⽤，否则会返回不可预知的错误。</p>
 </li>
-<li><p>在将包发送给解码器的时候，AVCodecContext必须已经通过avcodec_open2打开。</p>
+<li><p>在将包发送给解码器的时候，AVCodecContext 必须已经通过 avcodec_open2 打开。</p>
 </li>
 </ul>
 <h2 id="avcodec-receive-frame"><a href="#avcodec-receive-frame" class="headerlink" title="avcodec_receive_frame"></a>avcodec_receive_frame</h2><ul>
@@ -298,14 +298,14 @@
 <ul>
 <li><p>avctx：编解码器上下⽂。</p>
 </li>
-<li><p>frame：获取使⽤reference-counted机制的audio或者video帧（取决于解码器类型）。请注意，在执⾏其他操作之前，函数内部将始终先调⽤av_frame_unref(frame)。</p>
+<li><p>frame：获取使⽤ reference-counted 机制的 audio 或者 video 帧（取决于解码器类型）。请注意，在执⾏其他操作之前，函数内部将始终先调⽤ av_frame_unref(frame)。</p>
 </li>
 </ul>
 <p><strong>返回值</strong></p>
 <ul>
 <li><p>0：成功，返回⼀个帧。</p>
 </li>
-<li><p>AVERROR(EAGAIN)：该状态下没有帧输出，需要使⽤avcodec_send_packet发送新的packet到解码器。</p>
+<li><p>AVERROR(EAGAIN)：该状态下没有帧输出，需要使⽤ avcodec_send_packet 发送新的 packet 到解码器。</p>
 </li>
 <li><p>AVERROR_EOF：解码器已经被完全刷新，不再有输出帧。</p>
 </li>
