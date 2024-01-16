@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="FLV 格式简介FLV（Flash Video）是 Adobe 公司推出的一种流媒体格式，由于其封装后的音视频文件体积小、 封装简单等特点，非常适合于互联网上使用。目前主流的视频网站基本都支持 FLV。采用 FLV 格式封装的文件后缀为 .flv。  FLV 封装格式是由一个文件头（file header）和文件体（file Body）组成。其中，FLV body 由一对对的（Previous T">
+    <meta name="description" content="FLV格式简介FLV（Flash Video）是 Adobe 公司推出的一种流媒体格式，由于其封装后的音视频文件体积小、 封装简单等特点，非常适合于互联网上使用。目前主流的视频网站基本都支持 FLV。采用 FLV 格式封装的文件后缀为 .flv。  FLV 封装格式是由一个文件头（file header）和文件体（file Body）组成。其中，FLV body 由一对对的（Previous Ta">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FLV封装格式">
 <meta property="og:url" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="FLV 格式简介FLV（Flash Video）是 Adobe 公司推出的一种流媒体格式，由于其封装后的音视频文件体积小、 封装简单等特点，非常适合于互联网上使用。目前主流的视频网站基本都支持 FLV。采用 FLV 格式封装的文件后缀为 .flv。  FLV 封装格式是由一个文件头（file header）和文件体（file Body）组成。其中，FLV body 由一对对的（Previous T">
+<meta property="og:description" content="FLV格式简介FLV（Flash Video）是 Adobe 公司推出的一种流媒体格式，由于其封装后的音视频文件体积小、 封装简单等特点，非常适合于互联网上使用。目前主流的视频网站基本都支持 FLV。采用 FLV 格式封装的文件后缀为 .flv。  FLV 封装格式是由一个文件头（file header）和文件体（file Body）组成。其中，FLV body 由一对对的（Previous Ta">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV%E6%96%87%E4%BB%B6%E7%9A%84%E8%AF%A6%E7%BB%86%E5%86%85%E5%AE%B9%E7%BB%93%E6%9E%84.png">
@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-AVC_sequence_header.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-AVC_NALU.png">
 <meta property="article:published_time" content="2023-08-28T11:09:49.000Z">
-<meta property="article:modified_time" content="2024-01-08T08:08:05.531Z">
+<meta property="article:modified_time" content="2024-01-16T10:41:29.245Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84.png">
@@ -124,7 +124,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#FLV-%E6%A0%BC%E5%BC%8F%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">FLV 格式简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FLV-%E8%A7%A3%E6%9E%90%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">FLV 解析框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FLV-Header"><span class="nav-number">2.1.</span> <span class="nav-text">FLV Header</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FLV-Body"><span class="nav-number">2.2.</span> <span class="nav-text">FLV Body</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FLV-Tag"><span class="nav-number">2.2.1.</span> <span class="nav-text">FLV Tag</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Tag-Header"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">Tag Header</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Script-Tag-Data"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">Script Tag Data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Audio-Tag-Data"><span class="nav-number">2.2.1.3.</span> <span class="nav-text">Audio Tag Data</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AAC-AUDIO-DATA"><span class="nav-number">2.2.1.3.1.</span> <span class="nav-text">AAC AUDIO DATA</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Video-Tag-Data"><span class="nav-number">2.2.1.4.</span> <span class="nav-text">Video Tag Data</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AVC-VIDEO-PACKET"><span class="nav-number">2.2.1.4.1.</span> <span class="nav-text">AVC VIDEO PACKET</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#FLV%E6%A0%BC%E5%BC%8F%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">FLV格式简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FLV%E8%A7%A3%E6%9E%90%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">FLV解析框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FLV-Header"><span class="nav-number">2.1.</span> <span class="nav-text">FLV Header</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FLV-Body"><span class="nav-number">2.2.</span> <span class="nav-text">FLV Body</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FLV-Tag"><span class="nav-number">2.2.1.</span> <span class="nav-text">FLV Tag</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Tag-Header"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">Tag Header</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Script-Tag-Data"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">Script Tag Data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Audio-Tag-Data"><span class="nav-number">2.2.1.3.</span> <span class="nav-text">Audio Tag Data</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AAC-AUDIO-DATA"><span class="nav-number">2.2.1.3.1.</span> <span class="nav-text">AAC AUDIO DATA</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Video-Tag-Data"><span class="nav-number">2.2.1.4.</span> <span class="nav-text">Video Tag Data</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AVC-VIDEO-PACKET"><span class="nav-number">2.2.1.4.1.</span> <span class="nav-text">AVC VIDEO PACKET</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -206,7 +206,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-08 16:08:05" itemprop="dateModified" datetime="2024-01-08T16:08:05+08:00">2024-01-08</time>
+      <time title="Modified: 2024-01-16 18:41:29" itemprop="dateModified" datetime="2024-01-16T18:41:29+08:00">2024-01-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -227,7 +227,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="FLV-格式简介"><a href="#FLV-格式简介" class="headerlink" title="FLV 格式简介"></a>FLV 格式简介</h1><p>FLV（Flash Video）是 Adobe 公司推出的一种流媒体格式，由于其封装后的音视频文件体积小、 封装简单等特点，非常适合于互联网上使用。目前主流的视频网站基本都支持 FLV。采用 FLV 格式封装的文件后缀为 .flv。 </p>
+    <div class="post-body" itemprop="articleBody"><h1 id="FLV格式简介"><a href="#FLV格式简介" class="headerlink" title="FLV格式简介"></a>FLV格式简介</h1><p>FLV（Flash Video）是 Adobe 公司推出的一种流媒体格式，由于其封装后的音视频文件体积小、 封装简单等特点，非常适合于互联网上使用。目前主流的视频网站基本都支持 FLV。采用 FLV 格式封装的文件后缀为 .flv。 </p>
 <p>FLV 封装格式是由一个<strong>文件头</strong>（file header）和<strong>文件体</strong>（file Body）组成。其中，FLV body 由一对对的（<strong>Previous Tag Size 字段 + tag</strong>）组成。Previous Tag Size 字段排列在 Tag 之前，占用 4 个字节。Previous Tag Size 记录了前面一个 Tag 的大小，用于逆向读取处理。FLV header 后的第一个 Pervious Tag Size 的值为 0。 </p>
 <p>Tag 一般可以分为 3 种类型：脚本（帧）数据类型、音频数据类型、视频数据。FLV 数据以大端序进行存储，在解析时需要注意。一个标准 FLV 文件结构如下图： </p>
 <img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV文件结构.png" alt="FLV文件结构" style="zoom:50%;">
@@ -235,7 +235,7 @@
 <p>FLV 文件的详细内容结构如下图：</p>
 <img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV文件的详细内容结构.png" alt="FLV文件的详细内容结构" style="zoom:50%;">
 
-<h1 id="FLV-解析框架"><a href="#FLV-解析框架" class="headerlink" title="FLV 解析框架"></a>FLV 解析框架</h1><pre class="mermaid">graph TB
+<h1 id="FLV解析框架"><a href="#FLV解析框架" class="headerlink" title="FLV解析框架"></a>FLV解析框架</h1><pre class="mermaid">graph TB
     A(解析FLV)-->B[解析Header 9字节]
     A-->C[解析PreviousTagSize 4字节]
     A-->D[解析tag header 11字节]

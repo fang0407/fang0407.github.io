@@ -20,18 +20,18 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="AAC 音频格式Advanced Audio Coding（高级音频解码），是一种由 MPEG-4 标准定义的有损音频压缩格式，由 Fraunhofer 发展，Dolby, Sony 和AT&amp;T 是主 要的贡献者。   ADIF 的全称是 Audio Data Interchange Format 音频数据交换格式。这种格式的特征是可以确定的找到这个音频数据的开始，不能进行在音频数据流中间">
+    <meta name="description" content="AAC音频格式Advanced Audio Coding（高级音频解码），是一种由 MPEG-4 标准定义的有损音频压缩格式，由 Fraunhofer 发展，Dolby, Sony 和AT&amp;T 是主 要的贡献者。   ADIF 的全称是 Audio Data Interchange Format 音频数据交换格式。这种格式的特征是可以确定的找到这个音频数据的开始，不能进行在音频数据流中间开">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AAC编码">
 <meta property="og:url" content="https://fang0407.github.io/2023/08/26/AAC%E7%BC%96%E7%A0%81/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="AAC 音频格式Advanced Audio Coding（高级音频解码），是一种由 MPEG-4 标准定义的有损音频压缩格式，由 Fraunhofer 发展，Dolby, Sony 和AT&amp;T 是主 要的贡献者。   ADIF 的全称是 Audio Data Interchange Format 音频数据交换格式。这种格式的特征是可以确定的找到这个音频数据的开始，不能进行在音频数据流中间">
+<meta property="og:description" content="AAC音频格式Advanced Audio Coding（高级音频解码），是一种由 MPEG-4 标准定义的有损音频压缩格式，由 Fraunhofer 发展，Dolby, Sony 和AT&amp;T 是主 要的贡献者。   ADIF 的全称是 Audio Data Interchange Format 音频数据交换格式。这种格式的特征是可以确定的找到这个音频数据的开始，不能进行在音频数据流中间开">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/26/AAC%E7%BC%96%E7%A0%81/AAC%E7%9A%84ADIF%E6%A0%BC%E5%BC%8F.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/26/AAC%E7%BC%96%E7%A0%81/AAC%E7%9A%84ADTS%E7%9A%84%E4%B8%80%E8%88%AC%E6%A0%BC%E5%BC%8F.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/26/AAC%E7%BC%96%E7%A0%81/ADTS%E6%A0%BC%E5%BC%8F.png">
 <meta property="article:published_time" content="2023-08-26T10:00:09.000Z">
-<meta property="article:modified_time" content="2024-01-08T07:33:50.045Z">
+<meta property="article:modified_time" content="2024-01-16T10:41:08.967Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fang0407.github.io/2023/08/26/AAC%E7%BC%96%E7%A0%81/AAC%E7%9A%84ADIF%E6%A0%BC%E5%BC%8F.png">
@@ -116,7 +116,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#AAC-%E9%9F%B3%E9%A2%91%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">AAC 音频格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ADTS-%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">ADTS 格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BA%E5%AE%9A%E5%A4%B4%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.1.</span> <span class="nav-text">固定头信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E5%8F%98%E5%A4%B4%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.2.</span> <span class="nav-text">可变头信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.1.3.</span> <span class="nav-text">代码示例</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#AAC%E9%9F%B3%E9%A2%91%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">AAC音频格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ADTS%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">ADTS格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BA%E5%AE%9A%E5%A4%B4%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.1.</span> <span class="nav-text">固定头信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E5%8F%98%E5%A4%B4%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.2.</span> <span class="nav-text">可变头信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.1.3.</span> <span class="nav-text">代码示例</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -198,7 +198,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-08 15:33:50" itemprop="dateModified" datetime="2024-01-08T15:33:50+08:00">2024-01-08</time>
+      <time title="Modified: 2024-01-16 18:41:08" itemprop="dateModified" datetime="2024-01-16T18:41:08+08:00">2024-01-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -219,7 +219,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="AAC-音频格式"><a href="#AAC-音频格式" class="headerlink" title="AAC 音频格式"></a>AAC 音频格式</h1><p>Advanced Audio Coding（高级音频解码），是一种由 MPEG-4 标准定义的有损音频压缩格式，由 Fraunhofer 发展，Dolby, Sony 和AT&amp;T 是主 要的贡献者。 </p>
+    <div class="post-body" itemprop="articleBody"><h1 id="AAC音频格式"><a href="#AAC音频格式" class="headerlink" title="AAC音频格式"></a>AAC音频格式</h1><p>Advanced Audio Coding（高级音频解码），是一种由 MPEG-4 标准定义的有损音频压缩格式，由 Fraunhofer 发展，Dolby, Sony 和AT&amp;T 是主 要的贡献者。 </p>
 <ul>
 <li><p>ADIF 的全称是 Audio Data Interchange Format 音频数据交换格式。这种格式的特征是可以确定的找到这个音频数据的开始，<strong>不能进行在音频数据流中间开始的解码</strong>，即它的解码必须在明确定义的开始处进行。故这种格式常用在磁盘文件中。 </p>
 </li>
@@ -241,7 +241,7 @@
 <img src="/2023/08/26/AAC%E7%BC%96%E7%A0%81/AAC的ADTS的一般格式.png" alt="AAC的ADTS的一般格式" style="zoom:50%;">
 
 <p>有的时候当你编码 AAC 裸流的时候，会遇到写出来的 AAC 文件并不能在 PC 和手机上播放，很⼤的可能就是 AAC 文件的每一帧里缺少了  ADTS 头信息文件的包装拼接。只需要加入头文件 ADTS 即可。一个 AAC 原始数据块长度是可变的，对原始帧加上 ADTS 头进行 ADTS 的封装，就形成了 ADTS 帧。</p>
-<h2 id="ADTS-格式"><a href="#ADTS-格式" class="headerlink" title="ADTS 格式"></a>ADTS 格式</h2><p>AAC 音频文件的每一帧由 <strong>ADTS Header 和 AAC Audio Data</strong> 组成。结构体如下：</p>
+<h2 id="ADTS格式"><a href="#ADTS格式" class="headerlink" title="ADTS格式"></a>ADTS格式</h2><p>AAC 音频文件的每一帧由 <strong>ADTS Header 和 AAC Audio Data</strong> 组成。结构体如下：</p>
 <img src="/2023/08/26/AAC%E7%BC%96%E7%A0%81/ADTS格式.png" alt="ADTS格式" style="zoom:50%;">
 
 <p>每一帧的 ADTS 的头文件都包含了音频的采样率，声道，帧长度等信息，这样解码器才能解析读取。 </p>

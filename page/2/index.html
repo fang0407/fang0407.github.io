@@ -1033,7 +1033,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-12 09:40:19" itemprop="dateModified" datetime="2024-01-12T09:40:19+08:00">2024-01-12</time>
+      <time title="Modified: 2024-01-16 18:45:18" itemprop="dateModified" datetime="2024-01-16T18:45:18+08:00">2024-01-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1055,7 +1055,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="SDP-结构"><a href="#SDP-结构" class="headerlink" title="SDP 结构"></a>SDP 结构</h1><p>SDP 描述分为两部分，分别是会话级别的描述（session level）和媒体级别的描述（media level），其具体的组成可参考 RFC 4566，带星号 (*) 的是可选的。常见的内容如下： </p>
+          <h1 id="SDP结构"><a href="#SDP结构" class="headerlink" title="SDP结构"></a>SDP结构</h1><p>SDP 描述分为两部分，分别是会话级别的描述（session level）和媒体级别的描述（media level），其具体的组成可参考 RFC 4566，带星号 (*) 的是可选的。常见的内容如下： </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Session description（会话级别描述）</span><br><span class="line">         v=  (protocol version)</span><br><span class="line">         o=  (originator and session identifier)</span><br><span class="line">         s=  (session name)</span><br><span class="line">         c=* (connection information -- not required if included in all media)</span><br><span class="line">         One or more Time descriptions (&quot;t=&quot; and &quot;r=&quot; lines; see below)</span><br><span class="line">         a=* (zero or more session attribute lines)</span><br><span class="line">         Zero or more Media descriptions</span><br><span class="line"></span><br><span class="line">Time description （时间字段）</span><br><span class="line">         t=  (time the session is active)</span><br><span class="line"></span><br><span class="line">Media description（媒体级别描述）, if present</span><br><span class="line">         m=  (media name and transport address)</span><br><span class="line">         c=* (connection information -- optional if included at session level)</span><br><span class="line">         a=* (zero or more media attribute lines)</span><br></pre></td></tr></table></figure>
 
 <p>SDP Line 是顺序相关的，比如 <code>a=rtpmap:96</code> 后面的都是它相关的设置，直到下一行是 <code>a=rtpmap</code>或者其他属性。</p>
@@ -1067,7 +1067,7 @@
 <li>比如 a&#x3D;rtcp-mux，key 为 a，attribute 为 rtcp-mux，没有 value。 </li>
 <li>比如 a&#x3D;rtpmap:96 VP8&#x2F;90000，key 为 a，attribute 为 rtpmap，value&#x3D;96 VP8&#x2F;90000。</li>
 </ul>
-<h1 id="SDP-关键属性"><a href="#SDP-关键属性" class="headerlink" title="SDP 关键属性"></a>SDP 关键属性</h1><h2 id="会话级别字段"><a href="#会话级别字段" class="headerlink" title="会话级别字段"></a>会话级别字段</h2><p>会话级别的 SDP 描述字段包括：v、o、s、b、t。 </p>
+<h1 id="SDP关键属性"><a href="#SDP关键属性" class="headerlink" title="SDP关键属性"></a>SDP关键属性</h1><h2 id="会话级别字段"><a href="#会话级别字段" class="headerlink" title="会话级别字段"></a>会话级别字段</h2><p>会话级别的 SDP 描述字段包括：v、o、s、b、t。 </p>
 <h3 id="协议版本号-version"><a href="#协议版本号-version" class="headerlink" title="协议版本号(version)"></a>协议版本号(version)</h3><p>SDP 协议版本，值固定为 0。</p>
 <p><code>v=0</code>。</p>
 <h3 id="会话发起者-origin"><a href="#会话发起者-origin" class="headerlink" title="会话发起者(origin)"></a>会话发起者(origin)</h3><p>代表会话的发起者。</p>
@@ -1217,7 +1217,7 @@
 <li><code>relay</code> 该 candidate 是通过 TURN 服务中继的类型，参数中的地址和端口是 TURN 服务用于在两个对等点之间转发数据的地址和端口。</li>
 </ul>
 <p><code>a=end-of-candidates</code> 在 Trickle ICE 模式时，用于显示声明 candidate 信息的结束。</p>
-<h2 id="ICE-策略"><a href="#ICE-策略" class="headerlink" title="ICE 策略"></a>ICE 策略</h2><p>SDP 中和 ICE 相关的信息包括：</p>
+<h2 id="ICE策略"><a href="#ICE策略" class="headerlink" title="ICE策略"></a>ICE策略</h2><p>SDP 中和 ICE 相关的信息包括：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">a=ice-ufrag:kce9</span><br><span class="line">a=ice-pwd:M31WxfrwmrFvPws4+tPdbsCE</span><br><span class="line">a=ice-options:trickle</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 123 127 122 125 107 108 109 124</span><br><span class="line">a=ice-ufrag:kce9</span><br><span class="line">a=ice-pwd:M31WxfrwmrFvPws4+tPdbsCE</span><br><span class="line">a=ice-options:trickle</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -1244,7 +1244,7 @@
 </li>
 <li>最终的角色由另一端角色确定，一般第一个加入房间的终端默认为 actpass，后来加入的终端为 active。</li>
 </ul>
-<h2 id="Qos、Grouping-传输描述"><a href="#Qos、Grouping-传输描述" class="headerlink" title="Qos、Grouping 传输描述"></a>Qos、Grouping 传输描述</h2><h3 id="a-rtcp-mux"><a href="#a-rtcp-mux" class="headerlink" title="a&#x3D;rtcp-mux"></a>a&#x3D;rtcp-mux</h3><p>传输时，可以复用媒体通道，一种是音频和视频的复用，一种是 RTCP 和 RTP 的复用。RTCP 和 RTP 复用，表示 Sender 使用一个传输通道（单一端口）发送 RTP 和 RTCP：</p>
+<h2 id="Qos、Grouping传输描述"><a href="#Qos、Grouping传输描述" class="headerlink" title="Qos、Grouping传输描述"></a>Qos、Grouping传输描述</h2><h3 id="a-rtcp-mux"><a href="#a-rtcp-mux" class="headerlink" title="a&#x3D;rtcp-mux"></a>a&#x3D;rtcp-mux</h3><p>传输时，可以复用媒体通道，一种是音频和视频的复用，一种是 RTCP 和 RTP 的复用。RTCP 和 RTP 复用，表示 Sender 使用一个传输通道（单一端口）发送 RTP 和 RTCP：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">a=rtcp-mux</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36 124 119 123 118 114 115 116</span><br><span class="line">a=rtcp-mux</span><br></pre></td></tr></table></figure>
 
 <p>此时，Receiver 必须准备好在 RTP 端口上接收 RTCP 数据，并需要预留一些资源，比如 RTCP 带宽。</p>

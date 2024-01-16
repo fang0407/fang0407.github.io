@@ -20,18 +20,18 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="H264 介绍H264 从 1999 年开始，到 2003 年形成草案，最后在 2007 年定稿有待核实。在 ITU 的标准里称为 H264，在 MPEG 的标准里是 MPEG-4 的一个组成部分，称为 MPEG-4 Part 10，又叫 Advanced Video Codec，因此常常称为 MPEG-4 AVC 或直接叫 AVC。  问题：在音视频传输过程中，视频文件的传输是一个极大的问题；一">
+    <meta name="description" content="H264介绍H264 从 1999 年开始，到 2003 年形成草案，最后在 2007 年定稿有待核实。在 ITU 的标准里称为 H264，在 MPEG 的标准里是 MPEG-4 的一个组成部分，称为 MPEG-4 Part 10，又叫 Advanced Video Codec，因此常常称为 MPEG-4 AVC 或直接叫 AVC。  问题：在音视频传输过程中，视频文件的传输是一个极大的问题；一段">
 <meta property="og:type" content="article">
 <meta property="og:title" content="H264编码">
 <meta property="og:url" content="https://fang0407.github.io/2023/08/26/H264%E7%BC%96%E7%A0%81/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="H264 介绍H264 从 1999 年开始，到 2003 年形成草案，最后在 2007 年定稿有待核实。在 ITU 的标准里称为 H264，在 MPEG 的标准里是 MPEG-4 的一个组成部分，称为 MPEG-4 Part 10，又叫 Advanced Video Codec，因此常常称为 MPEG-4 AVC 或直接叫 AVC。  问题：在音视频传输过程中，视频文件的传输是一个极大的问题；一">
+<meta property="og:description" content="H264介绍H264 从 1999 年开始，到 2003 年形成草案，最后在 2007 年定稿有待核实。在 ITU 的标准里称为 H264，在 MPEG 的标准里是 MPEG-4 的一个组成部分，称为 MPEG-4 Part 10，又叫 Advanced Video Codec，因此常常称为 MPEG-4 AVC 或直接叫 AVC。  问题：在音视频传输过程中，视频文件的传输是一个极大的问题；一段">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/26/H264%E7%BC%96%E7%A0%81/H264%E6%B5%81.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/26/H264%E7%BC%96%E7%A0%81/H264%E7%BC%96%E7%A0%81%E7%BB%93%E6%9E%84.png">
 <meta property="og:image" content="https://fang0407.github.io/2023/08/26/H264%E7%BC%96%E7%A0%81/NALU%E7%BB%93%E6%9E%84.png">
 <meta property="article:published_time" content="2023-08-26T10:00:09.000Z">
-<meta property="article:modified_time" content="2024-01-09T06:21:12.169Z">
+<meta property="article:modified_time" content="2024-01-16T10:40:49.783Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fang0407.github.io/2023/08/26/H264%E7%BC%96%E7%A0%81/H264%E6%B5%81.png">
@@ -116,7 +116,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#H264-%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">H264 介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#H264-%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">H264 相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E5%88%97"><span class="nav-number">2.1.</span> <span class="nav-text">序列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A7%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">帧类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GOP-%E7%94%BB%E9%9D%A2%E7%BB%84"><span class="nav-number">2.3.</span> <span class="nav-text">GOP 画面组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDR-%E5%B8%A7"><span class="nav-number">2.4.</span> <span class="nav-text">IDR 帧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#H264-%E7%A0%81%E6%B5%81%E7%BB%93%E6%9E%84"><span class="nav-number">2.5.</span> <span class="nav-text">H264 码流结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#H264-%E7%9A%84-NAL-%E5%8D%95%E5%85%83"><span class="nav-number">3.</span> <span class="nav-text">H264 的 NAL 单元</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NALU-%E7%BB%93%E6%9E%84"><span class="nav-number">3.1.</span> <span class="nav-text">NALU 结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NAL-%E5%A4%B4%E7%9A%84%E7%BB%84%E6%88%90"><span class="nav-number">3.2.</span> <span class="nav-text">NAL 头的组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NALU-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.3.</span> <span class="nav-text">NALU 数据类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#H264-%E5%B0%81%E8%A3%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">H264 封装模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Annex-B-%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.1.</span> <span class="nav-text">Annex B 格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AVCC-%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.2.</span> <span class="nav-text">AVCC 格式</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#H264%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">H264介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#H264%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">H264相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E5%88%97"><span class="nav-number">2.1.</span> <span class="nav-text">序列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A7%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">帧类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GOP%E7%94%BB%E9%9D%A2%E7%BB%84"><span class="nav-number">2.3.</span> <span class="nav-text">GOP画面组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDR%E5%B8%A7"><span class="nav-number">2.4.</span> <span class="nav-text">IDR帧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#H264%E7%A0%81%E6%B5%81%E7%BB%93%E6%9E%84"><span class="nav-number">2.5.</span> <span class="nav-text">H264码流结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#H264%E7%9A%84NAL%E5%8D%95%E5%85%83"><span class="nav-number">3.</span> <span class="nav-text">H264的NAL单元</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NALU%E7%BB%93%E6%9E%84"><span class="nav-number">3.1.</span> <span class="nav-text">NALU结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NAL%E5%A4%B4%E7%9A%84%E7%BB%84%E6%88%90"><span class="nav-number">3.2.</span> <span class="nav-text">NAL头的组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NALU%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.3.</span> <span class="nav-text">NALU数据类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#H264%E5%B0%81%E8%A3%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">H264封装模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AnnexB%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.1.</span> <span class="nav-text">AnnexB格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AVCC%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.2.</span> <span class="nav-text">AVCC格式</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -198,7 +198,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-09 14:21:12" itemprop="dateModified" datetime="2024-01-09T14:21:12+08:00">2024-01-09</time>
+      <time title="Modified: 2024-01-16 18:40:49" itemprop="dateModified" datetime="2024-01-16T18:40:49+08:00">2024-01-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -219,9 +219,9 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="H264-介绍"><a href="#H264-介绍" class="headerlink" title="H264 介绍"></a>H264 介绍</h1><p>H264 从 1999 年开始，到 2003 年形成草案，最后在 2007 年定稿有待核实。在 ITU 的标准里称为 H264，在 MPEG 的标准里是 MPEG-4 的一个组成部分，称为 MPEG-4 Part 10，又叫 Advanced Video Codec，因此常常称为 MPEG-4 AVC 或直接叫 AVC。 </p>
+    <div class="post-body" itemprop="articleBody"><h1 id="H264介绍"><a href="#H264介绍" class="headerlink" title="H264介绍"></a>H264介绍</h1><p>H264 从 1999 年开始，到 2003 年形成草案，最后在 2007 年定稿有待核实。在 ITU 的标准里称为 H264，在 MPEG 的标准里是 MPEG-4 的一个组成部分，称为 MPEG-4 Part 10，又叫 Advanced Video Codec，因此常常称为 MPEG-4 AVC 或直接叫 AVC。 </p>
 <p><strong>问题</strong>：在音视频传输过程中，视频文件的传输是一个极大的问题；一段分辨率为 1920 * 1080，每个像素点为 RGB 占用 3 个字节，帧率是 25 的视频，对于传输带宽的要求是：1920 * 1080 * 3 * 25 &#x2F; 1024 &#x2F; 1024 &#x3D; 148.315MB&#x2F;s，换成 bps 则意味着视频每秒带宽为1186.523 Mbps，这样的速率对于网络存储是不可接受的。因此视频压缩和编码技术应运而生。对于视频文件来说，视频由单张图片帧所组成，比如每秒 25 帧，但是图片帧的像素块之间存在相似性，因此视频帧图像可以进行图像压缩；例如：H264 采用了 16 * 16 的分块大小对，视频帧图像进行相似比较和压缩编码。</p>
-<h1 id="H264-相关概念"><a href="#H264-相关概念" class="headerlink" title="H264 相关概念"></a>H264 相关概念</h1><h2 id="序列"><a href="#序列" class="headerlink" title="序列"></a>序列</h2><p>参照一段时间内相邻的图像中，像素、亮度与色温的差别很小。所以<strong>当面对一段时间内图像我们没必要去对每一幅图像进行完整一帧的编码</strong>，<strong>而是可以选取这段时间的第一帧图像作为完整编码</strong>，而下一幅图像可以记录与第一帧完整编码图像像素、亮度与色温等的差别即可，以此类推循环下去。</p>
+<h1 id="H264相关概念"><a href="#H264相关概念" class="headerlink" title="H264相关概念"></a>H264相关概念</h1><h2 id="序列"><a href="#序列" class="headerlink" title="序列"></a>序列</h2><p>参照一段时间内相邻的图像中，像素、亮度与色温的差别很小。所以<strong>当面对一段时间内图像我们没必要去对每一幅图像进行完整一帧的编码</strong>，<strong>而是可以选取这段时间的第一帧图像作为完整编码</strong>，而下一幅图像可以记录与第一帧完整编码图像像素、亮度与色温等的差别即可，以此类推循环下去。</p>
 <p><strong>上述的这段时间内图像变化不大的图像集我们就可以称之为一个序列</strong>。序列可以理解为有相同特点的一段数据。但是如果某个图像与之前的图像变换很大，很难参考之前的帧来生成新的帧，那么就结束删一个序列，开始下一段序列。重复上一序列的做法，生成新的一段序列。</p>
 <h2 id="帧类型"><a href="#帧类型" class="headerlink" title="帧类型"></a>帧类型</h2><p>H264 使用<strong>帧内压缩</strong>和<strong>帧间压缩</strong>的方式提高编码压缩率。</p>
 <p>H264 采用了独特的I帧、P帧和B帧策略来实现，连续帧之间的压缩。</p>
@@ -234,7 +234,7 @@
 </li>
 </ul>
 <p>注：I、B、P各帧是根据压缩算法的需要，是⼈为定义的，它们都是实实在在的物理帧。一般来说，I 帧的压缩率是 7（跟 JPG 差不多），P 帧是 20，B 帧可以达到 50。（ B 帧压缩率高，但是解码时 CPU 会比较累。）可见使用 B 帧能节省大量空间，节省出来的空间可以用来保存多一些I帧，这样在相同码率下，可以提供更好的画质。</p>
-<h2 id="GOP-画面组"><a href="#GOP-画面组" class="headerlink" title="GOP 画面组"></a>GOP 画面组</h2><ul>
+<h2 id="GOP画面组"><a href="#GOP画面组" class="headerlink" title="GOP画面组"></a>GOP画面组</h2><ul>
 <li><p>在视频编码序列中，GOP 即 （Group of Picture 图像组），指两个 I 帧之间的距离；Reference（参考周期）指两个 P 帧之间的距离。</p>
 </li>
 <li><p>一个 I 帧所占用的字节数大于一个 P 帧，一个 P 帧所占用的字节数大于一个 B 帧。</p>
@@ -248,7 +248,7 @@
 <li><p>另外，<strong>过长的 GOP 还会影响 Seek 操作的响应速度</strong>，由于 P、B 帧是由前面的 I 或 P 帧预测得到的，所以 Seek 操作需要直接定位，解码某一个 P 或 B 帧时，需要先解码得到本 GOP 内的 I 帧及之前的 N 个预测帧才可以，GOP 值越长，需要解码的预测帧就越多，Seek 响应的时间也越长。</p>
 </li>
 </ul>
-<h2 id="IDR-帧"><a href="#IDR-帧" class="headerlink" title="IDR 帧"></a>IDR 帧</h2><ul>
+<h2 id="IDR帧"><a href="#IDR帧" class="headerlink" title="IDR帧"></a>IDR帧</h2><ul>
 <li><p>一个序列的第一个图像叫做 IDR 图像（立即刷新图像），IDR 图像都是 I 帧图像。I 和 IDR 帧都使用帧内预测。</p>
 </li>
 <li><p>I 帧不用参考任何帧，但是<strong>之后的 P 帧和 B 帧是有可能参考这个 I 帧之前的帧的</strong>。<strong>IDR 就不允许这样</strong>。比如（解码的顺序）： </p>
@@ -262,7 +262,7 @@
 <li><p>其核心作用是，是为了解码的重同步，当解码器解码到 IDR 图像时，立即将参考帧队列清空，将已解码的数据全部输出或抛弃，重新查找参数集，开始一个新的序列。这样，如果前一个序列出现重大错误，在这里可以获得重新同步的机会。</p>
 </li>
 </ul>
-<h2 id="H264-码流结构"><a href="#H264-码流结构" class="headerlink" title="H264 码流结构"></a>H264 码流结构</h2><p>H264 码流是由一个个的 NAL 单元组成，其中 SPS、PPS、IDR 和 SLICE 是 NAL 单元某一类型的数据。</p>
+<h2 id="H264码流结构"><a href="#H264码流结构" class="headerlink" title="H264码流结构"></a>H264码流结构</h2><p>H264 码流是由一个个的 NAL 单元组成，其中 SPS、PPS、IDR 和 SLICE 是 NAL 单元某一类型的数据。</p>
 <img src="/2023/08/26/H264%E7%BC%96%E7%A0%81/H264流.png" alt="H264流" style="zoom:50%;">
 
 <p><strong>SPS</strong>：序列参数集，SPS 中保存了一组编码视频序列（Coded Video Sequence）的全局参数。 </p>
@@ -272,7 +272,7 @@
 <img src="/2023/08/26/H264%E7%BC%96%E7%A0%81/H264编码结构.png" alt="H264编码结构" style="zoom:50%;">
 
 <p>H264 将视频分为连续的帧进行传输，在连续的帧之间使用 I 帧、P 帧和 B 帧。同时对于帧内而言，将图像分块为片、宏块和字块进行分片传输；通过这个过程实现对视频文件的压缩包装。</p>
-<h1 id="H264-的-NAL-单元"><a href="#H264-的-NAL-单元" class="headerlink" title="H264 的 NAL 单元"></a>H264 的 NAL 单元</h1><p>H264 原始码流（裸流）是由一个接一个 NALU 组成，它的功能分为两层，VCL（视频编码层）和 NAL（网络提取层）：</p>
+<h1 id="H264的NAL单元"><a href="#H264的NAL单元" class="headerlink" title="H264的NAL单元"></a>H264的NAL单元</h1><p>H264 原始码流（裸流）是由一个接一个 NALU 组成，它的功能分为两层，VCL（视频编码层）和 NAL（网络提取层）：</p>
 <ul>
 <li><strong>NALU</strong>（NAL 单元）是 NAL 的最小封装单元，包含视频数据和起始码。</li>
 </ul>
@@ -280,11 +280,11 @@
 <li><strong>NAL</strong>（网络抽象层）是视频数据封装的层次结构，将视频数据按照特定格式进行分割和封装，形成一个个的 NAL 单元。</li>
 <li><strong>VCL</strong>（视频编码层）负责对视频数据进行压缩编码，通过各种技术减少冗余并实现高效压缩。 VCL 生成的数据被封装为 NALU，然后通过网络传输或存储。</li>
 </ul>
-<h2 id="NALU-结构"><a href="#NALU-结构" class="headerlink" title="NALU 结构"></a>NALU 结构</h2><p>NALU 结构单元的主体结构如下所示；一个原始的 H264 NALU 单元通常由 [<strong>StartCode</strong>] [<strong>NALU Header</strong>] [<strong>NALU Payload</strong>] 三部分组成，其中 Start Code 用于标示这是一个 NALU 单元的开始，必须是”00 00 00 01”或”00 00 01”，除此之外基本相当于一个 NAL header + RBSP（原始字节序列负荷）。</p>
+<h2 id="NALU结构"><a href="#NALU结构" class="headerlink" title="NALU结构"></a>NALU结构</h2><p>NALU 结构单元的主体结构如下所示；一个原始的 H264 NALU 单元通常由 [<strong>StartCode</strong>] [<strong>NALU Header</strong>] [<strong>NALU Payload</strong>] 三部分组成，其中 Start Code 用于标示这是一个 NALU 单元的开始，必须是”00 00 00 01”或”00 00 01”，除此之外基本相当于一个 NAL header + RBSP（原始字节序列负荷）。</p>
 <img src="/2023/08/26/H264%E7%BC%96%E7%A0%81/NALU结构.png" alt="NALU结构" style="zoom:50%;">
 
 <p>注：对于 FFmpeg 解复用后，MP4 文件读取出来的 packet 是不带 startcode，但 TS 文件读取出来的 packet 带了 startcode。</p>
-<h2 id="NAL-头的组成"><a href="#NAL-头的组成" class="headerlink" title="NAL 头的组成"></a>NAL 头的组成</h2><p>每个 NAL 单元是一个一定语法元素的可变长字节字符串，包括包含一个字节的头信息（用来表示数据类型），以及若干整数字节的负荷数据。 </p>
+<h2 id="NAL头的组成"><a href="#NAL头的组成" class="headerlink" title="NAL头的组成"></a>NAL头的组成</h2><p>每个 NAL 单元是一个一定语法元素的可变长字节字符串，包括包含一个字节的头信息（用来表示数据类型），以及若干整数字节的负荷数据。 </p>
 <p>一个通用的 NALU 头信息由以下部分组成：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|0|1|2|3|4|5|6|7|</span><br><span class="line">+-+-+-+-+-+-+-+-+</span><br><span class="line">|F|NRI|  Type   |</span><br><span class="line">+---------------+</span><br></pre></td></tr></table></figure>
 
@@ -302,7 +302,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="NALU-数据类型"><a href="#NALU-数据类型" class="headerlink" title="NALU 数据类型"></a>NALU 数据类型</h2><table>
+<h2 id="NALU数据类型"><a href="#NALU数据类型" class="headerlink" title="NALU数据类型"></a>NALU数据类型</h2><table>
 <thead>
 <tr>
 <th>nal_unit_type</th>
@@ -378,12 +378,12 @@
 <td>保留</td>
 </tr>
 </tbody></table>
-<h1 id="H264-封装模式"><a href="#H264-封装模式" class="headerlink" title="H264 封装模式"></a>H264 封装模式</h1><h2 id="Annex-B-格式"><a href="#Annex-B-格式" class="headerlink" title="Annex B 格式"></a>Annex B 格式</h2><ul>
+<h1 id="H264封装模式"><a href="#H264封装模式" class="headerlink" title="H264封装模式"></a>H264封装模式</h1><h2 id="AnnexB格式"><a href="#AnnexB格式" class="headerlink" title="AnnexB格式"></a>AnnexB格式</h2><ul>
 <li>这种格式常用于网络流媒体传输，比方说 RTP、RTSP、RTMP 等等。</li>
 <li>它拥有 StartCode（00 00 00 01&#x2F;00 00 01）作为分隔符，StartCode 的作用是防止竞争，当数据中出现 00 00 01，则会修改成 00 00 031。</li>
 <li>更重要的是，对于 AnnexB 的分隔符不代表 NALU 长度。</li>
 </ul>
-<h2 id="AVCC-格式"><a href="#AVCC-格式" class="headerlink" title="AVCC 格式"></a>AVCC 格式</h2><ul>
+<h2 id="AVCC格式"><a href="#AVCC格式" class="headerlink" title="AVCC格式"></a>AVCC格式</h2><ul>
 <li>这种格式的分隔符能表示 NALU 长度，并且不定长。这种方式也是防止竞争字节，这种格式的文件多用于 MP4 文件。</li>
 <li>SPS 和 PPS 以及其它信息被封装在 container 中<strong>，</strong>每一个 frame 前面4个字节是这个 frame 的长度。</li>
 <li>很多解码器只支持 Annex B 这种模式，因此需要将 mp4 做转换：在 FFmpeg 中用 h264_mp4toannexb_filter 可以做转换。</li>
