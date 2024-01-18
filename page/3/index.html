@@ -903,7 +903,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-18 09:35:23" itemprop="dateModified" datetime="2024-01-18T09:35:23+08:00">2024-01-18</time>
+      <time title="Modified: 2024-01-18 09:40:26" itemprop="dateModified" datetime="2024-01-18T09:40:26+08:00">2024-01-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -931,7 +931,7 @@
 <li>让我们在采样层面做操作，而不是更底层的字节层面。</li>
 <li>支持多种格式的单次采样，如支持 planar 或 packed 的采样格式，支持不同的通道数等等。</li>
 </ul>
-<p>相关API记录：</p>
+<p>相关 API 记录：</p>
 <h2 id="分配和释放"><a href="#分配和释放" class="headerlink" title="分配和释放"></a>分配和释放</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 分配一个AVAudioFifo。</span></span><br><span class="line"><span class="comment">// sample_fmt和channels指定单次采样的参数</span></span><br><span class="line"><span class="comment">// nb_samples则指定AVAudioFifo的缓冲区大小。</span></span><br><span class="line">AVAudioFifo *<span class="title function_">av_audio_fifo_alloc</span><span class="params">(<span class="keyword">enum</span> AVSampleFormat sample_fmt, <span class="type">int</span> channels,<span class="type">int</span> nb_samples)</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 重新分配缓冲区大小</span></span><br><span class="line"><span class="comment">// 成功返回0，失败返回负的错误值</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">av_audio_fifo_realloc</span><span class="params">(AVAudioFifo *af, <span class="type">int</span> nb_samples)</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 释放AVAudioFifo</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_audio_fifo_free</span><span class="params">(AVAudioFifo *af)</span>;</span><br></pre></td></tr></table></figure>
 
 <h2 id="读写"><a href="#读写" class="headerlink" title="读写"></a>读写</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将采样写入到AVAudioFifo</span></span><br><span class="line"><span class="comment">// 成功则返回实际写入的采样数（实际上如果写入成功，返回值必定等于nb_samples），失败返回负的错误值</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">av_audio_fifo_write</span><span class="params">(AVAudioFifo *af, <span class="type">void</span> **data, <span class="type">int</span> nb_samples)</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// peek：读取数据，但读到的数据并不会从fifo中删除</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">av_audio_fifo_peek</span><span class="params">(AVAudioFifo *af, <span class="type">void</span> **data, <span class="type">int</span> nb_samples)</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 从指定的偏移位置peek数据</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">av_audio_fifo_peek_at</span><span class="params">(AVAudioFifo *af, <span class="type">void</span> **data, <span class="type">int</span> nb_samples, <span class="type">int</span> offset)</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 读取数据，读到的数据会从fifo中删除</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">av_audio_fifo_read</span><span class="params">(AVAudioFifo *af, <span class="type">void</span> **data, <span class="type">int</span> nb_samples)</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 从fifo中删除nb_samples个采样</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">av_audio_fifo_drain</span><span class="params">(AVAudioFifo *af, <span class="type">int</span> nb_samples)</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 删除fifo中的所有采样，情空</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_audio_fifo_reset</span><span class="params">(AVAudioFifo *af)</span>;</span><br></pre></td></tr></table></figure>
@@ -944,7 +944,7 @@
 
 <h2 id="释放"><a href="#释放" class="headerlink" title="释放"></a>释放</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (swr_ctx)</span><br><span class="line">    swr_free(&amp;resampler-&gt;swr_ctx);</span><br><span class="line"><span class="keyword">if</span> (audio_fifo)</span><br><span class="line">    av_fifo_freep((AVFifoBuffer **)&amp;audio_fifo);</span><br><span class="line"><span class="keyword">if</span> (resampled_data)</span><br><span class="line">    av_freep(&amp;resampled_data[<span class="number">0</span>]);</span><br><span class="line">av_freep(&amp;resampled_data);</span><br></pre></td></tr></table></figure>
 
-<h2 id="重采样"><a href="#重采样" class="headerlink" title="重采样"></a>重采样</h2><p>输入和输出都为AVFrame，当输出的采样点数不满足是返回空。</p>
+<h2 id="重采样"><a href="#重采样" class="headerlink" title="重采样"></a>重采样</h2><p>输入和输出都为 AVFrame，当输出的采样点数不满足时返回空。</p>
 <h3 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* input nb_samples */</span></span><br><span class="line"><span class="type">int</span> src_nb_samples = frame-&gt;nb_samples;</span><br><span class="line"><span class="comment">/* input data buffer */</span></span><br><span class="line"><span class="type">uint8_t</span> **src_data = frame-&gt;extended_data;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* do resample output nb_samples */</span></span><br><span class="line"><span class="type">int</span> dst_nb_samples = av_rescale_rnd(swr_get_delay(swr_ctx, src_sample_rate) + src_nb_samples,</span><br><span class="line">                                    dst_sample_rate,</span><br><span class="line">                                    src_sample_rate,</span><br><span class="line">                                    AV_ROUND_UP);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* check resampled data size */</span></span><br><span class="line"><span class="keyword">if</span> (dst_nb_samples &gt; resampled_data_size)</span><br><span class="line">    realloc_resampled_data();</span><br><span class="line"></span><br><span class="line"><span class="comment">/* do resample */</span></span><br><span class="line"><span class="type">int</span> nb_samples = swr_convert(swr_ctx, </span><br><span class="line">                             resampled_data, </span><br><span class="line">                             dst_nb_samples,</span><br><span class="line">                             (<span class="type">const</span> <span class="type">uint8_t</span> **)src_data,</span><br><span class="line">                             src_nb_samples);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* write resampled data to audio fifo */</span></span><br><span class="line"><span class="type">int</span> ret_size = av_audio_fifo_write(audio_fifo, (<span class="type">void</span> **)resampled_data, nb_samples);</span><br></pre></td></tr></table></figure>
 
 <h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> ret_nb_samples = av_audio_fifo_size(audio_fifo);</span><br><span class="line"><span class="comment">/* check has enough samples */</span></span><br><span class="line"><span class="keyword">if</span> (need_nb_samples &gt; ret_nb_samples)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">AVFrame* frame = av_frame_alloc();</span><br><span class="line">frame-&gt;nb_samples = nb_samples;</span><br><span class="line">frame-&gt;channel_layout = dst_channel_layout;</span><br><span class="line">frame-&gt;format = dst_sample_fmt;</span><br><span class="line">av_frame_get_buffer(frame, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* read samples from audio fifo, before read must alloc frame, use av_frame_get_buffer */</span></span><br><span class="line">av_audio_fifo_read(audio_fifo, (<span class="type">void</span> **)frame-&gt;data, need_nb_samples);</span><br></pre></td></tr></table></figure>
@@ -1505,7 +1505,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-13 21:50:03" itemprop="dateModified" datetime="2024-01-13T21:50:03+08:00">2024-01-13</time>
+      <time title="Modified: 2024-01-18 13:48:18" itemprop="dateModified" datetime="2024-01-18T13:48:18+08:00">2024-01-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1527,30 +1527,30 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="WebRTC介绍"><a href="#WebRTC介绍" class="headerlink" title="WebRTC介绍"></a>WebRTC介绍</h1><p>WebRTC（Web Real­Time Communication）是 Google于2010以6829万美元从 Global IP Solutions 公司购买，并于2011年将其开源，旨在建立一个互联网浏览器间的实时通信的平台，让 WebRTC技术成为 H5标准之一。WebRTC是一个免费的开放项目，它通过简单的API为浏览器和移动应用程序提供实时通信（RTC）功能。</p>
+          <h1 id="WebRTC介绍"><a href="#WebRTC介绍" class="headerlink" title="WebRTC介绍"></a>WebRTC介绍</h1><p>WebRTC（Web Real­Time Communication）是 Google 于 2010 以 6829 万美元从 Global IP Solutions 公司购买，并于 2011 年将其开源，旨在建立一个互联网浏览器间的实时通信的平台，让 WebRTC 技术成为 H5 标准之一。WebRTC 是一个免费的开放项目，它通过简单的 API 为浏览器和移动应用程序提供实时通信（RTC）功能。</p>
 <h1 id="WebRTC框架"><a href="#WebRTC框架" class="headerlink" title="WebRTC框架"></a>WebRTC框架</h1><img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/WebRTC框架.png" alt="WebRTC框架" style="zoom:50%;">
 
 <p>上图的框架对于不同的开发人员关注点不同： </p>
 <ul>
-<li>紫色部分是Web应用开发者API层</li>
-<li>蓝色实线部分是面向浏览器厂商的API层</li>
+<li>紫色部分是 Web 应用开发者 API 层</li>
+<li>蓝色实线部分是面向浏览器厂商的 API 层</li>
 <li>蓝色虚线部分浏览器厂商可以自定义实现</li>
 </ul>
 <p>特别是图中的 PeerConnection 为 Web 开发人员提供了一个抽象，从复杂的内部结构中抽象出来。注意关注 PeerConnection 这个对象即可以开发音视频通话应用。 </p>
-<h2 id="WebRTC架构组件介绍"><a href="#WebRTC架构组件介绍" class="headerlink" title="WebRTC架构组件介绍"></a>WebRTC架构组件介绍</h2><h3 id="Web-APP"><a href="#Web-APP" class="headerlink" title="Web APP"></a>Web APP</h3><p>Web开发者开发的程序，Web开发者可以基于集成WebRTC的浏览器提供的web API开发基于视频、音频的实时通信应用。</p>
-<h3 id="Web-API"><a href="#Web-API" class="headerlink" title="Web API"></a>Web API</h3><p>面向第三方开发者的WebRTC标准API（Javascript），使开发者能够容易地开发出类似于网络视频聊天的web应用。</p>
-<h3 id="WebRTC-Native-C-API"><a href="#WebRTC-Native-C-API" class="headerlink" title="WebRTC Native C++ API"></a>WebRTC Native C++ API</h3><p>本地C++ API层，使浏览器厂商容易实现WebRTC标准的Web API，抽象地对数字信号过程进行处理。</p>
-<h3 id="Transport-Session"><a href="#Transport-Session" class="headerlink" title="Transport &#x2F; Session"></a>Transport &#x2F; Session</h3><p>传输&#x2F;会话层，会话层组件采用了libjingle库的部分组件实现，无需使用xmpp&#x2F;jingle协议。</p>
-<h3 id="VoiceEngine"><a href="#VoiceEngine" class="headerlink" title="VoiceEngine"></a>VoiceEngine</h3><p>WebRTC音频处理引擎，包含一系列音频多媒体处理的框架，VoiceEngine是WebRTC极具价值的技术之一，是Google收购GIPS公司后开源的。在VoIP上，技术业界领先。</p>
-<p>Opus：支持从6 kbit&#x2F;s到510 kbit&#x2F;s的恒定和可变比特率编码，帧大小从2.5 ms到60 ms，各种采样率从8 kHz（4 kHz 带宽）到48 kHz（20 kHz带宽，可复制人类听觉系统的整个听力范围）。由IETF RFC 6176定义。</p>
+<h2 id="WebRTC架构组件介绍"><a href="#WebRTC架构组件介绍" class="headerlink" title="WebRTC架构组件介绍"></a>WebRTC架构组件介绍</h2><h3 id="Web-APP"><a href="#Web-APP" class="headerlink" title="Web APP"></a>Web APP</h3><p>Web 开发者开发的程序，Web 开发者可以基于集成 WebRTC 的浏览器提供的 Web API 开发基于视频、音频的实时通信应用。</p>
+<h3 id="Web-API"><a href="#Web-API" class="headerlink" title="Web API"></a>Web API</h3><p>面向第三方开发者的 WebRTC 标准 API（Javascript），使开发者能够容易地开发出类似于网络视频聊天的 Web 应用。</p>
+<h3 id="WebRTC-Native-C-API"><a href="#WebRTC-Native-C-API" class="headerlink" title="WebRTC Native C++ API"></a>WebRTC Native C++ API</h3><p>本地 C++ API 层，使浏览器厂商容易实现 WebRTC 标准的 Web API，抽象地对数字信号过程进行处理。</p>
+<h3 id="Transport-Session"><a href="#Transport-Session" class="headerlink" title="Transport &#x2F; Session"></a>Transport &#x2F; Session</h3><p>传输&#x2F;会话层，会话层组件采用了 libjingle 库的部分组件实现，无需使用 xmpp&#x2F;jingle 协议。</p>
+<h3 id="VoiceEngine"><a href="#VoiceEngine" class="headerlink" title="VoiceEngine"></a>VoiceEngine</h3><p>WebRTC 音频处理引擎，包含一系列音频多媒体处理的框架，VoiceEngine 是 WebRTC 极具价值的技术之一，是 Google 收购 GIPS 公司后开源的。在 VoIP上，技术业界领先。</p>
+<p>Opus：支持从 6 kbit&#x2F;s 到 510 kbit&#x2F;s 的恒定和可变比特率编码，帧大小从 2.5 ms 到 60 ms，各种采样率从 8 kHz（4 kHz 带宽）到 48 kHz（20 kHz 带宽，可复制人类听觉系统的整个听力范围）。由 IETF RFC 6176 定义。</p>
 <p>NetEQ 模块是 WebRTC 语音引擎中的核心模块 ，一种动态抖动缓冲和错误隐藏算法，用于隐藏网络抖动和数据包丢失的负面影响。保持尽可能低的延迟，同时保持最高的语音质量。</p>
 <h3 id="VideoEngine"><a href="#VideoEngine" class="headerlink" title="VideoEngine"></a>VideoEngine</h3><p>WebRTC 视频处理引擎，VideoEngine 是包含一系列视频处理的整体框架，从摄像头采集视频到视频信息网络传输再到视频显示整个完整过程的解决方案。VP8 视频图像编解码器，是 WebRTC 视频引擎的默认的编解码，VP8 适合实时通信应用场景，因为它主要是针对低延时而设计的编解码器。 </p>
 <h1 id="WebRTC发展前景"><a href="#WebRTC发展前景" class="headerlink" title="WebRTC发展前景"></a>WebRTC发展前景</h1><p>WebRTC 虽然冠以“web”之名，但并不受限于传统互联网应用或浏览器的终端运行环境。实际上<strong>无论终端运行环境是浏览器、桌面应用、移动设备（Android 或 iOS）还是 IoT 设备，只要IP连接可到达且符合 WebRTC 规范就可以互通</strong>。这一点释放了大量智能终端（或运行在智能终端上的app）的实时通信能力，打开了许多对于实时交互性要求较高的应用场景的想象空间，譬如在线教育、视频会议、视频社交、远程协助、远程操控等等都是其合适的应用领域。</p>
 <h1 id="WebRTC通话原理"><a href="#WebRTC通话原理" class="headerlink" title="WebRTC通话原理"></a>WebRTC通话原理</h1><p>问题：两个不同网络环境的（具备摄像头&#x2F;麦克风多媒体设备的）浏览器，要实现点对点的实时音视频对话，难点在哪里？ </p>
 <h2 id="媒体协商"><a href="#媒体协商" class="headerlink" title="媒体协商"></a>媒体协商</h2><p><strong>彼此要了解对方支持的媒体格式。</strong></p>
 <p>在 WebRTC 中用来描述网络信息的术语叫 <strong>SDP</strong>。</p>
-<p>比如：Peer­A端可支持VP8、H264多种编码格式，而Peer­B端支持VP9、H264，要保证二端都正确的编解码，最简单的办法就是取它们的交集H264。</p>
-<p>注：有一个专门的协议 ，称为Session Description Protocol （SDP），可用于描述上述这类信息，在WebRTC中，<strong>参与视频通讯的双方必须先交换SDP信息</strong>，这样双方才能知根知底，而交换SDP的过程，也称为”<strong>媒体协商</strong>“。</p>
+<p>比如：Peer­A端可支持 VP8、H264 多种编码格式，而 Peer­B 端支持 VP9、H264，要保证二端都正确的编解码，最简单的办法就是取它们的交集 H264。</p>
+<p>注：有一个专门的协议 ，称为Session Description Protocol （SDP），可用于描述上述这类信息，在 WebRTC 中，<strong>参与视频通讯的双方必须先交换SDP信息</strong>，这样双方才能知根知底，而交换SDP的过程，也称为”<strong>媒体协商</strong>“。</p>
 <h2 id="网络协商"><a href="#网络协商" class="headerlink" title="网络协商"></a>网络协商</h2><p><strong>彼此要了解对方的网络情况，这样才有可能找到一条相互通讯的链路。</strong></p>
 <p>在 WebRTC 中用来描述网络信息的术语叫 <strong>Candidate</strong>。</p>
 <p>解决方式：</p>
@@ -1558,7 +1558,7 @@
 <li>获取外网IP地址映射。</li>
 <li>通过信令服务器（signal server）交换网络信息。</li>
 </ul>
-<p>对于理想的网络情况是每个浏览器的电脑都是私有公网IP，可以直接进行点对点连接。</p>
+<p>对于理想的网络情况是每个浏览器的电脑都是私有公网 IP，可以直接进行点对点连接。</p>
 <img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/理想网络情况.png" alt="理想网络情况" style="zoom:50%;">
 
 
@@ -1571,15 +1571,15 @@
 <p>在遇到上述情况的时候，我们可以建立一个 STUN 服务器，这个服务器做什么用的呢？主要是<strong>给无法在公网环境下的视频通话设备分配公网 IP 用的</strong>。这样两台电脑就可以在公网 IP 中进行通话。</p>
 <img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/STUN服务器.png" alt="STUN服务器" style="zoom:50%;">
 
-<p>使用一句话说明 STUN 做的事情就是：<strong>告诉我你的公网IP地址+端口是什么</strong>。搭建 STUN 服务器很简单，媒体流传输是按照 P2P 的方式。</p>
-<p>那么问题来了，<strong>STUN 并不是每次都能成功的为需要 NAT 的通话设备分配 IP 地址的</strong>，P2P 在传输媒体流时，使用的本地带宽，在多人视频通话的过程中，通话质量的好坏往往需要根据使用者本地的带宽确定。那么怎么办？TURN可以很好的解决这个问题。</p>
-<h3 id="TURN"><a href="#TURN" class="headerlink" title="TURN"></a>TURN</h3><p>TURN 的全称为 Traversal Using Relays around NAT，是STUN&#x2F;RFC5389的一个拓展，主要添加了 <strong>Relay</strong> 功能。如果终端在 NAT 之后， 那么在特定的情景下，有可能使得终端无法和其对等端（peer）进行直接的通信，这时就需要公网的服务器作为一个中继， 对来往的数据进行转发。这个转发的协议就被定义为 TURN。</p>
+<p>使用一句话说明 STUN 做的事情就是：<strong>告诉我你的公网 IP 地址+端口是什么</strong>。搭建 STUN 服务器很简单，媒体流传输是按照 P2P 的方式。</p>
+<p>那么问题来了，<strong>STUN 并不是每次都能成功的为需要 NAT 的通话设备分配 IP 地址的</strong>，P2P 在传输媒体流时，使用的本地带宽，在多人视频通话的过程中，通话质量的好坏往往需要根据使用者本地的带宽确定。那么怎么办？TURN 可以很好的解决这个问题。</p>
+<h3 id="TURN"><a href="#TURN" class="headerlink" title="TURN"></a>TURN</h3><p>TURN 的全称为 Traversal Using Relays around NAT，是 STUN&#x2F;RFC5389 的一个拓展，主要添加了 <strong>Relay</strong> 功能。如果终端在 NAT 之后， 那么在特定的情景下，有可能使得终端无法和其对等端（peer）进行直接的通信，这时就需要公网的服务器作为一个中继， 对来往的数据进行转发。这个转发的协议就被定义为 TURN。</p>
 <img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/TURN服务器.png" alt="TURN服务器" style="zoom:50%;">
 
-<p>在 STUN 分配公网 IP 失败后，可以通过 TURN 服务器请求公网 IP 地址作为中继地址。<strong>这种方式的带宽由服务器端承担</strong>，在多人视频聊天的时候，本地带宽压力较小，并且，根据 Google 的说明，TURN 协议可以使用在所有的环境中。（单向数据200kbps 一对一通话）。</p>
+<p>在 STUN 分配公网 IP 失败后，可以通过 TURN 服务器请求公网 IP 地址作为中继地址。<strong>这种方式的带宽由服务器端承担</strong>，在多人视频聊天的时候，本地带宽压力较小，并且，根据 Google 的说明，TURN 协议可以使用在所有的环境中。（单向数据 200kbps 一对一通话）。</p>
 <p>以上是 WebRTC 中经常用到的两个协议，STUN 和 TURN 服务器我们使用 coturn 开源项目来搭建。</p>
 <p>补充：ICE 跟 STUN 和 TURN 不一样，ICE 不是一种协议，而是一个框架（Framework），它整合了 STUN 和 TURN。coturn 开源项目集成了 STUN 和 TURN 的功能。</p>
-<h2 id="信令服务器"><a href="#信令服务器" class="headerlink" title="信令服务器"></a>信令服务器</h2><p>从上面我们知道了2个客户端协商媒体信息和网络信息，那怎么去交换？是不是需要一个中间商去做交换？所以我们需要一个信令服务器（Signal Server）转发彼此的媒体信息和网络信息。 </p>
+<h2 id="信令服务器"><a href="#信令服务器" class="headerlink" title="信令服务器"></a>信令服务器</h2><p>从上面我们知道了两个客户端协商媒体信息和网络信息，那怎么去交换？是不是需要一个中间商去做交换？所以我们需要一个信令服务器（Signal Server）转发彼此的媒体信息和网络信息。 </p>
 <img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/信令服务器.png" alt="信令服务器" style="zoom:50%;">
 
 <p>如上图，我们在基于 WebRTC API 开发应用（APP）时，可以将彼此的 APP 连接到信令服务器（Signal Server，一般搭建在公网，或者两端都可以访问到的局域网），<strong>借助信令服务器，就可以实现上面提到的 SDP 媒体信息及 Candidate 网络信息交换</strong>。</p>
@@ -1591,7 +1591,7 @@
 </li>
 </ul>
 <h2 id="WebRTC-API"><a href="#WebRTC-API" class="headerlink" title="WebRTC API"></a>WebRTC API</h2><ul>
-<li><strong>MediaStream</strong> — MediaStream 用来表示一个媒体数据流（通过getUserMedia接口获取），允许你访问输入设备，如麦克风和 Web摄像机，该 API 允许从其中任意一个获取媒体流。</li>
+<li><strong>MediaStream</strong> — MediaStream 用来表示一个媒体数据流（通过 getUserMedia 接口获取），允许你访问输入设备，如麦克风和 Web摄像机，该 API 允许从其中任意一个获取媒体流。</li>
 <li><strong>RTCPeerConnection</strong> — RTCPeerConnection 对象允许用户在两个浏览器之间直接通讯 ，你可以通过网络将捕获的音频和视频流实时发送到另一个 WebRTC 端点。使用这些 API，你可以在本地机器和远程对等点之间创建连接。它提供了连接到远程对等点、维护和监视连接以及在不再需要连接时关闭连接的方法。</li>
 </ul>
 <h2 id="一对一通话"><a href="#一对一通话" class="headerlink" title="一对一通话"></a>一对一通话</h2><img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/一对一通话.png" alt="一对一通话" style="zoom:70%;">
