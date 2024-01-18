@@ -1807,229 +1807,6 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/08/26/AAC%E7%BC%96%E7%A0%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/08/26/AAC%E7%BC%96%E7%A0%81/" class="post-title-link" itemprop="url">AAC编码</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-08-26 18:00:09" itemprop="dateCreated datePublished" datetime="2023-08-26T18:00:09+08:00">2023-08-26</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-16 18:41:08" itemprop="dateModified" datetime="2024-01-16T18:41:08+08:00">2024-01-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%BC%96%E7%A0%81%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">编码封装格式</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="AAC音频格式"><a href="#AAC音频格式" class="headerlink" title="AAC音频格式"></a>AAC音频格式</h1><p>Advanced Audio Coding（高级音频解码），是一种由 MPEG-4 标准定义的有损音频压缩格式，由 Fraunhofer 发展，Dolby, Sony 和AT&amp;T 是主 要的贡献者。 </p>
-<ul>
-<li><p>ADIF 的全称是 Audio Data Interchange Format 音频数据交换格式。这种格式的特征是可以确定的找到这个音频数据的开始，<strong>不能进行在音频数据流中间开始的解码</strong>，即它的解码必须在明确定义的开始处进行。故这种格式常用在磁盘文件中。 </p>
-</li>
-<li><p>ADTS 的全称是 Audio Data Transport Stream。是 AAC 音频的传输流格式。AAC 音频格式在 MPEG-2（ISO-13318-7 2003）中有定义。AAC 后来又被采用到 MPEG-4 标准中。这种格式的特征是它是一个有同步字的比特流，<strong>解码可以在这个流中任何位置开始</strong>。它的特征类似于 MP3 数据流格式。</p>
-</li>
-</ul>
-<p>简单说，ADTS 可以在任意帧解码，也就是说它每一帧都有头信息。ADIF 只有一个统一的头，所以必须得到所有的数据后解码。 </p>
-<p>且这两种的 header 的格式也是不同的，目前一般编码后的和抽取出的都是 ADTS 格式的音频流。两者具体的组织结构如下所示：</p>
-<ul>
-<li>AAC 的 ADIF 格式见下图：</li>
-</ul>
-<img src="/2023/08/26/AAC%E7%BC%96%E7%A0%81/AAC的ADIF格式.png" alt="AAC的ADIF格式" style="zoom:50%;">
-
-<ul>
-<li><p>AAC 的 ADTS 的一般格式见下图：</p>
-<p>  空白处为前后帧</p>
-</li>
-</ul>
-<img src="/2023/08/26/AAC%E7%BC%96%E7%A0%81/AAC的ADTS的一般格式.png" alt="AAC的ADTS的一般格式" style="zoom:50%;">
-
-<p>有的时候当你编码 AAC 裸流的时候，会遇到写出来的 AAC 文件并不能在 PC 和手机上播放，很⼤的可能就是 AAC 文件的每一帧里缺少了  ADTS 头信息文件的包装拼接。只需要加入头文件 ADTS 即可。一个 AAC 原始数据块长度是可变的，对原始帧加上 ADTS 头进行 ADTS 的封装，就形成了 ADTS 帧。</p>
-<h2 id="ADTS格式"><a href="#ADTS格式" class="headerlink" title="ADTS格式"></a>ADTS格式</h2><p>AAC 音频文件的每一帧由 <strong>ADTS Header 和 AAC Audio Data</strong> 组成。结构体如下：</p>
-<img src="/2023/08/26/AAC%E7%BC%96%E7%A0%81/ADTS格式.png" alt="ADTS格式" style="zoom:50%;">
-
-<p>每一帧的 ADTS 的头文件都包含了音频的采样率，声道，帧长度等信息，这样解码器才能解析读取。 </p>
-<p>ADTS 头分为<strong>固定头信息</strong>（adts_fixed_header）和<strong>可变头信息</strong>（adts_variable_header）两个部分，固定头信息在每个帧中的是一样的，可变头信息在各个帧中并不是固定值。</p>
-<p>ADTS 头一般是 7 Byte（28bit + 28bit）长度如果需要对数据进行CRC校验，则会有 2 个 Byte 的校验码，<strong>所以 ADTS 头的实际长度是 7 个字节或 9 个字节</strong>。</p>
-<h3 id="固定头信息"><a href="#固定头信息" class="headerlink" title="固定头信息"></a>固定头信息</h3><table>
-<thead>
-<tr>
-<th><strong>固定头信息</strong></th>
-<th>大小(bit)</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>synword</td>
-<td>12</td>
-<td>固定0xFFF，用作同步，表示帧的开始</td>
-</tr>
-<tr>
-<td>id</td>
-<td>1</td>
-<td>MPEG标识符 : <br>0 : MPEG-4<br>1 : MPEG-2</td>
-</tr>
-<tr>
-<td>layer</td>
-<td>2</td>
-<td>固定 0x00</td>
-</tr>
-<tr>
-<td>protection_absent</td>
-<td>1</td>
-<td>0：有crc校验<br>1：没crc校验</td>
-</tr>
-<tr>
-<td>profile</td>
-<td>2</td>
-<td>1 : AAC Main<br>2 : AAC LC (Low Complexity)<br>3 : AAC SSR (Scalable Sample Rate)<br>4 : AAC LTP (Long Term Prediction)</td>
-</tr>
-<tr>
-<td>sampling_frequency_index</td>
-<td>4</td>
-<td>0: 96000 Hz<br>1: 88200 Hz<br>2 : 64000 Hz<br>3 : 48000 Hz<br>4 : 44100 Hz <br>5 : 32000 Hz<br>6 : 24000 Hz<br>7 : 22050 Hz<br>8 : 16000 Hz<br>9 : 12000 Hz<br>10 : 11025 Hz<br>11 : 8000 Hz<br>12 : 7350 Hz<br>13 : Reserved<br>14 : Reserved<br>15 : frequency is written explictly</td>
-</tr>
-<tr>
-<td>private_bit</td>
-<td>1</td>
-<td>私有位，编码时为0，解码时忽略</td>
-</tr>
-<tr>
-<td>channel_configuration</td>
-<td>3</td>
-<td>声道数：<br>1:单声道<br>2:双声道<br>其余参考更多</td>
-</tr>
-<tr>
-<td>orininal_copy</td>
-<td>1</td>
-<td>固定 0</td>
-</tr>
-<tr>
-<td>home</td>
-<td>1</td>
-<td>固定 0</td>
-</tr>
-</tbody></table>
-<h3 id="可变头信息"><a href="#可变头信息" class="headerlink" title="可变头信息"></a>可变头信息</h3><table>
-<thead>
-<tr>
-<th><strong>可变头信息</strong></th>
-<th><strong>共有 28 bit</strong></th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>copyrigth_identification_bit</td>
-<td>1</td>
-<td>固定 0</td>
-</tr>
-<tr>
-<td>copyrigth_identification_stat</td>
-<td>1</td>
-<td>固定 0</td>
-</tr>
-<tr>
-<td>aac_frame_length</td>
-<td>13</td>
-<td>ADTS头(7Byte) + AAC裸流长度</td>
-</tr>
-<tr>
-<td>adts_bufferfullness</td>
-<td>11</td>
-<td>缓冲区充满度 0x7FF说明是码率可变的码流</td>
-</tr>
-<tr>
-<td>number_of_raw_data_blocks_in_frame</td>
-<td>2</td>
-<td>0 : 表示说ADTS帧中只有一个AAC数据</td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th><strong>校验位</strong></th>
-<th><strong>共有 2 Byte</strong></th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>crc</td>
-<td>16</td>
-<td>校验位 一般不需要</td>
-</tr>
-</tbody></table>
-<h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavutil/log.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavformat/avio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavformat/avformat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavcodec/avcodec.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ADTS_HEADER_LEN 7;</span></span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> sampling_frequencies[] = &#123;</span><br><span class="line">    <span class="number">96000</span>,  <span class="comment">// 0x0</span></span><br><span class="line">    <span class="number">88200</span>,  <span class="comment">// 0x1</span></span><br><span class="line">    <span class="number">64000</span>,  <span class="comment">// 0x2</span></span><br><span class="line">    <span class="number">48000</span>,  <span class="comment">// 0x3</span></span><br><span class="line">    <span class="number">44100</span>,  <span class="comment">// 0x4</span></span><br><span class="line">    <span class="number">32000</span>,  <span class="comment">// 0x5</span></span><br><span class="line">    <span class="number">24000</span>,  <span class="comment">// 0x6</span></span><br><span class="line">    <span class="number">22050</span>,  <span class="comment">// 0x7</span></span><br><span class="line">    <span class="number">16000</span>,  <span class="comment">// 0x8</span></span><br><span class="line">    <span class="number">12000</span>,  <span class="comment">// 0x9</span></span><br><span class="line">    <span class="number">11025</span>,  <span class="comment">// 0xa</span></span><br><span class="line">    <span class="number">8000</span>   <span class="comment">// 0xb</span></span><br><span class="line">    <span class="comment">// 0xc d e f是保留的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">adts_header</span><span class="params">(<span class="type">char</span> * <span class="type">const</span> p_adts_header, <span class="type">const</span> <span class="type">int</span> data_length,</span></span><br><span class="line"><span class="params">                <span class="type">const</span> <span class="type">int</span> profile, <span class="type">const</span> <span class="type">int</span> samplerate,</span></span><br><span class="line"><span class="params">                <span class="type">const</span> <span class="type">int</span> channels)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> sampling_frequency_index = <span class="number">3</span>; <span class="comment">// 默认使用48000hz</span></span><br><span class="line">    <span class="type">int</span> adtsLen = data_length + ADTS_HEADER_LEN;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> frequencies_size = <span class="keyword">sizeof</span>(sampling_frequencies) / <span class="keyword">sizeof</span>(sampling_frequencies[<span class="number">0</span>]);</span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; frequencies_size; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(sampling_frequencies[i] == samplerate)</span><br><span class="line">        &#123;</span><br><span class="line">            sampling_frequency_index = i;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(i &gt;= frequencies_size)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;unsupport samplerate:%d\n&quot;</span>, samplerate);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    p_adts_header[<span class="number">0</span>] = <span class="number">0xff</span>;         <span class="comment">//syncword:0xfff                          高8bits</span></span><br><span class="line">    p_adts_header[<span class="number">1</span>] = <span class="number">0xf0</span>;         <span class="comment">//syncword:0xfff                          低4bits</span></span><br><span class="line">    p_adts_header[<span class="number">1</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">3</span>);    <span class="comment">//MPEG Version:0 for MPEG-4,1 for MPEG-2  1bit</span></span><br><span class="line">    p_adts_header[<span class="number">1</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">1</span>);    <span class="comment">//Layer:0                                 2bits</span></span><br><span class="line">    p_adts_header[<span class="number">1</span>] |= <span class="number">1</span>;           <span class="comment">//protection absent:1                     1bit</span></span><br><span class="line"></span><br><span class="line">    p_adts_header[<span class="number">2</span>] = (profile)&lt;&lt;<span class="number">6</span>;            <span class="comment">//profile:profile               2bits</span></span><br><span class="line">    p_adts_header[<span class="number">2</span>] |= (sampling_frequency_index &amp; <span class="number">0x0f</span>)&lt;&lt;<span class="number">2</span>; <span class="comment">//sampling frequency index:sampling_frequency_index  4bits</span></span><br><span class="line">    p_adts_header[<span class="number">2</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">1</span>);             <span class="comment">//private bit:0                   1bit</span></span><br><span class="line">    p_adts_header[<span class="number">2</span>] |= (channels &amp; <span class="number">0x04</span>)&gt;&gt;<span class="number">2</span>; <span class="comment">//channel configuration:channels  高1bit</span></span><br><span class="line"></span><br><span class="line">    p_adts_header[<span class="number">3</span>] = (channels &amp; <span class="number">0x03</span>)&lt;&lt;<span class="number">6</span>; <span class="comment">//channel configuration:channels 低2bits</span></span><br><span class="line">    p_adts_header[<span class="number">3</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">5</span>);               <span class="comment">//original：0                1bit</span></span><br><span class="line">    p_adts_header[<span class="number">3</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">4</span>);               <span class="comment">//home：0                    1bit</span></span><br><span class="line">    p_adts_header[<span class="number">3</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">3</span>);               <span class="comment">//copyright id bit：0        1bit</span></span><br><span class="line">    p_adts_header[<span class="number">3</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">2</span>);               <span class="comment">//copyright id start：0      1bit</span></span><br><span class="line">    p_adts_header[<span class="number">3</span>] |= ((adtsLen &amp; <span class="number">0x1800</span>) &gt;&gt; <span class="number">11</span>);           <span class="comment">//frame length：value   高2bits</span></span><br><span class="line"></span><br><span class="line">    p_adts_header[<span class="number">4</span>] = (<span class="type">uint8_t</span>)((adtsLen &amp; <span class="number">0x7f8</span>) &gt;&gt; <span class="number">3</span>);     <span class="comment">//frame length:value    中间8bits</span></span><br><span class="line">    p_adts_header[<span class="number">5</span>] = (<span class="type">uint8_t</span>)((adtsLen &amp; <span class="number">0x7</span>) &lt;&lt; <span class="number">5</span>);       <span class="comment">//frame length:value    低3bits</span></span><br><span class="line">    p_adts_header[<span class="number">5</span>] |= <span class="number">0x1f</span>;                                 <span class="comment">//buffer fullness:0x7ff 高5bits</span></span><br><span class="line">    p_adts_header[<span class="number">6</span>] = <span class="number">0xfc</span>;      <span class="comment">//‭11111100‬       //buffer fullness:0x7ff 低6bits</span></span><br><span class="line">    <span class="comment">// number_of_raw_data_blocks_in_frame：</span></span><br><span class="line">    <span class="comment">//    表示ADTS帧中有number_of_raw_data_blocks_in_frame + 1个AAC原始帧。</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">char</span> errors[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> *in_filename = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">char</span> *aac_filename = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    FILE *aac_fd = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> audio_index = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> len = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    AVFormatContext *ifmt_ctx = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket pkt;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置打印级别</span></span><br><span class="line">    av_log_set_level(AV_LOG_DEBUG);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(argc &lt; <span class="number">3</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;the count of parameters should be more than three!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    in_filename = argv[<span class="number">1</span>];      <span class="comment">// 输入文件</span></span><br><span class="line">    aac_filename = argv[<span class="number">2</span>];     <span class="comment">// 输出文件</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(in_filename == <span class="literal">NULL</span> || aac_filename == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;src or dts file is null, plz check them!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    aac_fd = fopen(aac_filename, <span class="string">&quot;wb&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!aac_fd)</span><br><span class="line">    &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;Could not open destination file %s\n&quot;</span>, aac_filename);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 打开输入文件</span></span><br><span class="line">    <span class="keyword">if</span>((ret = avformat_open_input(&amp;ifmt_ctx, in_filename, <span class="literal">NULL</span>, <span class="literal">NULL</span>)) &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        av_strerror(ret, errors, <span class="number">1024</span>);</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;Could not open source file: %s, %d(%s)\n&quot;</span>,</span><br><span class="line">               in_filename,</span><br><span class="line">               ret,</span><br><span class="line">               errors);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取解码器信息</span></span><br><span class="line">    <span class="keyword">if</span>((ret = avformat_find_stream_info(ifmt_ctx, <span class="literal">NULL</span>)) &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        av_strerror(ret, errors, <span class="number">1024</span>);</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;failed to find stream information: %s, %d(%s)\n&quot;</span>,</span><br><span class="line">               in_filename,</span><br><span class="line">               ret,</span><br><span class="line">               errors);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// dump媒体信息</span></span><br><span class="line">    av_dump_format(ifmt_ctx, <span class="number">0</span>, in_filename, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化packet</span></span><br><span class="line">    av_init_packet(&amp;pkt);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找audio对应的steam index</span></span><br><span class="line">    audio_index = av_find_best_stream(ifmt_ctx, AVMEDIA_TYPE_AUDIO, <span class="number">-1</span>, <span class="number">-1</span>, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span>(audio_index &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;Could not find %s stream in input file %s\n&quot;</span>,</span><br><span class="line">               av_get_media_type_string(AVMEDIA_TYPE_AUDIO),</span><br><span class="line">               in_filename);</span><br><span class="line">        <span class="keyword">return</span> AVERROR(EINVAL);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 打印AAC级别</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;audio profile:%d, FF_PROFILE_AAC_LOW:%d\n&quot;</span>,</span><br><span class="line">           ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;profile,</span><br><span class="line">           FF_PROFILE_AAC_LOW);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;codec_id != AV_CODEC_ID_AAC)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;the media file no contain AAC stream, it&#x27;s codec_id is %d\n&quot;</span>,</span><br><span class="line">               ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;codec_id);</span><br><span class="line">        <span class="keyword">goto</span> failed;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 读取媒体文件，并把aac数据帧写入到本地文件</span></span><br><span class="line">    <span class="keyword">while</span>(av_read_frame(ifmt_ctx, &amp;pkt) &gt;=<span class="number">0</span> )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(pkt.stream_index == audio_index)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">char</span> adts_header_buf[<span class="number">7</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">            adts_header(adts_header_buf, pkt.size,</span><br><span class="line">                        ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;profile,</span><br><span class="line">                        ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;sample_rate,</span><br><span class="line">                        ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;channels);</span><br><span class="line">            fwrite(adts_header_buf, <span class="number">1</span>, <span class="number">7</span>, aac_fd);  <span class="comment">// 写adts header , ts流不适用，ts流分离出来的packet带了adts header</span></span><br><span class="line">            len = fwrite( pkt.data, <span class="number">1</span>, pkt.size, aac_fd);   <span class="comment">// 写adts data</span></span><br><span class="line">            <span class="keyword">if</span>(len != pkt.size)</span><br><span class="line">            &#123;</span><br><span class="line">                av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;warning, length of writed data isn&#x27;t equal pkt.size(%d, %d)\n&quot;</span>,</span><br><span class="line">                       len,</span><br><span class="line">                       pkt.size);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        av_packet_unref(&amp;pkt);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">failed:</span><br><span class="line">    <span class="comment">// 关闭输入文件</span></span><br><span class="line">    <span class="keyword">if</span>(ifmt_ctx)</span><br><span class="line">    &#123;</span><br><span class="line">        avformat_close_input(&amp;ifmt_ctx);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(aac_fd)</span><br><span class="line">    &#123;</span><br><span class="line">        fclose(aac_fd);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/dreamInTheWorld/article/details/130600690">https://blog.csdn.net/dreamInTheWorld/article/details/130600690</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/08/26/H264%E7%BC%96%E7%A0%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2261,6 +2038,229 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavutil/log.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavcodec/bsf.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavformat/avio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavcodec/avcodec.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavformat/avformat.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">char</span> err_buf[<span class="number">128</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="type">static</span> <span class="type">char</span>* <span class="title function_">av_get_err</span><span class="params">(<span class="type">int</span> errnum)</span></span><br><span class="line">&#123;</span><br><span class="line">    av_strerror(errnum, err_buf, <span class="number">128</span>);</span><br><span class="line">    <span class="keyword">return</span> err_buf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">AvCodecContext-&gt;extradata[]中为nalu长度</span></span><br><span class="line"><span class="comment">*   codec_extradata:</span></span><br><span class="line"><span class="comment">*   1, 64, 0, 1f, ff, e1, [0, 18], 67, 64, 0, 1f, ac, c8, 60, 78, 1b, 7e,</span></span><br><span class="line"><span class="comment">*   78, 40, 0, 0, fa, 40, 0, 3a, 98, 3, c6, c, 66, 80,</span></span><br><span class="line"><span class="comment">*   1, [0, 5],68, e9, 78, bc, b0, 0,</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//ffmpeg -i test.mp4 -codec copy -bsf h264_mp4toannexb -f h264 test.h264</span></span><br><span class="line"><span class="comment">//ffmpeg 从mp4上提取H264的nalu h</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span><br><span class="line">&#123;</span><br><span class="line">    AVFormatContext *ifmt_ctx = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span>             videoindex = <span class="number">-1</span>;</span><br><span class="line">    AVPacket        *pkt = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span>             ret = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span>             file_end = <span class="number">0</span>; <span class="comment">// 文件是否读取结束</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(argc &lt; <span class="number">3</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;usage inputfile outfile\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    FILE *outfp=fopen(argv[<span class="number">2</span>],<span class="string">&quot;wb&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;in:%s out:%s\n&quot;</span>, argv[<span class="number">1</span>], argv[<span class="number">2</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分配解复用器的内存，使用avformat_close_input释放</span></span><br><span class="line">    ifmt_ctx = avformat_alloc_context();</span><br><span class="line">    <span class="keyword">if</span> (!ifmt_ctx)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[error] Could not allocate context.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据url打开码流，并选择匹配的解复用器</span></span><br><span class="line">    ret = avformat_open_input(&amp;ifmt_ctx,argv[<span class="number">1</span>], <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span>(ret != <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[error]avformat_open_input: %s\n&quot;</span>, av_get_err(ret));</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 读取媒体文件的部分数据包以获取码流信息</span></span><br><span class="line">    ret = avformat_find_stream_info(ifmt_ctx, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span>(ret &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[error]avformat_find_stream_info: %s\n&quot;</span>, av_get_err(ret));</span><br><span class="line">        avformat_close_input(&amp;ifmt_ctx);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找出哪个码流是video/audio/subtitles</span></span><br><span class="line">    videoindex = <span class="number">-1</span>;</span><br><span class="line">    <span class="comment">// 推荐的方式</span></span><br><span class="line">    videoindex = av_find_best_stream(ifmt_ctx, AVMEDIA_TYPE_VIDEO, <span class="number">-1</span>, <span class="number">-1</span>, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span>(videoindex == <span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Didn&#x27;t find a video stream.\n&quot;</span>);</span><br><span class="line">        avformat_close_input(&amp;ifmt_ctx);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分配数据包</span></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1 获取相应的比特流过滤器</span></span><br><span class="line">    <span class="comment">//FLV/MP4/MKV等结构中，h264需要h264_mp4toannexb处理。添加SPS/PPS等信息。</span></span><br><span class="line">    <span class="comment">// FLV封装时，可以把多个NALU放在一个VIDEO TAG中,结构为4B NALU长度+NALU1+4B NALU长度+NALU2+...,</span></span><br><span class="line">    <span class="comment">// 需要做的处理把4B长度换成00000001或者000001</span></span><br><span class="line">    <span class="type">const</span> AVBitStreamFilter *bsfilter = av_bsf_get_by_name(<span class="string">&quot;h264_mp4toannexb&quot;</span>);</span><br><span class="line">    AVBSFContext *bsf_ctx = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="comment">// 2 初始化过滤器上下文</span></span><br><span class="line">    av_bsf_alloc(bsfilter, &amp;bsf_ctx); <span class="comment">//AVBSFContext;</span></span><br><span class="line">    <span class="comment">// 3 添加解码器属性</span></span><br><span class="line">    avcodec_parameters_copy(bsf_ctx-&gt;par_in, ifmt_ctx-&gt;streams[videoindex]-&gt;codecpar);</span><br><span class="line">    av_bsf_init(bsf_ctx);</span><br><span class="line"></span><br><span class="line">    file_end = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">0</span> == file_end)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>((ret = av_read_frame(ifmt_ctx, pkt)) &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 没有更多包可读</span></span><br><span class="line">            file_end = <span class="number">1</span>;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;read file end: ret:%d\n&quot;</span>, ret);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(ret == <span class="number">0</span> &amp;&amp; pkt-&gt;stream_index == videoindex)</span><br><span class="line">        &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> 0</span></span><br><span class="line">            <span class="type">int</span> input_size = pkt-&gt;size;</span><br><span class="line">            <span class="type">int</span> out_pkt_count = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">if</span> (av_bsf_send_packet(bsf_ctx, pkt) != <span class="number">0</span>) <span class="comment">// bitstreamfilter内部去维护内存空间</span></span><br><span class="line">            &#123;</span><br><span class="line">                av_packet_unref(pkt);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//av_packet_unref(pkt);   // 这里不需要释放资源av_bsf_send_packet()内部掉用av_packet_move_ref()</span></span><br><span class="line">            <span class="keyword">while</span>(av_bsf_receive_packet(bsf_ctx, pkt) == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                out_pkt_count++;</span><br><span class="line">                <span class="comment">// printf(&quot;fwrite size:%d\n&quot;, pkt-&gt;size);</span></span><br><span class="line">                <span class="type">size_t</span> size = fwrite(pkt-&gt;data, <span class="number">1</span>, pkt-&gt;size, outfp);</span><br><span class="line">                <span class="keyword">if</span>(size != pkt-&gt;size)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">&quot;fwrite failed-&gt; write:%u, pkt_size:%u\n&quot;</span>, size, pkt-&gt;size);</span><br><span class="line">                &#125;</span><br><span class="line">                av_packet_unref(pkt);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(out_pkt_count &gt;= <span class="number">2</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;cur pkt(size:%d) only get 1 out pkt, it get %d pkts\n&quot;</span>,</span><br><span class="line">                       input_size, out_pkt_count);</span><br><span class="line">            &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span>       <span class="comment">// TS流可以直接写入</span></span></span><br><span class="line">            <span class="type">size_t</span> size = fwrite(pkt-&gt;data, <span class="number">1</span>, pkt-&gt;size, outfp);</span><br><span class="line">            <span class="keyword">if</span>(size != pkt-&gt;size)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;fwrite failed-&gt; write:%u, pkt_size:%u\n&quot;</span>, size, pkt-&gt;size);</span><br><span class="line">            &#125;</span><br><span class="line">            av_packet_unref(pkt);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(ret == <span class="number">0</span>)</span><br><span class="line">                av_packet_unref(pkt);        <span class="comment">// 释放内存</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(outfp)</span><br><span class="line">        fclose(outfp);</span><br><span class="line">    <span class="keyword">if</span>(bsf_ctx)</span><br><span class="line">        av_bsf_free(&amp;bsf_ctx);</span><br><span class="line">    <span class="keyword">if</span>(pkt)</span><br><span class="line">        av_packet_free(&amp;pkt);</span><br><span class="line">    <span class="keyword">if</span>(ifmt_ctx)</span><br><span class="line">        avformat_close_input(&amp;ifmt_ctx);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;finish\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>参考链接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/605149388?utm_id=0&wd=&eqid=ab07d33200075d8e000000056487d6a3">https://zhuanlan.zhihu.com/p/605149388?utm_id=0&amp;wd=&amp;eqid=ab07d33200075d8e000000056487d6a3</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/08/26/AAC%E7%BC%96%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/08/26/AAC%E7%BC%96%E7%A0%81/" class="post-title-link" itemprop="url">AAC编码</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-08-26 18:00:09" itemprop="dateCreated datePublished" datetime="2023-08-26T18:00:09+08:00">2023-08-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-16 18:41:08" itemprop="dateModified" datetime="2024-01-16T18:41:08+08:00">2024-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%BC%96%E7%A0%81%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">编码封装格式</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="AAC音频格式"><a href="#AAC音频格式" class="headerlink" title="AAC音频格式"></a>AAC音频格式</h1><p>Advanced Audio Coding（高级音频解码），是一种由 MPEG-4 标准定义的有损音频压缩格式，由 Fraunhofer 发展，Dolby, Sony 和AT&amp;T 是主 要的贡献者。 </p>
+<ul>
+<li><p>ADIF 的全称是 Audio Data Interchange Format 音频数据交换格式。这种格式的特征是可以确定的找到这个音频数据的开始，<strong>不能进行在音频数据流中间开始的解码</strong>，即它的解码必须在明确定义的开始处进行。故这种格式常用在磁盘文件中。 </p>
+</li>
+<li><p>ADTS 的全称是 Audio Data Transport Stream。是 AAC 音频的传输流格式。AAC 音频格式在 MPEG-2（ISO-13318-7 2003）中有定义。AAC 后来又被采用到 MPEG-4 标准中。这种格式的特征是它是一个有同步字的比特流，<strong>解码可以在这个流中任何位置开始</strong>。它的特征类似于 MP3 数据流格式。</p>
+</li>
+</ul>
+<p>简单说，ADTS 可以在任意帧解码，也就是说它每一帧都有头信息。ADIF 只有一个统一的头，所以必须得到所有的数据后解码。 </p>
+<p>且这两种的 header 的格式也是不同的，目前一般编码后的和抽取出的都是 ADTS 格式的音频流。两者具体的组织结构如下所示：</p>
+<ul>
+<li>AAC 的 ADIF 格式见下图：</li>
+</ul>
+<img src="/2023/08/26/AAC%E7%BC%96%E7%A0%81/AAC的ADIF格式.png" alt="AAC的ADIF格式" style="zoom:50%;">
+
+<ul>
+<li><p>AAC 的 ADTS 的一般格式见下图：</p>
+<p>  空白处为前后帧</p>
+</li>
+</ul>
+<img src="/2023/08/26/AAC%E7%BC%96%E7%A0%81/AAC的ADTS的一般格式.png" alt="AAC的ADTS的一般格式" style="zoom:50%;">
+
+<p>有的时候当你编码 AAC 裸流的时候，会遇到写出来的 AAC 文件并不能在 PC 和手机上播放，很⼤的可能就是 AAC 文件的每一帧里缺少了  ADTS 头信息文件的包装拼接。只需要加入头文件 ADTS 即可。一个 AAC 原始数据块长度是可变的，对原始帧加上 ADTS 头进行 ADTS 的封装，就形成了 ADTS 帧。</p>
+<h2 id="ADTS格式"><a href="#ADTS格式" class="headerlink" title="ADTS格式"></a>ADTS格式</h2><p>AAC 音频文件的每一帧由 <strong>ADTS Header 和 AAC Audio Data</strong> 组成。结构体如下：</p>
+<img src="/2023/08/26/AAC%E7%BC%96%E7%A0%81/ADTS格式.png" alt="ADTS格式" style="zoom:50%;">
+
+<p>每一帧的 ADTS 的头文件都包含了音频的采样率，声道，帧长度等信息，这样解码器才能解析读取。 </p>
+<p>ADTS 头分为<strong>固定头信息</strong>（adts_fixed_header）和<strong>可变头信息</strong>（adts_variable_header）两个部分，固定头信息在每个帧中的是一样的，可变头信息在各个帧中并不是固定值。</p>
+<p>ADTS 头一般是 7 Byte（28bit + 28bit）长度如果需要对数据进行CRC校验，则会有 2 个 Byte 的校验码，<strong>所以 ADTS 头的实际长度是 7 个字节或 9 个字节</strong>。</p>
+<h3 id="固定头信息"><a href="#固定头信息" class="headerlink" title="固定头信息"></a>固定头信息</h3><table>
+<thead>
+<tr>
+<th><strong>固定头信息</strong></th>
+<th>大小(bit)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>synword</td>
+<td>12</td>
+<td>固定0xFFF，用作同步，表示帧的开始</td>
+</tr>
+<tr>
+<td>id</td>
+<td>1</td>
+<td>MPEG标识符 : <br>0 : MPEG-4<br>1 : MPEG-2</td>
+</tr>
+<tr>
+<td>layer</td>
+<td>2</td>
+<td>固定 0x00</td>
+</tr>
+<tr>
+<td>protection_absent</td>
+<td>1</td>
+<td>0：有crc校验<br>1：没crc校验</td>
+</tr>
+<tr>
+<td>profile</td>
+<td>2</td>
+<td>1 : AAC Main<br>2 : AAC LC (Low Complexity)<br>3 : AAC SSR (Scalable Sample Rate)<br>4 : AAC LTP (Long Term Prediction)</td>
+</tr>
+<tr>
+<td>sampling_frequency_index</td>
+<td>4</td>
+<td>0: 96000 Hz<br>1: 88200 Hz<br>2 : 64000 Hz<br>3 : 48000 Hz<br>4 : 44100 Hz <br>5 : 32000 Hz<br>6 : 24000 Hz<br>7 : 22050 Hz<br>8 : 16000 Hz<br>9 : 12000 Hz<br>10 : 11025 Hz<br>11 : 8000 Hz<br>12 : 7350 Hz<br>13 : Reserved<br>14 : Reserved<br>15 : frequency is written explictly</td>
+</tr>
+<tr>
+<td>private_bit</td>
+<td>1</td>
+<td>私有位，编码时为0，解码时忽略</td>
+</tr>
+<tr>
+<td>channel_configuration</td>
+<td>3</td>
+<td>声道数：<br>1:单声道<br>2:双声道<br>其余参考更多</td>
+</tr>
+<tr>
+<td>orininal_copy</td>
+<td>1</td>
+<td>固定 0</td>
+</tr>
+<tr>
+<td>home</td>
+<td>1</td>
+<td>固定 0</td>
+</tr>
+</tbody></table>
+<h3 id="可变头信息"><a href="#可变头信息" class="headerlink" title="可变头信息"></a>可变头信息</h3><table>
+<thead>
+<tr>
+<th><strong>可变头信息</strong></th>
+<th><strong>共有 28 bit</strong></th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>copyrigth_identification_bit</td>
+<td>1</td>
+<td>固定 0</td>
+</tr>
+<tr>
+<td>copyrigth_identification_stat</td>
+<td>1</td>
+<td>固定 0</td>
+</tr>
+<tr>
+<td>aac_frame_length</td>
+<td>13</td>
+<td>ADTS头(7Byte) + AAC裸流长度</td>
+</tr>
+<tr>
+<td>adts_bufferfullness</td>
+<td>11</td>
+<td>缓冲区充满度 0x7FF说明是码率可变的码流</td>
+</tr>
+<tr>
+<td>number_of_raw_data_blocks_in_frame</td>
+<td>2</td>
+<td>0 : 表示说ADTS帧中只有一个AAC数据</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>校验位</strong></th>
+<th><strong>共有 2 Byte</strong></th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>crc</td>
+<td>16</td>
+<td>校验位 一般不需要</td>
+</tr>
+</tbody></table>
+<h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavutil/log.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavformat/avio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavformat/avformat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavcodec/avcodec.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ADTS_HEADER_LEN 7;</span></span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> sampling_frequencies[] = &#123;</span><br><span class="line">    <span class="number">96000</span>,  <span class="comment">// 0x0</span></span><br><span class="line">    <span class="number">88200</span>,  <span class="comment">// 0x1</span></span><br><span class="line">    <span class="number">64000</span>,  <span class="comment">// 0x2</span></span><br><span class="line">    <span class="number">48000</span>,  <span class="comment">// 0x3</span></span><br><span class="line">    <span class="number">44100</span>,  <span class="comment">// 0x4</span></span><br><span class="line">    <span class="number">32000</span>,  <span class="comment">// 0x5</span></span><br><span class="line">    <span class="number">24000</span>,  <span class="comment">// 0x6</span></span><br><span class="line">    <span class="number">22050</span>,  <span class="comment">// 0x7</span></span><br><span class="line">    <span class="number">16000</span>,  <span class="comment">// 0x8</span></span><br><span class="line">    <span class="number">12000</span>,  <span class="comment">// 0x9</span></span><br><span class="line">    <span class="number">11025</span>,  <span class="comment">// 0xa</span></span><br><span class="line">    <span class="number">8000</span>   <span class="comment">// 0xb</span></span><br><span class="line">    <span class="comment">// 0xc d e f是保留的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">adts_header</span><span class="params">(<span class="type">char</span> * <span class="type">const</span> p_adts_header, <span class="type">const</span> <span class="type">int</span> data_length,</span></span><br><span class="line"><span class="params">                <span class="type">const</span> <span class="type">int</span> profile, <span class="type">const</span> <span class="type">int</span> samplerate,</span></span><br><span class="line"><span class="params">                <span class="type">const</span> <span class="type">int</span> channels)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> sampling_frequency_index = <span class="number">3</span>; <span class="comment">// 默认使用48000hz</span></span><br><span class="line">    <span class="type">int</span> adtsLen = data_length + ADTS_HEADER_LEN;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> frequencies_size = <span class="keyword">sizeof</span>(sampling_frequencies) / <span class="keyword">sizeof</span>(sampling_frequencies[<span class="number">0</span>]);</span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; frequencies_size; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(sampling_frequencies[i] == samplerate)</span><br><span class="line">        &#123;</span><br><span class="line">            sampling_frequency_index = i;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(i &gt;= frequencies_size)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;unsupport samplerate:%d\n&quot;</span>, samplerate);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    p_adts_header[<span class="number">0</span>] = <span class="number">0xff</span>;         <span class="comment">//syncword:0xfff                          高8bits</span></span><br><span class="line">    p_adts_header[<span class="number">1</span>] = <span class="number">0xf0</span>;         <span class="comment">//syncword:0xfff                          低4bits</span></span><br><span class="line">    p_adts_header[<span class="number">1</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">3</span>);    <span class="comment">//MPEG Version:0 for MPEG-4,1 for MPEG-2  1bit</span></span><br><span class="line">    p_adts_header[<span class="number">1</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">1</span>);    <span class="comment">//Layer:0                                 2bits</span></span><br><span class="line">    p_adts_header[<span class="number">1</span>] |= <span class="number">1</span>;           <span class="comment">//protection absent:1                     1bit</span></span><br><span class="line"></span><br><span class="line">    p_adts_header[<span class="number">2</span>] = (profile)&lt;&lt;<span class="number">6</span>;            <span class="comment">//profile:profile               2bits</span></span><br><span class="line">    p_adts_header[<span class="number">2</span>] |= (sampling_frequency_index &amp; <span class="number">0x0f</span>)&lt;&lt;<span class="number">2</span>; <span class="comment">//sampling frequency index:sampling_frequency_index  4bits</span></span><br><span class="line">    p_adts_header[<span class="number">2</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">1</span>);             <span class="comment">//private bit:0                   1bit</span></span><br><span class="line">    p_adts_header[<span class="number">2</span>] |= (channels &amp; <span class="number">0x04</span>)&gt;&gt;<span class="number">2</span>; <span class="comment">//channel configuration:channels  高1bit</span></span><br><span class="line"></span><br><span class="line">    p_adts_header[<span class="number">3</span>] = (channels &amp; <span class="number">0x03</span>)&lt;&lt;<span class="number">6</span>; <span class="comment">//channel configuration:channels 低2bits</span></span><br><span class="line">    p_adts_header[<span class="number">3</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">5</span>);               <span class="comment">//original：0                1bit</span></span><br><span class="line">    p_adts_header[<span class="number">3</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">4</span>);               <span class="comment">//home：0                    1bit</span></span><br><span class="line">    p_adts_header[<span class="number">3</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">3</span>);               <span class="comment">//copyright id bit：0        1bit</span></span><br><span class="line">    p_adts_header[<span class="number">3</span>] |= (<span class="number">0</span> &lt;&lt; <span class="number">2</span>);               <span class="comment">//copyright id start：0      1bit</span></span><br><span class="line">    p_adts_header[<span class="number">3</span>] |= ((adtsLen &amp; <span class="number">0x1800</span>) &gt;&gt; <span class="number">11</span>);           <span class="comment">//frame length：value   高2bits</span></span><br><span class="line"></span><br><span class="line">    p_adts_header[<span class="number">4</span>] = (<span class="type">uint8_t</span>)((adtsLen &amp; <span class="number">0x7f8</span>) &gt;&gt; <span class="number">3</span>);     <span class="comment">//frame length:value    中间8bits</span></span><br><span class="line">    p_adts_header[<span class="number">5</span>] = (<span class="type">uint8_t</span>)((adtsLen &amp; <span class="number">0x7</span>) &lt;&lt; <span class="number">5</span>);       <span class="comment">//frame length:value    低3bits</span></span><br><span class="line">    p_adts_header[<span class="number">5</span>] |= <span class="number">0x1f</span>;                                 <span class="comment">//buffer fullness:0x7ff 高5bits</span></span><br><span class="line">    p_adts_header[<span class="number">6</span>] = <span class="number">0xfc</span>;      <span class="comment">//‭11111100‬       //buffer fullness:0x7ff 低6bits</span></span><br><span class="line">    <span class="comment">// number_of_raw_data_blocks_in_frame：</span></span><br><span class="line">    <span class="comment">//    表示ADTS帧中有number_of_raw_data_blocks_in_frame + 1个AAC原始帧。</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">char</span> errors[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> *in_filename = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">char</span> *aac_filename = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    FILE *aac_fd = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> audio_index = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> len = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    AVFormatContext *ifmt_ctx = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket pkt;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置打印级别</span></span><br><span class="line">    av_log_set_level(AV_LOG_DEBUG);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(argc &lt; <span class="number">3</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;the count of parameters should be more than three!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    in_filename = argv[<span class="number">1</span>];      <span class="comment">// 输入文件</span></span><br><span class="line">    aac_filename = argv[<span class="number">2</span>];     <span class="comment">// 输出文件</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(in_filename == <span class="literal">NULL</span> || aac_filename == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;src or dts file is null, plz check them!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    aac_fd = fopen(aac_filename, <span class="string">&quot;wb&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!aac_fd)</span><br><span class="line">    &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;Could not open destination file %s\n&quot;</span>, aac_filename);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 打开输入文件</span></span><br><span class="line">    <span class="keyword">if</span>((ret = avformat_open_input(&amp;ifmt_ctx, in_filename, <span class="literal">NULL</span>, <span class="literal">NULL</span>)) &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        av_strerror(ret, errors, <span class="number">1024</span>);</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;Could not open source file: %s, %d(%s)\n&quot;</span>,</span><br><span class="line">               in_filename,</span><br><span class="line">               ret,</span><br><span class="line">               errors);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取解码器信息</span></span><br><span class="line">    <span class="keyword">if</span>((ret = avformat_find_stream_info(ifmt_ctx, <span class="literal">NULL</span>)) &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        av_strerror(ret, errors, <span class="number">1024</span>);</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;failed to find stream information: %s, %d(%s)\n&quot;</span>,</span><br><span class="line">               in_filename,</span><br><span class="line">               ret,</span><br><span class="line">               errors);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// dump媒体信息</span></span><br><span class="line">    av_dump_format(ifmt_ctx, <span class="number">0</span>, in_filename, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化packet</span></span><br><span class="line">    av_init_packet(&amp;pkt);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找audio对应的steam index</span></span><br><span class="line">    audio_index = av_find_best_stream(ifmt_ctx, AVMEDIA_TYPE_AUDIO, <span class="number">-1</span>, <span class="number">-1</span>, <span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span>(audio_index &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;Could not find %s stream in input file %s\n&quot;</span>,</span><br><span class="line">               av_get_media_type_string(AVMEDIA_TYPE_AUDIO),</span><br><span class="line">               in_filename);</span><br><span class="line">        <span class="keyword">return</span> AVERROR(EINVAL);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 打印AAC级别</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;audio profile:%d, FF_PROFILE_AAC_LOW:%d\n&quot;</span>,</span><br><span class="line">           ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;profile,</span><br><span class="line">           FF_PROFILE_AAC_LOW);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;codec_id != AV_CODEC_ID_AAC)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;the media file no contain AAC stream, it&#x27;s codec_id is %d\n&quot;</span>,</span><br><span class="line">               ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;codec_id);</span><br><span class="line">        <span class="keyword">goto</span> failed;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 读取媒体文件，并把aac数据帧写入到本地文件</span></span><br><span class="line">    <span class="keyword">while</span>(av_read_frame(ifmt_ctx, &amp;pkt) &gt;=<span class="number">0</span> )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(pkt.stream_index == audio_index)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">char</span> adts_header_buf[<span class="number">7</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">            adts_header(adts_header_buf, pkt.size,</span><br><span class="line">                        ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;profile,</span><br><span class="line">                        ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;sample_rate,</span><br><span class="line">                        ifmt_ctx-&gt;streams[audio_index]-&gt;codecpar-&gt;channels);</span><br><span class="line">            fwrite(adts_header_buf, <span class="number">1</span>, <span class="number">7</span>, aac_fd);  <span class="comment">// 写adts header , ts流不适用，ts流分离出来的packet带了adts header</span></span><br><span class="line">            len = fwrite( pkt.data, <span class="number">1</span>, pkt.size, aac_fd);   <span class="comment">// 写adts data</span></span><br><span class="line">            <span class="keyword">if</span>(len != pkt.size)</span><br><span class="line">            &#123;</span><br><span class="line">                av_log(<span class="literal">NULL</span>, AV_LOG_DEBUG, <span class="string">&quot;warning, length of writed data isn&#x27;t equal pkt.size(%d, %d)\n&quot;</span>,</span><br><span class="line">                       len,</span><br><span class="line">                       pkt.size);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        av_packet_unref(&amp;pkt);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">failed:</span><br><span class="line">    <span class="comment">// 关闭输入文件</span></span><br><span class="line">    <span class="keyword">if</span>(ifmt_ctx)</span><br><span class="line">    &#123;</span><br><span class="line">        avformat_close_input(&amp;ifmt_ctx);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(aac_fd)</span><br><span class="line">    &#123;</span><br><span class="line">        fclose(aac_fd);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/dreamInTheWorld/article/details/130600690">https://blog.csdn.net/dreamInTheWorld/article/details/130600690</a></p>
 
       
     </div>
