@@ -152,6 +152,110 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/01/20/Go-%E8%A7%A3%E6%9E%90JSON/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/01/20/Go-%E8%A7%A3%E6%9E%90JSON/" class="post-title-link" itemprop="url">Go-解析JSON</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-01-20 09:48:43" itemprop="dateCreated datePublished" datetime="2024-01-20T09:48:43+08:00">2024-01-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-21 21:32:27" itemprop="dateModified" datetime="2024-01-21T21:32:27+08:00">2024-01-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="编码JSON"><a href="#编码JSON" class="headerlink" title="编码JSON"></a>编码JSON</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 编码 json</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Marshal</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>)</span><br><span class="line"><span class="comment">// 格式化编码</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MarshalIndent</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;, prefix, indent <span class="type">string</span>)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="基本序列化"><a href="#基本序列化" class="headerlink" title="基本序列化"></a>基本序列化</h2><p>通过结构体生成 JSON，示例代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> user <span class="keyword">struct</span> &#123;</span><br><span class="line">    Id       <span class="type">int</span></span><br><span class="line">    Name     <span class="type">string</span></span><br><span class="line">    Subjects []<span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewUser</span><span class="params">(id <span class="type">int</span>, name <span class="type">string</span>, subjects []<span class="type">string</span>)</span></span> *user &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;user&#123;</span><br><span class="line">        Id:       id,</span><br><span class="line">        Name:     name,	</span><br><span class="line">        Subjects: subjects,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	u := NewUser(<span class="number">1</span>, <span class="string">&quot;小明&quot;</span>, []<span class="type">string</span>&#123;<span class="string">&quot;c++&quot;</span>, <span class="string">&quot;golang&quot;</span>&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> jsUser, err := json.Marshal(u); err == <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="type">string</span>(jsUser))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过 map 生成 JSON，示例代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 创建一个保存键值对的映射</span></span><br><span class="line">    user := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;)</span><br><span class="line">    user[<span class="string">&quot;name&quot;</span>] = <span class="string">&quot;小明&quot;</span></span><br><span class="line">    user[<span class="string">&quot;age&quot;</span>] = <span class="number">18</span></span><br><span class="line">    user[<span class="string">&quot;subjects &quot;</span>] = []<span class="type">string</span>&#123;<span class="string">&quot;Go&quot;</span>, <span class="string">&quot;C++&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> jsUser, err := json.Marshal(user); err == <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="type">string</span>(jsUser))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：结构体中各个字段名的<strong>首字母必须大写</strong>，只有导出的字段首字母是大写才能被外部包访问。</p>
+<h2 id="使用tag指定字段名"><a href="#使用tag指定字段名" class="headerlink" title="使用tag指定字段名"></a>使用tag指定字段名</h2><p>默认情况下使用结构体的字段名，可以通过给结构体字段添加 <code>tag</code> 来指定序列化生成的字段名。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> user <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// Id 不会导出到 JSON 中</span></span><br><span class="line">	Id <span class="type">int</span> <span class="string">`json:&quot;-&quot;`</span></span><br><span class="line">	<span class="comment">// Name 的键改成 uname</span></span><br><span class="line">	Name <span class="type">string</span> <span class="string">`json:&quot;uname&quot;`</span></span><br><span class="line">	<span class="comment">// 如果 Subjects 为空，不输出到 JSON 中</span></span><br><span class="line">	Subjects []<span class="type">string</span> <span class="string">`json:&quot;subjects,omitempty&quot;`</span></span><br><span class="line">	<span class="comment">// 转换为字符串类型输出</span></span><br><span class="line">	Age <span class="type">int</span> <span class="string">`json:&quot;age,string&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	u := user&#123;</span><br><span class="line">		Id:   <span class="number">1</span>,</span><br><span class="line">		Name: <span class="string">&quot;小明&quot;</span>,</span><br><span class="line">		Age:  <span class="number">18</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> jsUser, err := json.MarshalIndent(u, <span class="string">&quot;&quot;</span>, <span class="string">&quot;  &quot;</span>); err == <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="type">string</span>(jsUser))</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">        // 输出结果</span></span><br><span class="line"><span class="comment">        &#123;</span></span><br><span class="line"><span class="comment">         &quot;uname&quot;: &quot;小明&quot;,</span></span><br><span class="line"><span class="comment">         &quot;age&quot;: &quot;18&quot;</span></span><br><span class="line"><span class="comment">        &#125;</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总结：</p>
+<ol>
+<li>字段的 <code>tag</code> 是 <code>-</code>，那么这个字段不会输出到 JSON。</li>
+<li><code>tag</code> 中带有自定义名称，那么这个自定义名称会出现在 JSON 的字段名中。</li>
+<li><code>tag</code> 中如果带有 <code>,omitempty</code> 选项，那么如果该字段值为空，就不会输出到 JSON 串中。</li>
+<li>如果字段类型是 bool、int、int64 等，而 <code>tag</code> 中带有 <code>,string</code> 选项，那么这个字段在输出到 JSON 的时候会把该字段的值转换成字符串。</li>
+</ol>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://www.liwenzhou.com/posts/Go/json-tricks/#c-0-0-1">https://www.liwenzhou.com/posts/Go/json-tricks/#c-0-0-1</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/01/10/JavaScript%E8%BF%9B%E9%98%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -831,7 +935,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-16 18:52:58" itemprop="dateModified" datetime="2024-01-16T18:52:58+08:00">2024-01-16</time>
+      <time title="Modified: 2024-01-20 08:33:57" itemprop="dateModified" datetime="2024-01-20T08:33:57+08:00">2024-01-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1303,7 +1407,7 @@
 </ul>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 检测 userAgent（浏览器信息）</span></span></span><br><span class="line"><span class="language-javascript">      !(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">const</span> userAgent = navigator.<span class="property">userAgent</span>;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 验证是否为Android或iPhone</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">const</span> android = userAgent.<span class="title function_">match</span>(<span class="regexp">/(Android);?[\s\/]+([\d.]+)?/</span>);</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">const</span> iphone = userAgent.<span class="title function_">match</span>(<span class="regexp">/(iPhone\sOS)\s([\d_]+)/</span>);</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 如果是Android或iPhone，则跳转至移动站点</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">if</span> (android || iphone) &#123;</span></span><br><span class="line"><span class="language-javascript">          location.<span class="property">href</span> = <span class="string">&quot;http://www.baidu.com&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">      &#125;)();</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    PC页面</span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="histroy对象"><a href="#histroy对象" class="headerlink" title="histroy对象"></a>histroy对象</h2><p>history 对象主要管理历史记录， 该对象与浏览器地址栏的操作相对应，如前进、后退等</p>
+<h2 id="histroy对象"><a href="#histroy对象" class="headerlink" title="histroy对象"></a>histroy对象</h2><p>history 对象主要管理历史记录， 该对象与浏览器地址栏的操作相对应，如前进、后退等。</p>
 <table>
 <thead>
 <tr>
@@ -1324,16 +1428,14 @@
 <td>前进后退功能 <br>参数 1：前进一个页面，参数 -1：后退一个页面</td>
 </tr>
 </tbody></table>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// localstorage 存储的是字符串</span></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 1. 存储</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="string">&quot;age&quot;</span>, <span class="number">18</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 2. 获取</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">localStorage</span>.<span class="title function_">getItem</span>(<span class="string">&quot;age&quot;</span>));</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 3. 删除</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">localStorage</span>.<span class="title function_">removeItem</span>(<span class="string">&quot;age&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="本地存储"><a href="#本地存储" class="headerlink" title="本地存储"></a>本地存储</h2><p>本地存储：将数据存储在本地浏览器中。</p>
 <p>常见的使用场景：</p>
 <p><a target="_blank" rel="noopener" href="https://todomvc.com/examples/vanilla-es6/">https://todomvc.com/examples/vanilla-es6/</a>    页面刷新数据不丢失</p>
 <p>好处：</p>
 <p>1、页面刷新或者关闭不丢失数据，实现数据持久化</p>
 <p>2、容量较大，sessionStorage 和 localStorage 约 5M 左右</p>
-<h3 id="localStorage"><a href="#localStorage" class="headerlink" title="localStorage"></a>localStorage</h3><p>作用： 数据可以<strong>长期保留</strong>在本地浏览器中，刷新页面和关闭页面，数据也不会丢失</p>
-<p>特性：可以多窗口（页面）共享（同一浏览器可以共享），以键值对的形式存储，并且存储的是<strong>字符串</strong>， 省略了window</p>
+<h3 id="localStorage"><a href="#localStorage" class="headerlink" title="localStorage"></a>localStorage</h3><p>作用： 数据可以<strong>长期保留</strong>在本地浏览器中，刷新页面和关闭页面，数据也不会丢失。</p>
+<p>特性：可以多窗口（页面）共享（同一浏览器可以共享），以键值对的形式存储，并且存储的是<strong>字符串</strong>， 省略了 window。</p>
 <p>语法：</p>
 <ol>
 <li>增加&#x2F;修改数据：<code>localStorage.setItem(key, value)</code></li>
@@ -1355,8 +1457,8 @@
 <li>获取：<code>sessionStorage.getItem(key)</code></li>
 <li>删除：<code>sessionStorage.removeItem(key)</code></li>
 </ol>
-<h3 id="存储复杂数据类型"><a href="#存储复杂数据类型" class="headerlink" title="存储复杂数据类型"></a>存储复杂数据类型</h3><p>问题：本地只能存储字符串，无法存储复杂数据类型.</p>
-<p>解决：需要将复杂数据类型转换成 JSON 字符串，在存储到本地</p>
+<h3 id="存储复杂数据类型"><a href="#存储复杂数据类型" class="headerlink" title="存储复杂数据类型"></a>存储复杂数据类型</h3><p>问题：本地只能存储字符串，无法存储复杂数据类型。</p>
+<p>解决：需要将复杂数据类型转换成 JSON 字符串，在存储到本地。</p>
 <p>语法：<code>JSON.stringify(复杂数据类型)</code></p>
 <p>JSON字符串：</p>
 <ul>
@@ -3935,90 +4037,6 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/12/24/Go%E6%93%8D%E4%BD%9CMySQL/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/12/24/Go%E6%93%8D%E4%BD%9CMySQL/" class="post-title-link" itemprop="url">Go操作MySQL</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-12-24 21:13:18" itemprop="dateCreated datePublished" datetime="2023-12-24T21:13:18+08:00">2023-12-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-31 12:57:37" itemprop="dateModified" datetime="2023-12-31T12:57:37+08:00">2023-12-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/12/24/Go-HTTP%E7%9A%84Swagger%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -5772,7 +5790,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/12/09/Golang%E6%B5%8B%E8%AF%95/">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/12/09/Go-%E6%B5%8B%E8%AF%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -5790,7 +5808,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/12/09/Golang%E6%B5%8B%E8%AF%95/" class="post-title-link" itemprop="url">Golang测试</a>
+          <a href="/2023/12/09/Go-%E6%B5%8B%E8%AF%95/" class="post-title-link" itemprop="url">Go-测试</a>
         </h2>
 
         <div class="post-meta-container">
@@ -5808,7 +5826,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:39:39" itemprop="dateModified" datetime="2023-12-30T22:39:39+08:00">2023-12-30</time>
+      <time title="Modified: 2024-01-21 21:31:07" itemprop="dateModified" datetime="2024-01-21T21:31:07+08:00">2024-01-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
