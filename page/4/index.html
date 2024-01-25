@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-count">75</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,201 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/10/06/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BEdge%E9%9B%86%E7%BE%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/06/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BEdge%E9%9B%86%E7%BE%A4/" class="post-title-link" itemprop="url">SRS流媒体服务器之Edge集群</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-10-06 17:24:19" itemprop="dateCreated datePublished" datetime="2023-10-06T17:24:19+08:00">2023-10-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:37:34" itemprop="dateModified" datetime="2023-12-30T22:37:34+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SRS/" itemprop="url" rel="index"><span itemprop="name">SRS</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="Edge集群原理和配置"><a href="#Edge集群原理和配置" class="headerlink" title="Edge集群原理和配置"></a>Edge集群原理和配置</h1><h2 id="Edge集群简介"><a href="#Edge集群简介" class="headerlink" title="Edge集群简介"></a>Edge集群简介</h2><p>Edge模式中，中心节点叫Origin（源站），边缘节点叫做Edge（边缘）。</p>
+<p>所谓边缘Edge服务器，就是边缘直播缓存服务器，配置时指定为remote模式和origin（指定一个或多个源站IP），这个边缘Edge服务器就是Origin（源站）的缓存了。</p>
+<p>当用户推流到边缘服务器时，边缘直接将流转发给源站：</p>
+<ul>
+<li>譬如源站在北京BGP机房，湖南有个电信ADSL用户要推流发布自己的直播流，要是直接推流到北京BGP可能效果不是很好，可以在湖南电信机房部署一个边缘，用户推流到湖南边缘，边缘转发给北京源站BGP。</li>
+<li>当用户播放边缘服务器的流时，边缘服务器看有没有缓存，若缓存了就直接将流发给客户端。 若没有缓存，则发起一路回源链接，从源站取数据源源不断放到自己的缓存队列。也就是说多个客户端连接到边缘时，只有一路回源。</li>
+<li>这种结构在CDN是最典型的部署结构。譬如北京源站， 在全国32个省每个省都部署了10台服务器，一共就有320台边缘，假设每个省1台边缘服务器都有 2000用户观看，那么就有64万用户，每秒钟集群发送640Gbps数据；而回源链接只有320个， 实现了大规模分发。</li>
+<li>边缘Edge服务器，实际上是解决大并发问题产生的分布式集群结构。SRS的边缘可以指定多个源站， 在源站出现故障时会自动切换到下一个源站，不影响用户观看，具有最佳的容错性，用户完全不会觉察。</li>
+</ul>
+<img src="/2023/10/06/SRS%E6%B5%81%E5%AA%92%E4%BD%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B9%8BEdge%E9%9B%86%E7%BE%A4/Edge集群.png" alt="Edge集群" style="zoom:50%;">
+
+<h2 id="Edge适用场景"><a href="#Edge适用场景" class="headerlink" title="Edge适用场景"></a>Edge适用场景</h2><ul>
+<li>CDN&#x2F;VDN大规模集群，客户众多流众多需要按需回源。</li>
+<li>小规模集群，但是流比较多，需要按需回源。</li>
+<li>骨干带宽低，边缘服务器强悍，可以使用多层Edge，降低上层BGP带宽。</li>
+</ul>
+<p>注意：Edge可以从源站拉流，也可以将流转发给源站。也就是说，<strong>播放Edge上的流时，Edge会回源拉流；推流到Edge上时，Edge会直接将流转发给源站</strong>。</p>
+<h2 id="Edge集群部署实例"><a href="#Edge集群部署实例" class="headerlink" title="Edge集群部署实例"></a>Edge集群部署实例</h2><h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>部署两个源站，两个边缘。</p>
+<p>修改<code>conf/origin.conf</code>，启动<code>./objs/srs -c conf/origin.conf</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">listen              1935;</span><br><span class="line">max_connections     1000;</span><br><span class="line">pid                 ./objs/origin.pid;</span><br><span class="line">daemon              off;</span><br><span class="line">srs_log_tank        console;</span><br><span class="line">http_server &#123;</span><br><span class="line">    enabled         on;</span><br><span class="line">    listen          8081;</span><br><span class="line">    dir             ./objs/nginx/html;</span><br><span class="line">&#125;</span><br><span class="line">vhost __defaultVhost__ &#123;</span><br><span class="line">    http_remux &#123;</span><br><span class="line">        enabled     on;</span><br><span class="line">        mount       [vhost]/[app]/[stream].flv;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改<code>conf/origin2.conf</code>，启动<code>./objs/srs -c conf/origin2.conf</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">listen              1936;</span><br><span class="line">max_connections     1000;</span><br><span class="line">pid                 ./objs/origin2.pid;</span><br><span class="line">daemon              off;</span><br><span class="line">srs_log_tank        console;</span><br><span class="line">http_server &#123;</span><br><span class="line">    enabled         on;</span><br><span class="line">    listen          8081;</span><br><span class="line">    dir             ./objs/nginx/html;</span><br><span class="line">&#125;</span><br><span class="line">vhost __defaultVhost__ &#123;</span><br><span class="line">    http_remux &#123;</span><br><span class="line">        enabled     on;</span><br><span class="line">        mount       [vhost]/[app]/[stream].flv;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改<code>conf/edge1.conf</code>，启动<code>./objs/srs -c conf/edge1.conf</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">listen              19350;</span><br><span class="line">max_connections     1000;</span><br><span class="line">pid                 objs/edge1.pid;</span><br><span class="line">daemon              off;</span><br><span class="line">srs_log_tank        console;</span><br><span class="line">vhost __defaultVhost__ &#123;</span><br><span class="line">    cluster &#123;</span><br><span class="line">        mode            remote;</span><br><span class="line">        origin          127.0.0.1:1935 127.0.0.1:1936;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改<code>conf/edge2.conf</code>，启动<code>./objs/srs -c conf/edge2.conf</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">listen              19351;</span><br><span class="line">max_connections     1000;</span><br><span class="line">pid                 objs/edge2.pid;</span><br><span class="line">daemon              off;</span><br><span class="line">srs_log_tank        console;</span><br><span class="line">vhost __defaultVhost__ &#123;</span><br><span class="line">    cluster &#123;</span><br><span class="line">        mode            remote;</span><br><span class="line">        origin          127.0.0.1:1935 127.0.0.1:1936;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p><strong>正常推拉流测试</strong></p>
+<p>推流到边缘19351服务。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -re  -i test.flv  -vcodec copy -acodec copy -f flv -y rtmp://127.0.0.1:19351/live/livestream</span><br></pre></td></tr></table></figure>
+
+<p>拉流测试。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Origin</span></span><br><span class="line">ffplay rtmp://127.0.0.1/live/livestream</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Edge1</span></span><br><span class="line">ffplay rtmp://127.0.0.1:19350/live/livestream</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Edge2</span></span><br><span class="line">ffplay rtmp://127.0.0.1:19351/live/livestream</span><br></pre></td></tr></table></figure>
+
+<p><strong>测试同时推流一样的路径</strong></p>
+<p>第一次推流到边缘19350，此时源站1935接收到推流数据。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -re  -i test.flv  -vcodec copy -acodec copy -f flv -y rtmp://127.0.0.1:19350/live/livestream</span><br></pre></td></tr></table></figure>
+
+<p>第二次推流到边缘19351，此时源站1935接收到推流数据，由于同样的推流路径，发生报错。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -re  -i test2.flv  -vcodec copy -acodec copy -f flv -y rtmp://127.0.0.1:19350/live/livestream</span><br></pre></td></tr></table></figure>
+
+<p>第二次推流到边缘19351，发生报错内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[2023-10-03 19:26:02.729][ERROR][96226][225iw4qp][35] serve error code=1028(StreamBusy)(Stream already exists or busy) : service cycle : rtmp: stream service : rtmp: stream /live/livestream is busy</span><br><span class="line">thread [96226][225iw4qp]: do_cycle() [./src/app/srs_app_rtmp_conn.cpp:263][errno=35]</span><br><span class="line">thread [96226][225iw4qp]: service_cycle() [./src/app/srs_app_rtmp_conn.cpp:457][errno=35]</span><br><span class="line">thread [96226][225iw4qp]: acquire_publish() [./src/app/srs_app_rtmp_conn.cpp:1079][errno=35](Resource temporarily unavailable)</span><br></pre></td></tr></table></figure>
+
+<p>第三次推流到边缘19351正常（此时由于轮询到源站1936），此时源站1936接收到推流数据。此时无法保证源的唯一性，两个源站有同样的路径，但是播放内容不一样。</p>
+<p><strong>测试源站故障情况</strong></p>
+<p>推流到边缘19350。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -re  -i test.flv  -vcodec copy -acodec copy -f flv -y rtmp://127.0.0.1:19350/live/livestream</span><br></pre></td></tr></table></figure>
+
+<p>边缘19351拉流。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffplay rtmp://127.0.0.1:19351/live/livestream</span><br></pre></td></tr></table></figure>
+
+<p>断开源站1935（需要边缘推送，边缘只会往一个源站去推送），发现导致推流端断开，推流再推送的时候就会切换源站。</p>
+<h1 id="Edge集群源码"><a href="#Edge集群源码" class="headerlink" title="Edge集群源码"></a>Edge集群源码</h1><h2 id="核心类"><a href="#核心类" class="headerlink" title="核心类"></a>核心类</h2><ul>
+<li><code>SrsPublishEdge</code>：推流到源站，实际是调用<code>SrsEdgeForwarder</code>来实现。</li>
+<li><code>SrsPlayEdge</code>：从源站拉流，实际是调用<code>SrsEdgeIngester</code>来实现。</li>
+</ul>
+<h2 id="推流端"><a href="#推流端" class="headerlink" title="推流端"></a>推流端</h2><p>边缘结点推流到源站。顺序跟踪源码有时候不好跟，可以通过GDB工具反向查看调用堆栈。</p>
+<ul>
+<li>通过edge配置文件，断点到<code>SrsConfig::get_vhost_is_edge</code>，查看堆栈内容，主要是判断是否配置了边缘结点。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">#0  SrsConfig::get_vhost_is_edge (this=0xa0fcf0, vhost=&quot;defaultVhost&quot;)</span><br><span class="line">    at src/app/srs_app_config.cpp:5063</span><br><span class="line">#1  0x00000000004d4ac8 in SrsRtmpConn::stream_service_cycle (this=0xa2fc50)</span><br><span class="line">    at src/app/srs_app_rtmp_conn.cpp:472</span><br><span class="line">#2  0x00000000004d4141 in SrsRtmpConn::service_cycle (this=0xa2fc50) at src/app/srs_app_rtmp_conn.cpp:388</span><br><span class="line">#3  0x00000000004d2f09 in SrsRtmpConn::do_cycle (this=0xa2fc50) at src/app/srs_app_rtmp_conn.cpp:209</span><br><span class="line">#4  0x00000000004d10fb in SrsConnection::cycle (this=0xa2fcc8) at src/app/srs_app_conn.cpp:171</span><br><span class="line">#5  0x0000000000509c88 in SrsSTCoroutine::cycle (this=0xa2ff00) at src/app/srs_app_st.cpp:198</span><br><span class="line">#6  0x0000000000509cfd in SrsSTCoroutine::pfn (arg=0xa2ff00) at src/app/srs_app_st.cpp:213</span><br><span class="line">#7  0x00000000005bdd9d in st_thread_main () at sched.c:337</span><br><span class="line">#8  0x00000000005be515 in st_thread_create (start=0x5bd719 &lt;st_vp_schedule+170&gt;,</span><br><span class="line">    arg=0x700000001, joinable=1, stk_size=1) at sched.c:616</span><br><span class="line">#0  SrsConfig::get_vhost_is_edge (this=0xa0fcf0, vhost=0xa10b50) at src/app/srs_app_config.cpp:5069</span><br><span class="line">#1  0x0000000000537edc in SrsConfig::get_vhost_is_edge (this=0xa0fcf0, vhost=&quot;defaultVhost&quot;)</span><br><span class="line">    at src/app/srs_app_config.cpp:5065</span><br><span class="line">#2  0x00000000004d4ac8 in SrsRtmpConn::stream_service_cycle (this=0xa2fc50)</span><br><span class="line">    at src/app/srs_app_rtmp_conn.cpp:472</span><br><span class="line">#3  0x00000000004d4141 in SrsRtmpConn::service_cycle (this=0xa2fc50) at src/app/srs_app_rtmp_conn.cpp:388</span><br><span class="line">#4  0x00000000004d2f09 in SrsRtmpConn::do_cycle (this=0xa2fc50) at src/app/srs_app_rtmp_conn.cpp:209</span><br><span class="line">#5  0x00000000004d10fb in SrsConnection::cycle (this=0xa2fcc8) at src/app/srs_app_conn.cpp:171</span><br><span class="line">#6  0x0000000000509c88 in SrsSTCoroutine::cycle (this=0xa2ff00) at src/app/srs_app_st.cpp:198</span><br><span class="line">#7  0x0000000000509cfd in SrsSTCoroutine::pfn (arg=0xa2ff00) at src/app/srs_app_st.cpp:213</span><br><span class="line">#8  0x00000000005bdd9d in st_thread_main () at sched.c:337</span><br><span class="line">#9  0x00000000005be515 in st_thread_create (start=0x5bd719 &lt;st_vp_schedule+170&gt;,</span><br><span class="line">    arg=0x700000001, joinable=1, stk_size=1) at sched.c:616</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>断点<code>SrsConfig::get_vhost_edge_origin</code>。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#0  SrsConfig::get_vhost_edge_origin (this=0xa0fcf0, vhost=&quot;defaultVhost&quot;)</span><br><span class="line">    at src/app/srs_app_config.cpp:5091</span><br><span class="line">#1  0x000000000057ab62 in SrsEdgeForwarder::start (this=0xa3b5d0) at src/app/srs_app_edge.cpp:482</span><br><span class="line">#2  0x000000000057c4b2 in SrsPublishEdge::on_client_publish (this=0xa3aa50) at src/app/srs_app_edge.cpp:777</span><br><span class="line">#3  0x00000000004e74a9 in SrsSource::on_edge_start_publish (this=0xa3af10)</span><br><span class="line">    at src/app/srs_app_source.cpp:2592</span><br><span class="line">#4  0x00000000004d8996 in SrsRtmpConn::acquire_publish (this=0xa2fc50, source=0xa3af10)</span><br><span class="line">    at src/app/srs_app_rtmp_conn.cpp:936</span><br><span class="line">#5  0x00000000004d7a74 in SrsRtmpConn::publishing (this=0xa2fc50, source=0xa3af10)</span><br><span class="line">    at src/app/srs_app_rtmp_conn.cpp:822</span><br><span class="line">#6  0x00000000004d5229 in SrsRtmpConn::stream_service_cycle (this=0xa2fc50)</span><br><span class="line">    at src/app/srs_app_rtmp_conn.cpp:534</span><br><span class="line">#7  0x00000000004d4141 in SrsRtmpConn::service_cycle (this=0xa2fc50) at src/app/srs_app_rtmp_conn.cpp:388</span><br><span class="line">#8  0x00000000004d2f09 in SrsRtmpConn::do_cycle (this=0xa2fc50) at src/app/srs_app_rtmp_conn.cpp:209</span><br><span class="line">#9  0x00000000004d10fb in SrsConnection::cycle (this=0xa2fcc8) at src/app/srs_app_conn.cpp:171</span><br><span class="line">#10 0x0000000000509c88 in SrsSTCoroutine::cycle (this=0xa2ff00) at src/app/srs_app_st.cpp:198</span><br><span class="line">#11 0x0000000000509cfd in SrsSTCoroutine::pfn (arg=0xa2ff00) at src/app/srs_app_st.cpp:213</span><br><span class="line">#12 0x00000000005bdd9d in st_thread_main () at sched.c:337</span><br><span class="line">#13 0x00000000005be515 in st_thread_create (start=0x5bd719 &lt;st_vp_schedule+170&gt;, </span><br><span class="line">    arg=0x700000001, joinable=1, stk_size=1) at sched.c:616</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过是否配置<code>info-&gt;edge</code>走不同分支。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsRtmpConn::acquire_publish</span><span class="params">(SrsSource* source)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    SrsRequest* req = info-&gt;req;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!source-&gt;<span class="built_in">can_publish</span>(info-&gt;edge)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_new</span>(ERROR_SYSTEM_STREAM_BUSY, </span><br><span class="line">                             <span class="string">&quot;rtmp: stream %s is busy&quot;</span>, </span><br><span class="line">                             req-&gt;<span class="built_in">get_stream_url</span>().<span class="built_in">c_str</span>());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// when edge, ignore the publish event, directly proxy it.</span></span><br><span class="line">    <span class="keyword">if</span> (info-&gt;edge) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((err = source-&gt;<span class="built_in">on_edge_start_publish</span>()) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;rtmp: edge start publish&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;  <span class="comment">//非边缘结点分支</span></span><br><span class="line">        <span class="keyword">if</span> ((err = source-&gt;<span class="built_in">on_publish</span>()) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;rtmp: source publish&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>上述<code>source-&gt;on_edge_start_publish</code>最终调用到<code>SrsPublishEdge::on_client_publish</code>，其中内部实际调用了<code>forwarder-&gt;start</code>启动协程推流到源站。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsPublishEdge::on_client_publish</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// error when not init state.</span></span><br><span class="line">    <span class="keyword">if</span> (state != SrsEdgeStateInit) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_new</span>(ERROR_RTMP_EDGE_PUBLISH_STATE, <span class="string">&quot;invalid state&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// @see https://github.com/ossrs/srs/issues/180</span></span><br><span class="line">    <span class="comment">// to avoid multiple publish the same stream on the same edge,</span></span><br><span class="line">    <span class="comment">// directly enter the publish stage.</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        SrsEdgeState pstate = state;</span><br><span class="line">        state = SrsEdgeStatePublish;</span><br><span class="line">        <span class="built_in">srs_trace</span>(<span class="string">&quot;edge change from %d to state %d (push).&quot;</span>, pstate, state);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// start to forward stream to origin.</span></span><br><span class="line">    err = forwarder-&gt;<span class="built_in">start</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// @see https://github.com/ossrs/srs/issues/180</span></span><br><span class="line">    <span class="comment">// when failed, revert to init</span></span><br><span class="line">    <span class="keyword">if</span> (err != srs_success) &#123;</span><br><span class="line">        SrsEdgeState pstate = state;</span><br><span class="line">        state = SrsEdgeStateInit;</span><br><span class="line">        <span class="built_in">srs_trace</span>(<span class="string">&quot;edge revert from %d to state %d (push), error %s&quot;</span>, </span><br><span class="line">                  pstate, state, <span class="built_in">srs_error_desc</span>(err).<span class="built_in">c_str</span>());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>协程函数读取数据并推送到源端。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsEdgeForwarder::do_cycle</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    sdk-&gt;<span class="built_in">set_recv_timeout</span>(SRS_CONSTS_RTMP_PULSE);</span><br><span class="line">    </span><br><span class="line">    SrsPithyPrint* pprint = SrsPithyPrint::<span class="built_in">create_edge</span>();</span><br><span class="line">    <span class="built_in">SrsAutoFree</span>(SrsPithyPrint, pprint);</span><br><span class="line">    </span><br><span class="line">    <span class="function">SrsMessageArray <span class="title">msgs</span><span class="params">(SYS_MAX_EDGE_SEND_MSGS)</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((err = trd-&gt;<span class="built_in">pull</span>()) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;edge forward pull&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (send_error_code != ERROR_SUCCESS) &#123;</span><br><span class="line">            <span class="built_in">srs_usleep</span>(SRS_EDGE_FORWARDER_TIMEOUT);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// read from client.</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            SrsCommonMessage* msg = <span class="literal">NULL</span>;</span><br><span class="line">            <span class="comment">//sdk 是 edge-&gt;origin的rtmp推流客户端</span></span><br><span class="line">            err = sdk-&gt;<span class="built_in">recv_message</span>(&amp;msg);</span><br><span class="line">            </span><br><span class="line">            <span class="built_in">srs_verbose</span>(<span class="string">&quot;edge loop recv message. ret=%d&quot;</span>, ret);</span><br><span class="line">            <span class="keyword">if</span> (err != srs_success &amp;&amp; <span class="built_in">srs_error_code</span>(err) != ERROR_SOCKET_TIMEOUT) &#123;</span><br><span class="line">                <span class="built_in">srs_error</span>(<span class="string">&quot;edge push get server control message failed. err=%s&quot;</span>,</span><br><span class="line">                          <span class="built_in">srs_error_desc</span>(err).<span class="built_in">c_str</span>());</span><br><span class="line">                send_error_code = <span class="built_in">srs_error_code</span>(err);</span><br><span class="line">                <span class="built_in">srs_error_reset</span>(err);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="built_in">srs_error_reset</span>(err);</span><br><span class="line">            <span class="built_in">srs_freep</span>(msg);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// forward all messages.</span></span><br><span class="line">        <span class="comment">// each msg in msgs.msgs must be free, for the SrsMessageArray never free them.</span></span><br><span class="line">        <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">//读取音视频数据</span></span><br><span class="line">        <span class="keyword">if</span> ((err = queue-&gt;<span class="built_in">dump_packets</span>(msgs.max, msgs.msgs, count)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;queue dumps packets&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        pprint-&gt;<span class="built_in">elapse</span>();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// pithy print</span></span><br><span class="line">        <span class="keyword">if</span> (pprint-&gt;<span class="built_in">can_print</span>()) &#123;</span><br><span class="line">            sdk-&gt;<span class="built_in">kbps_sample</span>(SRS_CONSTS_LOG_EDGE_PUBLISH, pprint-&gt;<span class="built_in">age</span>(), count);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// ignore when no messages.</span></span><br><span class="line">        <span class="keyword">if</span> (count &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">srs_verbose</span>(<span class="string">&quot;edge no packets to push.&quot;</span>);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// sendout messages, all messages are freed by send_and_free_messages().</span></span><br><span class="line">        <span class="comment">//将客户端推流到edge的数据，从edge推送到origin</span></span><br><span class="line">        <span class="keyword">if</span> ((err = sdk-&gt;<span class="built_in">send_and_free_messages</span>(msgs.msgs, count)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;send messages&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>继续跟踪从哪里放数据到队列中，可以找到<code>SrsEdgeForwarder::proxy</code>中调用<code>queue-&gt;enqueue</code>，至于哪里调用<code>SrsEdgeForwarder::proxy</code>可以搜索，或者打个断点，看下堆栈：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#0  SrsEdgeForwarder::proxy (this=0xa3b5b0, msg=0xb10ab0) at src/app/srs_app_edge.cpp:624</span><br><span class="line">#1  0x000000000057c5ee in SrsPublishEdge::on_proxy_publish (this=0xa3aa30, msg=0xb10ab0)</span><br><span class="line">    at src/app/srs_app_edge.cpp:792</span><br><span class="line">#2  0x00000000004e74e2 in SrsSource::on_edge_proxy_publish (this=0xa3aef0, msg=0xb10ab0)</span><br><span class="line">    at src/app/srs_app_source.cpp:2598</span><br><span class="line">#3  0x00000000004d8ea9 in SrsRtmpConn::process_publish_message (this=0xa3ba50, source=0xa3aef0, msg=0xb10ab0) at src/app/srs_app_rtmp_conn.cpp:1006</span><br><span class="line">#4  0x00000000004d8dce in SrsRtmpConn::handle_publish_message (this=0xa3ba50, source=0xa3aef0, msg=0xb10ab0)</span><br><span class="line">    at src/app/srs_app_rtmp_conn.cpp:993</span><br><span class="line">#5  0x00000000005810b6 in SrsPublishRecvThread::consume (this=0x7ffff7f66800, msg=0xb10ab0)</span><br><span class="line">    at src/app/srs_app_recv_thread.cpp:389</span><br><span class="line">#6  0x000000000057fbd4 in SrsRecvThread::do_cycle (this=0x7ffff7f66808)</span><br><span class="line">    at src/app/srs_app_recv_thread.cpp:146</span><br><span class="line">#7  0x000000000057fa25 in SrsRecvThread::cycle (this=0x7ffff7f66808) at src/app/srs_app_recv_thread.cpp:115</span><br><span class="line">#8  0x0000000000509c88 in SrsSTCoroutine::cycle (this=0xa46540) at src/app/srs_app_st.cpp:198</span><br><span class="line">#9  0x0000000000509cfd in SrsSTCoroutine::pfn (arg=0xa46540) at src/app/srs_app_st.cpp:213</span><br><span class="line">#10 0x00000000005bdd9d in _st_thread_main () at sched.c:337</span><br><span class="line">#11 0x00000000005be515 in st_thread_create (start=0xa47720, arg=0x7ffff7f66530, joinable=32767,</span><br><span class="line">    stk_size=-134847200) at sched.c:616</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>SrsRtmpConn::process_publish_message</code>作为边缘结点的话只处理<code>info-&gt;edge</code>分支内的流程。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsRtmpConn::process_publish_message</span><span class="params">(SrsSource* source, SrsCommonMessage* msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// for edge, directly proxy message to origin.</span></span><br><span class="line">    <span class="keyword">if</span> (info-&gt;edge) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((err = source-&gt;<span class="built_in">on_edge_proxy_publish</span>(msg)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;rtmp: proxy publish&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最终一层层调用调用到<code>SrsEdgeForwarder::proxy</code>，<code>queue-&gt;enqueue</code>放入音视频数据。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsPublishEdge::on_proxy_publish</span><span class="params">(SrsCommonMessage* msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> forwarder-&gt;<span class="built_in">proxy</span>(msg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsEdgeForwarder::proxy</span><span class="params">(SrsCommonMessage* msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (send_error_code != ERROR_SUCCESS) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_new</span>(send_error_code, <span class="string">&quot;edge forwarder&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// the msg is auto free by source,</span></span><br><span class="line">    <span class="comment">// so we just ignore, or copy then send it.</span></span><br><span class="line">    <span class="keyword">if</span> (msg-&gt;size &lt;= <span class="number">0</span></span><br><span class="line">        || msg-&gt;header.<span class="built_in">is_set_chunk_size</span>()</span><br><span class="line">        || msg-&gt;header.<span class="built_in">is_window_ackledgement_size</span>()</span><br><span class="line">        || msg-&gt;header.<span class="built_in">is_ackledgement</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    SrsSharedPtrMessage copy;</span><br><span class="line">    <span class="keyword">if</span> ((err = copy.<span class="built_in">create</span>(msg)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;create message&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    copy.stream_id = sdk-&gt;<span class="built_in">sid</span>();</span><br><span class="line">    <span class="keyword">if</span> ((err = queue-&gt;<span class="built_in">enqueue</span>(copy.<span class="built_in">copy</span>())) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;enqueue message&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="拉流端"><a href="#拉流端" class="headerlink" title="拉流端"></a>拉流端</h2><p>边缘结点从源站拉流。</p>
+<ul>
+<li>断点<code>SrsEdgeIngester::do_cycle</code>，拉流端也会有协程函数。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#0  SrsEdgeIngester::do_cycle (this=0xa3b080) at src/app/srs_app_edge.cpp:282</span><br><span class="line">#1  0x000000000057931d in SrsEdgeIngester::cycle (this=0xa3b080) at src/app/srs_app_edge.cpp:243</span><br><span class="line">#2  0x0000000000509c88 in SrsSTCoroutine::cycle (this=0xab72f0) at src/app/srs_app_st.cpp:198</span><br><span class="line">#3  0x0000000000509cfd in SrsSTCoroutine::pfn (arg=0xab72f0) at src/app/srs_app_st.cpp:213</span><br><span class="line">#4  0x00000000005bdd9d in _st_thread_main () at sched.c:337</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>协程函数中调用了<code>SrsEdgeIngester::ingest</code>，读取数据<code>upstream-&gt;recv_message</code>，随后调用<code>process_publish_message</code>，从源站拉流后通过<code>SrsSource</code>分发。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsEdgeIngester::ingest</span><span class="params">(string&amp; redirect)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    SrsPithyPrint* pprint = SrsPithyPrint::<span class="built_in">create_edge</span>();</span><br><span class="line">    <span class="built_in">SrsAutoFree</span>(SrsPithyPrint, pprint);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// we only use the redict once.</span></span><br><span class="line">    <span class="comment">// reset the redirect to empty, for maybe the origin changed.</span></span><br><span class="line">    redirect = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((err = trd-&gt;<span class="built_in">pull</span>()) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;thread quit&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        pprint-&gt;<span class="built_in">elapse</span>();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// pithy print</span></span><br><span class="line">        <span class="keyword">if</span> (pprint-&gt;<span class="built_in">can_print</span>()) &#123;</span><br><span class="line">            upstream-&gt;<span class="built_in">kbps_sample</span>(SRS_CONSTS_LOG_EDGE_PLAY, pprint-&gt;<span class="built_in">age</span>());</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// read from client.</span></span><br><span class="line">        SrsCommonMessage* msg = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">if</span> ((err = upstream-&gt;<span class="built_in">recv_message</span>(&amp;msg)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;recv message&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">srs_assert</span>(msg);</span><br><span class="line">        <span class="built_in">SrsAutoFree</span>(SrsCommonMessage, msg);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> ((err = <span class="built_in">process_publish_message</span>(msg, redirect)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;process message&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2177,163 +2372,6 @@
 </ul>
 <p><strong>SR报⽂的实例</strong></p>
 <img src="/2023/09/23/RTCP%E5%8D%8F%E8%AE%AE/SR报文.png" alt="SR报文" style="zoom:50%;">
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/22/SDP%E5%8D%8F%E8%AE%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/09/22/SDP%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">SDP协议</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-09-22 20:37:35" itemprop="dateCreated datePublished" datetime="2023-09-22T20:37:35+08:00">2023-09-22</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-16 18:45:29" itemprop="dateModified" datetime="2024-01-16T18:45:29+08:00">2024-01-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="SDP介绍"><a href="#SDP介绍" class="headerlink" title="SDP介绍"></a>SDP介绍</h1><p>SDP（Session Description Protocol） 完全是<strong>一种会话描述格式</strong>，它<strong>不属于传输协议</strong>，只使用不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电子邮件以及超文本传输协议（HTTP）。SDP 协议是也是基于文本的协议，这样就能保证协议的可扩展性比较强，这样就使其具有广泛的应用范围。SDP 不支持会话内容或媒体编码的协商，所以在流媒体中只用来描述媒体信息。</p>
-<h1 id="SDP格式"><a href="#SDP格式" class="headerlink" title="SDP格式"></a>SDP格式</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;type&gt;=&lt;value&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p><code>&lt;type&gt;</code>：大小写敏感的一个字符，代表特定的属性，比如 v 代表版本。</p>
-</li>
-<li><p><code>&lt;value&gt;</code>：结构化文本，格式与属性类型有关，UTF8 编码。</p>
-</li>
-<li><p><code>=</code> 两边不允许存在空格。</p>
-</li>
-</ul>
-<h2 id="必需字段"><a href="#必需字段" class="headerlink" title="必需字段"></a>必需字段</h2><ul>
-<li>v&#x3D;（协议版本号），一个会话描述的开始，前一个会话结束标志。</li>
-<li>o&#x3D;（会话源或者会话生成者，以及会话标识符）。</li>
-<li>s&#x3D;（会话名称）这个字段是个文本字符串，可以显示给会话参与者。</li>
-<li>t&#x3D;（会话时间）这个字段指明会话开始时间与结束时间。</li>
-<li>m&#x3D;（媒体）该字段用来指明媒体类型、数据应该发送到的传输端口，传输协议（例如 RTP）以及媒体格式（例如 RTP 负载格式）。</li>
-</ul>
-<h2 id="可选字段"><a href="#可选字段" class="headerlink" title="可选字段"></a>可选字段</h2><p>SDP 可选字段中，一些只能应用于会话级，一些只能应用于媒体级，还有一些可以应用于两种级别。对于应用于两种级别的字段，在某个具体媒体上，<strong>应用于媒体级的字段会覆盖应用于会话级的字段值</strong>。例如，某个字段其会话级的字段值为 X，媒体 1 的该字段值为 Y，那么值 X 应用于会话中除媒体类型 1 之外的所有媒体，而媒体 1 应用值 Y。</p>
-<p>可选字段如下：</p>
-<ul>
-<li>i&#x3D;（会话信息）对字段的文本描述，提供了比会话名称更多的信息。该字段既可以用于会话级也可以用于媒体级。 </li>
-<li>u&#x3D;（描述的 URI 地址）URI 信息，通过这个地址可以获取更多会话相关信息。例如，一个会议可能公布在 WEB 页面上，所以需要该 WEB 的 URI。每个会话只能提供一个 URI。</li>
-<li>E&#x3D;（E-mail 地址）负责会话个体的 E-mail 地址，可以有多个。只能用于会话级别。</li>
-<li>p&#x3D;（电话号码）同 email 一样，多个会话级别。</li>
-<li>c&#x3D;（连接信息）该字段提供连接数据，包括连接类型、网络类型和连接地址。可应用于会话级也可以用于媒体级。</li>
-<li>b&#x3D;（带宽信息）指明带宽需求，单位 kbit&#x2F;s, 可用于两个级别。</li>
-<li>r&#x3D;（重复次数）如果是有规律的日程安排活动，这个字段用来指明会话重复频次和时间。</li>
-<li>z&#x3D;（时区调整）用于按日程安排的有规律活动会话。会话可能会跨时区，避免时区变更造成的混乱。</li>
-<li>k&#x3D;（加密密钥）为了对媒体加密、解密，该字段提供了一个加密密钥或者规定了一个获取密钥的机制。可用于两个级别。</li>
-<li>a&#x3D;（属性）用于描述会话或者某个媒体的额外属性。</li>
-</ul>
-<p>可选字段中，连接信息字段是特别与条件相关的。因为该字段定义了数据应发送到的网络地址，所以必须被包含进会话描述中的某个地方。 </p>
-<h2 id="子字段"><a href="#子字段" class="headerlink" title="子字段"></a>子字段</h2><p>在 SDP 中许多字段采用多个子字段的形式，此时，这些字段值由多个以空格符间隔的多个值组成。格式如下：</p>
-<ul>
-<li>字段 名称&#x3D;&lt;子字段1的值&gt; &lt;子字段2的值&gt; &lt;子字段3的值&gt;</li>
-</ul>
-<p>例如：</p>
-<ul>
-<li>会话源（o） ：有六个子字段：用户名、会话 ID、版本、网络类型、地址类型、地址。 </li>
-<li>连接信息（c）：有三个子字段：网络类型、地址类型和连接地址。同会话源中含义不同，他们表示需要接收媒体数据的网络和地址，而不是生成会话的网络和地址。</li>
-<li>媒体信息（m）：有四个子字段：媒体类型、端口、传输协议、格式。</li>
-</ul>
-<p><strong>媒体信息</strong></p>
-<p>格式： m&#x3D;(媒体类型)（端口）（传送层）（格式列表）。</p>
-<p>媒体类型：音频、视频、应用、数据和控制。</p>
-<p>端口：媒体传送层端口。</p>
-<p>传送层：ip4 上大多基于 rtp&#x2F;udp上传送（RTP&#x2F;AVP）IETF RTP 协议，在 udp 上传输。</p>
-<p>格式列表： 对应对应的音频负载类型（PT）。</p>
-<p>例子：m&#x3D;video 0 RTP&#x2F;AVP 96 </p>
-<p><strong>属性</strong></p>
-<p>属性有两种形式，第一种是特征属性，第二种属于值属性。SDP 描述了多个建议属性。 </p>
-<ul>
-<li><p>特征属性</p>
-<ul>
-<li><p>例如 a&#x3D;sendonly，表明会话描述的发送者只希望发送数据而不打算接收数据，端口号无意义，可以置为 0。 </p>
-</li>
-<li><p>例如 a&#x3D;recvonly，表明这个会话描述的发送者只想接收数据而不打算发送数据。</p>
-</li>
-</ul>
-</li>
-<li><p>值属性</p>
-<ul>
-<li><p>例如 a&#x3D;rtpmp:&lt;负载类型&gt;&lt;编码名称&gt;&#x2F;&lt;时钟速率&gt;[&lt;编码参数&gt;]</p>
-</li>
-<li><p>rtpmap 属性提供了一个在 VoIP 应用中的重要属性使用方法，该属性可用于媒体流，在媒体格式不是静态的RTP负载类型时特别有用。严格来说，“rtpmap”只在使用动态负载类型情况下才是必须的，例如标准的 G.711 语音是静态 RTP 负载类型，采用如下方法就可以对它完整描述：</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m=audio 45678 RTP/AVP 0</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>而对动态负载来说需要指定更多信息才能使远端完全识别到媒体编码，例如 16 位线性编码 16 kHz 取样的立体声音就是一个动态 RTP 负载类型，如果我们采用动态负载类型 98 表示这个媒体流，那么 SDP 格式如下：</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m=audio 45678 RTP/AVP 98 </span><br><span class="line">a=rtpmap 98 L16/16000/2</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
 
       
     </div>
