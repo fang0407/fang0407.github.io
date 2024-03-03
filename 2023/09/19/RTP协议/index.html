@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fang0407.github.io/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/RTP%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png">
 <meta property="article:published_time" content="2023-09-19T12:31:33.000Z">
-<meta property="article:modified_time" content="2024-03-03T08:01:13.406Z">
+<meta property="article:modified_time" content="2024-03-03T10:54:40.745Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fang0407.github.io/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/RTP%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png">
@@ -196,7 +196,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-03-03 16:01:13" itemprop="dateModified" datetime="2024-03-03T16:01:13+08:00">2024-03-03</time>
+      <time title="Modified: 2024-03-03 18:54:40" itemprop="dateModified" datetime="2024-03-03T18:54:40+08:00">2024-03-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -222,38 +222,38 @@
 <img src="/2023/09/19/RTP%E5%8D%8F%E8%AE%AE/RTP报文格式.png" alt="RTP报文格式" style="zoom:100%;">
 
 <ul>
-<li><p>V：RTP 协议的版本号，占 2 位，当前协议版本号为 2。</p>
+<li><p><code>V</code>：RTP 协议的版本号，占 2 位，当前协议版本号为 2。</p>
 </li>
-<li><p>P：填充标志，占 1 位，如果 P&#x3D;1，则在该报文的尾部填充一个或多个额外的八位组，它们不是有效载荷的一部分。</p>
+<li><p><code>P</code>：填充标志，占 1 位，如果 P&#x3D;1，则在该报文的尾部填充一个或多个额外的八位组，它们不是有效载荷的一部分。</p>
 </li>
-<li><p>X：扩展标志，占 1 位，如果 X&#x3D;1，则在 RTP 报头后跟有一个扩展报头。 </p>
+<li><p><code>X</code>：扩展标志，占 1 位，如果 X&#x3D;1，则在 RTP 报头后跟有一个扩展报头。 </p>
 </li>
-<li><p>CC：CSRC 计数器，占 4 位，指示 CSRC 标识符的个数。 </p>
+<li><p><code>CC</code>：CSRC 计数器，占 4 位，指示 CSRC 标识符的个数。 </p>
 </li>
-<li><p>M：标记，占 1 位，不同的有效载荷有不同的含义，对于视频，标记一帧的结束；对于音频，标记帧的开始。</p>
+<li><p><code>M</code>：标记，占 1 位，不同的有效载荷有不同的含义，对于视频，标记一帧的结束；对于音频，标记帧的开始。</p>
 </li>
-<li><p>Payload：有效载荷类型，占 7 位，用于说明 RTP 报文中有效载荷的类型，如 GSM 音频、JPEM 图像等。 </p>
+<li><p><code>Payload</code>：有效载荷类型，占 7 位，用于说明 RTP 报文中有效载荷的类型，如 GSM 音频、JPEM 图像等。 </p>
 </li>
-<li><p>Sequence number：序列号，占 16 位，用于标识发送者所发送的 RTP 报文的序列号，<strong>每发送一个报文，序列号增 1</strong>。<strong>接收者通过序列号来检测报文丢失情况</strong>，重新排序报文，恢复数据。</p>
+<li><p><code>Sequence number</code>：序列号，占 16 位，用于标识发送者所发送的 RTP 报文的序列号，<strong>每发送一个报文，序列号增 1</strong>。<strong>接收者通过序列号来检测报文丢失情况</strong>，重新排序报文，恢复数据。</p>
 </li>
-<li><p>Time stamp：时间戳，占 32 位，时戳反映了该RTP报文的第一个八位组的采样时刻。接收者使用时戳来计算延迟和延迟抖动，并进行同步控制。 </p>
+<li><p><code>Time stamp</code>：时间戳，占 32 位，时戳反映了该 RTP 报文的第一个八位组的采样时刻。接收者使用时戳来计算延迟和延迟抖动，并进行同步控制。 </p>
 </li>
-<li><p>SSRC Identifier：同步信源（SSRC），占 32 位，用于标识同步信源。该标识符是随机选择的，参加同一视频会议的两个同步信源不能有相同的 SSRC。</p>
+<li><p><code>SSRC Identifier</code>：同步信源（SSRC），占 32 位，用于标识同步信源。该标识符是随机选择的，参加同一视频会议的两个同步信源不能有相同的 SSRC。</p>
 </li>
-<li><p>Contributing Sources：特约信源（CSRC），每个 CSRC 标识符占 32 位，可以有 0～15 个。每个 CSRC 标识了包含在该 RTP 报文有效载荷中的所有特约信源。</p>
+<li><p><code>Contributing Sources</code>：特约信源（CSRC），每个 CSRC 标识符占 32 位，可以有 0～15 个。每个 CSRC 标识了包含在该 RTP 报文有效载荷中的所有特约信源。</p>
 </li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">rtp_header_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> v:<span class="number">2</span>;        <span class="comment">/* protocol version */</span></span><br><span class="line">    <span class="type">uint32_t</span> p:<span class="number">1</span>;        <span class="comment">/* padding flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> x:<span class="number">1</span>;        <span class="comment">/* header extension flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> cc:<span class="number">4</span>;       <span class="comment">/* CSRC count */</span></span><br><span class="line">    <span class="type">uint32_t</span> m:<span class="number">1</span>;        <span class="comment">/* marker bit */</span></span><br><span class="line">    <span class="type">uint32_t</span> pt:<span class="number">7</span>;       <span class="comment">/* payload type */</span></span><br><span class="line">    <span class="type">uint32_t</span> seq:<span class="number">16</span>;     <span class="comment">/* sequence number */</span></span><br><span class="line">    <span class="type">uint32_t</span> timestamp;  <span class="comment">/* timestamp */</span></span><br><span class="line">    <span class="type">uint32_t</span> ssrc;       <span class="comment">/* synchronization source */</span></span><br><span class="line">&#125; <span class="type">rtp_header_t</span>;</span><br></pre></td></tr></table></figure>
 
 <h1 id="RTP扩展头"><a href="#RTP扩展头" class="headerlink" title="RTP扩展头"></a>RTP扩展头</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|       defined by profile        |           length            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                        extension data                         |</span><br><span class="line">|                             ....                              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
 
-<p>defined by profile：16 位，用于指示扩展的类型。目前主要是两种：一字节（one-byte）头和两字节头（two-byte header）。</p>
+<p><code>defined by profile</code>：16 位，用于指示扩展的类型。目前主要是两种：一字节（one-byte）头和两字节头（two-byte header）。</p>
 <ul>
 <li>一字节头部<ul>
 <li>profile 值为固定为 0xBEDE</li>
 <li>每个扩展包含一个一字节的头部</li>
 <li>extension data 的 ID 和 Len 占 1 个字节<ul>
-<li>ID（4bit）：扩展的 ID，该值的范围在 1-14 之间，15 为保留使用</li>
+<li>ID（4bit）：扩展的 ID，该值的范围在 1~14 之间，15 为保留使用</li>
 <li>Len（4bit）：取值为该扩展的数据长度 -1，范围是 0~15，0 表示 1 字节数据，15 表示 16 字节数据</li>
 </ul>
 </li>
@@ -272,8 +272,8 @@
 </ul>
 </li>
 </ul>
-<p>length：16 位，指定扩展的总长度（<strong>以 32 位单位</strong>）；例如：length &#x3D; 3，说明扩展头长度占 12 字节。</p>
-<p>extension data：扩展数据字段包含<strong>实际的扩展信息</strong>，其内容和格式完全由所使用的 RTP 应用协议定义。</p>
+<p><code>length</code>：16 位，指定扩展的总长度（<strong>以 32 位单位</strong>）；例如：length&#x3D;3，说明扩展头长度占 12 字节。</p>
+<p><code>extension data</code>：扩展数据字段包含<strong>实际的扩展信息</strong>，其内容和格式完全由所使用的 RTP 应用协议定义。</p>
 <h1 id="同步信源和特约信源"><a href="#同步信源和特约信源" class="headerlink" title="同步信源和特约信源"></a>同步信源和特约信源</h1><ul>
 <li><p>同步信源（SSRC）是<strong>指产生媒体流的信源</strong>，例如麦克风、摄像机、RTP 混合器等。它通过 RTP 报头中的一个 32 位数字 SSRC 标识符来标识，<strong>而不依赖于网络地址</strong>，接收者将根据 <strong>SSRC 标识符来区分不同的信源，进行 RTP 报文的分组</strong>。</p>
 </li>
