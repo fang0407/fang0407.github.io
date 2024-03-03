@@ -1044,7 +1044,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-16 18:43:19" itemprop="dateModified" datetime="2024-01-16T18:43:19+08:00">2024-01-16</time>
+      <time title="Modified: 2024-03-03 16:01:13" itemprop="dateModified" datetime="2024-03-03T16:01:13+08:00">2024-03-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1094,20 +1094,35 @@
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">rtp_header_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> v:<span class="number">2</span>;        <span class="comment">/* protocol version */</span></span><br><span class="line">    <span class="type">uint32_t</span> p:<span class="number">1</span>;        <span class="comment">/* padding flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> x:<span class="number">1</span>;        <span class="comment">/* header extension flag */</span></span><br><span class="line">    <span class="type">uint32_t</span> cc:<span class="number">4</span>;       <span class="comment">/* CSRC count */</span></span><br><span class="line">    <span class="type">uint32_t</span> m:<span class="number">1</span>;        <span class="comment">/* marker bit */</span></span><br><span class="line">    <span class="type">uint32_t</span> pt:<span class="number">7</span>;       <span class="comment">/* payload type */</span></span><br><span class="line">    <span class="type">uint32_t</span> seq:<span class="number">16</span>;     <span class="comment">/* sequence number */</span></span><br><span class="line">    <span class="type">uint32_t</span> timestamp;  <span class="comment">/* timestamp */</span></span><br><span class="line">    <span class="type">uint32_t</span> ssrc;       <span class="comment">/* synchronization source */</span></span><br><span class="line">&#125; <span class="type">rtp_header_t</span>;</span><br></pre></td></tr></table></figure>
 
-<h1 id="RTP扩展头"><a href="#RTP扩展头" class="headerlink" title="RTP扩展头"></a>RTP扩展头</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|       defined by profile       |           length              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                        extension data                          |</span><br><span class="line">|                             ....                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<h1 id="RTP扩展头"><a href="#RTP扩展头" class="headerlink" title="RTP扩展头"></a>RTP扩展头</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|       defined by profile        |           length            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                        extension data                         |</span><br><span class="line">|                             ....                              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
 
+<p>defined by profile：16 位，用于指示扩展的类型。目前主要是两种：一字节（one-byte）头和两字节头（two-byte header）。</p>
 <ul>
-<li><p>defined by profile：16 位，用于指示扩展的类型。<strong>不同的 RTP 应用可以定义不同类型的扩展</strong>。这个字段用于指示是哪种类型的扩展。</p>
-<ul>
-<li>profile 值为 0xBE、0xDE，说明 extension data 的 ID 和 len 占 1 个字节；即 ID 占 4 位，length 占 4 位。</li>
-<li>profile 值为 0x10、0x0X（“X”表示任意数, 一般为“0”, 即 0x00）, 说明 extension data 的 ID 和 len 占 2 个字节；即 ID 占 8 位  length 占 8 位。</li>
+<li>一字节头部<ul>
+<li>profile 值为固定为 0xBEDE</li>
+<li>每个扩展包含一个一字节的头部</li>
+<li>extension data 的 ID 和 Len 占 1 个字节<ul>
+<li>ID（4bit）：扩展的 ID，该值的范围在 1-14 之间，15 为保留使用</li>
+<li>Len（4bit）：取值为该扩展的数据长度 -1，范围是 0~15，0 表示 1 字节数据，15 表示 16 字节数据</li>
 </ul>
 </li>
-<li><p>length：16 位，指定扩展的总长度（<strong>以 32 位单位</strong>）。这是<strong>扩展数据的字节数</strong>。例如: length &#x3D; 3, 说明扩展头长度占 12 字节。</p>
+</ul>
 </li>
-<li><p>extension data：扩展数据字段包含<strong>实际的扩展信息</strong>。其内容和格式完全由所使用的 RTP 应用协议定义。</p>
+<li>两字节头部<ul>
+<li>解决一字节头部最多只能表示 16 种扩展的缺陷，实际的扩展可能会超过 16 种</li>
+<li>profile 的前 12 位为固定的 0x100</li>
+<li>profile 的后 4 位，不同的应用可以根据需要自定义，通常设置为 0，接收方忽略该值</li>
+<li>每个扩展的头部由 2 个字节表示</li>
+<li>extension data 的 ID 和 len 占 2 个字节<ul>
+<li>ID（8bit）：取值 1~255，最多可以表示 255 种扩展</li>
+<li>Len（8bit）：表示该扩展的数据长度，取值 0 ~ 255</li>
+</ul>
 </li>
 </ul>
+</li>
+</ul>
+<p>length：16 位，指定扩展的总长度（<strong>以 32 位单位</strong>）；例如：length &#x3D; 3，说明扩展头长度占 12 字节。</p>
+<p>extension data：扩展数据字段包含<strong>实际的扩展信息</strong>，其内容和格式完全由所使用的 RTP 应用协议定义。</p>
 <h1 id="同步信源和特约信源"><a href="#同步信源和特约信源" class="headerlink" title="同步信源和特约信源"></a>同步信源和特约信源</h1><ul>
 <li><p>同步信源（SSRC）是<strong>指产生媒体流的信源</strong>，例如麦克风、摄像机、RTP 混合器等。它通过 RTP 报头中的一个 32 位数字 SSRC 标识符来标识，<strong>而不依赖于网络地址</strong>，接收者将根据 <strong>SSRC 标识符来区分不同的信源，进行 RTP 报文的分组</strong>。</p>
 </li>
@@ -1115,7 +1130,7 @@
 </li>
 <li><p>在发送端，上层应用程序以分组形式将编码后的媒体数据传给 RTP 通信模块，作为 RTP 报文的有效载荷，RTP 通信模块将根据上层应用提供的参数在有效载荷前添加 RTP 报头，形成 RTP 报文，通过 Socket 接口选择 UDP 协议发送出去。</p>
 </li>
-<li><p>在接收端，RTP 通信模块通过 Socket 接口接收到 RTP 报文后，将RTP报头分离出来作相应处理，再将 RTP 报文的有效载荷作为数据分组传递给上层应用。</p>
+<li><p>在接收端，RTP 通信模块通过 Socket 接口接收到 RTP 报文后，将 RTP 报头分离出来作相应处理，再将 RTP 报文的有效载荷作为数据分组传递给上层应用。</p>
 </li>
 <li><p>若一个 RTP 包流的源，对由 RTP 混频器生成的组合流起了作用，则它就是一个作用源。对特定包的生成起作用的源，其 SSRC 标识符组成的列表，被混频器插入到包的 RTP 报头中。这个列表叫做 CSRC 表。用图表示大概是这样：</p>
 </li>
