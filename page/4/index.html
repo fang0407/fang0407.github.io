@@ -2292,7 +2292,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-03-03 22:07:16" itemprop="dateModified" datetime="2024-03-03T22:07:16+08:00">2024-03-03</time>
+      <time title="Modified: 2024-03-04 20:15:29" itemprop="dateModified" datetime="2024-03-04T20:15:29+08:00">2024-03-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -2387,7 +2387,7 @@
 
 <ul>
 <li><code>SSRC of Packet Sender</code>：发送 SR 数据包的同步信源标识符（SSRC）。</li>
-<li><code>NTP Timestamp</code>：以 64 位形式表示的 NTP（Network Time Protocol）时间戳，分为高 32 位和低 32 位；该时间戳的高 32 bit 以NTP 格式表示，从 1900年1月1日开始计数，以秒为单位。低 32 bit 表示秒后面的小数。</li>
+<li><code>NTP Timestamp</code>：以 64 位形式表示的 NTP（Network Time Protocol）时间戳，分为高 32 位和低 32 位；该时间戳的高 32 bit 以NTP 格式表示，从 1900 年 1 月 1 日开始计数，以秒为单位。低 32 bit 表示秒后面的小数。</li>
 <li><code>RTP Timestamp</code>：RTP 时间戳（以 RTP 媒体流的时钟为单位），用于同步 RTP 数据包的时间。</li>
 <li><code>Sender&#39;s Packet Count</code>：发送方发送的 RTP 数据包数量。</li>
 <li><code>Sender&#39;s Octet Count</code>：发送方发送的字节数（octets），如果发送者改变了 SSRC 会被重置。</li>
@@ -2396,24 +2396,33 @@
 <img src="/2023/09/23/RTCP%E5%8D%8F%E8%AE%AE/SR报文.png" alt="SR报文" style="zoom:50%;">
 
 <h2 id="RR报文格式"><a href="#RR报文格式" class="headerlink" title="RR报文格式"></a>RR报文格式</h2><p>RTCP RR（Receiver Report）报文是实时控制协议（RTCP）中的一种报文类型，用于接收端向发送端发送关于媒体流接收情况的反馈信息。RR 报文通常用于提供关于接收端的统计信息，以便发送端根据这些信息来进行调整以提高数据传输的质量和性能。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|V=2|P|    RC   |   PT=SR=200   |             Length            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    SSRC of Packet Sender                      |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                      report block(s)...                       |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line"></span><br><span class="line">RTCP report block:</span><br><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                  SSRC_1 (SSRC of first source)                |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">| fraction lost |      cumulative number of packets lost        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|          extended highest sequence number received            |  </span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                      interarrival jitter                      |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                          last SR (LSR)                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                   delay since last SR (DLSR)                  |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|V=2|P|    RC   |   PT=SR=201   |             Length            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    SSRC of Packet Sender                      |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                      report block(s)...                       |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line"></span><br><span class="line">RTCP report block:</span><br><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                  SSRC_1 (SSRC of first source)                |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">| fraction lost |      cumulative number of packets lost        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|          extended highest sequence number received            |  </span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                      interarrival jitter                      |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                          last SR (LSR)                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                   delay since last SR (DLSR)                  |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
 
-<p><code>RTCP report block</code>：在 RR 包中，report block 可能会存在多个，最多可以有 31 个。</p>
-<p><code>SSRC</code>：4 字节，表示被反馈的同步信源标识符。</p>
-<p><code>Fraction lost</code>：1 字节，上一次发送 RR 包到现在的这一段时间的丢包率，它是一个量化值，范围是 [0, 255]，值越大表示丢包率越高，0 表示没有丢包，127 表示丢包 50%，255 表示丢包 100%。</p>
-<p><code>Cumulative number of packets lost</code>：3 字节，表示会话开始后的累计丢包数。</p>
-<p><code>Extended highest sequence number received</code>：4 字节，其中低 16 位，表示当前收到的 RTP 包最大的序列号，因为序列号是用 16  位无符号整数表示的，经过一段时间之后，序列号就超出了最大值的范围，重新从 1 开始循环，那么这个字段的高 16 位就表示了当前序列号发生循环的次数。</p>
-<p><code>Interarrival jitter</code>：4 字节，包达到时间的抖动。</p>
-<p><code>Last SR</code>：4 字节，上一次收到的 SR 包里的 rtp_timestamp，代表了发送端发送 SR 包的时间戳，如果还没有收到任何 SR 包，该值可以设置为 0。</p>
-<p><code>Delay since last SR</code>：4 字节，表示上一次收到 SR 包，到现在发送 RR 包，在接收端的延迟时间。</p>
+<ul>
+<li><p><code>RTCP report block</code>：在 RR 包中，report block 可能会存在多个，最多可以有 31 个。</p>
+</li>
+<li><p><code>SSRC</code>：4 字节，表示被反馈的同步信源标识符。</p>
+</li>
+<li><p><code>Fraction lost</code>：1 字节，上一次发送 RR 包到现在的这一段时间的丢包率，它是一个量化值，范围是 [0, 255]，值越大表示丢包率越高，0 表示没有丢包，127 表示丢包 50%，255 表示丢包 100%。</p>
+</li>
+<li><p><code>Cumulative number of packets lost</code>：3 字节，表示会话开始后的累计丢包数。</p>
+</li>
+<li><p><code>Extended highest sequence number received</code>：4 字节，其中低 16 位，表示当前收到的 RTP 包最大的序列号，因为序列号是用 16  位无符号整数表示的，经过一段时间之后，序列号就超出了最大值的范围，重新从 1 开始循环，那么这个字段的高 16 位就表示了当前序列号发生循环的次数。</p>
+</li>
+<li><p><code>Interarrival jitter</code>：4 字节，包达到时间的抖动。</p>
+</li>
+<li><p><code>Last SR</code>：4 字节，上一次收到的 SR 包里的 rtp_timestamp，代表了发送端发送 SR 包的时间戳，如果还没有收到任何 SR 包，该值可以设置为 0。</p>
+</li>
+<li><p><code>Delay since last SR</code>：4 字节，表示上一次收到 SR 包，到现在发送 RR 包，在接收端的延迟时间。</p>
+</li>
+</ul>
 <h2 id="NACK报文格式"><a href="#NACK报文格式" class="headerlink" title="NACK报文格式"></a>NACK报文格式</h2><p>RTCP NACK（Negative Acknowledgement）是实时控制协议（RTCP）中的一种反馈机制，用于表示接收端未能成功接收到某些数据包的通知。NACK 可以帮助发送端快速识别和重传丢失的数据包，以提高数据传输的可靠性和质量。</p>
 <p>RFC4585 规范，关于 QoS 的反馈信息有两种；</p>
 <ul>
 <li>传输层的 feedback message（Rtpfb）：Nack、TransportFeedback</li>
 <li>特定负载的 feedback message（Psfb）：Pli</li>
 </ul>
-<p>NACK 数据包格式：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|V=2|P|    RC   |   PT=SR=200   |             Length            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                     SSRC of Packet Sender                     |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                      SSRC of media source                     |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|               Feedback Control Information (FCI)              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|               Feedback Control Information (FCI)              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">FCI:</span><br><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|            PID                |               BLP             |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|V=2|P|  FMT=1  |   PT=SR=205   |             Length            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                     SSRC of Packet Sender                     |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                      SSRC of media source                     |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|               Feedback Control Information (FCI)              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|               Feedback Control Information (FCI)              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">FCI:</span><br><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|            PID                |               BLP             |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li><code>Feedback Control Information</code>：4 字节，其中前 2 个字节表示丢包的起始参考值，后两个字节 BLP（Bitmap of Lost packets）表示丢包的位图，每个位置表示一个 packet id，如果是 1 表示该位置有丢包，如果是 0，则表示该位置没有丢包。一个 BLP 可以表示 16 个位置，位置的顺序是从低位到高位，例如：</li>
@@ -2421,6 +2430,73 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PID：500</span><br><span class="line">BLP：</span><br><span class="line">0 1 1 0 0 0 1 0 1 0 0 0 0 1 0 1</span><br><span class="line">515 514   510  508      503  501</span><br></pre></td></tr></table></figure>
 
 <p>这种位图的表示方式，能够很好的压缩数据大小。</p>
+<h2 id="Transport-Feedback报文格式"><a href="#Transport-Feedback报文格式" class="headerlink" title="Transport Feedback报文格式"></a>Transport Feedback报文格式</h2><p>Transport Feedback 报文是用于提供有关实时传输协议（RTP）数据包传输质量的反馈信息的一种 RTCP（Real-Time Control Protocol）报文类型。它提供了接收端对发送端发送的 RTP 数据包的接收情况和传输质量的详细反馈。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|V=2|P|  FMT=15 |   PT=SR=205   |             Length            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                     SSRC of Packet Sender                     |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|      base sequence number     |      packet status count      |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                reference time                 | fb pkt. count |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|        packet chunk           |          packet chunk         | </span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|...                                                            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|        packet chunk           |   recv delta  |   recv delta  |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|...                                                            |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|         recv delta            |   recv delta  |  zero padding |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>Base sequence number</code>：2 字节，该 RTCP 包记录的第一个 RTP 包的 seq_no，注意，在反馈的各个 Transport Feedback RTCP 包中，该 seq_no 并不一定是递增的，因为存在包乱序，该 seq_no 可能比之前的 Transport Feedback 中的 seq_no 要小。</p>
+</li>
+<li><p><code>Packet status count</code>：2 字节，表示该包记录了多少个 RTP 包的信息。</p>
+</li>
+<li><p><code>Reference time</code>：3 字节，参考时间，RTP 包的到达时间的基准时间，单位为 64ms。</p>
+</li>
+<li><p><code>Fb pkt.count</code>：1 字节，Transport Feedback 包的序列号，用于检测 Transport feedback 包的丢包情况。</p>
+</li>
+<li><p><code>Packet chunk</code>：2 字节，记录 RTP 包的到达状态，这里面保存的是压缩数据，有两种类型的压缩数据块， run length chunk（行程长度编码数据块）和 status vector chunk（状态矢量编码数据块）。</p>
+</li>
+<li><p><code>Recv delta</code>：可选的，1 字节或者 2 字节，记录 RTP 包到达时间与上一个 RTP 包达到时间的间隔，时间单位为 250us（0.25ms），对于第一个 RTP 包，记录的是与参考时间 reference time 的时间间隔。</p>
+<ul>
+<li>如果没有收到数据包，就没有 recv_delta 信息。</li>
+<li>如果在 packet chunk 当中记录了一个“数据包收到，时间间隔小”状态的数据包，则 recv delta 使用 1 字节无符号的整数记录时间间隔，范围 [0, 63.75] ms。</li>
+<li>如果在 packet chunk 当中记录了一个“数据包收到，时间间隔比较大”状态的数据包，则 recv delta 使用 2 个字节的有符号整数记录时间间隔，范围 [-8192.0 ~ 8191.75] ms。</li>
+<li>如果时间间隔超过了范围，则新创建一个 transport feedback 数据包。</li>
+</ul>
+</li>
+</ul>
+<p><strong>行程长度编码数据块</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 </span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|T| S |        Run length       |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>T</code>：1 bit，如果是 0，表示的是 run length chunk。</li>
+<li><code>S</code>：2 bit，表示数据包的状态，00：数据包没有收到；01：数据包收到了，时间间隔小；10：数据包收到了，时间间隔较大或者是负增量；11：保留使用。</li>
+<li><code>Run length</code>：13 bit，行程长度，表示处于 S 状态下，连续包的个数，其中 RTP 的序列号是基于 base sequence number 来计算。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 </span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|0|0|0|0|0|0|0|0|1|1|0|1|1|1|0|1|</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<p>S 为 00，表示数据包没有收到，Run length 为 11011101&#x3D;221，表示连续 221 个 RTP 包没有收到。</p>
+<p><strong>状态矢量编码数据块</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 </span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|T|S|         Symbol list       |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>T</code>：1 bit，如果是 1，表示的是 status vector chunk。</p>
+</li>
+<li><p><code>S</code>：1 bit，如果是 0，表示用 1 位表示数据包的状态，只有数据包收到（1）和数据包没有收到（0）两种状态；如果是 1，表示用 2 位表示数据包的状态，可以表示 4 种数据包的状态，00：数据包没有收到；01：数据包收到了，时间间隔小；10：数据包收到了，时间间隔较大或者是负增量，11：保留使用。</p>
+</li>
+<li><p><code>Symbol List</code>，如果 S&#x3D;0，可以表示 14 个 RTP 包的状态，如果是 S&#x3D;1，可以表示 7 个包的状态。</p>
+</li>
+</ul>
+<p>示例一：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 </span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|1|0|0|1|1|1|1|1|0|0|0|1|1|1|0|0| </span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<p>第 0 位是 1，表示是状态矢量编码</p>
+<p>第 1 位是 0，表示使用 1 位表示数据包的状态</p>
+<p>假定 base sequence number&#x3D;500</p>
+<p>1 个数据包没有收到（500）</p>
+<p>5 个数据包收到（501、502、503、504、505）</p>
+<p>3 个数据包没收到（506、507、508）</p>
+<p>3 个数据包收到（509、510、511）</p>
+<p>2 个数据包没收到（512、513）</p>
+<p>示例二：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 </span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|1|1|0|0|1|1|0|1|0|1|0|1|0|0|0|0| </span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<p>第 0 位是 1，表示是状态矢量编码</p>
+<p>第 1 位是 1，表示使用 2 位表示数据包的状态</p>
+<p>假定 base sequence number&#x3D;500</p>
+<p>1 个数据包没有收到（500）</p>
+<p>1 个数据包收到 ，w&#x2F;o timestamp（501）</p>
+<p>3 个数据包收到并且时间间隔小（502、503、504）</p>
+<p>2 个数据包没收到（505、506）</p>
 
       
     </div>
