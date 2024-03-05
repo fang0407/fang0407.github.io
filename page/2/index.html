@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-count">76</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,1185 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/12/10/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/12/10/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87/" class="post-title-link" itemprop="url">MySQL基础篇</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-12-10 13:27:23" itemprop="dateCreated datePublished" datetime="2023-12-10T13:27:23+08:00">2023-12-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:39:07" itemprop="dateModified" datetime="2023-12-30T22:39:07+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>原文连接：<a target="_blank" rel="noopener" href="https://dhc.pythonanywhere.com/article/public/1/#h1-u6743u9650u4E00u89C8u8868">https://dhc.pythonanywhere.com/article/public/1/#h1-u6743u9650u4E00u89C8u8868</a></p>
+<h1 id="基础篇"><a href="#基础篇" class="headerlink" title="基础篇"></a>基础篇</h1><h2 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h2><h3 id="SQL通用语法"><a href="#SQL通用语法" class="headerlink" title="SQL通用语法"></a>SQL通用语法</h3><ul>
+<li>SQL语句可以单行或多行书写，以分号结尾。</li>
+<li>﻿﻿﻿SQL语句可以使用空格&#x2F;缩进来增强语句的可读性。</li>
+<li>﻿﻿﻿MySQL数据库的SQL语句不区分大小写，关键字建议使用大写。</li>
+<li>﻿﻿﻿注释：<ul>
+<li>﻿﻿单行注释：–注释内容 或＃注释内容（MySQL特有）。</li>
+<li>﻿﻿多行注释：&#x2F;* 注释内容*&#x2F;。</li>
+</ul>
+</li>
+</ul>
+<h3 id="SQL分类"><a href="#SQL分类" class="headerlink" title="SQL分类"></a>SQL分类</h3><ul>
+<li>DDL: 数据定义语言，用来定义数据库对象（数据库、表、字段）。</li>
+<li>DML: 数据操作语言，用来对数据库表中的数据进行增删改。</li>
+<li>DQL: 数据查询语言，用来查询数据库中表的记录。</li>
+<li>DCL: 数据控制语言，用来创建数据库用户、控制数据库的控制权限。</li>
+</ul>
+<h3 id="DDL（数据定义语言）"><a href="#DDL（数据定义语言）" class="headerlink" title="DDL（数据定义语言）"></a>DDL（数据定义语言）</h3><h4 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h4><h5 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 查询所有数据库</span><br><span class="line">SHOW DATABASES;</span><br><span class="line"></span><br><span class="line">-- 查询当前数据库</span><br><span class="line">SELECT DATABASE();</span><br></pre></td></tr></table></figure>
+
+<h5 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- 创建数据库</span><br><span class="line">CREATE DATABASE [ IF NOT EXISTS ] 数据库名 [ DEFAULT CHARSET 字符集 ] [COLLATE 排序规则 ];</span><br></pre></td></tr></table></figure>
+
+<h5 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- 删除数据库</span><br><span class="line">DROP DATABASE [ IF EXISTS ] 数据库名;</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- 使用数据库</span><br><span class="line">USE 数据库名;</span><br></pre></td></tr></table></figure>
+
+<p>注意：UTF8字符集长度为3字节，有些符号占4字节，所以推荐用utf8mb4字符集。</p>
+<h4 id="表操作"><a href="#表操作" class="headerlink" title="表操作"></a>表操作</h4><h5 id="查询-1"><a href="#查询-1" class="headerlink" title="查询"></a>查询</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-- 查询当前数据库所有表</span><br><span class="line">SHOW TABLES;</span><br><span class="line"></span><br><span class="line">-- 查询表结构</span><br><span class="line">DESC 表名;</span><br><span class="line"></span><br><span class="line">-- 查询指定表的建表语句</span><br><span class="line">SHOW CREATE TABLE 表名;</span><br></pre></td></tr></table></figure>
+
+<h5 id="创建-1"><a href="#创建-1" class="headerlink" title="创建"></a>创建</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE 表名(</span><br><span class="line">	字段1 字段1类型 [COMMENT 字段1注释],</span><br><span class="line">	字段2 字段2类型 [COMMENT 字段2注释],</span><br><span class="line">	字段3 字段3类型 [COMMENT 字段3注释],</span><br><span class="line">	...</span><br><span class="line">	字段n 字段n类型 [COMMENT 字段n注释]</span><br><span class="line">)[ COMMENT 表注释 ];</span><br></pre></td></tr></table></figure>
+
+<p>注意：最后一个字段后面没有逗号。</p>
+<h5 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">-- 添加字段</span><br><span class="line">ALTER TABLE 表名 ADD 字段名 类型(长度) [COMMENT 注释] [约束];</span><br><span class="line">-- 例：ALTER TABLE emp ADD nickname varchar(20) COMMENT &#x27;昵称&#x27;;</span><br><span class="line"></span><br><span class="line">-- 修改数据类型</span><br><span class="line">ALTER TABLE 表名 MODIFY 字段名 新数据类型(长度);</span><br><span class="line"></span><br><span class="line">-- 修改字段名和字段类型</span><br><span class="line">ALTER TABLE 表名 CHANGE 旧字段名 新字段名 类型(长度) [COMMENT 注释] [约束];</span><br><span class="line">-- 例：将emp表的nickname字段修改为username，类型为varchar(30)</span><br><span class="line">-- ALTER TABLE emp CHANGE nickname username varchar(30) COMMENT &#x27;昵称&#x27;;</span><br><span class="line"></span><br><span class="line">-- 删除字段</span><br><span class="line">ALTER TABLE 表名 DROP 字段名;</span><br><span class="line"></span><br><span class="line">-- 修改表名</span><br><span class="line">ALTER TABLE 表名 RENAME TO 新表名;</span><br></pre></td></tr></table></figure>
+
+<h5 id="删除-1"><a href="#删除-1" class="headerlink" title="删除"></a>删除</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 删除表</span><br><span class="line">DROP TABLE [IF EXISTS] 表名;</span><br><span class="line"></span><br><span class="line">-- 删除表，并重新创建该表</span><br><span class="line">TRUNCATE TABLE 表名;</span><br></pre></td></tr></table></figure>
+
+<p>注意：在删除表时，表中的全部数据也会被删除。</p>
+<h3 id="DML（数据操作语言）"><a href="#DML（数据操作语言）" class="headerlink" title="DML（数据操作语言）"></a>DML（数据操作语言）</h3><h4 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-- 指定字段</span><br><span class="line">INSERT INTO 表名 (字段名1, 字段名2, ...) VALUES (值1, 值2, ...);</span><br><span class="line"></span><br><span class="line">-- 全部字段</span><br><span class="line">INSERT INTO 表名 VALUES (值1, 值2, ...);</span><br><span class="line"></span><br><span class="line">-- 批量添加数据</span><br><span class="line">INSERT INTO 表名 (字段名1, 字段名2, ...) VALUES (值1, 值2, ...), (值1, 值2, ...), (值1, 值2, ...);</span><br><span class="line">INSERT INTO 表名 VALUES (值1, 值2, ...), (值1, 值2, ...), (值1, 值2, ...);</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ul>
+<li>插入数据时指定的字段顺序需要与值的顺序是一一对应的。</li>
+</ul>
+<ul>
+<li>字符串和日期类型数据应该包含在引号中。</li>
+<li>插入的数据大小应该在字段的规定范围内。</li>
+</ul>
+<h4 id="修改数据"><a href="#修改数据" class="headerlink" title="修改数据"></a>修改数据</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UPDATE 表名 SET 字段名1 = 值1, 字段名2 = 值2, ... [ WHERE 条件 ];</span><br><span class="line">-- 例：UPDATE emp SET name = &#x27;Jack&#x27; WHERE id = 1;</span><br></pre></td></tr></table></figure>
+
+<p>注意：修改语句的条件如果没有则会修改整张表的所有数据。</p>
+<h4 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a>删除数据</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELETE FROM 表名 [ WHERE 条件 ];</span><br></pre></td></tr></table></figure>
+
+<p>注意：删除语句的条件如果没有则会修改整张表的所有数据。</p>
+<h3 id="DQL（数据查询语言）"><a href="#DQL（数据查询语言）" class="headerlink" title="DQL（数据查询语言）"></a>DQL（数据查询语言）</h3><p>语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	字段列表</span><br><span class="line">FROM</span><br><span class="line">	表名字段</span><br><span class="line">WHERE</span><br><span class="line">	条件列表</span><br><span class="line">GROUP BY</span><br><span class="line">	分组字段列表</span><br><span class="line">HAVING</span><br><span class="line">	分组后的条件列表</span><br><span class="line">ORDER BY</span><br><span class="line">	排序字段列表</span><br><span class="line">LIMIT</span><br><span class="line">	分页参数</span><br></pre></td></tr></table></figure>
+
+<h4 id="基础查询"><a href="#基础查询" class="headerlink" title="基础查询"></a>基础查询</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-- 查询多个字段</span><br><span class="line">SELECT 字段1, 字段2, 字段3, ... FROM 表名;</span><br><span class="line">SELECT * FROM 表名;</span><br><span class="line"></span><br><span class="line">-- 设置别名</span><br><span class="line">SELECT 字段1 [ AS 别名1 ], 字段2 [ AS 别名2 ], 字段3 [ AS 别名3 ], ... FROM 表名;</span><br><span class="line">SELECT 字段1 [ 别名1 ], 字段2 [ 别名2 ], 字段3 [ 别名3 ], ... FROM 表名;</span><br><span class="line"></span><br><span class="line">-- 去除重复记录</span><br><span class="line">SELECT DISTINCT 字段列表 FROM 表名;</span><br></pre></td></tr></table></figure>
+
+<h4 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h4><p>语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段列表 FROM 表名 WHERE 条件列表;</span><br></pre></td></tr></table></figure>
+
+<p>条件：</p>
+<table>
+<thead>
+<tr>
+<th>比较运算符</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&gt;</td>
+<td>大于</td>
+</tr>
+<tr>
+<td>&gt;&#x3D;</td>
+<td>大于等于</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>小于</td>
+</tr>
+<tr>
+<td>&lt;&#x3D;</td>
+<td>小于等于</td>
+</tr>
+<tr>
+<td>&#x3D;</td>
+<td>等于</td>
+</tr>
+<tr>
+<td>&lt;&gt; 或 !&#x3D;</td>
+<td>不等于</td>
+</tr>
+<tr>
+<td>BETWEEN … AND …</td>
+<td>在某个范围内（含最小、最大值）</td>
+</tr>
+<tr>
+<td>IN(…)</td>
+<td>在in之后的列表中的值，多选一</td>
+</tr>
+<tr>
+<td>LIKE 占位符</td>
+<td>模糊匹配（_匹配单个字符，%匹配任意个字符）</td>
+</tr>
+<tr>
+<td>IS NULL</td>
+<td>是NULL</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>逻辑运算符</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AND 或 &amp;&amp;</td>
+<td>并且（多个条件同时成立）</td>
+</tr>
+<tr>
+<td>OR 或 &#124;&#124;</td>
+<td>或者（多个条件任意一个成立）</td>
+</tr>
+<tr>
+<td>NOT 或 !</td>
+<td>非，不是</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">-- 年龄等于30</span><br><span class="line">select * from employee where age = 30;</span><br><span class="line"></span><br><span class="line">-- 年龄小于30</span><br><span class="line">select * from employee where age &lt; 30;</span><br><span class="line"></span><br><span class="line">-- 小于等于</span><br><span class="line">select * from employee where age &lt;= 30;</span><br><span class="line"></span><br><span class="line">-- 没有身份证</span><br><span class="line">select * from employee where idcard is null or idcard = &#x27;&#x27;;</span><br><span class="line"></span><br><span class="line">-- 有身份证</span><br><span class="line">select * from employee where idcard;</span><br><span class="line">select * from employee where idcard is not null;</span><br><span class="line"></span><br><span class="line">-- 不等于</span><br><span class="line">select * from employee where age != 30;</span><br><span class="line"></span><br><span class="line">-- 年龄在20到30之间</span><br><span class="line">select * from employee where age between 20 and 30;</span><br><span class="line">select * from employee where age &gt;= 20 and age &lt;= 30;</span><br><span class="line"></span><br><span class="line">-- 下面语句不报错，但查不到任何信息</span><br><span class="line">select * from employee where age between 30 and 20;</span><br><span class="line"></span><br><span class="line">-- 性别为女且年龄小于30</span><br><span class="line">select * from employee where age &lt; 30 and gender = &#x27;女&#x27;;</span><br><span class="line"></span><br><span class="line">-- 年龄等于25或30或35</span><br><span class="line">select * from employee where age = 25 or age = 30 or age = 35;</span><br><span class="line">select * from employee where age in (25, 30, 35);</span><br><span class="line"></span><br><span class="line">-- 姓名为两个字</span><br><span class="line">select * from employee where name like &#x27;__&#x27;;</span><br><span class="line"></span><br><span class="line">-- 身份证最后为X</span><br><span class="line">select * from employee where idcard like &#x27;%X&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="聚合查询"><a href="#聚合查询" class="headerlink" title="聚合查询"></a>聚合查询</h4><p>常见聚合函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>count</td>
+<td>统计数量</td>
+</tr>
+<tr>
+<td>max</td>
+<td>最大值</td>
+</tr>
+<tr>
+<td>min</td>
+<td>最小值</td>
+</tr>
+<tr>
+<td>avg</td>
+<td>平均值</td>
+</tr>
+<tr>
+<td>sum</td>
+<td>求和</td>
+</tr>
+</tbody></table>
+<p>注意：null值不参与所有的聚合函数运算。</p>
+<p>语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 聚合函数(字段列表) FROM 表名;</span><br></pre></td></tr></table></figure>
+
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">-- 统计企业员工数量</span><br><span class="line">select count(id) from employee;</span><br><span class="line"></span><br><span class="line">-- 统计企业员工的平均年龄</span><br><span class="line">select avg(age) from employee;</span><br><span class="line"></span><br><span class="line">-- 统计企业员工的最大年龄</span><br><span class="line">select max(age) from employee;</span><br><span class="line"></span><br><span class="line">-- 统计企业员工的最大年龄</span><br><span class="line">select min(age) from employee;</span><br><span class="line"></span><br><span class="line">-- 统计广东省员工的年龄之和</span><br><span class="line">select sum(age) from employee where workaddress = &quot;广东省&quot;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="分组查询"><a href="#分组查询" class="headerlink" title="分组查询"></a>分组查询</h4><p>语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段列表 FROM 表名 [ WHERE 条件 ] GROUP BY 分组字段名 [ HAVING 分组后的过滤条件 ];</span><br></pre></td></tr></table></figure>
+
+<p>where 和 having 的区别：</p>
+<ul>
+<li>执行时机不同：where是分组之前进行过滤，不满足where条件不参与分组；having是分组后对结果进行过滤。</li>
+<li>判断条件不同：where不能对聚合函数进行判断，而having可以。</li>
+</ul>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">-- 根据性别分组，统计男性和女性数量（只显示分组数量，不显示哪个是男哪个是女）</span><br><span class="line">select count(*) from employee group by gender;</span><br><span class="line"></span><br><span class="line">-- 根据性别分组，统计男性和女性数量</span><br><span class="line">select gender, count(*) from employee group by gender;</span><br><span class="line"></span><br><span class="line">-- 根据性别分组，统计男性和女性的平均年龄</span><br><span class="line">select gender, avg(age) from employee group by gender;</span><br><span class="line"></span><br><span class="line">-- 年龄小于45，并根据工作地址分组</span><br><span class="line">select workaddress, count(*) from employee where age &lt; 45 group by workaddress;</span><br><span class="line"></span><br><span class="line">-- 年龄小于45，并根据工作地址分组，获取员工数量大于等于3的工作地址</span><br><span class="line">select workaddress, count(*) address_count from employee where age &lt; 45 group by workaddress having address_count &gt;= 3;</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ul>
+<li>执行顺序：where &gt; 聚合函数 &gt; having。</li>
+<li>分组之后，查询的字段一般为聚合函数和分组字段，查询其他字段无任何意义。</li>
+</ul>
+<h4 id="排序查询"><a href="#排序查询" class="headerlink" title="排序查询"></a>排序查询</h4><p>语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段列表 FROM 表名 ORDER BY 字段1 排序方式1, 字段2 排序方式2;</span><br></pre></td></tr></table></figure>
+
+<p>排序方式：</p>
+<ul>
+<li>ASC: 升序（默认）</li>
+<li>DESC: 降序</li>
+</ul>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-- 根据年龄升序排序</span><br><span class="line">select * from employee order by age asc;</span><br><span class="line">select * from employee order by age;</span><br><span class="line"></span><br><span class="line">-- 两字段排序，根据年龄升序排序，入职时间降序排序</span><br><span class="line">select * from employee order by age asc, entrydate desc;</span><br></pre></td></tr></table></figure>
+
+<p>注意：如果是多字段排序，当第一个字段值相同时，才会根据第二个字段进行排序。</p>
+<h4 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h4><p>语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段列表 FROM 表名 LIMIT 起始索引, 查询记录数;</span><br></pre></td></tr></table></figure>
+
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 查询第一页数据，展示10条</span><br><span class="line">select * from employee limit 0, 10;</span><br><span class="line"></span><br><span class="line">-- 查询第二页</span><br><span class="line">select * from employee limit 10, 10;</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ul>
+<li>起始索引从0开始，起始索引 &#x3D; （查询页码 - 1） * 每页显示记录数。</li>
+<li>分页查询是数据库的方言，不同数据库有不同实现，MySQL是LIMIT。</li>
+<li>如果查询的是第一页数据，起始索引可以省略，直接简写 LIMIT 10。</li>
+</ul>
+<h4 id="DQL执行顺序"><a href="#DQL执行顺序" class="headerlink" title="DQL执行顺序"></a>DQL执行顺序</h4><ul>
+<li>FROM -&gt; WHERE -&gt; GROUP BY -&gt; SELECT -&gt; ORDER BY -&gt; LIMIT</li>
+</ul>
+<h3 id="DCL（数据控制语言）"><a href="#DCL（数据控制语言）" class="headerlink" title="DCL（数据控制语言）"></a>DCL（数据控制语言）</h3><h4 id="管理用户"><a href="#管理用户" class="headerlink" title="管理用户"></a>管理用户</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">-- 查询用户</span><br><span class="line">USE mysql;</span><br><span class="line">SELECT * FROM user;</span><br><span class="line"></span><br><span class="line">-- 创建用户</span><br><span class="line">CREATE USER &#x27;用户名&#x27;@&#x27;主机名&#x27; IDENTIFIED BY &#x27;密码&#x27;;</span><br><span class="line"></span><br><span class="line">-- 修改用户密码</span><br><span class="line">ALTER USER &#x27;用户名&#x27;@&#x27;主机名&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;新密码&#x27;;</span><br><span class="line"></span><br><span class="line">-- 删除用户</span><br><span class="line">DROP USER &#x27;用户名&#x27;@&#x27;主机名&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">-- 创建用户test，只能在当前主机localhost访问</span><br><span class="line">create user &#x27;test&#x27;@&#x27;localhost&#x27; identified by &#x27;123456&#x27;;</span><br><span class="line"></span><br><span class="line">-- 创建用户test，能在任意主机访问</span><br><span class="line">create user &#x27;test&#x27;@&#x27;%&#x27; identified by &#x27;123456&#x27;;</span><br><span class="line">create user &#x27;test&#x27; identified by &#x27;123456&#x27;;</span><br><span class="line"></span><br><span class="line">-- 修改密码</span><br><span class="line">alter user &#x27;test&#x27;@&#x27;localhost&#x27; identified with mysql_native_password by &#x27;1234&#x27;;</span><br><span class="line"></span><br><span class="line">-- 删除用户</span><br><span class="line">drop user &#x27;test&#x27;@&#x27;localhost&#x27;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注意：主机名可以使用 % 通配。</li>
+</ul>
+<h4 id="权限控制"><a href="#权限控制" class="headerlink" title="权限控制"></a>权限控制</h4><p>常用权限：</p>
+<table>
+<thead>
+<tr>
+<th>权限</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ALL, ALL PRIVILEGES</td>
+<td>所有权限</td>
+</tr>
+<tr>
+<td>SELECT</td>
+<td>查询数据</td>
+</tr>
+<tr>
+<td>INSERT</td>
+<td>插入数据</td>
+</tr>
+<tr>
+<td>UPDATE</td>
+<td>修改数据</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>删除数据</td>
+</tr>
+<tr>
+<td>ALTER</td>
+<td>修改表</td>
+</tr>
+<tr>
+<td>DROP</td>
+<td>删除数据库&#x2F;表&#x2F;视图</td>
+</tr>
+<tr>
+<td>CREATE</td>
+<td>创建数据库&#x2F;表</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-- 查询权限</span><br><span class="line">SHOW GRANTS FOR &#x27;用户名&#x27;@&#x27;主机名&#x27;;</span><br><span class="line"></span><br><span class="line">-- 授予权限</span><br><span class="line">GRANT 权限列表 ON 数据库名.表名 TO &#x27;用户名&#x27;@&#x27;主机名&#x27;;</span><br><span class="line"></span><br><span class="line">-- 撤销权限</span><br><span class="line">REVOKE 权限列表 ON 数据库名.表名 FROM &#x27;用户名&#x27;@&#x27;主机名&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ul>
+<li>多个权限用逗号分隔。</li>
+<li>授权时，数据库名和表名可以用 * 进行通配，代表所有。</li>
+</ul>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><h3 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h3><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>取值范围</th>
+<th>大小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TINYINT</td>
+<td>-128〜127</td>
+<td>1个字节</td>
+</tr>
+<tr>
+<td>SMALLINT</td>
+<td>-32768〜32767</td>
+<td>2个宇节</td>
+</tr>
+<tr>
+<td>MEDIUMINT</td>
+<td>-8388608〜8388607</td>
+<td>3个字节</td>
+</tr>
+<tr>
+<td>INT (INTEGHR)</td>
+<td>-2147483648〜2147483647</td>
+<td>4个字节</td>
+</tr>
+<tr>
+<td>BIGINT</td>
+<td>-9223372036854775808〜9223372036854775807</td>
+<td>8个字节</td>
+</tr>
+</tbody></table>
+<p>无符号在数据类型后加 unsigned 关键字。</p>
+<h3 id="浮点型"><a href="#浮点型" class="headerlink" title="浮点型"></a>浮点型</h3><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>说明</th>
+<th>存储需求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FLOAT</td>
+<td>单精度浮点数</td>
+<td>4 个字节</td>
+</tr>
+<tr>
+<td>DOUBLE</td>
+<td>双精度浮点数</td>
+<td>8 个字节</td>
+</tr>
+<tr>
+<td>DECIMAL (M, D)，DEC</td>
+<td>压缩的“严格”定点数</td>
+<td>M+2 个字节</td>
+</tr>
+</tbody></table>
+<h3 id="日期和时间"><a href="#日期和时间" class="headerlink" title="日期和时间"></a>日期和时间</h3><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>日期格式</th>
+<th>日期范围</th>
+<th>存储需求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>YEAR</td>
+<td>YYYY</td>
+<td>1901 ~ 2155</td>
+<td>1 个字节</td>
+</tr>
+<tr>
+<td>TIME</td>
+<td>HH:MM:SS</td>
+<td>-838:59:59 ~ 838:59:59</td>
+<td>3 个字节</td>
+</tr>
+<tr>
+<td>DATE</td>
+<td>YYYY-MM-DD</td>
+<td>1000-01-01 ~ 9999-12-3</td>
+<td>3 个字节</td>
+</tr>
+<tr>
+<td>DATETIME</td>
+<td>YYYY-MM-DD HH:MM:SS</td>
+<td>1000-01-01 00:00:00 ~ 9999-12-31 23:59:59</td>
+<td>8 个字节</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>YYYY-MM-DD HH:MM:SS</td>
+<td>1980-01-01 00:00:01 UTC ~ 2040-01-19 03:14:07 UTC</td>
+<td>4 个字节</td>
+</tr>
+</tbody></table>
+<h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>说明</th>
+<th>存储需求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CHAR(M)</td>
+<td>固定长度非二进制字符串</td>
+<td>M 字节，1&lt;&#x3D;M&lt;&#x3D;255</td>
+</tr>
+<tr>
+<td>VARCHAR(M)</td>
+<td>变长非二进制字符串</td>
+<td>L+1字节，在此，L&lt; &#x3D; M和 1&lt;&#x3D;M&lt;&#x3D;255</td>
+</tr>
+<tr>
+<td>TINYTEXT</td>
+<td>非常小的非二进制字符串</td>
+<td>L+1字节，在此，L&lt;2^8</td>
+</tr>
+<tr>
+<td>TEXT</td>
+<td>小的非二进制字符串</td>
+<td>L+2字节，在此，L&lt;2^16</td>
+</tr>
+<tr>
+<td>MEDIUMTEXT</td>
+<td>中等大小的非二进制字符串</td>
+<td>L+3字节，在此，L&lt;2^24</td>
+</tr>
+<tr>
+<td>LONGTEXT</td>
+<td>大的非二进制字符串</td>
+<td>L+4字节，在此，L&lt;2^32</td>
+</tr>
+<tr>
+<td>ENUM</td>
+<td>枚举类型，只能有一个枚举字符串值</td>
+<td>1或2个字节，取决于枚举值的数目 (最大值为65535)</td>
+</tr>
+<tr>
+<td>SET</td>
+<td>一个设置，字符串对象可以有零个或 多个SET成员</td>
+<td>1、2、3、4或8个字节，取决于集合 成员的数量（最多64个成员）</td>
+</tr>
+</tbody></table>
+<h3 id="二进制类型"><a href="#二进制类型" class="headerlink" title="二进制类型"></a>二进制类型</h3><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>说明</th>
+<th>存储需求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BIT(M)</td>
+<td>位字段类型</td>
+<td>大约 (M+7)&#x2F;8 字节</td>
+</tr>
+<tr>
+<td>BINARY(M)</td>
+<td>固定长度二进制字符串</td>
+<td>M 字节</td>
+</tr>
+<tr>
+<td>VARBINARY (M)</td>
+<td>可变长度二进制字符串</td>
+<td>M+1 字节</td>
+</tr>
+<tr>
+<td>TINYBLOB (M)</td>
+<td>非常小的BLOB</td>
+<td>L+1 字节，在此，L&lt;2^8</td>
+</tr>
+<tr>
+<td>BLOB (M)</td>
+<td>小 BLOB</td>
+<td>L+2 字节，在此，L&lt;2^16</td>
+</tr>
+<tr>
+<td>MEDIUMBLOB (M)</td>
+<td>中等大小的BLOB</td>
+<td>L+3 字节，在此，L&lt;2^24</td>
+</tr>
+<tr>
+<td>LONGBLOB (M)</td>
+<td>非常大的BLOB</td>
+<td>L+4 字节，在此，L&lt;2^32</td>
+</tr>
+</tbody></table>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><ul>
+<li>字符串函数</li>
+<li>数值函数</li>
+<li>日期函数</li>
+<li>流程函数</li>
+</ul>
+<h3 id="字符串函数"><a href="#字符串函数" class="headerlink" title="字符串函数"></a>字符串函数</h3><p>常用函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CONCAT(s1, s2, …, sn)</td>
+<td>字符串拼接，将s1, s2, …, sn拼接成一个字符串</td>
+</tr>
+<tr>
+<td>LOWER(str)</td>
+<td>将字符串全部转为小写</td>
+</tr>
+<tr>
+<td>UPPER(str)</td>
+<td>将字符串全部转为大写</td>
+</tr>
+<tr>
+<td>LPAD(str, n, pad)</td>
+<td>左填充，用字符串pad对str的左边进行填充，达到n个字符串长度</td>
+</tr>
+<tr>
+<td>RPAD(str, n, pad)</td>
+<td>右填充，用字符串pad对str的右边进行填充，达到n个字符串长度</td>
+</tr>
+<tr>
+<td>TRIM(str)</td>
+<td>去掉字符串头部和尾部的空格</td>
+</tr>
+<tr>
+<td>SUBSTRING(str, start, len)</td>
+<td>返回从字符串str从start位置起的len个长度的字符串</td>
+</tr>
+<tr>
+<td>REPLACE(column, source, replace)</td>
+<td>替换字符串</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">-- 拼接</span><br><span class="line">select CONCAT(&#x27;Hello&#x27;, &#x27;World&#x27;);</span><br><span class="line"></span><br><span class="line">-- 小写</span><br><span class="line">select LOWER(&#x27;Hello&#x27;);</span><br><span class="line"></span><br><span class="line">-- 大写</span><br><span class="line">select UPPER(&#x27;Hello&#x27;);</span><br><span class="line"></span><br><span class="line">-- 左填充</span><br><span class="line">select LPAD(&#x27;01&#x27;, 5, &#x27;-&#x27;);</span><br><span class="line"></span><br><span class="line">-- 右填充</span><br><span class="line">select RPAD(&#x27;01&#x27;, 5, &#x27;-&#x27;);</span><br><span class="line"></span><br><span class="line">-- 去除头部和尾部空格</span><br><span class="line">select TRIM(&#x27; Hello World &#x27;);</span><br><span class="line"></span><br><span class="line">-- 切片（起始索引为1）</span><br><span class="line">select SUBSTRING(&#x27;Hello World&#x27;, 1, 5);</span><br></pre></td></tr></table></figure>
+
+<h3 id="数值函数"><a href="#数值函数" class="headerlink" title="数值函数"></a>数值函数</h3><p>常见函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CEIL(x)</td>
+<td>向上取整</td>
+</tr>
+<tr>
+<td>FLOOR(x)</td>
+<td>向下取整</td>
+</tr>
+<tr>
+<td>MOD(x, y)</td>
+<td>返回x&#x2F;y的模</td>
+</tr>
+<tr>
+<td>RAND()</td>
+<td>返回0~1内的随机数</td>
+</tr>
+<tr>
+<td>ROUND(x, y)</td>
+<td>求参数x的四舍五入值，保留y位小数</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- 通过数据库函数，生成一个六位数的随机验证码</span><br><span class="line">select lpad(round(rand() * 1000000, 0), 6, &#x27;0&#x27;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="日期函数"><a href="#日期函数" class="headerlink" title="日期函数"></a>日期函数</h3><p>常用函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CURDATE()</td>
+<td>返回当前日期</td>
+</tr>
+<tr>
+<td>CURTIME()</td>
+<td>返回当前时间</td>
+</tr>
+<tr>
+<td>NOW()</td>
+<td>返回当前日期和时间</td>
+</tr>
+<tr>
+<td>YEAR(date)</td>
+<td>获取指定date的年份</td>
+</tr>
+<tr>
+<td>MONTH(date)</td>
+<td>获取指定date的月份</td>
+</tr>
+<tr>
+<td>DAY(date)</td>
+<td>获取指定date的日期</td>
+</tr>
+<tr>
+<td>DATE_ADD(date, INTERVAL expr type)</td>
+<td>返回一个日期&#x2F;时间值加上一个时间间隔expr后的时间值</td>
+</tr>
+<tr>
+<td>DATEDIFF(date1, date2)</td>
+<td>返回起始时间date1和结束时间date2之间的天数</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 当前时间往后加70天</span><br><span class="line">select DATE_ADD(NOW(), interval 70 DAY);</span><br><span class="line"></span><br><span class="line">-- 查询所有员工的入职天数，并根据入职天数倒序排序</span><br><span class="line">select name, datadiff(curdate(), entrydata) as &#x27;entrydays&#x27; from employee order by entrydays desc;</span><br></pre></td></tr></table></figure>
+
+<h3 id="流程函数"><a href="#流程函数" class="headerlink" title="流程函数"></a>流程函数</h3><p>常用函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IF(value, t, f)</td>
+<td>如果value为true，则返回t，否则返回f</td>
+</tr>
+<tr>
+<td>IFNULL(value1, value2)</td>
+<td>如果value1不为空，返回value1，否则返回value2</td>
+</tr>
+<tr>
+<td>CASE WHEN [ val1 ] THEN [ res1 ] … ELSE [ default ] END</td>
+<td>如果val1为true，返回res1，… 否则返回default默认值</td>
+</tr>
+<tr>
+<td>CASE [ expr ] WHEN [ val1 ] THEN [ res1 ] … ELSE [ default ] END</td>
+<td>如果expr的值等于val1，返回res1，… 否则返回default默认值</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">-- 查询员工姓名和年龄，如果年龄大于30岁显示中年否则显示为青年</span><br><span class="line">select</span><br><span class="line">    name,</span><br><span class="line">    (case when age &gt; 30 then &#x27;中年&#x27; else &#x27;青年&#x27; end)</span><br><span class="line">from employee;</span><br><span class="line"></span><br><span class="line">-- 查询员工姓名和工作地址，如果是北京和上海显示为一线城市否则显示为二线城市</span><br><span class="line">select</span><br><span class="line">    name,</span><br><span class="line">    (case workaddress when &#x27;北京市&#x27; then &#x27;一线城市&#x27; when &#x27;上海市&#x27; then &#x27;一线城市&#x27; else &#x27;二线城市&#x27; end) as &#x27;工作地址&#x27;</span><br><span class="line">from employee;</span><br><span class="line"></span><br><span class="line">-- 统计班级各个学员的成绩，暂时的规则如下：</span><br><span class="line">-- &gt;= 85，展示优秀</span><br><span class="line">-- &gt;= 60，展示及格</span><br><span class="line">-- 否则，展示不及格</span><br><span class="line">select</span><br><span class="line">    id,</span><br><span class="line">    name,</span><br><span class="line">    (case when math &gt;= 85 then &#x27;优秀&#x27; when math &gt;= 60 then &#x27;及格&#x27; else &#x27;不及格&#x27; end) &#x27;数学&#x27;,</span><br><span class="line">    (case when english &gt;= 85 then &#x27;优秀&#x27; when english &gt;= 60 then &#x27;及格&#x27; else &#x27;不及格&#x27; end) &#x27;英语&#x27;,</span><br><span class="line">    (case when chinese &gt;= 85 then &#x27;优秀&#x27; when chinese &gt;= 60 then &#x27;及格&#x27; else &#x27;不及格&#x27; end) &#x27;语文&#x27;</span><br><span class="line">from score;</span><br></pre></td></tr></table></figure>
+
+<h2 id="约束"><a href="#约束" class="headerlink" title="约束"></a>约束</h2><p>概念：约束是作用于表中字段上的规则，用于限制存储在表中的数据。</p>
+<p>目的：保证数据库中数据的正确性、有效性和完整性。</p>
+<p>分类：</p>
+<table>
+<thead>
+<tr>
+<th>约束</th>
+<th>描述</th>
+<th>关键字</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>非空约束</td>
+<td>限制该字段的数据不能为null</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>唯一约束</td>
+<td>保证该字段的所有数据都是唯一、不重复的</td>
+<td>UNIQUE</td>
+</tr>
+<tr>
+<td>主键约束</td>
+<td>主键是一行数据的唯一标识，要求非空且唯一</td>
+<td>PRIMARY KEY</td>
+</tr>
+<tr>
+<td>默认约束</td>
+<td>保存数据时，如果未指定该字段的值，则采用默认值</td>
+<td>DEFAULT</td>
+</tr>
+<tr>
+<td>检查约束（8.0.1版本后）</td>
+<td>保证字段值满足某一个条件</td>
+<td>CHECK</td>
+</tr>
+<tr>
+<td>外键约束</td>
+<td>用来让两张图的数据之间建立连接，保证数据的一致性和完整性</td>
+<td>FOREIGN KEY</td>
+</tr>
+</tbody></table>
+<p>注意：约束是作用于表中字段上的，可以再创建表&#x2F;修改表的时候添加约束。</p>
+<h3 id="常用约束"><a href="#常用约束" class="headerlink" title="常用约束"></a>常用约束</h3><table>
+<thead>
+<tr>
+<th>约束条件</th>
+<th>关键字</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主键</td>
+<td>PRIMARY KEY</td>
+</tr>
+<tr>
+<td>自动增长</td>
+<td>AUTO_INCREMENT</td>
+</tr>
+<tr>
+<td>不为空</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>唯一</td>
+<td>UNIQUE</td>
+</tr>
+<tr>
+<td>逻辑条件</td>
+<td>CHECK</td>
+</tr>
+<tr>
+<td>默认值</td>
+<td>DEFAULT</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">create table user(</span><br><span class="line">	id int primary key auto_increment,</span><br><span class="line">	name varchar(10) not null unique,</span><br><span class="line">	age int check(age &gt; 0 and age &lt; 120),</span><br><span class="line">	status char(1) default &#x27;1&#x27;,</span><br><span class="line">	gender char(1)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="外键约束"><a href="#外键约束" class="headerlink" title="外键约束"></a>外键约束</h3><p>添加外键：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">-- 创建表时</span><br><span class="line">CREATE TABLE 表名(</span><br><span class="line">	字段名 字段类型,</span><br><span class="line">	...</span><br><span class="line">	[CONSTRAINT] [外键名称] FOREIGN KEY(外键字段名) REFERENCES 主表(主表列名)</span><br><span class="line">);</span><br><span class="line">-- 创建表后</span><br><span class="line">ALTER TABLE 表名 ADD CONSTRAINT 外键名称 FOREIGN KEY (外键字段名) REFERENCES 主表(主表列名);</span><br><span class="line"></span><br><span class="line">-- 例子</span><br><span class="line">alter table emp add constraint fk_emp_dept_id foreign key(dept_id) references dept(id);</span><br></pre></td></tr></table></figure>
+
+<p>删除外键：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE 表名 DROP FOREIGN KEY 外键名;</span><br></pre></td></tr></table></figure>
+
+<p>删除&#x2F;更新行为：</p>
+<table>
+<thead>
+<tr>
+<th>行为</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NO ACTION</td>
+<td>当在父表中删除&#x2F;更新对应记录时，首先检查该记录是否有对应外键，如果有则不允许删除&#x2F;更新（与RESTRICT一致）</td>
+</tr>
+<tr>
+<td>RESTRICT</td>
+<td>当在父表中删除&#x2F;更新对应记录时，首先检查该记录是否有对应外键，如果有则不允许删除&#x2F;更新（与NO ACTION一致）</td>
+</tr>
+<tr>
+<td>CASCADE</td>
+<td>当在父表中删除&#x2F;更新对应记录时，首先检查该记录是否有对应外键，如果有则也删除&#x2F;更新外键在子表中的记录</td>
+</tr>
+<tr>
+<td>SET NULL</td>
+<td>当在父表中删除&#x2F;更新对应记录时，首先检查该记录是否有对应外键，如果有则设置子表中该外键值为null（要求该外键允许为null）</td>
+</tr>
+<tr>
+<td>SET DEFAULT</td>
+<td>父表有变更时，子表将外键设为一个默认值（Innodb不支持）</td>
+</tr>
+</tbody></table>
+<p>更改删除&#x2F;更新行为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE 表名 ADD CONSTRAINT 外键名称 FOREIGN KEY (外键字段) REFERENCES 主表名(主表字段名) ON UPDATE 行为 ON DELETE 行为;</span><br></pre></td></tr></table></figure>
+
+<h2 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h2><h3 id="多表关系"><a href="#多表关系" class="headerlink" title="多表关系"></a>多表关系</h3><ul>
+<li>一对多（多对一）</li>
+<li>多对多</li>
+<li>一对一</li>
+</ul>
+<h4 id="一对多"><a href="#一对多" class="headerlink" title="一对多"></a>一对多</h4><p>案例：部门与员工</p>
+<p>关系：一个部门对应多个员工，一个员工对应一个部门</p>
+<p>实现：在多的一方建立外键，指向一的一方的主键</p>
+<h4 id="多对多"><a href="#多对多" class="headerlink" title="多对多"></a>多对多</h4><p>案例：学生与课程</p>
+<p>关系：一个学生可以选多门课程，一门课程也可以供多个学生选修</p>
+<p>实现：建立第三张中间表，中间表至少包含两个外键，分别关联两方主键</p>
+<h4 id="一对一"><a href="#一对一" class="headerlink" title="一对一"></a>一对一</h4><p>案例：用户与用户详情</p>
+<p>关系：一对一关系，多用于单表拆分，将一张表的基础字段放在一张表中，其他详情字段放在另一张表中，以提升操作效率</p>
+<p>实现：在任意一方加入外键，关联另外一方的主键，并且设置外键为唯一的（UNIQUE）</p>
+<h3 id="多表查询概述"><a href="#多表查询概述" class="headerlink" title="多表查询概述"></a>多表查询概述</h3><p>概述：指从多张表中查询数据。</p>
+<p>笛卡尔积：笛卡尔成积是指在数学中，两个集合，A集合和B集合的所有组合情况。（在多表查询时，需要消除无效的笛卡尔积）。</p>
+<p>合并查询（笛卡尔积，会展示所有组合结果）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from employee, dept;</span><br></pre></td></tr></table></figure>
+
+<p>消除无效笛卡尔积：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from employee, dept where employee.dept = dept.id;</span><br></pre></td></tr></table></figure>
+
+<p>多表查询分类：</p>
+<ul>
+<li>连接查询<ul>
+<li>内连接：相当于查询A、B交集部分数据。</li>
+<li>外连接：<ul>
+<li>左外连接：查询左表所有数据，以及两张表交集部分数据。</li>
+<li>右外连接：查询右表所有数据，以及两张表交集部分数据。</li>
+</ul>
+</li>
+<li>自连接：当前表与自身的连接查询，自连接必须使用表别名。</li>
+</ul>
+</li>
+<li>子查询</li>
+</ul>
+<h3 id="内连接查询"><a href="#内连接查询" class="headerlink" title="内连接查询"></a>内连接查询</h3><p>概念：内连接查询的是两张表交集的部分。</p>
+<p>内连接查询语法：</p>
+<ul>
+<li><p>隐式内连接：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段列表 FROM 表1, 表2 WHERE 条件 ...;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>显式内连接：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段列表 FROM 表1 [ INNER ] JOIN 表2 ON 连接条件 ...;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>显式性能比隐式高。</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 查询员工姓名，及关联的部门的名称</span><br><span class="line">-- 隐式</span><br><span class="line">select e.name, d.name from employee as e, dept as d where e.dept = d.id;</span><br><span class="line">-- 显式</span><br><span class="line">select e.name, d.name from employee as e inner join dept as d on e.dept = d.id;</span><br></pre></td></tr></table></figure>
+
+<h3 id="外连接查询"><a href="#外连接查询" class="headerlink" title="外连接查询"></a>外连接查询</h3><p>外连接查询语法：</p>
+<ul>
+<li>左外连接：查询左表所有数据，以及两张表交集部分数据。<ul>
+<li>下面相当于查询表1的所有数据，包含表1和表2交集部分数据。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段列表 FROM 表1 LEFT [ OUTER ] JOIN 表2 ON 条件 ...;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>右外连接：查询右表所有数据，以及两张表交集部分数据。<ul>
+<li>下面相当于查询表2的所有数据，包含表1和表2交集部分数据。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段列表 FROM 表1 RIGHT [ OUTER ] JOIN 表2 ON 条件 ...;</span><br></pre></td></tr></table></figure>
+
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 左</span><br><span class="line">select e.*, d.name from employee as e left outer join dept as d on e.dept = d.id;</span><br><span class="line">select d.name, e.* from dept d left outer join emp e on e.dept = d.id;  -- 这条语句与下面的语句效果一样</span><br><span class="line">-- 右</span><br><span class="line">select d.name, e.* from employee as e right outer join dept as d on e.dept = d.id;</span><br></pre></td></tr></table></figure>
+
+<p>左连接可以查询到没有dept的employee，右连接可以查询到没有employee的dept。</p>
+<h3 id="自连接查询"><a href="#自连接查询" class="headerlink" title="自连接查询"></a>自连接查询</h3><p>概念：当前表与自身的连接查询。</p>
+<p>自连接查询语法：</p>
+<ul>
+<li>自连接查询，可以是内连接查询，也可以是外连接查询。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段列表 FROM 表A 别名A JOIN 表A 别名B ON 条件 ...;</span><br></pre></td></tr></table></figure>
+
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- 查询员工及其所属领导的名字</span><br><span class="line">select a.name, b.name from employee a, employee b where a.manager = b.id;</span><br><span class="line">-- 没有领导的也查询出来</span><br><span class="line">select a.name, b.name from employee a left join employee b on a.manager = b.id;</span><br></pre></td></tr></table></figure>
+
+<p>注意：当前表与自身的连接查询，自连接必须使用表别名。</p>
+<h3 id="联合查询"><a href="#联合查询" class="headerlink" title="联合查询"></a>联合查询</h3><p>概念：把多次查询的结果合并，形成一个新的查询集。</p>
+<p>联合查询语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT 字段列表 FROM 表A ...</span><br><span class="line">UNION [ALL]</span><br><span class="line">SELECT 字段列表 FROM 表B ...</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ul>
+<li>UNION ALL 会有重复结果，UNION 不会。</li>
+<li>联合查询比使用 or 效率高，不会使索引失效。</li>
+</ul>
+<h3 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h3><p>概念：SQL语句中嵌套SELECT语句，称谓嵌套查询，又称子查询。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM t1 WHERE column1 = ( SELECT column1 FROM t2);</span><br></pre></td></tr></table></figure>
+
+<p>子查询外部的语句可以是 INSERT &#x2F; UPDATE &#x2F; DELETE &#x2F; SELECT 的任何一个。</p>
+<p>根据子查询结果可以分为：</p>
+<ul>
+<li>标量子查询（子查询结果为单个值）</li>
+<li>列子查询（子查询结果为一列）</li>
+<li>行子查询（子查询结果为一行）</li>
+<li>表子查询（子查询结果为多行多列）</li>
+</ul>
+<p>根据子查询位置可分为：</p>
+<ul>
+<li>WHERE 之后</li>
+<li>FROM 之后</li>
+<li>SELECT 之后</li>
+</ul>
+<h4 id="标量子查询"><a href="#标量子查询" class="headerlink" title="标量子查询"></a>标量子查询</h4><p>概念：子查询返回的结果是单个值（数字、字符串、日期等）。</p>
+<p>常用操作符：<code>- &lt; &gt; &gt; &gt;= &lt; &lt;=</code>。</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">-- 查询销售部所有员工</span><br><span class="line">-- 1.查询销售部部门ID</span><br><span class="line">select id from dept where name = &#x27;销售部&#x27;;</span><br><span class="line"></span><br><span class="line">-- 2.根据销售部部门ID，查询员工信息</span><br><span class="line">select * from employee where dept = 4;</span><br><span class="line"></span><br><span class="line">-- 3.合并上面两步（子查询）</span><br><span class="line">select * from employee where dept = (select id from dept where name = &#x27;销售部&#x27;);</span><br><span class="line"></span><br><span class="line">-- 查询xxx入职之后的员工信息</span><br><span class="line">select * from employee where entrydate &gt; (select entrydate from employee where name = &#x27;xxx&#x27;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="列子查询"><a href="#列子查询" class="headerlink" title="列子查询"></a>列子查询</h4><p>概念：子查询返回的结果是一列（可以是多行）。</p>
+<p>常用操作符：<code>IN、NOT、IN、ANY、SOME、ALL</code>。</p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IN</td>
+<td>在指定的集合范围内，多选一</td>
+</tr>
+<tr>
+<td>NOT IN</td>
+<td>不在指定的集合范围内</td>
+</tr>
+<tr>
+<td>ANY</td>
+<td>子查询返回列表中，有任意一个满足即可</td>
+</tr>
+<tr>
+<td>SOME</td>
+<td>与ANY等同，使用SOME的地方都可以使用ANY</td>
+</tr>
+<tr>
+<td>ALL</td>
+<td>子查询返回列表的所有值都必须满足</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-- 查询销售部和市场部的所有员工信息</span><br><span class="line">select * from employee where dept in (select id from dept where name = &#x27;销售部&#x27; or name = &#x27;市场部&#x27;);</span><br><span class="line"></span><br><span class="line">-- 查询比财务部所有人工资都高的员工信息</span><br><span class="line">select * from employee where salary &gt; all (select salary from employee where dept = (select id from dept where name = &#x27;财务部&#x27;));</span><br><span class="line"></span><br><span class="line">-- 查询比研发部任意一人工资高的员工信息</span><br><span class="line">select * from employee where salary &gt; any (select salary from employee where dept = (select id from dept where name = &#x27;研发部&#x27;));</span><br></pre></td></tr></table></figure>
+
+<h4 id="行子查询"><a href="#行子查询" class="headerlink" title="行子查询"></a>行子查询</h4><p>概念：子查询返回的结果是一行（可以是多列）。</p>
+<p>常用操作符：<code>=, &lt;, &gt;, IN, NOT IN</code>。</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- 查询与xxx的薪资及直属领导相同的员工信息</span><br><span class="line">select * from employee where (salary, manager) = (select salary, manager from employee where name = &#x27;xxx&#x27;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="表子查询"><a href="#表子查询" class="headerlink" title="表子查询"></a>表子查询</h4><p>概念：返回的结果是多行多列。</p>
+<p>常用操作符：<code>IN</code>。</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 查询与xxx1，xxx2的职位和薪资相同的员工</span><br><span class="line">select * from employee where (job, salary) in (select job, salary from employee where name = &#x27;xxx1&#x27; or name = &#x27;xxx2&#x27;);</span><br><span class="line"></span><br><span class="line">-- 查询入职日期是2006-01-01之后的员工，及其部门信息</span><br><span class="line">select e.*, d.* from (select * from employee where entrydate &gt; &#x27;2006-01-01&#x27;) as e left join dept as d on e.dept = d.id;</span><br></pre></td></tr></table></figure>
+
+<h3 id="多表查询案例"><a href="#多表查询案例" class="headerlink" title="多表查询案例"></a>多表查询案例</h3><p>提供三张表进行案例测试。</p>
+<p>员工表（emp）字段：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>age</th>
+<th>job</th>
+<th>salary</th>
+<th>entrydate</th>
+<th>dept_id</th>
+</tr>
+</thead>
+</table>
+<p>部门表（dept）字段：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+</tr>
+</thead>
+</table>
+<p>薪资表（salgrade）字段：</p>
+<table>
+<thead>
+<tr>
+<th>grade</th>
+<th>losal</th>
+<th>hisal</th>
+</tr>
+</thead>
+</table>
+<p>案例：</p>
+<ul>
+<li>查询员工的姓名、年龄、职位、部门信息（隐式内连接）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 涉及表：emp、dept</span><br><span class="line">-- 连接条件：emp.dept_id = dept.id</span><br><span class="line">select e.name, e.age, e.job, d.name</span><br><span class="line">from emp as e, dept as d</span><br><span class="line">where e.dept_id = d.id;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询年龄小于30岁的员工的姓名、年龄、职位、部门信息（显式内连接）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 涉及表：emp、dept</span><br><span class="line">-- 连接条件：emp.dept_id = dept.id</span><br><span class="line">select e.name, e.age, e.job, d.name</span><br><span class="line">from emp as e inner join dept as d</span><br><span class="line">on e.dept_id = d.id where e.age &lt; 30;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询拥有员工的部门ID、部门名称（去重）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-- 涉及表：emp、dept</span><br><span class="line">-- 连接条件：emp.dept_id = dept.id</span><br><span class="line">select distinct dept.id, dept.name from emp, dept where emp.dept_id = dept.id;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询所有年龄大于40岁的员工，及其归属的部门名称；如果员工没有分配部门，也需要展示出来</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 涉及表：emp、dept</span><br><span class="line">-- 连接条件：emp.dept_id = dept.id</span><br><span class="line">select e.*, d.name</span><br><span class="line">from emp e left outer join dept d</span><br><span class="line">on e.dept_id = d.id where age &gt; 40;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询所有员工的工资等级</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-- 涉及表：emp、salary</span><br><span class="line">-- 连接条件：e.salary between s.losal and s.hisal</span><br><span class="line">select e.name, s.grade</span><br><span class="line">from emp e join salgrade s</span><br><span class="line">on e.salary &gt;= s.losal and e.salary &lt;= s.hisal;</span><br><span class="line"></span><br><span class="line">-- 或者使用between...and...</span><br><span class="line">select e.name, s.grade</span><br><span class="line">from emp e join salgrade s</span><br><span class="line">on e.salary between s.losal and s.hisal;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询研发部所有员工的信息及工资等级</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-- 涉及表：emp、salary、dept</span><br><span class="line">-- 连接条件：e.salary between s.losal and s.hisal, emp.dept_id = dept.id</span><br><span class="line">-- 查询条件：dept.name = &quot;研发部&quot;</span><br><span class="line">select e.*, s.grade</span><br><span class="line">from emp e, dept d, salary s</span><br><span class="line">where</span><br><span class="line">    e.dept_id = d.id</span><br><span class="line">    and e.salary between s.losal and s.hisal)</span><br><span class="line">    and d.name = &quot;研发部&quot;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询研发部员工的平均工资</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-- 涉及表：emp、dept</span><br><span class="line">-- 连接条件：emp.dept_id = dept.id</span><br><span class="line">select avg(e.salary)</span><br><span class="line">from emp e, dept d</span><br><span class="line">where</span><br><span class="line">    e.dept_id = d.id</span><br><span class="line">    and d.name = &quot;研发部&quot;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询工资比”xxx”高的员工信息</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- 先查询&quot;xxx&quot;的工资，再查询比&quot;xxx&quot;高的员工信息</span><br><span class="line">select e.* from emp e where e.salary &gt; (select e.salary from emp e where e.name = &quot;xxx&quot;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询比平均薪资高的员工信息</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select e.* from emp e where e.salary &gt; (select avg(e.salary) from emp e);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询低于本部门平均工资的员工信息</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from emp e2 where e2.salary &lt; (select avg(e1.salary) from emp e1 where e1.dept_id = e2.dept_id);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询所有部门信息，并统计部门的员工人数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select d.id, d.name, (select count(*) from emp e where e.dept_id = d.id) &#x27;人数&#x27; from dept d;</span><br></pre></td></tr></table></figure>
+
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><h3 id="事务简介"><a href="#事务简介" class="headerlink" title="事务简介"></a>事务简介</h3><p>事务是一组操作的集合，事务会把所有操作作为一个整体一起向系统提交或撤销操作请求，即这些操作<strong>要么同时成功，要么同时失败</strong>。</p>
+<p>事务示例：张三给李四转账1000。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">-- 1. 查询张三账户余额</span><br><span class="line">select * from account where name = &#x27;张三&#x27;;</span><br><span class="line"></span><br><span class="line">-- 2. 将张三账户余额-1000</span><br><span class="line">update account set money = money - 1000 where name = &#x27;张三&#x27;;</span><br><span class="line"></span><br><span class="line">-- 此语句出错后张三钱减少但是李四钱没有增加</span><br><span class="line">模拟sql语句错误,不会执行第3步...</span><br><span class="line"></span><br><span class="line">-- 3. 将李四账户余额+1000</span><br><span class="line">update account set money = money + 1000 where name = &#x27;李四&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>以上三个步骤需要作为一个整体一起向系统提交，如果发生异常需要撤销操作请求。</p>
+<h3 id="事务操作"><a href="#事务操作" class="headerlink" title="事务操作"></a>事务操作</h3><p><strong>操作方式一</strong></p>
+<ul>
+<li>查看&#x2F;设置事务提交方式</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-- 查看事务提交方式</span><br><span class="line">SELECT @@AUTOCOMMIT;</span><br><span class="line">-- 设置事务提交方式，1为自动提交，0为手动提交，该设置只对当前会话有效</span><br><span class="line">SET @@AUTOCOMMIT = 0;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>提交事务</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">COMMIT;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>回滚事务</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ROLLBACK;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>操作实例</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SET @@AUTOCOMMIT = 0;</span><br><span class="line">select * from account where name = &#x27;张三&#x27;;</span><br><span class="line">update account set money = money - 1000 where name = &#x27;张三&#x27;;</span><br><span class="line">update account set money = money + 1000 where name = &#x27;李四&#x27;;</span><br><span class="line">commit;</span><br></pre></td></tr></table></figure>
+
+<p><strong>操作方式二</strong></p>
+<ul>
+<li>开启事务</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">START TRANSACTION 或 BEGIN TRANSACTION;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>提交事务</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">COMMIT;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>回滚事务</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ROLLBACK;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>操作实例</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">start transaction;</span><br><span class="line">select * from account where name = &#x27;张三&#x27;;</span><br><span class="line">update account set money = money - 1000 where name = &#x27;张三&#x27;;</span><br><span class="line">update account set money = money + 1000 where name = &#x27;李四&#x27;;</span><br><span class="line">commit;</span><br></pre></td></tr></table></figure>
+
+<h3 id="事务四大特性"><a href="#事务四大特性" class="headerlink" title="事务四大特性"></a>事务四大特性</h3><ul>
+<li>原子性（Atomicity）：事务是不可分割的最小操作但愿，要么全部成功，要么全部失败。</li>
+<li>一致性（Consistency）：事务完成时，必须使所有数据都保持一致状态。</li>
+<li>隔离性（Isolation）：数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立环境下运行。</li>
+<li>持久性（Durability）：事务一旦提交或回滚，它对数据库中的数据的改变就是永久的。</li>
+</ul>
+<h3 id="并发事务问题"><a href="#并发事务问题" class="headerlink" title="并发事务问题"></a>并发事务问题</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>脏读</td>
+<td>一个事务读到另一个事务还没提交的数据</td>
+</tr>
+<tr>
+<td>不可重复读</td>
+<td>一个事务先后读取同一条记录，但两次读取的数据不同</td>
+</tr>
+<tr>
+<td>幻读</td>
+<td>一个事务按照条件查询数据时，没有对应的数据行，但是再插入数据时，又发现这行数据已经存在</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>这三个问题的详细演示：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Kr4y1i7ru?p=55cd">https://www.bilibili.com/video/BV1Kr4y1i7ru?p=55cd</a> </p>
+</blockquote>
+<h3 id="并发事务隔离级别"><a href="#并发事务隔离级别" class="headerlink" title="并发事务隔离级别"></a>并发事务隔离级别</h3><table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Read uncommitted</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Read committed</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Repeatable Read（MySQL默认）</td>
+<td>×</td>
+<td>×</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Serializable</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+</tbody></table>
+<ul>
+<li>√表示在当前隔离级别下该问题会出现。</li>
+<li>Serializable 性能最低；Read uncommitted 性能最高，数据安全性最差。</li>
+</ul>
+<p>查看事务隔离级别：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT @@TRANSACTION_ISOLATION;</span><br></pre></td></tr></table></figure>
+
+<p>设置事务隔离级别：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET [ SESSION | GLOBAL ] TRANSACTION ISOLATION LEVEL &#123;READ UNCOMMITTED | READ COMMITTED | REPEATABLE READ | SERIALIZABLE &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>SESSION 是会话级别，表示只针对当前会话有效，GLOBAL 表示对所有会话有效。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1667,225 +2846,6 @@
 
 <h1 id="测试页面"><a href="#测试页面" class="headerlink" title="测试页面"></a>测试页面</h1><p><a target="_blank" rel="noopener" href="http://localhost/demos/">http://localhost/demos/</a></p>
 <p><a target="_blank" rel="noopener" href="https://localhost/demos/">https://localhost/demos/</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/11/10/SRS-RTMP%E8%BD%ACRTC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/11/10/SRS-RTMP%E8%BD%ACRTC/" class="post-title-link" itemprop="url">SRS-RTMP转RTC</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-11-10 17:58:26" itemprop="dateCreated datePublished" datetime="2023-11-10T17:58:26+08:00">2023-11-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:37:37" itemprop="dateModified" datetime="2023-12-30T22:37:37+08:00">2023-12-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/SRS/" itemprop="url" rel="index"><span itemprop="name">SRS</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>注：SRS版本为<code>v6.0.75</code></p>
-<h1 id="RTMP2RTC服务运行"><a href="#RTMP2RTC服务运行" class="headerlink" title="RTMP2RTC服务运行"></a>RTMP2RTC服务运行</h1><h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><ul>
-<li>使用工程自带<code>rtmp2rtc.conf</code>配置文件。</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">listen              1935;</span><br><span class="line">max_connections     1000;</span><br><span class="line">daemon              off;</span><br><span class="line">srs_log_tank        console;</span><br><span class="line"></span><br><span class="line">http_server &#123;</span><br><span class="line">    enabled         on;</span><br><span class="line">    listen          8080;</span><br><span class="line">    dir             ./objs/nginx/html;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http_api &#123;</span><br><span class="line">    enabled         on;</span><br><span class="line">    listen          1985;</span><br><span class="line">&#125;</span><br><span class="line">stats &#123;</span><br><span class="line">    network         0;</span><br><span class="line">&#125;</span><br><span class="line">rtc_server &#123;</span><br><span class="line">    enabled on;</span><br><span class="line">    listen 8000; # UDP port</span><br><span class="line">    # @see https://ossrs.net/lts/zh-cn/docs/v4/doc/webrtc#config-candidate</span><br><span class="line">    candidate $CANDIDATE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vhost __defaultVhost__ &#123;</span><br><span class="line">    rtc &#123;</span><br><span class="line">        enabled     on;</span><br><span class="line">        # @see https://ossrs.net/lts/zh-cn/docs/v4/doc/webrtc#rtmp-to-rtc</span><br><span class="line">        rtmp_to_rtc on;</span><br><span class="line">        # @see https://ossrs.net/lts/zh-cn/docs/v4/doc/webrtc#rtc-to-rtmp</span><br><span class="line">        rtc_to_rtmp on;</span><br><span class="line">    &#125;</span><br><span class="line">    http_remux &#123;</span><br><span class="line">        enabled     on;</span><br><span class="line">        mount       [vhost]/[app]/[stream].flv;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="运行服务"><a href="#运行服务" class="headerlink" title="运行服务"></a>运行服务</h2><ul>
-<li>运行SRS服务</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./obj/srs -c conf/rtmp2rtc.conf</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>推流</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -re -i test.mp4 -codec copy -f flv -y rtmp://127.0.0.1/live/livestream</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>拉流<ul>
-<li>启动SRS后访问本地URL：<a target="_blank" rel="noopener" href="http://127.0.0.1:8080/players/rtc_player.html">http://127.0.0.1:8080/players/rtc_player.html</a> 。</li>
-<li>进入RTC播放器，播放视频。</li>
-</ul>
-</li>
-</ul>
-<h1 id="RTMP2RTC推流端"><a href="#RTMP2RTC推流端" class="headerlink" title="RTMP2RTC推流端"></a>RTMP2RTC推流端</h1><h2 id="初始化RTC相关类"><a href="#初始化RTC相关类" class="headerlink" title="初始化RTC相关类"></a>初始化RTC相关类</h2><ul>
-<li>断点<code>b SrsRtcSource::SrsRtcSource()</code>，查看堆栈。</li>
-</ul>
-<img src="/2023/11/10/SRS-RTMP%E8%BD%ACRTC/SrsRtcSource断点.png" alt="SrsRtcSource断点" style="zoom:50%;">
-
-<h3 id="SrsRtmpConn-acquire-publish"><a href="#SrsRtmpConn-acquire-publish" class="headerlink" title="SrsRtmpConn::acquire_publish()"></a>SrsRtmpConn::acquire_publish()</h3><ul>
-<li><code>_srs_rtc_sources-&gt;fetch_or_create</code>创建<code>SrsRtcSource</code>。</li>
-<li><code>new SrsFrameToRtcBridge(rtc)</code>创建RTMPToRTC桥接器。</li>
-<li><code>source-&gt;set_bridge(bridge)</code>设置桥接器，在<code>on_audio_imp()</code>中会使用到。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsRtmpConn::acquire_publish</span><span class="params">(SrsLiveSource* source)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line">    </span><br><span class="line">    SrsRequest* req = info-&gt;req;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check whether RTC stream is busy.</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> SRS_RTC</span></span><br><span class="line">    SrsRtcSource* rtc = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">bool</span> rtc_server_enabled = _srs_config-&gt;<span class="built_in">get_rtc_server_enabled</span>();</span><br><span class="line">    <span class="type">bool</span> rtc_enabled = _srs_config-&gt;<span class="built_in">get_rtc_enabled</span>(req-&gt;vhost);</span><br><span class="line">    <span class="keyword">if</span> (rtc_server_enabled &amp;&amp; rtc_enabled &amp;&amp; !info-&gt;edge) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((err = _srs_rtc_sources-&gt;<span class="built_in">fetch_or_create</span>(req, &amp;rtc)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;create source&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!rtc-&gt;<span class="built_in">can_publish</span>()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_new</span>(ERROR_SYSTEM_STREAM_BUSY, <span class="string">&quot;rtc stream %s busy&quot;</span>, </span><br><span class="line">                                 req-&gt;<span class="built_in">get_stream_url</span>().<span class="built_in">c_str</span>());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Bridge to RTC streaming.</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(SRS_RTC) &amp;&amp; defined(SRS_FFMPEG_FIT)</span></span><br><span class="line">    <span class="keyword">if</span> (rtc &amp;&amp; _srs_config-&gt;<span class="built_in">get_rtc_from_rtmp</span>(req-&gt;vhost)) &#123;</span><br><span class="line">        SrsCompositeBridge* bridge = <span class="keyword">new</span> <span class="built_in">SrsCompositeBridge</span>();</span><br><span class="line">        bridge-&gt;<span class="built_in">append</span>(<span class="keyword">new</span> <span class="built_in">SrsFrameToRtcBridge</span>(rtc));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ((err = bridge-&gt;<span class="built_in">initialize</span>(req)) != srs_success) &#123;</span><br><span class="line">            <span class="built_in">srs_freep</span>(bridge);</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;bridge init&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        source-&gt;<span class="built_in">set_bridge</span>(bridge);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="SrsRtcSourceManager-fetch-or-create"><a href="#SrsRtcSourceManager-fetch-or-create" class="headerlink" title="SrsRtcSourceManager::fetch_or_create()"></a>SrsRtcSourceManager::fetch_or_create()</h3><ul>
-<li>通过<code>std::map&lt;std::string, SrsRtcSource*&gt; pool</code>保存url和对应的<code>SrsRtcSource</code>。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsRtcSourceManager::fetch_or_create</span><span class="params">(SrsRequest* r, SrsRtcSource** pps)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Use lock to protect coroutine switch.</span></span><br><span class="line">    <span class="comment">// @bug https://github.com/ossrs/srs/issues/1230</span></span><br><span class="line">    <span class="built_in">SrsLocker</span>(lock);</span><br><span class="line"></span><br><span class="line">    SrsRtcSource* source = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> ((source = <span class="built_in">fetch</span>(r)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">// we always update the request of resource,</span></span><br><span class="line">        <span class="comment">// for origin auth is on, the token in request maybe invalid,</span></span><br><span class="line">        <span class="comment">// and we only need to update the token of request, it&#x27;s simple.</span></span><br><span class="line">        source-&gt;<span class="built_in">update_auth</span>(r);</span><br><span class="line">        *pps = source;</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    string stream_url = r-&gt;<span class="built_in">get_stream_url</span>();</span><br><span class="line">    string vhost = r-&gt;vhost;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// should always not exists for create a source.</span></span><br><span class="line">    <span class="built_in">srs_assert</span> (pool.<span class="built_in">find</span>(stream_url) == pool.<span class="built_in">end</span>());</span><br><span class="line"></span><br><span class="line">    <span class="built_in">srs_trace</span>(<span class="string">&quot;new rtc source, stream_url=%s&quot;</span>, stream_url.<span class="built_in">c_str</span>());</span><br><span class="line"></span><br><span class="line">    source = <span class="keyword">new</span> <span class="built_in">SrsRtcSource</span>();</span><br><span class="line">    <span class="keyword">if</span> ((err = source-&gt;<span class="built_in">initialize</span>(r)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;init source %s&quot;</span>, r-&gt;<span class="built_in">get_stream_url</span>().<span class="built_in">c_str</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pool[stream_url] = source;</span><br><span class="line"></span><br><span class="line">    *pps = source;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="转换数据给拉流端"><a href="#转换数据给拉流端" class="headerlink" title="转换数据给拉流端"></a>转换数据给拉流端</h2><ul>
-<li>断点<code>b SrsRtcConsumer::enqueue(SrsRtpPacket*)</code>。</li>
-</ul>
-<img src="/2023/11/10/SRS-RTMP%E8%BD%ACRTC/SrsRtcConsumer中enqueue断点.png" alt="SrsRtcConsumer中enqueue断点" style="zoom:50%;">
-
-<h3 id="SrsLiveSource-on-audio-imp"><a href="#SrsLiveSource-on-audio-imp" class="headerlink" title="SrsLiveSource::on_audio_imp()"></a>SrsLiveSource::on_audio_imp()</h3><ul>
-<li>调用上述初始化RTC设置的<code>SrsCompositeBridge</code>处理。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsLiveSource::on_audio_imp</span><span class="params">(SrsSharedPtrMessage* msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//省略...</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// For bridge to consume the message.</span></span><br><span class="line">    <span class="keyword">if</span> (bridge_ &amp;&amp; (err = bridge_-&gt;<span class="built_in">on_frame</span>(msg)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;bridge consume audio&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//省略...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="SrsCompositeBridge-on-frame"><a href="#SrsCompositeBridge-on-frame" class="headerlink" title="SrsCompositeBridge::on_frame()"></a>SrsCompositeBridge::on_frame()</h3><ul>
-<li><code>bridge</code>是<code>SrsFrameToRtcBridge</code>。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsCompositeBridge::on_frame</span><span class="params">(SrsSharedPtrMessage* frame)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (vector&lt;ISrsStreamBridge*&gt;::iterator it = bridges_.<span class="built_in">begin</span>(); it != bridges_.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">        ISrsStreamBridge* bridge = *it;</span><br><span class="line">        <span class="keyword">if</span> ((err = bridge-&gt;<span class="built_in">on_frame</span>(frame)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> err;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsFrameToRtcBridge::on_frame</span><span class="params">(SrsSharedPtrMessage* frame)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> SRS_FFMPEG_FIT</span></span><br><span class="line">    <span class="keyword">return</span> rtp_builder_-&gt;<span class="built_in">on_frame</span>(frame);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    <span class="keyword">return</span> srs_success;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsRtcRtpBuilder::on_frame</span><span class="params">(SrsSharedPtrMessage* frame)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;<span class="built_in">is_audio</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">on_audio</span>(frame);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (frame-&gt;<span class="built_in">is_video</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">on_video</span>(frame);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> srs_success;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="SrsRtcRtpBuilder-on-audio"><a href="#SrsRtcRtpBuilder-on-audio" class="headerlink" title="SrsRtcRtpBuilder::on_audio()"></a>SrsRtcRtpBuilder::on_audio()</h3><ul>
-<li><code>init_codec</code>初始化编解码器。</li>
-<li><code>aac_raw_append_adts_header</code>封装ADTS。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsRtcRtpBuilder::on_audio</span><span class="params">(SrsSharedPtrMessage* msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> Support parsing OPUS for RTC.</span></span><br><span class="line">    <span class="keyword">if</span> ((err = format-&gt;<span class="built_in">on_audio</span>(msg)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;format consume audio&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Try to init codec when startup or codec changed.</span></span><br><span class="line">    <span class="keyword">if</span> (format-&gt;acodec &amp;&amp; (err = <span class="built_in">init_codec</span>(format-&gt;acodec-&gt;id)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;init codec&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Ignore if no format-&gt;acodec, it means the codec is not parsed, or unknown codec.</span></span><br><span class="line">    <span class="comment">// @issue https://github.com/ossrs/srs/issues/1506#issuecomment-562079474</span></span><br><span class="line">    <span class="keyword">if</span> (!format-&gt;acodec) &#123;</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ts support audio codec: aac/mp3</span></span><br><span class="line">    SrsAudioCodecId acodec = format-&gt;acodec-&gt;id;</span><br><span class="line">    <span class="keyword">if</span> (acodec != SrsAudioCodecIdAAC &amp;&amp; acodec != SrsAudioCodecIdMP3) &#123;</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ignore sequence header</span></span><br><span class="line">    <span class="built_in">srs_assert</span>(format-&gt;audio);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (format-&gt;acodec-&gt;id == SrsAudioCodecIdMP3) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">transcode</span>(format-&gt;audio);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// When drop aac audio packet, never transcode.</span></span><br><span class="line">    <span class="keyword">if</span> (acodec != SrsAudioCodecIdAAC) &#123;</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">char</span>* adts_audio = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> nn_adts_audio = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> Reserve 7 bytes header when create shared message.</span></span><br><span class="line">    <span class="keyword">if</span> ((err = <span class="built_in">aac_raw_append_adts_header</span>(msg, format, &amp;adts_audio, &amp;nn_adts_audio)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;aac append header&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!adts_audio) &#123;</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    SrsAudioFrame aac;</span><br><span class="line">    aac.dts = format-&gt;audio-&gt;dts;</span><br><span class="line">    aac.cts = format-&gt;audio-&gt;cts;</span><br><span class="line">    <span class="keyword">if</span> ((err = aac.<span class="built_in">add_sample</span>(adts_audio, nn_adts_audio)) == srs_success) &#123;</span><br><span class="line">        <span class="comment">// If OK, transcode the AAC to Opus and consume it.</span></span><br><span class="line">        err = <span class="built_in">transcode</span>(&amp;aac);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">srs_freepa</span>(adts_audio);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="SrsRtcRtpBuilder-transcode"><a href="#SrsRtcRtpBuilder-transcode" class="headerlink" title="SrsRtcRtpBuilder::transcode()"></a>SrsRtcRtpBuilder::transcode()</h3><ul>
-<li><code>SrsAudioFrame</code>转<code>SrsRtpPacket</code>。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsRtcRtpBuilder::transcode</span><span class="params">(SrsAudioFrame* audio)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line"></span><br><span class="line">    std::vector&lt;SrsAudioFrame*&gt; out_audios;</span><br><span class="line">    <span class="keyword">if</span> ((err = codec_-&gt;<span class="built_in">transcode</span>(audio, out_audios)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;recode error&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Save OPUS packets in shared message.</span></span><br><span class="line">    <span class="keyword">if</span> (out_audios.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (std::vector&lt;SrsAudioFrame*&gt;::iterator it = out_audios.<span class="built_in">begin</span>(); it != out_audios.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">        SrsAudioFrame* out_audio = *it;</span><br><span class="line"></span><br><span class="line">        SrsRtpPacket* pkt = <span class="keyword">new</span> <span class="built_in">SrsRtpPacket</span>();</span><br><span class="line">        <span class="built_in">SrsAutoFree</span>(SrsRtpPacket, pkt);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ((err = <span class="built_in">package_opus</span>(out_audio, pkt)) != srs_success) &#123;</span><br><span class="line">            err = <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;package opus&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ((err = bridge_-&gt;<span class="built_in">on_rtp</span>(pkt)) != srs_success) &#123;</span><br><span class="line">            err = <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;consume opus&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    codec_-&gt;<span class="built_in">free_frames</span>(out_audios);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="SrsFrameToRtcBridge-on-rtp"><a href="#SrsFrameToRtcBridge-on-rtp" class="headerlink" title="SrsFrameToRtcBridge::on_rtp()"></a>SrsFrameToRtcBridge::on_rtp()</h3><ul>
-<li><code>consumer-&gt;enqueue</code>入队列。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsFrameToRtcBridge::on_rtp</span><span class="params">(SrsRtpPacket* pkt)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> SRS_RTC</span></span><br><span class="line">    <span class="keyword">return</span> source_-&gt;<span class="built_in">on_rtp</span>(pkt);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    <span class="keyword">return</span> srs_success;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsRtcSource::on_rtp</span><span class="params">(SrsRtpPacket* pkt)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// If circuit-breaker is dying, drop packet.</span></span><br><span class="line">    <span class="keyword">if</span> (_srs_circuit_breaker-&gt;<span class="built_in">hybrid_dying_water_level</span>()) &#123;</span><br><span class="line">        _srs_pps_aloss2-&gt;sugar += (<span class="type">int64_t</span>)consumers.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; (<span class="type">int</span>)consumers.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">        SrsRtcConsumer* consumer = consumers.<span class="built_in">at</span>(i);</span><br><span class="line">        <span class="keyword">if</span> ((err = consumer-&gt;<span class="built_in">enqueue</span>(pkt-&gt;<span class="built_in">copy</span>())) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;consume message&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> SRS_FFMPEG_FIT</span></span><br><span class="line">    <span class="keyword">if</span> (frame_builder_ &amp;&amp; (err = frame_builder_-&gt;<span class="built_in">on_rtp</span>(pkt)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;frame builder consume packet&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="RTMP2RTC拉流端"><a href="#RTMP2RTC拉流端" class="headerlink" title="RTMP2RTC拉流端"></a>RTMP2RTC拉流端</h1><h2 id="RTC客户端连接"><a href="#RTC客户端连接" class="headerlink" title="RTC客户端连接"></a>RTC客户端连接</h2><h3 id="HTTP连接"><a href="#HTTP连接" class="headerlink" title="HTTP连接"></a>HTTP连接</h3><p>RTC播放器请求 webrtc:&#x2F;&#x2F;127.0.0.1&#x2F;xxx&#x2F;xxx 后，首先通过HTTP信令建立 offer 和 answer 的交互，然后通过 answer 解析出来的 ICE Server 地址进行 UDP 连接数据通信。</p>
-<ul>
-<li>断点<code>b SrsGoApiRtcPlay::do_serve_http(ISrsHttpResponseWriter*, ISrsHttpMessage*, SrsJsonObject*)</code>。</li>
-</ul>
-<img src="/2023/11/10/SRS-RTMP%E8%BD%ACRTC/SrsGoApiRtcPlay中断点.jpg" alt="SrsGoApiRtcPlay中断点" style="zoom:50%;">
-
-<h4 id="SrsGoApiRtcPlay-do-serve-http"><a href="#SrsGoApiRtcPlay-do-serve-http" class="headerlink" title="SrsGoApiRtcPlay::do_serve_http()"></a>SrsGoApiRtcPlay::do_serve_http()</h4><ul>
-<li>接收请求url<code>/rtc/v1/play/</code>。</li>
-<li>请求中解析sdp、streamers、clientip、tid、api。</li>
-<li><code>server_http</code>中创建<code>SrsRtcConnection</code>，具体在<code>do_create_session</code>中实现。</li>
-<li>响应设置sdp等相关信息返回。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsGoApiRtcPlay::do_serve_http</span><span class="params">(ISrsHttpResponseWriter* w, ISrsHttpMessage* r, SrsJsonObject* res)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// For each RTC session, we use short-term HTTP connection.</span></span><br><span class="line">    SrsHttpHeader* hdr = w-&gt;<span class="built_in">header</span>();</span><br><span class="line">    hdr-&gt;<span class="built_in">set</span>(<span class="string">&quot;Connection&quot;</span>, <span class="string">&quot;Close&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Parse req, the request json object, from body.</span></span><br><span class="line">    SrsJsonObject* req = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="built_in">SrsAutoFree</span>(SrsJsonObject, req);</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        string req_json;</span><br><span class="line">        <span class="keyword">if</span> ((err = r-&gt;<span class="built_in">body_read_all</span>(req_json)) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;read body&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        SrsJsonAny* json = SrsJsonAny::<span class="built_in">loads</span>(req_json);</span><br><span class="line">        <span class="keyword">if</span> (!json || !json-&gt;<span class="built_in">is_object</span>()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_new</span>(ERROR_RTC_API_BODY, <span class="string">&quot;invalid body %s&quot;</span>, req_json.<span class="built_in">c_str</span>());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        req = json-&gt;<span class="built_in">to_object</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Fetch params from req object.</span></span><br><span class="line">    SrsJsonAny* prop = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> ((prop = req-&gt;<span class="built_in">ensure_property_string</span>(<span class="string">&quot;sdp&quot;</span>)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;not sdp&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    string remote_sdp_str = prop-&gt;<span class="built_in">to_str</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((prop = req-&gt;<span class="built_in">ensure_property_string</span>(<span class="string">&quot;streamurl&quot;</span>)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;not streamurl&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    string streamurl = prop-&gt;<span class="built_in">to_str</span>();</span><br><span class="line"></span><br><span class="line">    string clientip;</span><br><span class="line">    <span class="keyword">if</span> ((prop = req-&gt;<span class="built_in">ensure_property_string</span>(<span class="string">&quot;clientip&quot;</span>)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        clientip = prop-&gt;<span class="built_in">to_str</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (clientip.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        clientip = <span class="built_in">dynamic_cast</span>&lt;SrsHttpMessage*&gt;(r)-&gt;<span class="built_in">connection</span>()-&gt;<span class="built_in">remote_ip</span>();</span><br><span class="line">        <span class="comment">// Overwrite by ip from proxy.        </span></span><br><span class="line">        string oip = <span class="built_in">srs_get_original_ip</span>(r);</span><br><span class="line">        <span class="keyword">if</span> (!oip.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">            clientip = oip;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    string api;</span><br><span class="line">    <span class="keyword">if</span> ((prop = req-&gt;<span class="built_in">ensure_property_string</span>(<span class="string">&quot;api&quot;</span>)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        api = prop-&gt;<span class="built_in">to_str</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    string tid;</span><br><span class="line">    <span class="keyword">if</span> ((prop = req-&gt;<span class="built_in">ensure_property_string</span>(<span class="string">&quot;tid&quot;</span>)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        tid = prop-&gt;<span class="built_in">to_str</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The RTC user config object.</span></span><br><span class="line">    SrsRtcUserConfig ruc;</span><br><span class="line">    ruc.req_-&gt;ip = clientip;</span><br><span class="line">    ruc.api_ = api;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">srs_parse_rtmp_url</span>(streamurl, ruc.req_-&gt;tcUrl, ruc.req_-&gt;stream);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">srs_discovery_tc_url</span>(ruc.req_-&gt;tcUrl, ruc.req_-&gt;schema, ruc.req_-&gt;host, ruc.req_-&gt;vhost,</span><br><span class="line">                         ruc.req_-&gt;app, ruc.req_-&gt;stream, ruc.req_-&gt;port, ruc.req_-&gt;param);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// discovery vhost, resolve the vhost from config</span></span><br><span class="line">    SrsConfDirective* parsed_vhost = _srs_config-&gt;<span class="built_in">get_vhost</span>(ruc.req_-&gt;vhost);</span><br><span class="line">    <span class="keyword">if</span> (parsed_vhost) &#123;</span><br><span class="line">        ruc.req_-&gt;vhost = parsed_vhost-&gt;<span class="built_in">arg0</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// For client to specifies the candidate(EIP) of server.</span></span><br><span class="line">    string eip = r-&gt;<span class="built_in">query_get</span>(<span class="string">&quot;eip&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (eip.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        eip = r-&gt;<span class="built_in">query_get</span>(<span class="string">&quot;candidate&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    string codec = r-&gt;<span class="built_in">query_get</span>(<span class="string">&quot;codec&quot;</span>);</span><br><span class="line">    <span class="comment">// For client to specifies whether encrypt by SRTP.</span></span><br><span class="line">    string srtp = r-&gt;<span class="built_in">query_get</span>(<span class="string">&quot;encrypt&quot;</span>);</span><br><span class="line">    string dtls = r-&gt;<span class="built_in">query_get</span>(<span class="string">&quot;dtls&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">srs_trace</span>(</span><br><span class="line">            <span class="string">&quot;RTC play %s, api=%s, tid=%s, clientip=%s, app=%s, stream=%s, offer=%dB, eip=%s, codec=%s, srtp=%s, dtls=%s&quot;</span>,</span><br><span class="line">            streamurl.<span class="built_in">c_str</span>(), api.<span class="built_in">c_str</span>(), tid.<span class="built_in">c_str</span>(), clientip.<span class="built_in">c_str</span>(), ruc.req_-&gt;app.<span class="built_in">c_str</span>(),</span><br><span class="line">            ruc.req_-&gt;stream.<span class="built_in">c_str</span>(), remote_sdp_str.<span class="built_in">length</span>(),</span><br><span class="line">            eip.<span class="built_in">c_str</span>(), codec.<span class="built_in">c_str</span>(), srtp.<span class="built_in">c_str</span>(), dtls.<span class="built_in">c_str</span>()</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    ruc.eip_ = eip;</span><br><span class="line">    ruc.codec_ = codec;</span><br><span class="line">    ruc.publish_ = <span class="literal">false</span>;</span><br><span class="line">    ruc.dtls_ = (dtls != <span class="string">&quot;false&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (srtp.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        ruc.srtp_ = _srs_config-&gt;<span class="built_in">get_rtc_server_encrypt</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ruc.srtp_ = (srtp != <span class="string">&quot;false&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> It seems remote_sdp doesn&#x27;t represents the full SDP information.</span></span><br><span class="line">    ruc.remote_sdp_str_ = remote_sdp_str;</span><br><span class="line">    <span class="keyword">if</span> ((err = ruc.remote_sdp_.<span class="built_in">parse</span>(remote_sdp_str)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;parse sdp failed: %s&quot;</span>, remote_sdp_str.<span class="built_in">c_str</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((err = <span class="built_in">serve_http</span>(w, r, &amp;ruc)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;serve&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;code&quot;</span>, SrsJsonAny::<span class="built_in">integer</span>(ERROR_SUCCESS));</span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;server&quot;</span>, SrsJsonAny::<span class="built_in">str</span>(SrsStatistic::<span class="built_in">instance</span>()-&gt;<span class="built_in">server_id</span>().<span class="built_in">c_str</span>()));</span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;service&quot;</span>, SrsJsonAny::<span class="built_in">str</span>(SrsStatistic::<span class="built_in">instance</span>()-&gt;<span class="built_in">service_id</span>().<span class="built_in">c_str</span>()));</span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;pid&quot;</span>, SrsJsonAny::<span class="built_in">str</span>(SrsStatistic::<span class="built_in">instance</span>()-&gt;<span class="built_in">service_pid</span>().<span class="built_in">c_str</span>()));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> add candidates in response json?</span></span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;sdp&quot;</span>, SrsJsonAny::<span class="built_in">str</span>(ruc.local_sdp_str_.<span class="built_in">c_str</span>()));</span><br><span class="line">    res-&gt;<span class="built_in">set</span>(<span class="string">&quot;sessionid&quot;</span>, SrsJsonAny::<span class="built_in">str</span>(ruc.session_id_.<span class="built_in">c_str</span>()));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="SrsRtcServer-create-session"><a href="#SrsRtcServer-create-session" class="headerlink" title="SrsRtcServer::create_session()"></a>SrsRtcServer::create_session()</h4><pre class="mermaid">graph TB
-    F1[SrsRtcServer::create_session]-->F2[new SrsRtcConnection]
-    F1-->F3[SrsRtcServer::do_create_session]
-    F3-->F4[SrsRtcConnection::add_publisher]
-    F3-->F5[SrsRtcConnection::add_player]
-    F3-->F6[SrsResourceManager::add_with_name]
-    F5-->F7[SrsRtcConnection::create_player]
-    F7-->F8[new SrsRtcPlayStream]
-    F7-->F9[SrsRtcPlayStream::initialize]
-    F9-->F10[new SrsRtcAudioSendTrack]
-    F9-->F11[new SrsRtcVideoSendTrack]</pre>
-
-<h3 id="UDP连接"><a href="#UDP连接" class="headerlink" title="UDP连接"></a>UDP连接</h3><ul>
-<li>断点<code>b SrsRtcServer::on_udp_packet(SrsUdpMuxSocket*)</code>。</li>
-</ul>
-<img src="/2023/11/10/SRS-RTMP%E8%BD%ACRTC/SrsRtcServer中on_udp_packet断点.png" alt="SrsRtcServer中on_udp_packet断点" style="zoom:50%;">
-
-<h4 id="SrsRtcServer-on-udp-packet"><a href="#SrsRtcServer-on-udp-packet" class="headerlink" title="SrsRtcServer::on_udp_packet()"></a>SrsRtcServer::on_udp_packet()</h4><pre class="mermaid">graph TB
-    F1[SrsRtcServer::on_udp_packet]-->F2[SrsRtcUdpNetwork::on_dtls]
-    F2-->F3[SrsSecurityTransport::on_dtls]
-    F3-->F4[SrsDtls::on_dtls]
-    F4-->F5[SrsDtlsImpl::on_dtls]
-    F5-->F6[SrsDtlsImpl::do_on_dtls]
-    F6-->F7[SrsDtlsServerImpl::on_handshake_done]
-    F7-->F8[SrsSecurityTransport::on_dtls_handshake_done]
-    F8-->F9[SrsRtcUdpNetwork::on_dtls_handshake_done]
-    F9-->F10[SrsRtcConnection::on_dtls_handshake_done]
-    F10-->F11[SrsRtcPlayStream::start]
-    F11-->F12[SrsRtcPlayStream::cycle]</pre>
-
-<h2 id="推流端取转换数据"><a href="#推流端取转换数据" class="headerlink" title="推流端取转换数据"></a>推流端取转换数据</h2><ul>
-<li>断点<code>b SrsRtcConsumer::dump_packet(SrsRtpPacket**)</code>，查看堆栈。</li>
-</ul>
-<img src="/2023/11/10/SRS-RTMP%E8%BD%ACRTC/SrsRtcConsumer中dump_packet断点.png" alt="SrsRtcConsumer中dump_packet断点" style="zoom:50%;">
-
-<h3 id="SrsRtcPlayStream-cycle"><a href="#SrsRtcPlayStream-cycle" class="headerlink" title="SrsRtcPlayStream::cycle()"></a>SrsRtcPlayStream::cycle()</h3><ul>
-<li><p><code>SrsRtcSource</code>在上述推流<code>bridge-&gt;initialize</code>中<code>SrsRtcPlayStream::initialize</code>中初始化。</p>
-</li>
-<li><p><code>consumer-&gt;dump_packet(&amp;pkt)</code>获取数据。</p>
-</li>
-<li><p><code>send_packet(pkt)</code>发送数据。</p>
-</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">srs_error_t</span> <span class="title">SrsRtcPlayStream::cycle</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">srs_error_t</span> err = srs_success;</span><br><span class="line"></span><br><span class="line">    SrsRtcSource* source = source_;</span><br><span class="line"></span><br><span class="line">    SrsRtcConsumer* consumer = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="built_in">SrsAutoFree</span>(SrsRtcConsumer, consumer);</span><br><span class="line">    <span class="keyword">if</span> ((err = source-&gt;<span class="built_in">create_consumer</span>(consumer)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;create consumer, source=%s&quot;</span>, req_-&gt;<span class="built_in">get_stream_url</span>().<span class="built_in">c_str</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">srs_assert</span>(consumer);</span><br><span class="line">    consumer-&gt;<span class="built_in">set_handler</span>(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> Dumps the SPS/PPS from gop cache, without other frames.</span></span><br><span class="line">    <span class="keyword">if</span> ((err = source-&gt;<span class="built_in">consumer_dumps</span>(consumer)) != srs_success) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;dumps consumer, url=%s&quot;</span>, req_-&gt;<span class="built_in">get_stream_url</span>().<span class="built_in">c_str</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    realtime = _srs_config-&gt;<span class="built_in">get_realtime_enabled</span>(req_-&gt;vhost, <span class="literal">true</span>);</span><br><span class="line">    mw_msgs = _srs_config-&gt;<span class="built_in">get_mw_msgs</span>(req_-&gt;vhost, realtime, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> Add cost in ms.</span></span><br><span class="line">    SrsContextId cid = source-&gt;<span class="built_in">source_id</span>();</span><br><span class="line">    <span class="built_in">srs_trace</span>(<span class="string">&quot;RTC: start play url=%s, source_id=%s/%s, realtime=%d, mw_msgs=%d&quot;</span>, </span><br><span class="line">              req_-&gt;<span class="built_in">get_stream_url</span>().<span class="built_in">c_str</span>(),</span><br><span class="line">        cid.<span class="built_in">c_str</span>(), source-&gt;<span class="built_in">pre_source_id</span>().<span class="built_in">c_str</span>(), realtime, mw_msgs);</span><br><span class="line"></span><br><span class="line">    SrsErrorPithyPrint* epp = <span class="keyword">new</span> <span class="built_in">SrsErrorPithyPrint</span>();</span><br><span class="line">    <span class="built_in">SrsAutoFree</span>(SrsErrorPithyPrint, epp);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((err = trd_-&gt;<span class="built_in">pull</span>()) != srs_success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">srs_error_wrap</span>(err, <span class="string">&quot;rtc sender thread&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Wait for amount of packets.</span></span><br><span class="line">        SrsRtpPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">        consumer-&gt;<span class="built_in">dump_packet</span>(&amp;pkt);</span><br><span class="line">        <span class="keyword">if</span> (!pkt) &#123;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> <span class="doctag">FIXME:</span> We should check the quit event.</span></span><br><span class="line">            consumer-&gt;<span class="built_in">wait</span>(mw_msgs);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Send-out the RTP packet and do cleanup</span></span><br><span class="line">        <span class="comment">// @remark Note that the pkt might be set to NULL.</span></span><br><span class="line">        <span class="keyword">if</span> ((err = <span class="built_in">send_packet</span>(pkt)) != srs_success) &#123;</span><br><span class="line">            <span class="type">uint32_t</span> nn = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">if</span> (epp-&gt;<span class="built_in">can_print</span>(err, &amp;nn)) &#123;</span><br><span class="line">                <span class="built_in">srs_warn</span>(<span class="string">&quot;play send packets=%u, nn=%u/%u, err: %s&quot;</span>, </span><br><span class="line">                         <span class="number">1</span>, epp-&gt;nn_count, nn, <span class="built_in">srs_error_desc</span>(err).<span class="built_in">c_str</span>());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">srs_freep</span>(err);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Free the packet.</span></span><br><span class="line">        <span class="comment">// @remark Note that the pkt might be set to NULL.</span></span><br><span class="line">        <span class="built_in">srs_freep</span>(pkt);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>

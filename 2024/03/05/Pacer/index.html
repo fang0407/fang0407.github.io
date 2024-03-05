@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="平滑发送概述概述Pacer（又称 Pacing Controller）是一个用于调整媒体数据发送速率的组件。它的主要作用是根据网络条件和接收端的反馈信息，动态地控制媒体数据的发送速率，以便在网络拥塞或带宽变化时提供平滑的数据传输，并尽量避免数据包的丢失和延迟。Pacer 还有一个作用，比如在需要最小发送速率的情况下，可以发送填充数据包。 核心流程  RTP包的优先级1234567enum clas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pacer">
+<meta property="og:url" content="https://fang0407.github.io/2024/03/05/Pacer/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="平滑发送概述概述Pacer（又称 Pacing Controller）是一个用于调整媒体数据发送速率的组件。它的主要作用是根据网络条件和接收端的反馈信息，动态地控制媒体数据的发送速率，以便在网络拥塞或带宽变化时提供平滑的数据传输，并尽量避免数据包的丢失和延迟。Pacer 还有一个作用，比如在需要最小发送速率的情况下，可以发送填充数据包。 核心流程  RTP包的优先级1234567enum clas">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fang0407.github.io/2024/03/05/Pacer/%20Pacer%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B.png">
+<meta property="article:published_time" content="2024-03-05T14:19:38.000Z">
+<meta property="article:modified_time" content="2024-03-05T14:24:37.220Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang0407.github.io/2024/03/05/Pacer/%20Pacer%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B.png">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2024/03/05/Pacer/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2024/03/05/Pacer/","path":"2024/03/05/Pacer/","title":"Pacer"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Pacer | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B3%E6%BB%91%E5%8F%91%E9%80%81%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">平滑发送概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">核心流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RTP%E5%8C%85%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">2.</span> <span class="nav-text">RTP包的优先级</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E9%98%9F%E5%88%97"><span class="nav-number">3.</span> <span class="nav-text">优先级队列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RoundRobinPacketQueue"><span class="nav-number">3.1.</span> <span class="nav-text">RoundRobinPacketQueue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stream"><span class="nav-number">3.2.</span> <span class="nav-text">Stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StreamPrioKey"><span class="nav-number">3.3.</span> <span class="nav-text">StreamPrioKey</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QueuedPacket"><span class="nav-number">3.4.</span> <span class="nav-text">QueuedPacket</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%91%E9%80%81%E9%A2%84%E7%AE%97"><span class="nav-number">4.</span> <span class="nav-text">发送预算</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E5%8C%85"><span class="nav-number">5.</span> <span class="nav-text">发送数据包</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/03/05/Pacer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Pacer | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Pacer
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-03-05 22:19:38 / Modified: 22:24:37" itemprop="dateCreated datePublished" datetime="2024-03-05T22:19:38+08:00">2024-03-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="平滑发送概述"><a href="#平滑发送概述" class="headerlink" title="平滑发送概述"></a>平滑发送概述</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Pacer（又称 Pacing Controller）是一个用于调整媒体数据发送速率的组件。它的主要作用是根据网络条件和接收端的反馈信息，动态地控制媒体数据的发送速率，以便在网络拥塞或带宽变化时提供平滑的数据传输，并尽量避免数据包的丢失和延迟。Pacer 还有一个作用，比如在需要最小发送速率的情况下，可以发送填充数据包。</p>
+<h2 id="核心流程"><a href="#核心流程" class="headerlink" title="核心流程"></a>核心流程</h2><img src="/2024/03/05/Pacer/ Pacer的核心流程.png" alt=" Pacer的核心流程" style="zoom:50%;">
+
+<h1 id="RTP包的优先级"><a href="#RTP包的优先级" class="headerlink" title="RTP包的优先级"></a>RTP包的优先级</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum class</span> <span class="title class_">RtpPacketMediaType</span> : <span class="type">size_t</span> &#123;</span><br><span class="line">    kAudio,</span><br><span class="line">    kVideo,</span><br><span class="line">    kRetransmission,</span><br><span class="line">    kForwardErrorCorrection,</span><br><span class="line">    kPadding</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Rtp 包的优先级</p>
+<ul>
+<li>音频包 &gt; 重传包 &gt; 视频包 &#x3D; FEC包 &gt; padding</li>
+<li>人对声音更敏感，优先发送音频</li>
+<li>为了尽可能的恢复丢包，降低卡顿，重传包优先级提高</li>
+<li>Padding 包本身是没什么用的，只是为了保持较高的带宽估值，所以优先级可以很低</li>
+</ul>
+<h1 id="优先级队列"><a href="#优先级队列" class="headerlink" title="优先级队列"></a>优先级队列</h1><h2 id="RoundRobinPacketQueue"><a href="#RoundRobinPacketQueue" class="headerlink" title="RoundRobinPacketQueue"></a>RoundRobinPacketQueue</h2><ul>
+<li><p><code>std::unordered_map&lt;uint32_t, Stream&gt; streams_</code>：轮询队列包含多个流，使用 map 存储，其中每个流以 SSRC 为唯一标识。</p>
+</li>
+<li><p><code>std::multimap&lt;StreamPrioKey, uint32_t&gt; stream_priorities_</code>：通过 <code>StreamPrioKey</code> 标识各个 SSRC 的优先级。</p>
+</li>
+<li><p><code>webrtc::DataSize size_</code>：所有流队列包的总字节数。</p>
+</li>
+<li><p><code>size_t size_packets_</code>：所有流队列包的总个数。</p>
+</li>
+<li><p><code>webrtc::TimeDelta queue_time_sum_</code>：所有流队列包排队总时间。</p>
+</li>
+<li><p><code>void push(const QueuedPacket&amp;)</code>：入队列接口。</p>
+<ol>
+<li>通过 SSRC 查找对应的流</li>
+<li>调整流的优先级</li>
+<li>更新队列数据包等待时间</li>
+<li>增加数据包的个数和总字节数</li>
+<li>插入对应流的优先级队列</li>
+</ol>
+</li>
+<li><p><code>std::unique_ptr&lt;RtpPacketToSend&gt; pop()</code>：出队列接口。</p>
+<ol>
+<li>获取优先级最高的流</li>
+<li>数据包出队列</li>
+<li>重新计算流的优先级</li>
+<li>更新队列数据包等待时间</li>
+<li>减少数据包的个数和总字节数</li>
+</ol>
+</li>
+<li><p><code>void UpdateQueueTime(webrtc::Timestamp now)</code>：更新所有流队列包排队总时间。可以用于 Pacer 的延迟优化。</p>
+</li>
+</ul>
+<p>Pacer 的策略是先将数据包缓存到队列，然后定时按量发送，当估计的带宽较小时，每次发送的数据量不多，但是需要发送的数据量又比较大，此时可能会导致数据包在队列中积压，从而引起延迟。</p>
+<p>解决办法：</p>
+<ul>
+<li>设定一个期望的延迟时间 <code>queue_time_limit</code>，同时计算队列中数据包的平均排队时间 <code>average_queue_time</code>。 如果此 时队列中排队的数据包字节数为 <code>queue_size_data</code>，为了能够在期望的延迟时间内发送完这些数据，需要的最低码率为：<code>min_rate_need =  queue_size_data / (queue_time_limit – average_queue_time)</code> </li>
+<li>如果 <code>min_rate_need &gt; target_rate</code>，则需要调整 <code>target_rate = min_rate_need</code>，否则延迟会超过 <code>queue_time_limit</code></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">UpdateQueueTime</span><span class="params">(webrtc::Timestamp now)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (now = last_time_update_)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    </span><br><span class="line">    webrtc::TimeDelta delta = now - last_time_update_;</span><br><span class="line">    queue_time_sum_ += webrtc::TimeDelta::<span class="built_in">Micros</span>(delta.<span class="built_in">us</span>() * size_packets_);</span><br><span class="line">    last_time_update_ = now;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h2><p>每个流分别维护一个优先级队列，其中每个流以 SSRC 为唯一标识。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Stream</span> &#123;</span><br><span class="line">    <span class="built_in">Stream</span>();</span><br><span class="line">    ~<span class="built_in">Stream</span>();</span><br><span class="line">    webrtc::DataSize size;  <span class="comment">// 队列数据大小</span></span><br><span class="line">    <span class="type">uint32_t</span> ssrc;  <span class="comment">// 唯一标识</span></span><br><span class="line">    std::priority_queue&lt;QueuedPacket&gt; packet_queue;  <span class="comment">// 优先级队列</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="StreamPrioKey"><a href="#StreamPrioKey" class="headerlink" title="StreamPrioKey"></a>StreamPrioKey</h2><p>流同样有优先级，其判定规则如下：</p>
+<ul>
+<li><p>以优先级队列中的 RTP 包的最高优先级作为流的优先级，优先级高的流将被优先发送。</p>
+</li>
+<li><p>如果每个流的优先级队列中的 RTP 包的最高优先级相同，则发送数据总量小的流优先级高，这样可以保证相同优先级的流能够交替发送，避免一个流被另外的流阻塞了。</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">StreamPrioKey</span> &#123;</span><br><span class="line">    <span class="built_in">StreamPrioKey</span>(<span class="type">int</span> priority, webrtc::DataSize size) :</span><br><span class="line">        <span class="built_in">priority</span>(priority)</span><br><span class="line">      , <span class="built_in">size</span>(size) &#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>&lt;(<span class="type">const</span> StreamPrioKey&amp; other) <span class="type">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (priority != other.priority) &#123;</span><br><span class="line">            <span class="keyword">return</span> priority &lt; other.priority;</span><br><span class="line">        &#125;       </span><br><span class="line">        <span class="keyword">return</span> size &lt; other.size;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">int</span> priority;  <span class="comment">// Stream中RTP数据包最大优先级</span></span><br><span class="line">    webrtc::DataSize size;  <span class="comment">// Stream累积发送字节数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="QueuedPacket"><a href="#QueuedPacket" class="headerlink" title="QueuedPacket"></a>QueuedPacket</h2><p>优先级队列中的数据结构，以优先级排序，优先级如果相等，先到的包优先级高。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">QueuedPacket</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">QueuedPacket</span>(<span class="type">int</span> priority,</span><br><span class="line">                 webrtc::Timestamp enqueue_time,</span><br><span class="line">                 <span class="type">uint64_t</span> enqueue_order,</span><br><span class="line">                 std::unique_ptr&lt;RtpPacketToSend&gt; packet);</span><br><span class="line">    ~<span class="built_in">QueuedPacket</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>&lt;(<span class="type">const</span> QueuedPacket&amp; other) <span class="type">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (priority_ != other.priority_) &#123;</span><br><span class="line">            <span class="keyword">return</span> priority_ &gt; other.priority_; <span class="comment">// 值越大，优先级越小</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 优先级如果相等，先到的包优先级高</span></span><br><span class="line">        <span class="keyword">return</span> enqueue_order_ &gt; other.enqueue_order_;</span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> priority_;</span><br><span class="line">    webrtc::Timestamp enqueue_time_; <span class="comment">// 入队列时间</span></span><br><span class="line">    <span class="type">uint64_t</span> enqueue_order_; <span class="comment">// 入队列的顺序</span></span><br><span class="line">    RtpPacketToSend* owned_packet_; <span class="comment">// 原始数据包</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="发送预算"><a href="#发送预算" class="headerlink" title="发送预算"></a>发送预算</h1><p>当 <code>ProcessPackets()</code> 被周期性调度之后，该方法会计算当前时间和上一次处理时间的时间差，即为 <code>elapsed_time</code>，然 后将这个时间传入预算处理对象 <code>media_budget</code>，<code>media_budget</code> 会根据这个流逝的时间，以及当前发送的目标码率 <code>target_bitrate</code>，计算出当前时间片可以发送的数据量，然后从优先级队列中获取数据包进行发送，每发送一个数据包，会消耗数据包大小的预算值，当预算值小于等于 0 之 后，停止发送，等待下一次调度。</p>
+<p>预算计算逻辑：</p>
+<ul>
+<li>增加预算，随着时间的流逝，预算不断增加<ul>
+<li><code>max_send_bytes = elapsed_time * target_bitrate / 8</code> </li>
+<li><code>elapsed_time</code>：距离上次发送流逝的时间，单位 ms</li>
+<li><code>target_bitrate</code>：目标发送码率，通常是由带宽估计模块动态设定的，单位 kbps</li>
+</ul>
+</li>
+<li>消耗预算<ul>
+<li>每发送一个数据包，预算减去数据包的大小，预算消耗完毕，停止发送</li>
+</ul>
+</li>
+</ul>
+<h1 id="发送数据包"><a href="#发送数据包" class="headerlink" title="发送数据包"></a>发送数据包</h1><p>静态调度周期，每隔 5ms 调度一次 <code>ProcessPackets()</code>。</p>
+<ol>
+<li>设置发送码率，通过队列中包的总字节数以及剩余字节发送时间计算最小发送码率。</li>
+<li>更新预算，通过距离上一次发送过去的时间以及发送码率，计算本次发送的预算字节数。</li>
+<li>循环发送数据包，从优先级队列获取数据包，发送数据包，更新预算，直到预算不足。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/01/25/Go-IO/" rel="prev" title="Go-IO">
+                  <i class="fa fa-angle-left"></i> Go-IO
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
