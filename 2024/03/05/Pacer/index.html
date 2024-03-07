@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fang0407.github.io/2024/03/05/Pacer/%20Pacer%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B.png">
 <meta property="article:published_time" content="2024-03-05T14:19:38.000Z">
-<meta property="article:modified_time" content="2024-03-05T14:24:37.220Z">
+<meta property="article:modified_time" content="2024-03-05T14:38:37.532Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fang0407.github.io/2024/03/05/Pacer/%20Pacer%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B.png">
@@ -190,7 +190,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2024-03-05 22:19:38 / Modified: 22:24:37" itemprop="dateCreated datePublished" datetime="2024-03-05T22:19:38+08:00">2024-03-05</time>
+      <time title="Created: 2024-03-05 22:19:38 / Modified: 22:38:37" itemprop="dateCreated datePublished" datetime="2024-03-05T22:19:38+08:00">2024-03-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -216,9 +216,9 @@
 
 <h1 id="RTP包的优先级"><a href="#RTP包的优先级" class="headerlink" title="RTP包的优先级"></a>RTP包的优先级</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum class</span> <span class="title class_">RtpPacketMediaType</span> : <span class="type">size_t</span> &#123;</span><br><span class="line">    kAudio,</span><br><span class="line">    kVideo,</span><br><span class="line">    kRetransmission,</span><br><span class="line">    kForwardErrorCorrection,</span><br><span class="line">    kPadding</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<p>Rtp 包的优先级</p>
+<p>RTP 包的优先级</p>
 <ul>
-<li>音频包 &gt; 重传包 &gt; 视频包 &#x3D; FEC包 &gt; padding</li>
+<li>音频包 &gt; 重传包 &gt; 视频包 &#x3D; FEC包 &gt; Padding</li>
 <li>人对声音更敏感，优先发送音频</li>
 <li>为了尽可能的恢复丢包，降低卡顿，重传包优先级提高</li>
 <li>Padding 包本身是没什么用的，只是为了保持较高的带宽估值，所以优先级可以很低</li>
@@ -258,7 +258,7 @@
 <p>Pacer 的策略是先将数据包缓存到队列，然后定时按量发送，当估计的带宽较小时，每次发送的数据量不多，但是需要发送的数据量又比较大，此时可能会导致数据包在队列中积压，从而引起延迟。</p>
 <p>解决办法：</p>
 <ul>
-<li>设定一个期望的延迟时间 <code>queue_time_limit</code>，同时计算队列中数据包的平均排队时间 <code>average_queue_time</code>。 如果此 时队列中排队的数据包字节数为 <code>queue_size_data</code>，为了能够在期望的延迟时间内发送完这些数据，需要的最低码率为：<code>min_rate_need =  queue_size_data / (queue_time_limit – average_queue_time)</code> </li>
+<li>设定一个期望的延迟时间 <code>queue_time_limit</code>，同时计算队列中数据包的平均排队时间 <code>average_queue_time</code>。 如果此时队列中排队的数据包字节数为 <code>queue_size_data</code>，为了能够在期望的延迟时间内发送完这些数据，需要的最低码率为：<code>min_rate_need =  queue_size_data / (queue_time_limit – average_queue_time)</code> </li>
 <li>如果 <code>min_rate_need &gt; target_rate</code>，则需要调整 <code>target_rate = min_rate_need</code>，否则延迟会超过 <code>queue_time_limit</code></li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">UpdateQueueTime</span><span class="params">(webrtc::Timestamp now)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (now = last_time_update_)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    </span><br><span class="line">    webrtc::TimeDelta delta = now - last_time_update_;</span><br><span class="line">    queue_time_sum_ += webrtc::TimeDelta::<span class="built_in">Micros</span>(delta.<span class="built_in">us</span>() * size_packets_);</span><br><span class="line">    last_time_update_ = now;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
