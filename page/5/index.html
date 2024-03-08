@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-count">77</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,177 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/27/HLS%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/09/27/HLS%E7%AE%80%E4%BB%8B/" class="post-title-link" itemprop="url">HLS简介</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-27 20:26:58" itemprop="dateCreated datePublished" datetime="2023-09-27T20:26:58+08:00">2023-09-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-16 18:46:42" itemprop="dateModified" datetime="2024-01-16T18:46:42+08:00">2024-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="SRC流媒体服务器"><a href="#SRC流媒体服务器" class="headerlink" title="SRC流媒体服务器"></a>SRC流媒体服务器</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><strong>编译</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/ossrs/srs.git</span><br><span class="line">cd srs/trunk</span><br><span class="line">./configure &amp;&amp; make</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置文件</strong></p>
+<p><code>conf/srs.conf</code></p>
+<p><strong>启动</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./objs/srs -c conf/srs.conf</span><br></pre></td></tr></table></figure>
+
+<p><strong>日志</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -n 30 -f ./objs/srs.log</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p><strong>推流</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -re -i test.mp4 -codec copy -f flv -y rtmp://127.0.0.1:1935/live/test</span><br></pre></td></tr></table></figure>
+
+<p>默认情况下srs的rtmp采用1935端口。</p>
+<p><strong>拉流</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">HLS</span></span><br><span class="line">ffplay http://127.0.0.1:8080/live/test.m3u8</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">RTMP</span></span><br><span class="line">ffplay rtmp://127.0.0.1/live/live/test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">HTTP FLV</span></span><br><span class="line">ffplay http://127.0.0.1:8080/live/test.flv</span><br></pre></td></tr></table></figure>
+
+<p>SRC播放器：<a target="_blank" rel="noopener" href="http://ossrs.net/srs.release/trunk/research/players/srs_player.html">http://ossrs.net/srs.release/trunk/research/players/srs_player.html</a> </p>
+<h1 id="HLS框架"><a href="#HLS框架" class="headerlink" title="HLS框架"></a>HLS框架</h1><img src="/2023/09/27/HLS%E7%AE%80%E4%BB%8B/HLS框架.png" alt="HLS框架" style="zoom:50%;">
+
+<img src="/2023/09/27/HLS%E7%AE%80%E4%BB%8B/HLS流程.png" alt="HLS流程" style="zoom:50%;">
+
+<h2 id="HLS简介"><a href="#HLS简介" class="headerlink" title="HLS简介"></a>HLS简介</h2><p>HLS 协议由三部分组成：HTTP、M3U8、TS。这三部分中，<strong>HTTP 是传输协议，M3U8 是索引文件，TS 是音视频的媒体信息。</strong></p>
+<ul>
+<li><strong>索引文件采用扩展的 M3U 播放列表格式，后缀名为 .m3u8。</strong> M3U 播放列表是一个由若干文本行组成的文本文件，其中每一行要么是一个 URI，一个空行，或者是一个以注释符“#”起始的行。每个 URI 行指向一个分段的媒体文件，或者一个衍生的索引（播放列表）文件。除了以“#EXT”起始的行是标签行外，其他以“#”起始的行是注释，应予忽略。</li>
+<li><strong>TS 文件中必须仅包含一个 MPEG-2 节目，在每个文件的开头应包含一个节目关联表（PAT）和一个节目映射表（PMT）</strong>，包含视频的文件中还必须含有至少一个关键帧和其他足够信息（如序列头）用以完成解码器的初始化。</li>
+</ul>
+<h2 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h2><p>服务器部分负责将输入的音视频媒体内容转换成为适合于内容分发组件进行递送的格式。</p>
+<ul>
+<li>Media Encoder：<ul>
+<li><strong>编码器首先将摄像机实时采集的音视频数据压缩编码为符合特定标准的音视频基本流（例如 H264 视频和 AAC 音频），然后再复用和封装成为符合 MPEG-2 系统层标准的传输流（TS）格式进行输出。</strong></li>
+<li>之所以采用 MPEG-2 TS 格式来对编码后的媒体流进行统一封装，是因为它能够将音视频媒体流严格按时序进行交织复用，<strong>任意截取和分段后，每一个分段都可能不依赖于之前的分段而独立进行解码和播放。</strong></li>
+</ul>
+</li>
+<li>Stream Segmenter：<ul>
+<li><strong>流分割器负责将编码器输出的 MPEG-2 TS 流分割为一系列连续的、长度均等的小 TS 文件（后缀名为.ts），并依次发送至内容分发组件中的 Web 服务器进行存储。</strong></li>
+<li>与此同时，为了跟踪播放过程中媒体文件的可用性和当前位置，流分割器还需创建一个含有指向这些小 TS 文件指针的<strong>索引文件</strong>，同样放置于 Web 服务器之中。</li>
+<li><strong>对于视频直播</strong>：这个索引文件可以看作是一个连续媒体流中的播放列表滑动窗口，<strong>每当流分割器生成一个新的 TS 文件时，这个索引文件的内容也被更新，新的文件 URI 加入到滑动窗口的末尾，老的文件 URI 则被移去</strong>，这样索引文件中将始终包含最新的固定数量的x个分段。</li>
+<li><strong>对于视频点播</strong>：与直播型会话不同的是，<strong>索引文件是一个不随时间而更新的静态文件</strong>，其中包含一个节目从头到尾所有分段文件的URI列表，并以<code>#EXT-X-ENDLIST</code>标签结尾。</li>
+<li>流分割器还可以对其生成的每个小 TS 文件进行加密，并生生成相应的密钥文件。</li>
+</ul>
+</li>
+</ul>
+<h2 id="内容分发"><a href="#内容分发" class="headerlink" title="内容分发"></a>内容分发</h2><p>内容分发系统用于通过 HTTP 协议将分割后的小媒体文件及其索引文件递送至客户端播放器，它既可以是一个<strong>普通的 Web 服务器</strong>，也可以是一个 Web 缓存系统。几乎不需要对 Web 服务器做任何特殊的配置，以及增加其他定制的模块。推荐的配置仅限于对 .m3u8 文件和 .ts 文件的 MIME 类型关联，如表所示。 </p>
+<table>
+<thead>
+<tr>
+<th>文件扩展名</th>
+<th>MIME类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.m3u8</td>
+<td>application&#x2F;x-mpegURL或vnd.apple.mpegURL</td>
+</tr>
+<tr>
+<td>.ts</td>
+<td>video&#x2F;MP2T</td>
+</tr>
+</tbody></table>
+<p>由于索引文件需要频繁更新和下载，因此在 Web Cache 的配置中有必要对 .m3u8 文件的 TTL（time-to-live） 值进行微调以保证客户端每次请求该文件时都能够下载到它的最新版本。 </p>
+<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><ul>
+<li>通常情况下，客户端软件通过访问 Web 网页中的 URL 链接来获取和下载<strong>一个流媒体会话的索引文件</strong>。这个索引文件进一步指定了服务器上当前可用的 TS 格式媒体文件、解密密钥和其他替换流的位置。</li>
+<li>对于选定的媒体流，客户端依次下载索引文件中列出的每一个可用媒体文件。<strong>当这些媒体文件缓冲够一定数量后，客户端将它们按顺序重新拼装成一个连贯的 TS 流，然后发送至播放器进行解码和呈现</strong>。</li>
+<li>对于加密的媒体文件，客户端还负责根据索引文件的指引来获取解密密钥，提供用户认证接口，并按需进行解密。对于视频点播，上述过程不断持续下去，直到客户端碰到索引文件中的<code>#EXT-X-ENDLIST</code>标签。</li>
+<li>对于视频直播，索引文件中不存在<code>#EXT-X-ENDLIST</code>标签，客户端将周期性地向 Web 服务器重新请求获取该索引文件的更新版本，然后在这个更新版的索引文件中查找新的媒体文件和解密密钥，并将它们的 URI  添加至下载队列的末尾。</li>
+<li>HTTP Live Streaming 并不是一个真正实时的流媒体系统，这是因为对应于媒体分段的大小和持续时间有一定潜在的时间延迟。在客户端中，至少在一个分段媒体文件被完全下载之后才能够开始播放，而<strong>通常要求下载完成两个分段媒体文件之后才开始播放以保证不同分段音视频之间的无缝连接</strong>。</li>
+<li>此外，在客户端开始下载之前，必须等待服务器端的编码器和流分割器至少生成一个 TS 文件，这也会带来潜在的时延。</li>
+</ul>
+<h2 id="网络自适应的流间切换和故障保护"><a href="#网络自适应的流间切换和故障保护" class="headerlink" title="网络自适应的流间切换和故障保护"></a>网络自适应的流间切换和故障保护</h2><ul>
+<li><p>在基于 HTTP Live Streaming 的流媒体系统中，<strong>服务器可以为同一节目源准备多份以不同码率和质量编码的替换流</strong>，并为每个替换流都生成一个衍生的索引文件。在主索引文件中通过包含一系列指向其他衍生索引文件的URI指针来找到相应的替换流。</p>
+</li>
+<li><p>此时客户端软件可根据网络和带宽的变化情况随时切换到不同衍生索引文件所指向的替换流进行下载，<strong>从而自适应地为用户提供相应网络条件下接近最优的音视频 QoS 体验</strong>。上述替换流和衍生索引文件机制除了可以用于基于带宽波动的动态流间切换外，还可以用于服务器的故障保护。为此目的，首先在一台服务器上按照正常流程生成一个媒体流或者多个替换流，以及对应的索引文件，然后再在另一台服务器上生成一套并行的备份媒体流和索引文件。<strong>接下来将指向备份流的索引加入到主索引文件之中，使得其中针对每个带宽值都对应有一个主媒体流和一个备份媒体流</strong>。</p>
+</li>
+<li><p>相对于常见的流媒体直播协议，例如 RTMP 协议、 RTSP 协议、 MMS 协议等， HLS 直播最大的不同在于，直播客户端获取到的，并不是一个完整的数据流。<strong>HLS 协议在服务器端将直播数据流存储为连续的、很短时长的媒体文件</strong>（MPEG-TS格式），而客户端则不断的下载并播放这些小文件，因为服务器端总是会将最新的直播数据生成新的小文件，这样客户端只要不停的按顺序播放从服务器获取到的文件，就实现了直播。由此可见，基本上可以认为，<strong>HLS 是以点播的技术方式来实现直播</strong>。由于数据通过 HTTP 协议传输，所以完全不用考虑防火墙或者代理的问题，而且分段文件的时长很短，客户端可以很快的选择和切换码率，以适应不同带宽条件下的播放。不过 HLS 的这种技术特点，决定了它的延迟一般总是会高于普通的流媒体直播协议。</p>
+</li>
+</ul>
+<h1 id="H协议"><a href="#H协议" class="headerlink" title="H协议"></a>H协议</h1><ul>
+<li><p>作为 Apple 提出的一种基于 HTTP 的协议，HLS（HTTP Live Streaming）用于解决实时音视频流的传输。尤其是在移动端，由于 iOS&#x2F;H5 不支持 flash，使得 HLS 成了移动端实时视频流传输的首选。</p>
+</li>
+<li><p>HLS（HTTP Live Streaming） 把整个流分成一个个小的基于 HTTP 的文件来下载，每次只下载一些。HLS 协议由三部分组成：HTTP、M3U8、TS。这三部分中，<strong>HTTP 是传输协议，M3U8 是索引文件，TS 是音视频的媒体信息</strong>。</p>
+</li>
+<li><p>HLS 是提供一个 M3U8 地址，<strong>Apple 的 Safari 浏览器直接就能打开 M3U8 地址</strong>；Android 不能直接打开，需要使用 HTML5 的 video 标签，然后在浏览器中打开这个页面即可：</p>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- livestream.html --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">video</span> <span class="attr">width</span>=<span class="string">&quot;640&quot;</span> <span class="attr">height</span>=<span class="string">&quot;360&quot;</span></span></span><br><span class="line"><span class="tag">		<span class="attr">autoplay</span> <span class="attr">controls</span> <span class="attr">autobuffer</span></span></span><br><span class="line"><span class="tag">		<span class="attr">src</span>=<span class="string">&quot;http://127.0.0.1:8080/live/test.m3u8&quot;</span></span></span><br><span class="line"><span class="tag">		<span class="attr">type</span>=<span class="string">&quot;application/vnd.apple.mpegurl&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">video</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -3255,170 +3426,6 @@ SSRC3--RTP1-->混合器SSRC4
 <p><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_15655186/6090529">https://blog.51cto.com/u_15655186/6090529</a></p>
 <p><a target="_blank" rel="noopener" href="https://ffmpeg.xianwaizhiyin.net/ffplay/video_sync.html">https://ffmpeg.xianwaizhiyin.net/ffplay/video_sync.html</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/leisure_chn/p/10307089.html">https://www.cnblogs.com/leisure_chn/p/10307089.html</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/10/FFplay%E8%A7%86%E9%A2%91%E8%BE%93%E5%87%BA%E5%92%8C%E5%B0%BA%E2%BC%A8%E5%8F%98%E6%8D%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/09/10/FFplay%E8%A7%86%E9%A2%91%E8%BE%93%E5%87%BA%E5%92%8C%E5%B0%BA%E2%BC%A8%E5%8F%98%E6%8D%A2/" class="post-title-link" itemprop="url">FFplay视频输出和尺⼨变换</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-09-10 10:52:55" itemprop="dateCreated datePublished" datetime="2023-09-10T10:52:55+08:00">2023-09-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:40:23" itemprop="dateModified" datetime="2023-12-30T22:40:23+08:00">2023-12-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/FFplay/" itemprop="url" rel="index"><span itemprop="name">FFplay</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="视频输出模块"><a href="#视频输出模块" class="headerlink" title="视频输出模块"></a>视频输出模块</h1><p>视频输出的主要流程：</p>
-<ul>
-<li>视频（图像）输出初始化。</li>
-<li>视频（图像）输出逻辑。</li>
-</ul>
-<h2 id="视频输出初始化"><a href="#视频输出初始化" class="headerlink" title="视频输出初始化"></a>视频输出初始化</h2><h3 id="主要流程"><a href="#主要流程" class="headerlink" title="主要流程"></a>主要流程</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//SDL的初始化</span></span><br><span class="line">    flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER;</span><br><span class="line">    <span class="keyword">if</span> (SDL_Init (flags)) &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_FATAL, <span class="string">&quot;Could not initialize SDL - %s\n&quot;</span>, SDL_GetError());</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_FATAL, <span class="string">&quot;(Did you set the DISPLAY variable?)\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//创建窗⼝</span></span><br><span class="line">    window = SDL_CreateWindow(program_name, </span><br><span class="line">                              SDL_WINDOWPOS_UNDEFINED, </span><br><span class="line">                              SDL_WINDOWPOS_UNDEFINED, </span><br><span class="line">                              default_width, </span><br><span class="line">                              default_height, </span><br><span class="line">                              flags);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (window) &#123;</span><br><span class="line">        <span class="comment">//创建renderer</span></span><br><span class="line">        renderer = SDL_CreateRenderer(window, </span><br><span class="line">                                      <span class="number">-1</span>, </span><br><span class="line">                                      SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);</span><br><span class="line">        <span class="keyword">if</span> (!renderer) &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, </span><br><span class="line">                   AV_LOG_WARNING, </span><br><span class="line">                   <span class="string">&quot;Failed to initialize a hardware accelerated renderer: %s\n&quot;</span>, </span><br><span class="line">                   SDL_GetError());</span><br><span class="line">            renderer = SDL_CreateRenderer(window, <span class="number">-1</span>, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (renderer) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!SDL_GetRendererInfo(renderer, &amp;renderer_info))</span><br><span class="line">                av_log(<span class="literal">NULL</span>, AV_LOG_VERBOSE, <span class="string">&quot;Initialized %s renderer.\n&quot;</span>, renderer_info.name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    is = stream_open(input_filename, file_iformat);</span><br><span class="line">    <span class="keyword">if</span> (!is) &#123;</span><br><span class="line">        av_log(<span class="literal">NULL</span>, AV_LOG_FATAL, <span class="string">&quot;Failed to initialize VideoState!\n&quot;</span>);</span><br><span class="line">        do_exit(<span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//事件响应</span></span><br><span class="line">    event_loop(is);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="初始化窗⼝显示⼤⼩"><a href="#初始化窗⼝显示⼤⼩" class="headerlink" title="初始化窗⼝显示⼤⼩"></a>初始化窗⼝显示⼤⼩</h3><p>在读取数据线程中有初始化窗口。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//从待处理流中获取相关参数，设置显示窗⼝的宽度、⾼度及宽⾼⽐</span></span><br><span class="line"><span class="keyword">if</span> (st_index[AVMEDIA_TYPE_VIDEO] &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">    AVStream *st = ic-&gt;streams[st_index[AVMEDIA_TYPE_VIDEO]];</span><br><span class="line">    AVCodecParameters *codecpar = st-&gt;codecpar;</span><br><span class="line">    <span class="comment">//sar为一个像素的比率，具体见附录</span></span><br><span class="line">    AVRational sar = av_guess_sample_aspect_ratio(ic, st, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (codecpar-&gt;width)</span><br><span class="line">        set_default_window_size(codecpar-&gt;width, codecpar-&gt;height, sar);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>设置显示窗⼝的⼤⼩和宽⾼⽐。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">set_default_window_size</span><span class="params">(<span class="type">int</span> width, <span class="type">int</span> height, AVRational sar)</span></span><br><span class="line">&#123;</span><br><span class="line">    SDL_Rect rect;</span><br><span class="line">    <span class="comment">//srceen_width和screen_height可以有命令指定： -x screen_width -y screen_height</span></span><br><span class="line">    <span class="type">int</span> max_width  = screen_width  ? screen_width  : INT_MAX;</span><br><span class="line">    <span class="type">int</span> max_height = screen_height ? screen_height : INT_MAX;</span><br><span class="line">    <span class="keyword">if</span> (max_width == INT_MAX &amp;&amp; max_height == INT_MAX)</span><br><span class="line">        max_height = height;    <span class="comment">//没有指定最⼤⾼度时则使⽤视频的⾼度</span></span><br><span class="line">    calculate_display_rect(&amp;rect, <span class="number">0</span>, <span class="number">0</span>, max_width, max_height, width, height, sar);</span><br><span class="line">    default_width  = rect.w;</span><br><span class="line">    default_height = rect.h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">calculate_display_rect</span><span class="params">(SDL_Rect *rect,</span></span><br><span class="line"><span class="params">                                   <span class="type">int</span> scr_xleft, <span class="type">int</span> scr_ytop, <span class="type">int</span> scr_width, <span class="type">int</span> scr_height,</span></span><br><span class="line"><span class="params">                                   <span class="type">int</span> pic_width, <span class="type">int</span> pic_height, AVRational pic_sar)</span></span><br><span class="line">&#123;</span><br><span class="line">    AVRational aspect_ratio = pic_sar;</span><br><span class="line">    <span class="type">int64_t</span> width, height, x, y;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//如果aspect_ratio是负数或者为0,设置为1:1	</span></span><br><span class="line">    <span class="keyword">if</span> (av_cmp_q(aspect_ratio, av_make_q(<span class="number">0</span>, <span class="number">1</span>)) &lt;= <span class="number">0</span>)</span><br><span class="line">        aspect_ratio = av_make_q(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//转成真正的播放⽐例</span></span><br><span class="line">    aspect_ratio = av_mul_q(aspect_ratio, av_make_q(pic_width, pic_height));</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* <span class="doctag">XXX:</span> we suppose the screen has a 1.0 pixel ratio */</span></span><br><span class="line">    <span class="comment">//先以⾼度为基准</span></span><br><span class="line">    height = scr_height;</span><br><span class="line">    width = av_rescale(height, aspect_ratio.num, aspect_ratio.den) &amp; ~<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (width &gt; scr_width) &#123;</span><br><span class="line">        <span class="comment">//先以宽度为基准</span></span><br><span class="line">        width = scr_width;</span><br><span class="line">        height = av_rescale(width, aspect_ratio.den, aspect_ratio.num) &amp; ~<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//计算显示视频帧区域的起始坐标（在显示窗⼝内部的区域）</span></span><br><span class="line">    x = (scr_width - width) / <span class="number">2</span>;</span><br><span class="line">    y = (scr_height - height) / <span class="number">2</span>;</span><br><span class="line">    rect-&gt;x = scr_xleft + x;</span><br><span class="line">    rect-&gt;y = scr_ytop  + y;</span><br><span class="line">    rect-&gt;w = FFMAX((<span class="type">int</span>)width,  <span class="number">1</span>);</span><br><span class="line">    rect-&gt;h = FFMAX((<span class="type">int</span>)height, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="视频输出逻辑"><a href="#视频输出逻辑" class="headerlink" title="视频输出逻辑"></a>视频输出逻辑</h2><h3 id="事件循环"><a href="#事件循环" class="headerlink" title="事件循环"></a>事件循环</h3><p>event_loop中会调用refresh_loop_wait_event进行图像显示。</p>
-<p>是否要调⽤video_refresh的前置条件：</p>
-<ul>
-<li>显示模式不为SHOW_MODE_NONE。</li>
-<li>或者，当前没有被暂停。</li>
-<li>或者，当前设置了force_refresh，我们分析force_refresh置为1的场景：<ul>
-<li>video_refresh⾥⾯帧该显示，这个是常规情况。</li>
-<li>SDL_WINDOWEVENT_EXPOSED，窗⼝需要重新绘制。</li>
-<li>SDL_MOUSEBUTTONDOWN &amp;&amp; SDL_BUTTON_LEFT 连续⿏标左键点击2次显示窗⼝间隔⼩于0.5秒，进⾏全屏或者恢复原始窗⼝播放。</li>
-<li>SDLK_f，按f键进⾏全屏或者恢复原始窗⼝播放。</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">refresh_loop_wait_event</span><span class="params">(VideoState *is, SDL_Event *event)</span> &#123;</span><br><span class="line">    <span class="type">double</span> remaining_time = <span class="number">0.0</span>;</span><br><span class="line">    SDL_PumpEvents();</span><br><span class="line">    <span class="keyword">while</span> (!SDL_PeepEvents(event, <span class="number">1</span>, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!cursor_hidden &amp;&amp; av_gettime_relative() - cursor_last_shown &gt; CURSOR_HIDE_DELAY) &#123;</span><br><span class="line">            SDL_ShowCursor(<span class="number">0</span>);</span><br><span class="line">            cursor_hidden = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (remaining_time &gt; <span class="number">0.0</span>)</span><br><span class="line">            av_usleep((<span class="type">int64_t</span>)(remaining_time * <span class="number">1000000.0</span>));</span><br><span class="line">        remaining_time = REFRESH_RATE;</span><br><span class="line">        <span class="keyword">if</span> (is-&gt;show_mode != SHOW_MODE_NONE &amp;&amp; (!is-&gt;paused || is-&gt;force_refresh))</span><br><span class="line">            video_refresh(is, &amp;remaining_time);</span><br><span class="line">        SDL_PumpEvents();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="音视频同步"><a href="#音视频同步" class="headerlink" title="音视频同步"></a>音视频同步</h3><p>获取FrameQueue中的帧时间，播放序列等判断是否需要进行播放，以及如果播放时间已过是否丢帧进行处理。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* called to display each frame */</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">video_refresh</span><span class="params">(<span class="type">void</span> *opaque, <span class="type">double</span> *remaining_time)</span></span><br><span class="line">&#123;</span><br><span class="line">    VideoState *is = opaque;</span><br><span class="line">    <span class="type">double</span> time;</span><br><span class="line">    Frame *sp, *sp2;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is-&gt;video_st) &#123;</span><br><span class="line">    retry:</span><br><span class="line">        <span class="keyword">if</span> (frame_queue_nb_remaining(&amp;is-&gt;pictq) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// nothing to do, no picture to display in the queue</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">double</span> last_duration, duration, delay;</span><br><span class="line">            Frame *vp, *lastvp;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* dequeue the picture */</span></span><br><span class="line">            <span class="comment">//读取上⼀帧</span></span><br><span class="line">            lastvp = frame_queue_peek_last(&amp;is-&gt;pictq);</span><br><span class="line">            <span class="comment">//读取待显示帧</span></span><br><span class="line">            vp = frame_queue_peek(&amp;is-&gt;pictq);</span><br><span class="line">            <span class="comment">//如果不是最新的播放序列，则将其出队列 goto retry;</span></span><br><span class="line">            <span class="keyword">if</span> (vp-&gt;serial != is-&gt;videoq.serial) &#123;</span><br><span class="line">                frame_queue_next(&amp;is-&gt;pictq);</span><br><span class="line">                <span class="keyword">goto</span> retry;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//新的播放序列重置当前时间</span></span><br><span class="line">            <span class="keyword">if</span> (lastvp-&gt;serial != vp-&gt;serial)</span><br><span class="line">                is-&gt;frame_timer = av_gettime_relative() / <span class="number">1000000.0</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (is-&gt;paused)</span><br><span class="line">                <span class="keyword">goto</span> display;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* compute nominal last_duration */</span></span><br><span class="line">            <span class="comment">//计算上⼀帧lastvp应显示的时⻓</span></span><br><span class="line">            last_duration = vp_duration(is, lastvp, vp);</span><br><span class="line">            <span class="comment">//计算上⼀帧lastvp还要播放的时间</span></span><br><span class="line">            delay = compute_target_delay(last_duration, is);</span><br><span class="line"></span><br><span class="line">            time = av_gettime_relative()/<span class="number">1000000.0</span>;</span><br><span class="line">            <span class="comment">//还没有到播放时间</span></span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">            frame_timer 可以理解为帧显示时刻，</span></span><br><span class="line"><span class="comment">            对于更新前，可以理解为上⼀帧的显示时刻；</span></span><br><span class="line"><span class="comment">            对于更新后，可以理解为当前帧显示时刻。</span></span><br><span class="line"><span class="comment">            time &lt; is-&gt;frame_timer + delay，</span></span><br><span class="line"><span class="comment">            如果当前系统时刻还未到达上⼀帧 的结束时刻，</span></span><br><span class="line"><span class="comment">            那么还应该继续显示上⼀帧。</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">            <span class="keyword">if</span> (time &lt; is-&gt;frame_timer + delay) &#123;</span><br><span class="line">                *remaining_time = FFMIN(is-&gt;frame_timer + delay - time, *remaining_time);</span><br><span class="line">                <span class="keyword">goto</span> display;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            is-&gt;frame_timer += delay;</span><br><span class="line">            <span class="keyword">if</span> (delay &gt; <span class="number">0</span> &amp;&amp; time - is-&gt;frame_timer &gt; AV_SYNC_THRESHOLD_MAX)</span><br><span class="line">                is-&gt;frame_timer = time;</span><br><span class="line"></span><br><span class="line">            SDL_LockMutex(is-&gt;pictq.mutex);</span><br><span class="line">            <span class="keyword">if</span> (!isnan(vp-&gt;pts))</span><br><span class="line">                update_video_pts(is, vp-&gt;pts, vp-&gt;pos, vp-&gt;serial);</span><br><span class="line">            SDL_UnlockMutex(is-&gt;pictq.mutex);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//有nextvp才会检测是否该丢帧</span></span><br><span class="line">            <span class="keyword">if</span> (frame_queue_nb_remaining(&amp;is-&gt;pictq) &gt; <span class="number">1</span>) &#123;</span><br><span class="line">                Frame *nextvp = frame_queue_peek_next(&amp;is-&gt;pictq);</span><br><span class="line">                duration = vp_duration(is, vp, nextvp);</span><br><span class="line">                <span class="keyword">if</span>(!is-&gt;step &amp;&amp; </span><br><span class="line">                   (framedrop&gt;<span class="number">0</span> || </span><br><span class="line">                    (framedrop &amp;&amp; get_master_sync_type(is) != AV_SYNC_VIDEO_MASTER)) &amp;&amp; <span class="comment">//⾮视频同步⽅式</span></span><br><span class="line">                   time &gt; is-&gt;frame_timer + duration)&#123;</span><br><span class="line">                    is-&gt;frame_drops_late++;</span><br><span class="line">                    frame_queue_next(&amp;is-&gt;pictq);    <span class="comment">//这⾥实现真正的丢帧</span></span><br><span class="line">                    <span class="keyword">goto</span> retry;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            frame_queue_next(&amp;is-&gt;pictq);</span><br><span class="line">            is-&gt;force_refresh = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (is-&gt;step &amp;&amp; !is-&gt;paused)</span><br><span class="line">                stream_toggle_pause(is);</span><br><span class="line">    display:</span><br><span class="line">        <span class="comment">/* display picture */</span></span><br><span class="line">        <span class="keyword">if</span> (!display_disable &amp;&amp; is-&gt;force_refresh &amp;&amp; is-&gt;show_mode == SHOW_MODE_VIDEO &amp;&amp; is-&gt;pictq.rindex_shown)</span><br><span class="line">            video_display(is);</span><br><span class="line">    &#125;</span><br><span class="line">    is-&gt;force_refresh = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="图像显示"><a href="#图像显示" class="headerlink" title="图像显示"></a>图像显示</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* display the current picture, if any */</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">video_display</span><span class="params">(VideoState *is)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!is-&gt;width)</span><br><span class="line">        video_open(is);</span><br><span class="line"></span><br><span class="line">    SDL_SetRenderDrawColor(renderer, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line">    SDL_RenderClear(renderer);</span><br><span class="line">    <span class="keyword">if</span> (is-&gt;audio_st &amp;&amp; is-&gt;show_mode != SHOW_MODE_VIDEO)</span><br><span class="line">        video_audio_display(is);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (is-&gt;video_st)</span><br><span class="line">        video_image_display(is);</span><br><span class="line">    SDL_RenderPresent(renderer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>SDL设置窗口标题，大小相关。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">video_open</span><span class="params">(VideoState *is)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> w,h;</span><br><span class="line"></span><br><span class="line">    w = screen_width ? screen_width : default_width;</span><br><span class="line">    h = screen_height ? screen_height : default_height;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!window_title)</span><br><span class="line">        window_title = input_filename;</span><br><span class="line">    SDL_SetWindowTitle(window, window_title);</span><br><span class="line"></span><br><span class="line">    SDL_SetWindowSize(window, w, h);</span><br><span class="line">    SDL_SetWindowPosition(window, screen_left, screen_top);</span><br><span class="line">    <span class="keyword">if</span> (is_full_screen)</span><br><span class="line">        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);</span><br><span class="line">    SDL_ShowWindow(window);</span><br><span class="line"></span><br><span class="line">    is-&gt;width  = w;</span><br><span class="line">    is-&gt;height = h;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>FrameQueue中取得要显示帧，然后更新SDL_Texture，最后通过SDL_RenderCopyEx拷⻉纹理给render显示。 </p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">video_image_display</span><span class="params">(VideoState *is)</span></span><br><span class="line">&#123;</span><br><span class="line">    Frame *vp;</span><br><span class="line">    Frame *sp = <span class="literal">NULL</span>;</span><br><span class="line">    SDL_Rect rect;</span><br><span class="line"></span><br><span class="line">    vp = frame_queue_peek_last(&amp;is-&gt;pictq);</span><br><span class="line">    calculate_display_rect(&amp;rect, is-&gt;xleft, is-&gt;ytop, is-&gt;width, is-&gt;height, vp-&gt;width, vp-&gt;height, vp-&gt;sar);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//如果是重复显示上⼀帧，那么uploaded就是1</span></span><br><span class="line">    <span class="keyword">if</span> (!vp-&gt;uploaded) &#123;</span><br><span class="line">        <span class="keyword">if</span> (upload_texture(&amp;is-&gt;vid_texture, vp-&gt;frame, &amp;is-&gt;img_convert_ctx) &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        vp-&gt;uploaded = <span class="number">1</span>;</span><br><span class="line">        vp-&gt;flip_v = vp-&gt;frame-&gt;linesize[<span class="number">0</span>] &lt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    set_sdl_yuv_conversion_mode(vp-&gt;frame);</span><br><span class="line">    SDL_RenderCopyEx(renderer, is-&gt;vid_texture, <span class="literal">NULL</span>, &amp;rect, <span class="number">0</span>, <span class="literal">NULL</span>, vp-&gt;flip_v ? SDL_FLIP_VERTICAL : <span class="number">0</span>);</span><br><span class="line">    set_sdl_yuv_conversion_mode(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>AVFormat的图像数据传给sdl的纹理。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">upload_texture</span><span class="params">(SDL_Texture **tex, AVFrame *frame, <span class="keyword">struct</span> SwsContext **img_convert_ctx)</span> &#123;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    Uint32 sdl_pix_fmt;</span><br><span class="line">    SDL_BlendMode sdl_blendmode;</span><br><span class="line">    <span class="comment">//根据frame中的图像格式(FFmpeg像素格式)，获取对应的SDL像素格式</span></span><br><span class="line">    get_sdl_pix_fmt_and_blendmode(frame-&gt;format, &amp;sdl_pix_fmt, &amp;sdl_blendmode);</span><br><span class="line">    <span class="comment">//重新分配vid_texture</span></span><br><span class="line">    <span class="comment">/*什么情况下realloc_texture：</span></span><br><span class="line"><span class="comment">    1.⽤于显示的texture 还没有分配；</span></span><br><span class="line"><span class="comment">    2.SDL_QueryTexture⽆效；</span></span><br><span class="line"><span class="comment">    3.⽬前texture的width，height、format和新要显示的Frame不⼀致</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">if</span> (realloc_texture(tex, </span><br><span class="line">                        sdl_pix_fmt == SDL_PIXELFORMAT_UNKNOWN ? SDL_PIXELFORMAT_ARGB8888 : </span><br><span class="line">                        sdl_pix_fmt, frame-&gt;width, frame-&gt;height, sdl_blendmode, <span class="number">0</span>) &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//frame格式是SDL不⽀持的格式，则需要进⾏图像格式转换</span></span><br><span class="line">    <span class="keyword">switch</span> (sdl_pix_fmt) &#123;</span><br><span class="line">    <span class="keyword">case</span> SDL_PIXELFORMAT_UNKNOWN:</span><br><span class="line">        <span class="comment">/* This should only happen if we are not using avfilter... */</span></span><br><span class="line">        *img_convert_ctx = sws_getCachedContext(*img_convert_ctx,</span><br><span class="line">                                                frame-&gt;width, frame-&gt;height, </span><br><span class="line">                                                frame-&gt;format, frame-&gt;width, </span><br><span class="line">                                                frame-&gt;height, AV_PIX_FMT_BGRA, </span><br><span class="line">                                                sws_flags, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">if</span> (*img_convert_ctx != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="type">uint8_t</span> *pixels[<span class="number">4</span>];</span><br><span class="line">            <span class="type">int</span> pitch[<span class="number">4</span>];</span><br><span class="line">            <span class="keyword">if</span> (!SDL_LockTexture(*tex, <span class="literal">NULL</span>, (<span class="type">void</span> **)pixels, pitch)) &#123;</span><br><span class="line">                sws_scale(*img_convert_ctx, (<span class="type">const</span> <span class="type">uint8_t</span> * <span class="type">const</span> *)frame-&gt;data, frame-&gt;linesize,</span><br><span class="line">                          <span class="number">0</span>, frame-&gt;height, pixels, pitch);</span><br><span class="line">                SDL_UnlockTexture(*tex);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, AV_LOG_FATAL, <span class="string">&quot;Cannot initialize the conversion context\n&quot;</span>);</span><br><span class="line">            ret = <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> SDL_PIXELFORMAT_IYUV:</span><br><span class="line">        <span class="comment">//frame格式对应SDL_PIXELFORMAT_IYUV，不⽤进⾏图像格式转换，调⽤SDL_UpdateYUVTexture()更新SDL texture</span></span><br><span class="line">        <span class="keyword">if</span> (frame-&gt;linesize[<span class="number">0</span>] &gt; <span class="number">0</span> &amp;&amp; frame-&gt;linesize[<span class="number">1</span>] &gt; <span class="number">0</span> &amp;&amp; frame-&gt;linesize[<span class="number">2</span>] &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            ret = SDL_UpdateYUVTexture(*tex, <span class="literal">NULL</span>, frame-&gt;data[<span class="number">0</span>], frame-&gt;linesize[<span class="number">0</span>],</span><br><span class="line">                                       frame-&gt;data[<span class="number">1</span>], frame-&gt;linesize[<span class="number">1</span>],</span><br><span class="line">                                       frame-&gt;data[<span class="number">2</span>], frame-&gt;linesize[<span class="number">2</span>]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (frame-&gt;linesize[<span class="number">0</span>] &lt; <span class="number">0</span> &amp;&amp; frame-&gt;linesize[<span class="number">1</span>] &lt; <span class="number">0</span> &amp;&amp; frame-&gt;linesize[<span class="number">2</span>] &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            ret = SDL_UpdateYUVTexture(*tex, <span class="literal">NULL</span>, </span><br><span class="line">                                       frame-&gt;data[<span class="number">0</span>] + frame-&gt;linesize[<span class="number">0</span>] * </span><br><span class="line">                                       (frame-&gt;height - <span class="number">1</span>), -frame-&gt;linesize[<span class="number">0</span>],</span><br><span class="line">                                       frame-&gt;data[<span class="number">1</span>] + frame-&gt;linesize[<span class="number">1</span>] * </span><br><span class="line">                                       (AV_CEIL_RSHIFT(frame-&gt;height, <span class="number">1</span>) - <span class="number">1</span>), -frame-&gt;linesize[<span class="number">1</span>],</span><br><span class="line">                                       frame-&gt;data[<span class="number">2</span>] + frame-&gt;linesize[<span class="number">2</span>] * </span><br><span class="line">                                       (AV_CEIL_RSHIFT(frame-&gt;height, <span class="number">1</span>) - <span class="number">1</span>), -frame-&gt;linesize[<span class="number">2</span>]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            av_log(<span class="literal">NULL</span>, AV_LOG_ERROR, <span class="string">&quot;Mixed negative and positive linesizes are not supported.\n&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">if</span> (frame-&gt;linesize[<span class="number">0</span>] &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            ret = SDL_UpdateTexture(*tex, <span class="literal">NULL</span>, </span><br><span class="line">                                    frame-&gt;data[<span class="number">0</span>] + frame-&gt;linesize[<span class="number">0</span>] * (frame-&gt;height - <span class="number">1</span>), </span><br><span class="line">                                    -frame-&gt;linesize[<span class="number">0</span>]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ret = SDL_UpdateTexture(*tex, <span class="literal">NULL</span>, frame-&gt;data[<span class="number">0</span>], frame-&gt;linesize[<span class="number">0</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="图像格式转换"><a href="#图像格式转换" class="headerlink" title="图像格式转换"></a>图像格式转换</h1><p>FFmpeg中的 sws_scale() 函数主要是⽤来做视频像素格式和分辨率的转换，其优势在于：可以在同⼀个函数⾥实现：</p>
-<ul>
-<li>图像⾊彩空间转换</li>
-<li>分辨率缩放</li>
-<li>前后图像滤波处理</li>
-</ul>
-<p>不⾜之处在于：效率相对较低，不如libyuv或shader。</p>
-<h2 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h2><h3 id="sws-getContext"><a href="#sws-getContext" class="headerlink" title="sws_getContext"></a>sws_getContext</h3><p>用于创建和配置用于图像转换的SwsContext结构体，以便在不同图像格式之间进行转换和调整。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> SwsContext *<span class="title function_">sws_getContext</span><span class="params">(<span class="type">int</span> srcW, <span class="type">int</span> srcH, <span class="keyword">enum</span> AVPixelFormat srcFormat,</span></span><br><span class="line"><span class="params">                                  <span class="type">int</span> dstW, <span class="type">int</span> dstH, <span class="keyword">enum</span> AVPixelFormat dstFormat,</span></span><br><span class="line"><span class="params">                                  <span class="type">int</span> flags, SwsFilter *srcFilter,</span></span><br><span class="line"><span class="params">                                  SwsFilter *dstFilter, <span class="type">const</span> <span class="type">double</span> *param)</span>;</span><br></pre></td></tr></table></figure>
-
-<p><code>srcW</code> 和 <code>srcH</code>：源图像的宽度和高度。</p>
-<p><code>srcFormat</code>：源图像的像素格式（例如，RGB、YUV等）。</p>
-<p><code>dstW</code> 和 <code>dstH</code>：目标图像的宽度和高度。</p>
-<p><code>dstFormat</code>：目标图像的像素格式。</p>
-<p><code>flags</code>：附加标志，提供了⼀系列的算法，快速线性，差值，矩阵，不同的算法性能也不同。</p>
-<p><code>srcFilter</code> 和 <code>dstFilter</code>：源和目标的滤波器，用于在图像缩放过程中进行滤波。⼀般⽤不到，传NULL。</p>
-<p><code>param</code>：可选参数，用于进一步配置图像转换。</p>
-<p><code>sws_getContext</code> 返回一个 <code>SwsContext</code> 结构体的指针，你可以使用它来执行实际的图像转换。一旦配置了 <code>SwsContext</code>，你可以使用 <code>sws_scale</code> 函数来执行实际的图像转换操作。</p>
-<h3 id="sws-getCachedContext"><a href="#sws-getCachedContext" class="headerlink" title="sws_getCachedContext"></a>sws_getCachedContext</h3><p>与sws_getContext类似，用于创建和配置图像转换的SwsContext结构体。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> SwsContext *<span class="title function_">sws_getCachedContext</span><span class="params">(<span class="keyword">struct</span> SwsContext *context,</span></span><br><span class="line"><span class="params">                                        <span class="type">int</span> srcW, <span class="type">int</span> srcH, <span class="keyword">enum</span> AVPixelFormat srcFormat,</span></span><br><span class="line"><span class="params">                                        <span class="type">int</span> dstW, <span class="type">int</span> dstH, <span class="keyword">enum</span> AVPixelFormat dstFormat,</span></span><br><span class="line"><span class="params">                                        <span class="type">int</span> flags, SwsFilter *srcFilter,</span></span><br><span class="line"><span class="params">                                        SwsFilter *dstFilter, <span class="type">const</span> <span class="type">double</span> *param)</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="sws-scale"><a href="#sws-scale" class="headerlink" title="sws_scale"></a>sws_scale</h3><p>用于将源图像数据转换为目标图像数据，并根据配置信息进行缩放、格式转换等操作。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">sws_scale</span><span class="params">(<span class="keyword">struct</span> SwsContext *c, <span class="type">const</span> <span class="type">uint8_t</span> *<span class="type">const</span> srcSlice[],</span></span><br><span class="line"><span class="params">              <span class="type">const</span> <span class="type">int</span> srcStride[], <span class="type">int</span> srcSliceY, <span class="type">int</span> srcSliceH,</span></span><br><span class="line"><span class="params">              <span class="type">uint8_t</span> *<span class="type">const</span> dst[], <span class="type">const</span> <span class="type">int</span> dstStride[])</span>;</span><br></pre></td></tr></table></figure>
-
-<p><code>c</code>：<code>SwsContext</code> 结构体，它包含了图像转换的配置信息，通常是使用 <code>sws_getContext</code> 或 <code>sws_getCachedContext</code> 创建的。</p>
-<p><code>srcSlice</code>：输⼊图像的每个颜⾊通道的数据指针。其实就是解码后的AVFrame中的data[]数组。</p>
-<p><code>srcStride</code>：输⼊图像的每个颜⾊通道的跨度。.也就是每个通道的⾏字节数，对应的是解码后的AVFrame中的linesize[]数组。</p>
-<p><code>srcSliceY</code> 和 <code>srcSliceH</code>：表示源图像中要处理的区域的垂直位置和高度。</p>
-<p><code>dst</code>：指向目标图像数据的指针数组，通常是一个包含目标图像的平面数组。</p>
-<p><code>dstStride</code>：指向目标图像行间距的整数数组，表示每行数据的跨度（以字节为单位）。</p>
-<h3 id="sws-freeContext"><a href="#sws-freeContext" class="headerlink" title="sws_freeContext"></a>sws_freeContext</h3><p>用于释放SwsContext结构体的函数。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">sws_freeContext</span><span class="params">(<span class="keyword">struct</span> SwsContext *swsContext)</span>;</span><br></pre></td></tr></table></figure>
-
-<h2 id="用法示例"><a href="#用法示例" class="headerlink" title="用法示例"></a>用法示例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (*img_convert_ctx != <span class="literal">NULL</span>) &#123; </span><br><span class="line">    <span class="type">uint8_t</span> *pixels[<span class="number">4</span>];</span><br><span class="line">    <span class="type">int</span> pitch[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">if</span> (!SDL_LockTexture(*tex, <span class="literal">NULL</span>, (<span class="type">void</span> **)pixels, pitch)) &#123;</span><br><span class="line">        sws_scale(*img_convert_ctx, </span><br><span class="line">                  (<span class="type">const</span> <span class="type">uint8_t</span> * <span class="type">const</span> *)frame-&gt;data, </span><br><span class="line">                  frame-&gt;linesize, <span class="number">0</span>, frame-&gt;height, pixels, pitch);</span><br><span class="line">        SDL_UnlockTexture(*tex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>参考链接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/577627433?utm_id=0">https://zhuanlan.zhihu.com/p/577627433?utm_id=0</a></p>
 
       
     </div>

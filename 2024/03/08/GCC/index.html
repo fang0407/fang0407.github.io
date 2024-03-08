@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="RTP头部扩展要实现基于延迟的带宽估计，第一步需要计算包组之间的到达延迟差，而新版本的 GCC 将基于延迟的带宽估计移到了发送端进行实现，但是不像接收端，发送端由于不接收 RTP 数据包，无法直接进行包组间到达延迟差的计算。 为了解决这一问题，RTP 注册 transport-cc 头部扩展，记录 transport_sequence_number ，同一个 PeerConnection 连接下的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GCC">
+<meta property="og:url" content="https://fang0407.github.io/2024/03/08/GCC/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="RTP头部扩展要实现基于延迟的带宽估计，第一步需要计算包组之间的到达延迟差，而新版本的 GCC 将基于延迟的带宽估计移到了发送端进行实现，但是不像接收端，发送端由于不接收 RTP 数据包，无法直接进行包组间到达延迟差的计算。 为了解决这一问题，RTP 注册 transport-cc 头部扩展，记录 transport_sequence_number ，同一个 PeerConnection 连接下的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://fang0407.github.io/2024/03/08/GCC/%E5%9F%BA%E4%BA%8E%E5%BB%B6%E8%BF%9F%E7%9A%84%E5%B8%A6%E5%AE%BD%E4%BC%B0%E8%AE%A1%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.png">
+<meta property="article:published_time" content="2024-03-08T15:10:16.000Z">
+<meta property="article:modified_time" content="2024-03-08T15:12:26.041Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fang0407.github.io/2024/03/08/GCC/%E5%9F%BA%E4%BA%8E%E5%BB%B6%E8%BF%9F%E7%9A%84%E5%B8%A6%E5%AE%BD%E4%BC%B0%E8%AE%A1%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.png">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2024/03/08/GCC/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2024/03/08/GCC/","path":"2024/03/08/GCC/","title":"GCC"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>GCC | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RTP%E5%A4%B4%E9%83%A8%E6%89%A9%E5%B1%95"><span class="nav-number">1.</span> <span class="nav-text">RTP头部扩展</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Feedback%E8%A7%A3%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">Feedback解析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9D%97"><span class="nav-number">3.</span> <span class="nav-text">拥塞控制模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%BB%B6%E8%BF%9F%E7%9A%84%E5%B8%A6%E5%AE%BD%E4%BC%B0%E8%AE%A1%E6%A8%A1%E5%9D%97"><span class="nav-number">4.</span> <span class="nav-text">基于延迟的带宽估计模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%BB%B6%E8%BF%9F%E7%9A%84%E5%B8%A6%E5%AE%BD%E4%BC%B0%E8%AE%A1"><span class="nav-number">4.1.</span> <span class="nav-text">基于延迟的带宽估计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%85%E7%BB%84%E5%BB%B6%E8%BF%9F%E5%B7%AE"><span class="nav-number">4.2.</span> <span class="nav-text">包组延迟差</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/03/08/GCC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="GCC | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GCC
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-03-08 23:10:16 / Modified: 23:12:26" itemprop="dateCreated datePublished" datetime="2024-03-08T23:10:16+08:00">2024-03-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="RTP头部扩展"><a href="#RTP头部扩展" class="headerlink" title="RTP头部扩展"></a>RTP头部扩展</h1><p>要实现基于延迟的带宽估计，第一步需要计算包组之间的到达延迟差，而新版本的 GCC 将基于延迟的带宽估计移到了发送端进行实现，但是不像接收端，发送端由于不接收 RTP 数据包，无法直接进行包组间到达延迟差的计算。</p>
+<p>为了解决这一问题，RTP 注册 transport-cc 头部扩展，记录 transport_sequence_number ，同一个 PeerConnection 连接下的所有流的 transport_sequence_number ，使用统一的计数器进行计数，方便进行同一个 PeerConnection 下的带宽估计。</p>
+<p><strong>RTPExtensionType</strong>：定义 RTP 扩展类型的枚举。</p>
+<p><strong>RtpHeaderExtensionMap</strong>：管理 RTP 扩展，内部使用数组管理，数组的索引代表 RTPExtensionType 枚举的值，数组的值代表扩展的 ID。</p>
+<ul>
+<li><code>bool RegisterUri(int id, absl::string_view uri)</code>：注册头部扩展</li>
+</ul>
+<p><strong>TransportSequenceNumber</strong>：transport-cc 具体定义，提供写入和解析 transport_sequence_number 的接口。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TransportSequenceNumber</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">using</span> value_type = <span class="type">uint16_t</span>;</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> RTPExtensionType kId = kRtpExtensionTransportSequenceNumber;</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">size_t</span> kValueSizeBytes = <span class="number">2</span>;</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">const</span> absl::string_view <span class="title">Uri</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> webrtc::RtpExtension::kTransportSequenceNumberUri;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">size_t</span> <span class="title">ValueSize</span><span class="params">(<span class="type">uint16_t</span>)</span> </span>&#123; <span class="keyword">return</span> kValueSizeBytes; &#125;</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">bool</span> <span class="title">Parse</span><span class="params">(rtc::ArrayView&lt;<span class="type">const</span> <span class="type">uint8_t</span>&gt; data, <span class="type">uint16_t</span>* transport_sequence_number)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">bool</span> <span class="title">Write</span><span class="params">(rtc::ArrayView&lt;<span class="type">uint8_t</span>&gt; data, <span class="type">uint16_t</span> transport_sequence_number)</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Feedback解析"><a href="#Feedback解析" class="headerlink" title="Feedback解析"></a>Feedback解析</h1><p>当推流端发送RTP 包时，如果在头部添加了 transport sequence number 扩展，拉流端收到RTP包时会处理这个头部扩展，并向推流端发送transport feedback RTCP包，该包记录了 RTP 包到达接收端的时间信息，以及 RTP 包的丢失信息。发送方基于这些信息来估计延迟梯度。</p>
+<p>在标准的 WebRTC 环境下，需要在 SDP 当中添加 RTP 头部扩展描述信息：</p>
+<ul>
+<li><code>a=extmap:1 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01</code></li>
+<li>id 信息需要与代码中注册的 id保持一致，否则无法处理</li>
+</ul>
+<p><strong>TransportFeedback</strong>：解析 TransportFeedback RTCP 包，获取接收端收到每个 RTP 包的时间。</p>
+<h1 id="拥塞控制模块"><a href="#拥塞控制模块" class="headerlink" title="拥塞控制模块"></a>拥塞控制模块</h1><p><strong>TransportFeedbackObserver</strong>：观察者模式获得 Feedback 数据。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TransportFeedbackObserver</span> &#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">TransportFeedbackObserver</span>() &#123;&#125;</span><br><span class="line">    <span class="comment">// 发送数据包之前调用存储数据包</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">OnAddPacket</span><span class="params">(<span class="type">const</span> RtpPacketSendInfo&amp; send_info)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 收到TransportFeedback数据包后回调</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">OnTransportFeedback</span><span class="params">(<span class="type">const</span> rtcp::TransportFeedback&amp; feedback)</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>RtpTransportControllerSend</strong>：RTP 传输控制，有独立的线程分别处理 Pacer 和 GCC。</p>
+<ul>
+<li><p><code>OnNetworkOk()</code>：ICE 连接状态反馈，成功连接会创建 <code>GoogCcNetworkController</code></p>
+</li>
+<li><p><code>OnAddPacket()</code>：调用 <code>TransportFeedbackAdapter</code>  接口 <code>AddPacket()</code> </p>
+</li>
+<li><p><code>OnTransportFeedback()</code>：调用 <code>TransportFeedbackAdapter</code>  接口 <code>ProcessTransportFeedback()</code> </p>
+</li>
+<li><p><code>OnSentPacket()</code>：调用 <code> TransportFeedbackAdapter</code>  接口  <code>ProcessSentPacket()</code></p>
+</li>
+</ul>
+<p><strong>TransportFeedbackAdapter</strong>：处理 <code>TransportFeedback</code> 转换成 <code>webrtc::TransportPacketsFeedback</code></p>
+<ul>
+<li><p><code>AddPacket()</code>：存储时间窗口内的发送数据包。</p>
+</li>
+<li><p><code>ProcessSentPacket()</code>：发送 RTP 数据包时调用，更新存储的发送包中发送时间。</p>
+</li>
+<li><p><code>ProcessTransportFeedback()</code>： <code>TransportFeedback</code> 转换成 <code>webrtc::TransportPacketsFeedback</code></p>
+</li>
+</ul>
+<p><strong>GoogCcNetworkController</strong>：google 拥塞控制模块。</p>
+<ul>
+<li><code>OnTransportPacketsFeedbackO()</code>：接受 Feedback 数据，进行估计目标码率。</li>
+</ul>
+<h1 id="基于延迟的带宽估计模块"><a href="#基于延迟的带宽估计模块" class="headerlink" title="基于延迟的带宽估计模块"></a>基于延迟的带宽估计模块</h1><img src="/2024/03/08/GCC/基于延迟的带宽估计核心原理.png" alt="基于延迟的带宽估计核心原理" style="zoom:50%;">
+
+<h2 id="基于延迟的带宽估计"><a href="#基于延迟的带宽估计" class="headerlink" title="基于延迟的带宽估计"></a>基于延迟的带宽估计</h2><p><strong>DelayBasedBwe</strong></p>
+<ul>
+<li><code>IncomingPacketFeedbackVector()</code>：输入 Transport Feedback，输出估计的目标码率。</li>
+</ul>
+<h2 id="包组延迟差"><a href="#包组延迟差" class="headerlink" title="包组延迟差"></a>包组延迟差</h2><p><strong>InterArrivalDelta</strong>：包组时间差计算类。</p>
+<ul>
+<li><code>SendTimeGroup current_timestamp_group_</code>：当前到达的包组。</li>
+<li><code>SendTimeGroup pre_timestamp_group_</code>：上一个到达的包组。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">SendTimeGroup</span> &#123;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">IsFirstPacket</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> complete_time.<span class="built_in">IsInfinite</span>(); &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 包组中所有包的累计字节数</span></span><br><span class="line">    <span class="type">size_t</span> size;</span><br><span class="line">    <span class="comment">// 包组第一个包的发送时间</span></span><br><span class="line">    webrtc::Timestamp first_send_time;</span><br><span class="line">    <span class="comment">// 包组最后一个包的发送时间</span></span><br><span class="line">    webrtc::Timestamp send_time;</span><br><span class="line">    <span class="comment">// 包组中的包第一个到达对端时间</span></span><br><span class="line">    webrtc::Timestamp first_arrival;</span><br><span class="line">    <span class="comment">// 包组中的包最后到达对端的时间</span></span><br><span class="line">    webrtc::Timestamp complete_time;</span><br><span class="line">    <span class="comment">// 最新的系统时间</span></span><br><span class="line">    webrtc::Timestamp last_system_time;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>ComputeDeltas()</code><ul>
+<li>通过前面的内容，可以获得如下数据<ul>
+<li>每个包的发送时间</li>
+<li>每个包达到对端的时间（换算成发送端的时间，包间隔保持不变）</li>
+<li>每个包的大小</li>
+<li>Transport Feedback 包到达发送端的时间</li>
+</ul>
+</li>
+<li>利用这些数据，可以计算如下数据<ul>
+<li>两个包之间的发送时间差</li>
+<li>两个包之间的到达时间差</li>
+<li>两个包之间的数据大小差</li>
+</ul>
+</li>
+<li>计算出这些差值数据之后，可以用计算出这些差值数据之后，可以用于下一步来判断网络是否拥塞。</li>
+<li>如果以单个包来计算时间差，会存在比较大的误差，一个重要的原因是：WebRTC 发送数据通常使用pacer，它在静态模式下，通常每隔 5ms 会集中发送一批数据，这些突发数据由于是集中发送，接收的延迟基本相同，接收的时间差值非常小。这些差值数据显然不能用于网络拥塞的判断。</li>
+<li>为了避免这种误差，我们会对数据包进行分组，比如 5ms之内的数据分成一组，然后计算包组之间的时间差。</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/03/05/Pacer/" rel="prev" title="Pacer">
+                  <i class="fa fa-angle-left"></i> Pacer
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
