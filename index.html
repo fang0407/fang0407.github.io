@@ -188,7 +188,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-03-10 18:54:10" itemprop="dateModified" datetime="2024-03-10T18:54:10+08:00">2024-03-10</time>
+      <time title="Modified: 2024-03-11 22:43:44" itemprop="dateModified" datetime="2024-03-11T22:43:44+08:00">2024-03-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -275,9 +275,23 @@
 
 <h1 id="基于延迟的带宽估计"><a href="#基于延迟的带宽估计" class="headerlink" title="基于延迟的带宽估计"></a>基于延迟的带宽估计</h1><img src="/2024/03/08/GCC/基于延迟的带宽估计核心原理.png" alt="基于延迟的带宽估计核心原理" style="zoom:50%;">
 
-<p><strong>DelayBasedBwe</strong></p>
+<p><strong>DelayBasedBwe</strong>：基于延迟的带宽估计入口类。</p>
 <ul>
-<li><code>IncomingPacketFeedbackVector()</code>：输入 Transport Feedback，输出估计的目标码率。</li>
+<li><code>IncomingPacketFeedbackVector()</code>：输入 Feedback，输出估计的目标码率。<ul>
+<li>数据包按照到达时间进行排序</li>
+<li>收到的包依次调用 <code>IncomingPacketFeedback()</code>  判断网络状态</li>
+<li>最后调用 <code>MaybeUpdateEstimate()</code>  估计目标码率</li>
+</ul>
+</li>
+<li><code>IncomingPacketFeedback()</code>：通过延迟趋势估计，判断网络状态。</li>
+<li><code>MaybeUpdateEstimate()</code>：根据网络状态来动态调整发送码率。<ul>
+<li>网络过载时的码率调整<ul>
+<li>未知吞吐量：每次降低为当前码率的 50%</li>
+<li>已知吞吐量：通过链路容量估计码率</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <h2 id="包组延迟差"><a href="#包组延迟差" class="headerlink" title="包组延迟差"></a>包组延迟差</h2><p><strong>InterArrivalDelta</strong>：包组时间差计算类。</p>
 <ul>
@@ -333,7 +347,7 @@
 <ul>
 <li>trend 值的含义：<ul>
 <li>表示延迟趋势，也是线性回归最小二乘法拟合的直线斜率</li>
-<li>当发送码率 send_rate 小于网络链路的容量 link_capacity 时，数据包不会在网络队列中排队积压，延迟趋势 trend 值基本为 0（网络存在波动，不可能完全等于0）</li>
+<li>当发送码率 send_rate 小于网络链路的容量 link_capacity 时，数据包不会在网络队列中排队积压，延迟趋势 trend 值基本为 0（网络存在波动，不可能完全等于 0）</li>
 <li>当发送码率 send_rate 大于网络链路的容量 link_capacity 时，数据包会在网络队列中排队积压，数据包的传输延迟逐步增大，此时的延迟趋势 trend 值 &gt; 0，表示网络出现拥塞</li>
 <li>当网络拥塞得到缓解时，网络队列会逐渐排空，数据包的传输延迟开始下降，此时的延迟趋势 trend 值 &lt; 0</li>
 <li>trend 等价于 estimate <code>((send_rate – link_capacity) / link_capacity)</code></li>
@@ -359,10 +373,10 @@
 <li><p>基本策略</p>
 <ul>
 <li>原始的 trend 值比较小，区分度不高，需要进行增益处理为 modified_trend</li>
-<li>设定一个阈值 threshold，初始值为12.5，后续会动态自适应调整</li>
+<li>设定一个阈值 threshold，初始值为 12.5，后续会动态自适应调整</li>
 <li>网络状态检测<ul>
 <li>当 modified_trend 超过了 threshold，表明网络可能进入了过载状态，但此时还不会立即进入过载状态，防止一些误差带来误判，只有检测过载的次数超过一次，并且持续一段时间，同时延迟趋势还在增加的情况下，才会判断网络状态为过载状态</li>
-<li>当 modified_trend &lt; -threshold, 此时的延迟趋势非常低了，判定网络为低负载状态</li>
+<li>当 modified_trend &lt; -threshold，此时的延迟趋势非常低了，判定网络为低负载状态</li>
 <li>非以上情况，判定网络状态为正常状态</li>
 </ul>
 </li>
@@ -374,12 +388,35 @@
 <ul>
 <li>网络正常时，通常 trend 值和阈值是基本相同的，当网络发生拥塞或者拥塞缓解时，trend 值会发生较大的变化，两者才会有明显的差距，随着网络的稳定，两者又趋于相同</li>
 <li>初始时，只能设定一个经验值，WebRTC 中设置为 12.5</li>
-<li>如果当前|trend| &lt; 阈值，此时网络通常处于正常状态，trend 值认为更接近真实的阈值，此时应当将当前阈值快速（k_down&#x3D;0.039）向 trend 值逼近减少</li>
-<li>如果当前|trend| &gt; 阈值，通常是网络刚发生拥塞或者刚开始缓解，trend 变化很大，当前的阈值认为更接近真实的阈值，此时可以让当前阈值缓慢（k_up&#x3D;0.0087）向 trend 值增加</li>
+<li>如果当前 |trend| &lt; 阈值，此时网络通常处于正常状态，trend 值认为更接近真实的阈值，此时应当将当前阈值快速（k_down&#x3D;0.039）向 trend 值逼近减少</li>
+<li>如果当前 |trend| &gt; 阈值，通常是网络刚发生拥塞或者刚开始缓解，trend 变化很大，当前的阈值认为更接近真实的阈值，此时可以让当前阈值缓慢（k_up&#x3D;0.0087）向 trend 值增加</li>
 </ul>
 </li>
 </ul>
 <h2 id="码率控制"><a href="#码率控制" class="headerlink" title="码率控制"></a>码率控制</h2><p>AIMD（Additive Increase Multiplicative Decrease）码率控制，指的是加性增加，乘性减少。当网络过载时，以乘性的方式减少码率；当网络没有过载时，以加性的方式增加码率。另外，当我们认为可用带宽发生了变化或者未知时，会切换到慢启动模式，此种模式会以倍速的方式增加码率。</p>
+<p><strong>AimidRatecontrol</strong>：码率控制器，通过检测的网络状态调整码率。</p>
+<ul>
+<li><p><code>TimeToReduceFutther()</code>：判断是否进一步降低码率。</p>
+<ul>
+<li>码率进一步降低的策略：<ul>
+<li>码率调整的时间间隔，如果大于 1 个 RTT，继续降低</li>
+<li>如果调整的时间间隔小于 1 个 RTT，并且最新估计码率的一半必须大于吞吐量，才能继续降低，避免估计码率值降得过低了</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>ChangeState()</code>：状态机状态转换。</p>
+<ul>
+<li>三种状态<ul>
+<li>保持码率不变</li>
+<li>增加码率</li>
+<li>减少码率</li>
+</ul>
+</li>
+<li>有限状态机的目标是最小化端到端路径上的缓冲区的排队延迟，基本原理：当瓶颈缓冲区开始堆积时，估计的单向延迟趋势 trend 会变为正值，过载检测器检测到这种变化后会触发 overuse（带宽过载使用）信号，然后驱动码率控制状态机变为 decrease（降低码率）状态。因此，发送码率会降低，瓶颈缓冲区的堆积数据逐步排空，直到估计的单向延迟趋势 trend 变为负值。之后过载检测器会触发 underuse（带宽使用不足）信号，然后驱动码率控制状态机变为 hold 状态。状态机会维持 hold 状态直到瓶颈 buffer 完全排空。当出现此种情况时，trend 值会接近为 0，过载检测器会产生一个 normal 信号，该信号驱动码率控制状态机进入 increase（码率增加状态）</li>
+</ul>
+</li>
+</ul>
 
       
     </div>
