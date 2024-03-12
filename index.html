@@ -188,7 +188,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-03-11 22:43:44" itemprop="dateModified" datetime="2024-03-11T22:43:44+08:00">2024-03-11</time>
+      <time title="Modified: 2024-03-12 21:37:20" itemprop="dateModified" datetime="2024-03-12T21:37:20+08:00">2024-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -287,7 +287,11 @@
 <li><code>MaybeUpdateEstimate()</code>：根据网络状态来动态调整发送码率。<ul>
 <li>网络过载时的码率调整<ul>
 <li>未知吞吐量：每次降低为当前码率的 50%</li>
-<li>已知吞吐量：通过链路容量估计码率</li>
+<li>已知吞吐量：使用码率控制模块调整发送码率</li>
+</ul>
+</li>
+<li>网络没过载时的码率调整<ul>
+<li>使用码率控制模块调整发送码率</li>
 </ul>
 </li>
 </ul>
@@ -337,7 +341,7 @@
 </ul>
 <h2 id="延迟趋势估计"><a href="#延迟趋势估计" class="headerlink" title="延迟趋势估计"></a>延迟趋势估计</h2><p>通过已经获得的数据，可以计算出两个包组之间的单向传输延迟差。这些延迟差是一系列数据，或者称为样本数据，利用这些样本数据，可以估计出单向网络传输延迟增加趋势。</p>
 <p>当单向网络传输延迟存在增加趋势的时候（注意这里是增加趋势，而不是单纯的增加，相当于速度和加速度的关系） ，很可能是发生了网络拥塞，因为网络拥塞时数据包在网络传输队列中排队积压，导致延迟发生了变化。所以，如果我们能够计算出单向网络传输延迟增加的趋势，就能够判断网络是否发生了拥塞，从而进行后续的处理。</p>
-<p><strong>TrendlineEstimator</strong>：trendline 单向延迟趋势估计器，过载检测。</p>
+<p><strong>TrendlineEstimator</strong>：trendline 单向延迟趋势估计器。</p>
 <ul>
 <li><p><code>std::deque&lt;PacketTiming&gt; delay_hist_</code>：样本数据存放队列，默认 20 个样本数据。</p>
 </li>
@@ -360,7 +364,7 @@
 <p>线性回归最小二乘法样本数据：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">PacketTiming</span> &#123;</span><br><span class="line">    <span class="comment">// rtp包的到达时间（x轴的值）</span></span><br><span class="line">    <span class="type">double</span> arrival_time_ms;</span><br><span class="line">    <span class="comment">// 指数平滑后的传输延迟差（y轴的值）</span></span><br><span class="line">    <span class="type">double</span> smoothed_delay_ms;</span><br><span class="line">    <span class="comment">// 原始的传输延迟差</span></span><br><span class="line">    <span class="type">double</span> raw_delay_ms;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<ul>
+<h3 id="过载检测"><a href="#过载检测" class="headerlink" title="过载检测"></a>过载检测</h3><ul>
 <li><p><code>Detect()</code>：利用 trend 进行过载检测。</p>
 <ul>
 <li><p>网络状态</p>
@@ -384,8 +388,9 @@
 </li>
 </ul>
 </li>
-<li><p><code>UpdateThreshold()</code>：过载检测阈值自适应调整。</p>
-<ul>
+</ul>
+<h3 id="过载检测阈值自适应调整"><a href="#过载检测阈值自适应调整" class="headerlink" title="过载检测阈值自适应调整"></a>过载检测阈值自适应调整</h3><ul>
+<li><code>UpdateThreshold()</code>：过载检测阈值自适应调整。<ul>
 <li>网络正常时，通常 trend 值和阈值是基本相同的，当网络发生拥塞或者拥塞缓解时，trend 值会发生较大的变化，两者才会有明显的差距，随着网络的稳定，两者又趋于相同</li>
 <li>初始时，只能设定一个经验值，WebRTC 中设置为 12.5</li>
 <li>如果当前 |trend| &lt; 阈值，此时网络通常处于正常状态，trend 值认为更接近真实的阈值，此时应当将当前阈值快速（k_down&#x3D;0.039）向 trend 值逼近减少</li>
@@ -414,6 +419,45 @@
 </ul>
 </li>
 <li>有限状态机的目标是最小化端到端路径上的缓冲区的排队延迟，基本原理：当瓶颈缓冲区开始堆积时，估计的单向延迟趋势 trend 会变为正值，过载检测器检测到这种变化后会触发 overuse（带宽过载使用）信号，然后驱动码率控制状态机变为 decrease（降低码率）状态。因此，发送码率会降低，瓶颈缓冲区的堆积数据逐步排空，直到估计的单向延迟趋势 trend 变为负值。之后过载检测器会触发 underuse（带宽使用不足）信号，然后驱动码率控制状态机变为 hold 状态。状态机会维持 hold 状态直到瓶颈 buffer 完全排空。当出现此种情况时，trend 值会接近为 0，过载检测器会产生一个 normal 信号，该信号驱动码率控制状态机进入 increase（码率增加状态）</li>
+<li>上述的状态机可以简述为：<ul>
+<li>当 Overuse 发生时，无论什么状态都进入衰减</li>
+<li>当 Underuse 发生时，无论什么状态都进入保持状态</li>
+<li>在保持和增长阶段，Normal 状态将保持继续增长</li>
+<li>在衰减阶段，Normal 状态会将状态拉回保持状态</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>ChangeBitrate()</code>：调整码率策略。</p>
+<ul>
+<li>加性增加码率<ul>
+<li>为了避免无限制的码率增加，我们基于吞吐量来限制新的码率</li>
+<li>如果当前的吞吐量和链路容量估计值相差太大，会重置链路容量估计值。因此，如果链路容量估计值存在，我们可以认为当前的目标码率已经非常接近链路容量了，此时增加码率应当谨慎一些，采用加性增加策略</li>
+<li>加性增加的策略<ul>
+<li>当目标码率已经接近链路容量时，如何缓慢的增加一个合理的值，使其不要增加太大而发生排队拥塞？WebRTC 的策略是，一个 RTT 内只允许发送一个包，即增加的码率为一个 RTT 内发送一个包的码率</li>
+<li>计算方法<ul>
+<li><code>increase_rate_bps_per_second = avg_packet_size / response_time</code></li>
+<li>假定 1s 中 30 帧，最大包大小 1200：<code>avg_packet_size = frame_size / packets_per_frame</code></li>
+<li>假定过载时的延迟增大为 100ms：<code>response_time = rtt_ + 100ms</code></li>
+<li>为了保证不增加的过慢，增加的码率不小于 4kbps</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="链路容量估计"><a href="#链路容量估计" class="headerlink" title="链路容量估计"></a>链路容量估计</h2><p>利用吞吐量和码率控制状态来初估链路的容量，作为码率调整的重要参考。</p>
+<p><strong>LinkCapacityEstimator</strong>：链路容量估计。</p>
+<p><code>OnOveruseDetected()</code>：网络过载时输入此时的吞吐量，进行估计链路容量。</p>
+<ul>
+<li>链路容量估计策略<ul>
+<li>取码率控制状态为 kDecrease（下调码率）时的吞吐量为估计样本，因为此时已经出现了过载情况，当前的吞吐量可认为已经达到了链路容量瓶颈</li>
+<li>对吞吐量样本按照 95 分位进行指数平滑得到链路容量的估计值</li>
+<li>计算链路容量估计值的方差，并且进行归一化</li>
+<li>链路容量估计值加减 3 倍的标准差，得到链路容量的上限和下限。按照统计学原理，正负 3 倍的标准差范围，可以覆盖 99.6% 的置信区间</li>
 </ul>
 </li>
 </ul>
