@@ -188,7 +188,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-03-12 21:37:20" itemprop="dateModified" datetime="2024-03-12T21:37:20+08:00">2024-03-12</time>
+      <time title="Modified: 2024-03-15 22:31:44" itemprop="dateModified" datetime="2024-03-15T22:31:44+08:00">2024-03-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -399,7 +399,7 @@
 </li>
 </ul>
 <h2 id="码率控制"><a href="#码率控制" class="headerlink" title="码率控制"></a>码率控制</h2><p>AIMD（Additive Increase Multiplicative Decrease）码率控制，指的是加性增加，乘性减少。当网络过载时，以乘性的方式减少码率；当网络没有过载时，以加性的方式增加码率。另外，当我们认为可用带宽发生了变化或者未知时，会切换到慢启动模式，此种模式会以倍速的方式增加码率。</p>
-<p><strong>AimidRatecontrol</strong>：码率控制器，通过检测的网络状态调整码率。</p>
+<p><strong>AimdRatecontrol</strong>：码率控制器，通过检测的网络状态调整码率。</p>
 <ul>
 <li><p><code>TimeToReduceFutther()</code>：判断是否进一步降低码率。</p>
 <ul>
@@ -446,6 +446,15 @@
 </li>
 </ul>
 </li>
+<li>慢启动模式增加码率<ul>
+<li>如果当前还不知道链路的容量估计值时，即还没有达到链路的容量瓶颈，可以快速的增加码率，以指数的方式增加，快速发现容量</li>
+<li>计算公式：<code>multiplicative_increase = std::max(current_bitrate_ * (1.08^∆𝑡− 1), 1000bps),其中0 &lt; ∆𝑡 ≤ 1</code></li>
+</ul>
+</li>
+<li>乘性降低码率<ul>
+<li>码率降低为当前吞吐量的 0.85</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -458,6 +467,57 @@
 <li>对吞吐量样本按照 95 分位进行指数平滑得到链路容量的估计值</li>
 <li>计算链路容量估计值的方差，并且进行归一化</li>
 <li>链路容量估计值加减 3 倍的标准差，得到链路容量的上限和下限。按照统计学原理，正负 3 倍的标准差范围，可以覆盖 99.6% 的置信区间</li>
+</ul>
+</li>
+</ul>
+<h2 id="吞吐量估计"><a href="#吞吐量估计" class="headerlink" title="吞吐量估计"></a>吞吐量估计</h2><p>Feedback 反馈包里面包含了每个 RTP 包是否被对端收到的信息，我们可以利用这个确认收到的信息，来估计当前发送的吞吐量。</p>
+<p>如何来估计呢？这里可能有很多方法。不同方法的准确度是不同的，首先肯定不能用某个时间窗口内的统计数据作为吞吐量，因为它的随机性很大，有比较大的误差。当然我们可以考虑指数平滑或者求平均之类的方法来减少误差，在 WebRTC 中是采用贝叶斯估计的方法来估计吞吐量，可以得到一个相对靠谱的结果。</p>
+<p><strong>AcknowledgeBitrateEstimator</strong>：吞吐量估计类。</p>
+<p><strong>BitrateEstimator</strong>：具体吞吐量估计实现类。</p>
+<p><code>UpdateWindow()</code>：通过 Feedback 包提供的包大小以及在一定窗口时间计算码率；启动开始，使用一个较大的时间窗口，获得一个更加稳定的样本，用于初始化估计值，WebRTC 中 500ms，稳定后，使用小一点的时间窗口，WebRTC 中使用 150ms。</p>
+<p><code>Update()</code>：通过贝叶斯估计吞吐量。</p>
+<ul>
+<li><p>贝叶斯估计中的共轭先验</p>
+<ul>
+<li>在贝叶斯估计当中，如果先验分布和后验分布服从相同的分布，这种情形，我们称之为共轭先验。如果分布符合正态分布，通过一系列复杂的数学计算，得到一个公式：<code>θ(x) = 𝜎2𝜇/(𝜎2 + 𝜏2) + 𝜏2𝑥/(𝜎2 + 𝜏2)</code></li>
+<li><code>θ(x)</code>：表示估计的参数值</li>
+<li><code>𝜎2</code>：后验分布方差</li>
+<li><code>𝜏2</code>：先验分布的方差</li>
+<li><code>𝜇</code>：先验分布的均值</li>
+<li><code>𝑥</code>：后验分布的均值</li>
+</ul>
+</li>
+<li><p>利用贝叶斯估计吞吐量</p>
+<ul>
+<li><p>以一段时间作为计算窗口，统计该窗口内的吞吐量，作为样本数据</p>
+</li>
+<li><p>在吞吐量的估计中，我们认为先验分布和后验分布都服从正态分布，那么它们就构成了共轭先验，这里面可以形成一个先验链，用现在的后验分布作为下一个计算的先验分布</p>
+</li>
+<li><p>在 WebRTC 实现中：</p>
+<ul>
+<li>后验方差使用样本的方差</li>
+<li>后验均值为当前的样本值</li>
+<li>先验方差起始值设为 50， 后续会根据后验方差进行调整</li>
+<li>先验均值为当前的估计值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="基于丢包的带宽估计"><a href="#基于丢包的带宽估计" class="headerlink" title="基于丢包的带宽估计"></a>基于丢包的带宽估计</h1><p>基本策略</p>
+<ul>
+<li>丢包率小于 2%，增加码率，增加为当前码率的 1.05 倍</li>
+<li>丢包率大于 10%，降低码率，码率降低的倍数为丢包率的 50%</li>
+<li>丢包率为[2%, 10%]，码率保持不变</li>
+</ul>
+<p><strong>SendSideBandwidthEstimator</strong>：基于丢包的带宽估计入口类。</p>
+<p><code>UpdatePacketsLost()</code>：丢包指数统计，根据 RR 包信息统计丢包指数 [0, 255)，每轮统计包的总数需要大于 20 个。</p>
+<p><code>UpdateEstimate()</code>：</p>
+<ul>
+<li>起始阶段的带宽估计<ul>
+<li>在刚开始启动的前 2s，还没有收到任何丢包的报告数据，此时信任 remb 或者基于延迟的估计码率</li>
+<li>基于延迟的带宽估计的码率作为基于丢包的带宽估计的码率的上限</li>
+<li>可以设置最小和最大的码率作为约束条件</li>
 </ul>
 </li>
 </ul>
