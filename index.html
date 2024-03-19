@@ -188,7 +188,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-03-18 22:26:06" itemprop="dateModified" datetime="2024-03-18T22:26:06+08:00">2024-03-18</time>
+      <time title="Modified: 2024-03-19 22:19:01" itemprop="dateModified" datetime="2024-03-19T22:19:01+08:00">2024-03-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -552,6 +552,26 @@
 <p><code>IntervalBudget alr_budget_</code>：设定码率和时间窗口，两者相乘可以得到最大预算发送量。</p>
 <p><code>OnBytesSent()</code>：通过当前发送数据量和时间间隔来更新预算，并且计算预算剩余量来判断是否进入 ALR 状态。</p>
 <p><code>SetEstimateBitrate()</code>：设置预算量。</p>
+<h1 id="Probe技术"><a href="#Probe技术" class="headerlink" title="Probe技术"></a>Probe技术</h1><p>GCC 是以 AIMD 的方式来调节码率的，但是 AIMD 增加码率的速度是非常慢的，这样在会话起始阶段、网络从中断中恢复时或者其它的场景，要达到目标带宽值就非常慢，此时会影响用户体验。为了解决这个问题，GCC 提供了 Probe 机制，可以在较短的时间探测到链路的可用带宽。</p>
+<p>Probe 的基本思想：在较短的时间内，以目标码率发送数据，如果被对方确认收到的码率达到发送码率的一定比例，即认为探测成功，此时计算出的带宽就认为是链路的可用带宽。Probe 虽然能够在较短的时间探测到可用带宽，并且对网络的影响较小，但是其缺点也很明显，因为发送时间较短，很容易受到各种干扰而失败，而且在网络抖动时，结果可能不准。</p>
+<p>GCC Probe 探测三大部分</p>
+<ul>
+<li>ProbeController，用于控制是否进行探测，探测的次数以及探测的码率是多少，最终会输出探测任务配置</li>
+<li>Pacing 模块，负责执行探测报文的发送，如果码率不够，会用 padding 包进行补充</li>
+<li>ProbeBitrateEstimator，负责计算最终的探测结果</li>
+</ul>
+<p><strong>ProbeController</strong>：探测控制类。</p>
+<p><code>SetBitrate()</code>：设置起始和最大探测码率，根据探测状态执行相应逻辑，最终会输出探测任务配置。</p>
+<ul>
+<li>探测状态<ul>
+<li><code>kInit</code>：初始状态，探测没有触发；此时启动指数探测</li>
+<li><code>kWaitingForProbingResult</code>：等得探测结果，才能继续进一步探测</li>
+<li><code>kProbingComplete</code>：探测完成</li>
+</ul>
+</li>
+</ul>
+<p><code>InitExpProbing</code>：指数探测，在会话刚开始的时候，为了能够尽快的获得目标带宽，此时会触发带宽探测。我们会采用指数级探测，探测主要分为两次，第一次为起始码率的 3 倍，第二次为起始码率的 6 倍。</p>
+<p><code>InitProbing()</code>：本质上是构造一组探测任务的配置，包括探测的码率、探测的持续时间、探测包发送的个数，探测的 id 等，这组任务配置最终会发给 Pacer 去执行。如果需要继续探测，下一次探测的最小码率应该不低于最后一次探测码率的 0.7 倍，太小就没有意义。</p>
 
       
     </div>
