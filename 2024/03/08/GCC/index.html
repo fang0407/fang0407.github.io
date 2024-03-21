@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fang0407.github.io/2024/03/08/GCC/%E5%9F%BA%E4%BA%8E%E5%BB%B6%E8%BF%9F%E7%9A%84%E5%B8%A6%E5%AE%BD%E4%BC%B0%E8%AE%A1%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.png">
 <meta property="article:published_time" content="2024-03-08T15:10:16.000Z">
-<meta property="article:modified_time" content="2024-03-19T14:19:01.222Z">
+<meta property="article:modified_time" content="2024-03-21T14:34:56.047Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fang0407.github.io/2024/03/08/GCC/%E5%9F%BA%E4%BA%8E%E5%BB%B6%E8%BF%9F%E7%9A%84%E5%B8%A6%E5%AE%BD%E4%BC%B0%E8%AE%A1%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.png">
@@ -196,7 +196,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-03-19 22:19:01" itemprop="dateModified" datetime="2024-03-19T22:19:01+08:00">2024-03-19</time>
+      <time title="Modified: 2024-03-21 22:34:56" itemprop="dateModified" datetime="2024-03-21T22:34:56+08:00">2024-03-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -245,20 +245,21 @@
 <p><strong>TransportFeedback</strong>：解析 Transport Feedback RTCP 包，获取接收端收到每个 RTP 包的时间。</p>
 <h1 id="拥塞控制模块"><a href="#拥塞控制模块" class="headerlink" title="拥塞控制模块"></a>拥塞控制模块</h1><p><strong>RtpTransportControllerSend</strong>：RTP 传输控制，有独立的线程分别处理 Pacer 和 GCC。</p>
 <ul>
-<li><code>OnNetworkOk()</code>：ICE 连接状态反馈，成功连接会创建  <code>GoogCcNetworkController</code>。</li>
+<li><code>OnNetworkOk()</code>：ICE 连接状态反馈，成功连接会创建  <code>GoogCcNetworkController</code>，并且其调用  <code>OnNetworkOk()</code> 接口。</li>
 <li><code>OnAddPacket()</code>：重写接口，调用 <code>TransportFeedbackAdapter</code>  接口 <code>AddPacket()</code> 具体实现。</li>
 <li><code>OnTransportFeedback()</code>：重写接口，调用 <code>TransportFeedbackAdapter</code>  接口  <code>ProcessTransportFeedback()</code>  具体实现。</li>
-<li><code>OnSentPacket()</code>：调用 <code> TransportFeedbackAdapter</code>  接口  <code>ProcessSentPacket()</code>  具体实现。</li>
-<li><code>OnNetworkUpdate()</code>：传递丢包信息和 RTT 信息给基于延迟和基于丢包的带宽估计模块。</li>
-<li><code>PostUpdate()</code>：应用发送端码率估计值；更新估计的目标码率到 pacer 和编码器。</li>
+<li><code>OnSentPacket()</code>：调用 <code> TransportFeedbackAdapter</code>  接口  <code>ProcessSentPacket()</code>  具体实现，成功后会调用 <code>GoogCcNetworkController</code>  接口  <code>OnSentPacket()</code>。</li>
+<li><code>OnNetworkUpdate()</code>：传递丢包信息和 RTT 信息给基于延迟和基于丢包的带宽估计模块，调用  <code>GoogCcNetworkController</code>  接口 <code>OnRttUpdate()</code> 和 <code>OnTransportLoss()</code> 具体实现。</li>
+<li><code>PostUpdate()</code>：应用发送端码率估计值：更新估计的目标码率到 Pacer 和编码器；以及将探测配置作用到 Pacer。</li>
+<li><code>StartProcessPeriodicTasks()</code>：定时调用 <code>GoogCcNetworkController</code>  接口 <code>OnProcessInterval()</code>。</li>
 </ul>
 <p><strong>GoogCcNetworkController</strong>：google 拥塞控制模块。</p>
 <ul>
 <li><code>OnTransportPacketsFeedback()</code>：接受 Feedback 数据，进行估计目标码率。</li>
-<li><code>OnNetWorkOk()</code>：初始化或者设置基于延迟和基于丢包的带宽估计模块。</li>
+<li><code>OnNetWorkOk()</code>：设置带宽估计模块和 Probe 探测上下限以及起始码率。</li>
 <li><code>OnRttUpdate()</code>：根据 RR 包解析的信息计算 RTT，提供给基于延迟和基于丢包的带宽估计模块。</li>
 <li><code>OnTransportLoss()</code>：根据 RR 包解析的丢包相关信息，提供给基于丢包的带宽估计模块。</li>
-<li><code>OnProcessInterval()</code>：周期性更新目标码率到 pacer 和编码器。</li>
+<li><code>OnProcessInterval()</code>：周期性更新目标码率到 Pacer 和编码器。</li>
 <li><code>OnSentPacket()</code>：调用 ALR 检测更新剩余发送预算。</li>
 </ul>
 <p><strong>TransportFeedbackObserver</strong>：观察者模式获得 Feedback 数据。</p>
@@ -536,7 +537,7 @@
 <li>可以设置最小和最大的码率作为约束条件</li>
 </ul>
 <h1 id="ALR检测"><a href="#ALR检测" class="headerlink" title="ALR检测"></a>ALR检测</h1><p>ALR（Application Limit Region），简单翻译成中文的含义是应用限制区域，这是啥意思？在实际的应用场景当中，可能存在一些受限的情况，导致我们的发送码率突然降低，但是这种受限并不是网络原因造成的，而是比如系统负载过高，导致采集&#x2F;编码的帧率降低等等。 如果出现这种情况而没有进行必要的处理，会导致估计出的码率值存在很大的偏差。所以，我们需要能够检测出这种情况的发生，并做出相应的优化处理。</p>
-<p>如何检测 ALR？这里会使用 pacer 里面用到的 <code>IntervalBudget</code> 功能，它的基本原理是设定一个时间窗口（WebRTC 中设置为 500ms）和码率值，两者相乘就是最大的发送字节预算总量。如果发送了数据，就减少预算。随着时间的流逝，会增加预算。当预算的剩余率（预算剩余量&#x2F;最大预算）超过一定的阈值，说明发送码率存在突降，此时应当进入 ALR 状态。当预算的剩余率低于一定的阈值，认为发送码率基本恢复，此时应当解除 ALR 状态。</p>
+<p>如何检测 ALR？这里会使用 Pacer 里面用到的 <code>IntervalBudget</code> 功能，它的基本原理是设定一个时间窗口（WebRTC 中设置为 500ms）和码率值，两者相乘就是最大的发送字节预算总量。如果发送了数据，就减少预算。随着时间的流逝，会增加预算。当预算的剩余率（预算剩余量&#x2F;最大预算）超过一定的阈值，说明发送码率存在突降，此时应当进入 ALR 状态。当预算的剩余率低于一定的阈值，认为发送码率基本恢复，此时应当解除 ALR 状态。</p>
 <p>ALR 在 WebRTC 中的具体优化点：</p>
 <ul>
 <li>优化吞吐量估计</li>
@@ -567,18 +568,34 @@
 <li>Pacing 模块，负责执行探测报文的发送，如果码率不够，会用 padding 包进行补充</li>
 <li>ProbeBitrateEstimator，负责计算最终的探测结果</li>
 </ul>
-<p><strong>ProbeController</strong>：探测控制类。</p>
-<p><code>SetBitrate()</code>：设置起始和最大探测码率，根据探测状态执行相应逻辑，最终会输出探测任务配置。</p>
+<p><strong>ProbeController</strong>：获取探测任务配置类。</p>
+<p>探测状态</p>
 <ul>
-<li>探测状态<ul>
 <li><code>kInit</code>：初始状态，探测没有触发；此时启动指数探测</li>
 <li><code>kWaitingForProbingResult</code>：等得探测结果，才能继续进一步探测</li>
 <li><code>kProbingComplete</code>：探测完成</li>
 </ul>
-</li>
-</ul>
+<p><code>SetBitrate()</code>：设置起始和最大探测码率，根据探测状态执行相应逻辑，最终会输出探测任务配置。</p>
 <p><code>InitExpProbing</code>：指数探测，在会话刚开始的时候，为了能够尽快的获得目标带宽，此时会触发带宽探测。我们会采用指数级探测，探测主要分为两次，第一次为起始码率的 3 倍，第二次为起始码率的 6 倍。</p>
 <p><code>InitProbing()</code>：本质上是构造一组探测任务的配置，包括探测的码率、探测的持续时间、探测包发送的个数，探测的 id 等，这组任务配置最终会发给 Pacer 去执行。如果需要继续探测，下一次探测的最小码率应该不低于最后一次探测码率的 0.7 倍，太小就没有意义。</p>
+<p><strong>BitrateProber</strong></p>
+<p>探测状态</p>
+<ul>
+<li><code>kDisabled</code>：此状态下，不会触发探测</li>
+<li><code>kInactive</code>：准备触发探测的状态</li>
+<li><code>kActive</code>：正在探测的状态</li>
+<li><code>kSuspended</code>：探测被挂起，需要被再次启动</li>
+</ul>
+<p><code>CreateProbeCluster()</code>：存储 <code>ProbeCluster</code> 信息到队列。</p>
+<ul>
+<li>探测任务结构：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">ProbeCluster</span> &#123;</span><br><span class="line">    webrtc::PacedPacketInfo pace_info;</span><br><span class="line">    <span class="type">int</span> sent_probes = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> sent_bytes = <span class="number">0</span>;</span><br><span class="line">    webrtc::Timestamp created_at = webrtc::Timestamp::<span class="built_in">MinusInfinity</span>();</span><br><span class="line">    webrtc::Timestamp started_at = webrtc::Timestamp::<span class="built_in">MinusInfinity</span>();</span><br><span class="line">    <span class="type">int</span> retries = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>OnIncomingPacket()</code>：当有新的 <code>ProbeCluster</code> 创建之后，此时探测状态进入准备探测状态，在此状态下，如果 Pacer 有新数据需要发送，则会尝试启动探测，如果将要发送的数据包大小大于 200 字节或者大于推荐的最小探测大小，则启动探测，否则暂时不启动。（推荐的最小探测数据大小 &#x3D; 2 * 探测码率 * 探测间隔）。</li>
+<li><code>NextProbeTime()</code>：下一次探测的时间。</li>
+</ul>
 
     </div>
 
