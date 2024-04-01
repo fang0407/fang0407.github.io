@@ -188,7 +188,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-03-24 21:13:21" itemprop="dateModified" datetime="2024-03-24T21:13:21+08:00">2024-03-24</time>
+      <time title="Modified: 2024-04-01 20:19:52" itemprop="dateModified" datetime="2024-04-01T20:19:52+08:00">2024-04-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -248,7 +248,7 @@
 </ul>
 <p><strong>GoogCcNetworkController</strong>：google 拥塞控制模块。</p>
 <ul>
-<li><code>OnTransportPacketsFeedback()</code>：接受 Feedback 数据，进行估计目标码率。</li>
+<li><code>OnTransportPacketsFeedback()</code>：接受 Feedback 数据，进行吞吐量估计、Probe 探测码率和估计目标码率等。</li>
 <li><code>OnNetWorkOk()</code>：设置带宽估计模块和 Probe 探测上下限以及起始码率。</li>
 <li><code>OnRttUpdate()</code>：根据 RR 包解析的信息计算 RTT，提供给基于延迟和基于丢包的带宽估计模块。</li>
 <li><code>OnTransportLoss()</code>：根据 RR 包解析的丢包相关信息，提供给基于丢包的带宽估计模块。</li>
@@ -569,7 +569,9 @@
 <li><code>kProbingComplete</code>：探测完成</li>
 </ul>
 <p><code>SetBitrate()</code>：设置起始和最大探测码率，根据探测状态执行相应逻辑，最终会输出探测任务配置。</p>
-<p><code>InitExpProbing</code>：指数探测，在会话刚开始的时候，为了能够尽快的获得目标带宽，此时会触发带宽探测。我们会采用指数级探测，探测主要分为两次，第一次为起始码率的 3 倍，第二次为起始码率的 6 倍。</p>
+<p><code>SetEstimateBitrate()</code>：设置码率估计值，每次估计码率后会调用，当状态为  <code>kWaitingForProbingResult</code> 会输出探测配置。</p>
+<p><code>RequestProbe()</code>：获取主动请求探测配置，当前处于 ALR 状态或者刚刚结束 ALR 状态不久，此时应考虑触发主动探测，但仍需满足一定的条件。</p>
+<p><code>InitExpProbing()</code>：指数探测，在会话刚开始的时候，为了能够尽快的获得目标带宽，此时会触发带宽探测。我们会采用指数级探测，探测主要分为两次，第一次为起始码率的 3 倍，第二次为起始码率的 6 倍。</p>
 <p><code>InitProbing()</code>：本质上是构造一组探测任务的配置，包括探测的码率、探测的持续时间、探测包发送的个数，探测的 id 等，这组任务配置最终会发给 Pacer 去执行。如果需要继续探测，下一次探测的最小码率应该不低于最后一次探测码率的 0.7 倍，太小就没有意义。</p>
 <p><strong>BitrateProber</strong>：保存探测信息。</p>
 <p>探测状态</p>
@@ -589,7 +591,7 @@
 <p><code>RecommendedMinProbeSize()</code>：推荐的最小探测数据大小 &#x3D; 2 * 探测码率 * 探测间隔。</p>
 <p><code>ProbeSent()</code>：更新 <code>ProbeCluster</code> 结构信息。</p>
 <ul>
-<li>探测包发送后，需要更新 ProbeCluster 结构信息，包括发送的时间、发送包的总字节数，发送包的个数</li>
+<li>探测包发送后，需要更新  <code>ProbeCluster</code> 结构信息，包括发送的时间、发送包的总字节数，发送包的个数</li>
 <li>计算下一轮探测的时间：下一轮探测的发送时间 &#x3D; 上一轮探测的发送时间 + 上一轮探测的持续时间</li>
 <li>如果发送字节和个数达到 <code>ProbeCluster</code> 配置要求，需要删除当前 <code>ProbeCluster</code></li>
 <li>当 <code>ProbeCluster</code> 队列为空时，探测状态置为 <code>kSuspended</code></li>
@@ -598,7 +600,7 @@
 <p><strong>PacingController</strong>：平滑发送控制类。</p>
 <p><code>ProcessPackets()</code>：从队列中获取数据包处理并更新预算。</p>
 <ul>
-<li>如果需要探测，从 <code>BitrateProber</code> 中获取当前  <code>webrtc::PacedPacketInfo</code></li>
+<li>如果需要探测，从 <code>BitrateProber</code> 中获取当前的  <code>webrtc::PacedPacketInfo</code></li>
 <li>如果第一次发送探测包，先发送一个一字节的填充包，可以获得一个可靠的估计码率的起始窗口</li>
 <li>当队列为空，但是发送的数据大小小于推荐的最小探测数据大小时，需要继续填充包进行发送</li>
 <li>本轮数据处理完成后，更新探测的相关状态信息</li>
@@ -613,12 +615,18 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">AggregatedCluster</span> &#123;</span></span><br><span class="line">    <span class="comment">// 探测次数</span></span><br><span class="line">    <span class="type">int</span> num_probes = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 第一次发送探测数据的时间</span></span><br><span class="line">    webrtc::Timestamp first_send = webrtc::Timestamp::PlusInfinity();</span><br><span class="line">    <span class="comment">// 最后一次发送探测数据的时间</span></span><br><span class="line">    webrtc::Timestamp last_send = webrtc::Timestamp::MinusInfinity();</span><br><span class="line">    <span class="comment">// 第一次收到探测数据的时间</span></span><br><span class="line">    webrtc::Timestamp first_receive = webrtc::Timestamp::PlusInfinity();</span><br><span class="line">    <span class="comment">// 最后一次收到探测数据的时间</span></span><br><span class="line">    webrtc::Timestamp last_receive = webrtc::Timestamp::MinusInfinity();</span><br><span class="line">    <span class="comment">// 最后一次发送包的大小</span></span><br><span class="line">    webrtc::DataSize size_last_send = webrtc::DataSize::Zero();</span><br><span class="line">    <span class="comment">// 第一次收到包的大小</span></span><br><span class="line">    webrtc::DataSize size_first_receive = webrtc::DataSize::Zero();</span><br><span class="line">    <span class="comment">// 累计探测反馈的包大小</span></span><br><span class="line">    webrtc::DataSize size_total = webrtc::DataSize::Zero();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><p>为了能够获得有效的估计码率值，收到反馈的探测包个数不低于要求的最小反馈探测包个数的 80%，并且收到的反馈数据量不低于要求收到的最低数据量的 80%。</p>
+<li><p>为了能够获得有效的估计码率值，收到反馈的探测包个数不低于要求的最小反馈探测包个数的 80%，并且收到的反馈数据量不低于要求收到的最低数据量的 80%</p>
 </li>
-<li><p>计算估计码率值的时候，需要注意，对于发送者来说，发送间隔不包含最后一个数据包的发送时间，所以计算发送码率时需要减去最后一个发送数据包大小；对于接收者来说，接收间隔不包含第一个数据包的接收时间，所以计算接收码率的时需要减去第一个接收数据包大小。</p>
+<li><p>通过计算发送间隔和时间段累计发送的数据量、接受间隔和时间段累计接受的数据量估算码率值</p>
 </li>
-<li><p>如果接收的码率明显低于发送码率（kMinRatioForUnsaturatedLink &#x3D; 0.9） ，这表明我们已经找到了链路的真实容量。在这种情况下，将目标码率设置的稍低（kTargetUtilizationFraction &#x3D; 0.95） ，以避免立即出现网络过载。</p>
+<li><p>计算估计码率值的时候，需要注意，对于发送者来说，发送间隔不包含最后一个数据包的发送时间，所以计算发送码率时需要减去最后一个发送数据包大小；对于接收者来说，接收间隔不包含第一个数据包的接收时间，所以计算接收码率的时候需要减去第一个接收数据包大小</p>
 </li>
+<li><p>如果接收的码率明显低于发送码率（kMinRatioForUnsaturatedLink &#x3D; 0.9） ，这表明我们已经找到了链路的真实容量。在这种情况下，将目标码率设置的稍低（kTargetUtilizationFraction &#x3D; 0.95） ，以避免立即出现网络过载</p>
+</li>
+</ul>
+<p><code>FetchAndResetLastEstimateBitrate()</code>：获取探测码率并重置。</p>
+<ul>
+<li>探测的结果作用到基于延迟的码率估计中，当网络没有发生过载时直接作为估计码率</li>
 </ul>
 
       
