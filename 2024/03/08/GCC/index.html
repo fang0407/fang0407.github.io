@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fang0407.github.io/2024/03/08/GCC/%E5%9F%BA%E4%BA%8E%E5%BB%B6%E8%BF%9F%E7%9A%84%E5%B8%A6%E5%AE%BD%E4%BC%B0%E8%AE%A1%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.png">
 <meta property="article:published_time" content="2024-03-08T15:10:16.000Z">
-<meta property="article:modified_time" content="2024-04-01T12:19:52.824Z">
+<meta property="article:modified_time" content="2024-04-04T09:37:12.748Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fang0407.github.io/2024/03/08/GCC/%E5%9F%BA%E4%BA%8E%E5%BB%B6%E8%BF%9F%E7%9A%84%E5%B8%A6%E5%AE%BD%E4%BC%B0%E8%AE%A1%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.png">
@@ -127,7 +127,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">78</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -135,6 +135,10 @@
           <a href="/categories/">
         <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
       </div>
   </nav>
 </div>
@@ -196,7 +200,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-04-01 20:19:52" itemprop="dateModified" datetime="2024-04-01T20:19:52+08:00">2024-04-01</time>
+      <time title="Modified: 2024-04-04 17:37:12" itemprop="dateModified" datetime="2024-04-04T17:37:12+08:00">2024-04-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -218,7 +222,7 @@
     
     
     <div class="post-body" itemprop="articleBody"><h1 id="RTP头部扩展"><a href="#RTP头部扩展" class="headerlink" title="RTP头部扩展"></a>RTP头部扩展</h1><p>要实现基于延迟的带宽估计，第一步需要计算包组之间的到达延迟差，而新版本的 GCC 将基于延迟的带宽估计移到了发送端进行实现，但是不像接收端，发送端由于不接收 RTP 数据包，无法直接进行包组间到达延迟差的计算。</p>
-<p>为了解决这一问题，RTP 注册 transport-cc 头部扩展，记录 <code>transport_sequence_number</code> ，同一个 <code>PeerConnection</code> 连接下的所有流的 transport_sequence_number ，使用统一的计数器进行计数，方便进行同一个 <code>PeerConnection</code> 下的带宽估计。</p>
+<p>为了解决这一问题，RTP 注册 transport-cc 头部扩展，记录 <code>transport_sequence_number</code> ，同一个 <code>PeerConnection</code> 连接下的所有流的 <code>transport_sequence_number</code> ，使用统一的计数器进行计数，方便进行同一个 <code>PeerConnection</code> 下的带宽估计。</p>
 <p><strong>RTPExtensionType</strong>：定义 RTP 扩展类型的枚举。</p>
 <p><strong>RtpHeaderExtensionMap</strong>：管理 RTP 扩展，内部使用数组管理，数组的索引代表 <code>RTPExtensionType</code> 枚举的值，数组的值代表扩展的 ID。</p>
 <ul>
@@ -240,7 +244,7 @@
 <p>在标准的 WebRTC 环境下，需要在 SDP 当中添加 RTP 头部扩展描述信息：</p>
 <ul>
 <li><code>a=extmap:1 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01</code></li>
-<li>id 信息需要与代码中注册的 id保持一致，否则无法处理</li>
+<li>id 信息需要与代码中注册的 id 保持一致，否则无法处理</li>
 </ul>
 <p><strong>TransportFeedback</strong>：解析 Transport Feedback RTCP 包，获取接收端收到每个 RTP 包的时间。</p>
 <h1 id="拥塞控制模块"><a href="#拥塞控制模块" class="headerlink" title="拥塞控制模块"></a>拥塞控制模块</h1><p><strong>RtpTransportControllerSend</strong>：RTP 传输控制，有独立的线程分别处理 Pacer 和 GCC。</p>
@@ -553,7 +557,7 @@
 </ul>
 <p>利用 ALR 优化基于延迟的码率估计</p>
 <ul>
-<li>在进行AIMD码率调整时，如果当前处于 ALR 状态，此时不增加基于延迟的码率估计值，因为码率太低无法获得必要的 transport feedback 数据，从而无法保证新的估计的正确性。WebRTC 中默认没有开启这个功能，如果需要开启需要配置参数：WebRTC–DontIncreaseDelayBasedBweInAlr</li>
+<li>在进行 AIMD 码率调整时，如果当前处于 ALR 状态，此时不增加基于延迟的码率估计值，因为码率太低无法获得必要的 transport feedback 数据，从而无法保证新的估计的正确性。WebRTC 中默认没有开启这个功能，如果需要开启需要配置参数：WebRTC–DontIncreaseDelayBasedBweInAlr</li>
 <li>当出现网络过载时，需要降低当前的目标码率，如果此时处于 ALR 状态，需要进行退避处理。退避策略为：此时因为吞吐量的估计值比较低而且不准确，不宜在当前吞吐量的基础上进行下降，而是在上一个目标的码率值的基础上进行下降。WebRTC 默认没有开启这个功能，如果需要开启需要配置参数：WebRTC-Bwe-AlrLimitedBackoff</li>
 </ul>
 <p><strong>AlrDetector</strong>：ALR 检测入口类。</p>
@@ -572,7 +576,7 @@
 <p>探测状态</p>
 <ul>
 <li><code>kInit</code>：初始状态，探测没有触发；此时启动指数探测</li>
-<li><code>kWaitingForProbingResult</code>：等得探测结果，才能继续进一步探测</li>
+<li><code>kWaitingForProbingResult</code>：等待探测结果，才能继续进一步探测</li>
 <li><code>kProbingComplete</code>：探测完成</li>
 </ul>
 <p><code>SetBitrate()</code>：设置起始和最大探测码率，根据探测状态执行相应逻辑，最终会输出探测任务配置。</p>
@@ -653,6 +657,9 @@
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2024/04/13/%E6%9D%82%E9%A1%B9/" rel="next" title="杂项">
+                  杂项 <i class="fa fa-angle-right"></i>
+                </a>
             </div>
           </div>
     </footer>
