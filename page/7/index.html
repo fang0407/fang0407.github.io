@@ -120,18 +120,14 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-count">79</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">categories</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">1</span>
-        <span class="site-state-item-name">tags</span>
       </div>
   </nav>
 </div>
@@ -147,6 +143,141 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/05/FFmpeg%E6%97%B6%E9%97%B4%E6%88%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/09/05/FFmpeg%E6%97%B6%E9%97%B4%E6%88%B3/" class="post-title-link" itemprop="url">FFmpeg时间戳</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-05 21:12:11" itemprop="dateCreated datePublished" datetime="2023-09-05T21:12:11+08:00">2023-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-16 18:35:24" itemprop="dateModified" datetime="2024-01-16T18:35:24+08:00">2024-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="PTS和DTS"><a href="#PTS和DTS" class="headerlink" title="PTS和DTS"></a>PTS和DTS</h1><p>PTS（Presentation TimeStamp）是渲染用的时间戳，也就是说，我们的视频帧是按照 PTS 的时间戳来展示的。</p>
+<p>DTS（Decoding TimeStamp）解码时间戳，是用于视频解码的。</p>
+<p>音频中 DTS 和 PTS 是相同的。视频中由于 B 帧需要双向预测，B 帧依赖于其前和其后的帧，因此含 B 帧的视频解码顺序与显示顺序不同，即 DTS 与 PTS 不同。当然，不含 B 帧的视频，其 DTS 和 PTS 是相同的。</p>
+<h1 id="时间基与时间戳"><a href="#时间基与时间戳" class="headerlink" title="时间基与时间戳"></a>时间基与时间戳</h1><p>有了时间戳之后，最终进行展示时还要需要将 PTS 时间戳转成以秒为单位的时间。那这里需要向大家介绍一下  ffmpeg 的时间基。</p>
+<p>我们在执行 ffmpeg&#x2F;ffplay 命令时，可以通过控制台看到几个参数，分别是 tbr, tbn, tbc。这几个值是什么含义呢？其实就是不同的时间基。</p>
+<ul>
+<li>tbr（time base of rate）: 是我们通常所说的帧率。</li>
+<li>tbn（time base of stream）: 视频流的时间基。</li>
+<li>tbc（time base of codec）: 视频解码的时间基。</li>
+</ul>
+<p>在 ffmpeg 中，不同的时间戳对应不同的时间基。对于视频的渲染我们使用的是视频流的时间基，也就是 tbn。时间基就是时间刻度。以帧率为例，如果每秒钟的帧率是 25 帧，那么它的时间基（时间刻度）就是 1&#x2F;25。也就是说每隔 1&#x2F;25 秒后，显示一帧。</p>
+<h1 id="FFmpeg内部时间基"><a href="#FFmpeg内部时间基" class="headerlink" title="FFmpeg内部时间基"></a>FFmpeg内部时间基</h1><p>除了我上面所讲的几个时间基之外，ffmpeg 内部还有一个时间基。即我们通过所见到的 AV_TIME_BASE。它在 ffmpeg 内部定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>         AV_TIME_BASE   1000000</span></span><br></pre></td></tr></table></figure>
+
+<p>它还有一种分数所表式法：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>         AV_TIME_BASE_Q   (AVRational)&#123;1, AV_TIME_BASE&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>AV_TIME_BASE 及 AV_TIME_BASE_Q 用于 ffmpeg 内部函数处理，使用此时间基计算得到时间值表示的是微秒。</p>
+<h1 id="时间值形式转换"><a href="#时间值形式转换" class="headerlink" title="时间值形式转换"></a>时间值形式转换</h1><p>av_q2d() 将时间从 AVRational 形式转换为 double 形式。AVRational 是分数类型，double 是双精度浮点数类型，转换的结果单位是秒。转换前后的值基于同一时间基，仅仅是数值的表现形式不同而已。 av_q2d() 实现如下： </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">double</span> <span class="title function_">av_q2d</span><span class="params">(AVRational a)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a.num / (<span class="type">double</span>) a.den; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>av_q2d() 使用方法如下： </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">AVStream stream;</span><br><span class="line">AVPacket packet;</span><br><span class="line">packet播放时刻值：timestamp(单位秒) = packet.pts * av_q2d(stream.time_base);</span><br><span class="line">packet播放时⻓值：duration(单位秒) = packet.duration * av_q2d(stream.time_base);</span><br></pre></td></tr></table></figure>
+
+<h1 id="时间基转换函数"><a href="#时间基转换函数" class="headerlink" title="时间基转换函数"></a>时间基转换函数</h1><h2 id="av-rescale-q"><a href="#av-rescale-q" class="headerlink" title="av_rescale_q"></a>av_rescale_q</h2><p>av_rescale_q() 用于不同时间基的转换，用于将时间值从一种时间基转换为另一种时间基。将 a 数值由 bq 时间基转成 cq 的时间基，通过返回结果获取以 cq 时间基表示的新数值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int64_t</span> <span class="title function_">av_rescale_q</span><span class="params">(<span class="type">int64_t</span> a, AVRational bq, AVRational cq)</span> av_const;</span><br></pre></td></tr></table></figure>
+
+<h2 id="av-rescale-rnd"><a href="#av-rescale-rnd" class="headerlink" title="av_rescale_rnd"></a>av_rescale_rnd</h2><p>它的作用是计算 “a * b &#x2F; c” 的值并且分五种方式来获得计算结果。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">AVRounding</span> &#123;</span></span><br><span class="line">    AV_ROUND_ZERO     = <span class="number">0</span>, <span class="comment">///&lt; Round toward zero.        靠近0</span></span><br><span class="line">    AV_ROUND_INF      = <span class="number">1</span>, <span class="comment">///&lt; Round away from zero.     远离0</span></span><br><span class="line">    AV_ROUND_DOWN     = <span class="number">2</span>, <span class="comment">///&lt; Round toward -infinity.   趋于负无穷</span></span><br><span class="line">    AV_ROUND_UP       = <span class="number">3</span>, <span class="comment">///&lt; Round toward +infinity.   趋于负无穷</span></span><br><span class="line">    AV_ROUND_NEAR_INF = <span class="number">5</span>, <span class="comment">///&lt; Round to nearest and halfway cases away from zero. 四舍五入,小于0.5取值趋向0,大于0.5取值趋远于0</span></span><br><span class="line">    AV_ROUND_PASS_MINMAX = <span class="number">8192</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">int64_t</span> <span class="title function_">av_rescale_rnd</span><span class="params">(<span class="type">int64_t</span> a, <span class="type">int64_t</span> b, <span class="type">int64_t</span> c, <span class="keyword">enum</span> AVRounding rnd)</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="av-packet-rescale-ts"><a href="#av-packet-rescale-ts" class="headerlink" title="av_packet_rescale_ts"></a>av_packet_rescale_ts</h2><p>用于将 AVPacket 中各种时间值从一种时间基转换为另一种时间基。 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">av_packet_rescale_ts</span><span class="params">(AVPacket *pkt, AVRational tb_src, AVRational tb_dst)</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="转封装过程中的时间基转换"><a href="#转封装过程中的时间基转换" class="headerlink" title="转封装过程中的时间基转换"></a>转封装过程中的时间基转换</h1><p>容器中的时间基：AVStream.time_base（tbn）定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">AVStream</span> &#123;</span></span><br><span class="line">   ......</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * This is the fundamental unit of time (in seconds) in terms</span></span><br><span class="line"><span class="comment">     * of which frame timestamps are represented.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * decoding: set by libavformat</span></span><br><span class="line"><span class="comment">     * encoding: May be set by the caller before avformat_write_header() to</span></span><br><span class="line"><span class="comment">     *           provide a hint to the muxer about the desired timebase. In</span></span><br><span class="line"><span class="comment">     *           avformat_write_header(), the muxer will overwrite this field</span></span><br><span class="line"><span class="comment">     *           with the timebase that will actually be used for the timestamps</span></span><br><span class="line"><span class="comment">     *           written into the file (which may or may not be related to the</span></span><br><span class="line"><span class="comment">     *           user-provided one, depending on the format).</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    AVRational time_base;</span><br><span class="line">   ......</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>AVStream.time_base 是 AVPacket 中 pts 和 dts 的时间单位，输入流与输出流中 time_base 按如下方式确定：</p>
+<ul>
+<li>对于输入流：打开输入文件后，调用 avformat_find_stream_info() 可获取到每个流中的 time_base。</li>
+<li>对于输出流：打开输出文件后，调用 avformat_write_header() 可根据输出文件封装格式确定每个流的 time_base 并写入输出文件中。</li>
+</ul>
+<p>不同封装格式具有不同的时间基，在转封装（将一种封装格式转换为另一种封装格式）过程中，时间基转换相关代码如下： </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从输入文件中读取packet</span></span><br><span class="line"><span class="comment">// 将packet中的各时间值从输入流封装格式时间基转换到输出流封装格式时间基</span></span><br><span class="line">av_packet_rescale_ts(&amp;pkt, in_stream-&gt;time_base, out_stream-&gt;time_base);</span><br></pre></td></tr></table></figure>
+
+<p>FLV 封装格式的 time_base 为 {1,1000}，TS 封装格式的 time_base 为 {1,90000}。</p>
+<h1 id="转码过程中的时间基转换"><a href="#转码过程中的时间基转换" class="headerlink" title="转码过程中的时间基转换"></a>转码过程中的时间基转换</h1><p>编解码器中的时间基（AVCodecContext.time_base，的tbc）定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">AVCodecContext</span> &#123;</span></span><br><span class="line">   ......</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * This is the fundamental unit of time (in seconds) in terms</span></span><br><span class="line"><span class="comment">     * of which frame timestamps are represented. For fixed-fps content,</span></span><br><span class="line"><span class="comment">     * timebase should be 1/framerate and timestamp increments should be</span></span><br><span class="line"><span class="comment">     * identically 1.</span></span><br><span class="line"><span class="comment">     * This often, but not always is the inverse of the frame rate or field rate</span></span><br><span class="line"><span class="comment">     * for video. 1/time_base is not the average frame rate if the frame rate is not</span></span><br><span class="line"><span class="comment">     * constant.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * Like containers, elementary streams also can store timestamps, 1/time_base</span></span><br><span class="line"><span class="comment">     * is the unit in which these timestamps are specified.</span></span><br><span class="line"><span class="comment">     * As example of such codec time base see ISO/IEC 14496-2:2001(E)</span></span><br><span class="line"><span class="comment">     * vop_time_increment_resolution and fixed_vop_rate</span></span><br><span class="line"><span class="comment">     * (fixed_vop_rate == 0 implies that it is different from the framerate)</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * - encoding: MUST be set by user.</span></span><br><span class="line"><span class="comment">     * - decoding: the use of this field for decoding is deprecated.</span></span><br><span class="line"><span class="comment">     *             Use framerate instead.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   AVRational time_base;    </span><br><span class="line">   ......</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>上述注释指出，AVCodecContext.time_base 是帧率（视频帧）的倒数，每帧时间戳递增 1，那么 tbc 就等于帧率。编码过程中，应由用户设置好此参数。解码过程中，此参数已过时，建议直接使用帧率倒数用作时间基。 </p>
+<p>根据注释中的建议，实际使用时，在视频解码过程中，我们不使用 AVCodecContext.time_base，而用帧率倒数作时间基，在视频编码过程中，我们将 AVCodecContext.time_base 设置为帧率的倒数。</p>
+<p>参考链接：<a target="_blank" rel="noopener" href="http://www.imooc.com/article/91381">http://www.imooc.com/article/91381</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1902,461 +2033,6 @@
 
 <p>参考链接：</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/riverlight/FlvParser">https://github.com/riverlight/FlvParser</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/" class="post-title-link" itemprop="url">FLV封装格式</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-08-28 19:09:49" itemprop="dateCreated datePublished" datetime="2023-08-28T19:09:49+08:00">2023-08-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-16 18:41:29" itemprop="dateModified" datetime="2024-01-16T18:41:29+08:00">2024-01-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%BC%96%E7%A0%81%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">编码封装格式</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="FLV格式简介"><a href="#FLV格式简介" class="headerlink" title="FLV格式简介"></a>FLV格式简介</h1><p>FLV（Flash Video）是 Adobe 公司推出的一种流媒体格式，由于其封装后的音视频文件体积小、 封装简单等特点，非常适合于互联网上使用。目前主流的视频网站基本都支持 FLV。采用 FLV 格式封装的文件后缀为 .flv。 </p>
-<p>FLV 封装格式是由一个<strong>文件头</strong>（file header）和<strong>文件体</strong>（file Body）组成。其中，FLV body 由一对对的（<strong>Previous Tag Size 字段 + tag</strong>）组成。Previous Tag Size 字段排列在 Tag 之前，占用 4 个字节。Previous Tag Size 记录了前面一个 Tag 的大小，用于逆向读取处理。FLV header 后的第一个 Pervious Tag Size 的值为 0。 </p>
-<p>Tag 一般可以分为 3 种类型：脚本（帧）数据类型、音频数据类型、视频数据。FLV 数据以大端序进行存储，在解析时需要注意。一个标准 FLV 文件结构如下图： </p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV文件结构.png" alt="FLV文件结构" style="zoom:50%;">
-
-<p>FLV 文件的详细内容结构如下图：</p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV文件的详细内容结构.png" alt="FLV文件的详细内容结构" style="zoom:50%;">
-
-<h1 id="FLV解析框架"><a href="#FLV解析框架" class="headerlink" title="FLV解析框架"></a>FLV解析框架</h1><pre class="mermaid">graph TB
-    A(解析FLV)-->B[解析Header 9字节]
-    A-->C[解析PreviousTagSize 4字节]
-    A-->D[解析tag header 11字节]
-    D-->F{tag type}
-    F-->G[8 audio]
-    F-->H[9 video]
-    F-->I[18 script data]
-    G-->J[解析audio信息]
-    H-->K[解析video信息]
-    J-->L[AAC sequence header]
-    J-->M[AAC raw]
-    K-->N[AVC sequence header]
-    K-->O[AVC NALU]</pre>
-
-<h2 id="FLV-Header"><a href="#FLV-Header" class="headerlink" title="FLV Header"></a>FLV Header</h2><p>注：在下面的数据类型中，<strong>UI 表示无符号整形</strong>，后面跟的数字表示其长度是多少位。比如 UI8，表示无符号整形，长度一个字节。UI24 是三个字节，UI[8 * n]表示多个字节。<strong>UB 表示位域</strong>，UB5 表示一个字节的 5 位。可以参考 C 语言中的位域结构体。</p>
-<p>FLV 头占 9 个字节，用来标识文件为 FLV 类型，以及后续存储的音视频流。一个 FLV 文件，每种类型的 tag 都属于一个流，也就是一个  flv 文件最多只有一个音频流，一个视频流，不存在多个独立的音视频流在一个文件的情况。 </p>
-<p><strong>FLV Header 内容结构</strong></p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-Header.png" alt="FLV-Header" style="zoom:70%;">
-
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Comment</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>签名</td>
-<td>UI8</td>
-<td>‘F’(0x46)</td>
-</tr>
-<tr>
-<td>签名</td>
-<td>UI8</td>
-<td>‘L’(0x4C)</td>
-</tr>
-<tr>
-<td>签名</td>
-<td>UI8</td>
-<td>‘V’(0x56)</td>
-</tr>
-<tr>
-<td>版本</td>
-<td>UI8</td>
-<td>FLV的版本。0x01表示FLV版本为1</td>
-</tr>
-<tr>
-<td>保留字段</td>
-<td>UB5</td>
-<td>前五位都为0</td>
-</tr>
-<tr>
-<td>音频流标识</td>
-<td>UB1</td>
-<td>是否存在音频流</td>
-</tr>
-<tr>
-<td>保留字段</td>
-<td>UB1</td>
-<td>为0</td>
-</tr>
-<tr>
-<td>视频流标识</td>
-<td>UB1</td>
-<td>是否存在视频流</td>
-</tr>
-<tr>
-<td>文件头大小</td>
-<td>UI32</td>
-<td>FLV版本1时填写9，表明的是FLV头的大小，为后期的FLV版本扩展使用。<br>包括这四个字节。数据的起始位置就是从文件开头偏移这么多的大小。</td>
-</tr>
-</tbody></table>
-<h2 id="FLV-Body"><a href="#FLV-Body" class="headerlink" title="FLV Body"></a>FLV Body</h2><p>FLV Header 之后，就是 FLV File Body。FLV File Body 是由一连串的 back-pointers + tags 构成。Back-pointer 表示 Previous Tag Size（前一个 tag 的字节数据长度），占<strong>4</strong>个字节。 </p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-BODY.png" alt="FLV-BODY" style="zoom:50%;">
-
-<h3 id="FLV-Tag"><a href="#FLV-Tag" class="headerlink" title="FLV Tag"></a>FLV Tag</h3><p>每一个 tag 也是由两部分组成：tag header 和 tag data。Tag Header 里存放的是当前 tag 的类型、数据区（tag data）的长度等信息。 </p>
-<h4 id="Tag-Header"><a href="#Tag-Header" class="headerlink" title="Tag Header"></a>Tag Header</h4><p><strong>FLV Tag Header 内容结构</strong></p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-Tag-Header.png" alt="FLV-Tag-Header" style="zoom:70%;">
-
-<p>Tag Header 一般占11个字节（上图 15 直接是多加了 PreviousTagSize 的 4 字节）的内存空间。FLV Tag 结构如下： </p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Comment</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Tag类型 Type</td>
-<td>UI8</td>
-<td>8: audio<br>9: video<br>18: script data<br>other: reserved 其他所有值未使用</td>
-</tr>
-<tr>
-<td>数据区大小</td>
-<td>UI24</td>
-<td>当前tag的数据域的大小，不包含tag header。Length of the data in the Data field</td>
-</tr>
-<tr>
-<td>时间戳 Timestamp</td>
-<td>UI24</td>
-<td>当前帧时戳，单位是毫秒。相对值，第一个tag的时戳总是为0</td>
-</tr>
-<tr>
-<td>时戳扩展字段 TimestampExtended</td>
-<td>UI8</td>
-<td>如果时戳大于0xFFFFFF，将会使用这个字节。这个字节是时戳的高8位，上面的三个字节是低24位。</td>
-</tr>
-<tr>
-<td>StreamID</td>
-<td>UI24</td>
-<td>总是为0</td>
-</tr>
-<tr>
-<td>数据域</td>
-<td>UI[8*n]</td>
-<td>数据域数据</td>
-</tr>
-</tbody></table>
-<h4 id="Script-Tag-Data"><a href="#Script-Tag-Data" class="headerlink" title="Script Tag Data"></a>Script Tag Data</h4><p>Script data 脚本数据就是描述视频或音频的信息的数据，如宽度、高度、时间等等，一个文件中通常只有一个元数据，音频 tag 和视频 tag 就是音视频信息了，采样、声道、频率，编码等信息。 </p>
-<p>该类型 tag 又被称为 MetaDataTag ，存放一些关于 FLV 视频和音频的元信息，比如：duration、width、height 等。通常该类型 tag 会作为 FLV 文件的第一个 tag，并且只有一个，跟在 File Header 后。</p>
-<p><strong>FLV Script Tag Data 内容结构</strong></p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-Script_Tag_Data.png" alt="FLV-Script_Tag_Data" style="zoom:70%;">
-
-<p>第一个 AMF 包：第 1 个字节表示 AMF 包类型，一般总是 0x02，表示字符串。第 2-3 个字节为 UI16 类型值，标识字符串的长度，一般总是 0x000A（“onMetaData”长度）。后面字节为具体的字符串，一般总为“onMetaData”（6F,6E,4D,65,74,61,44,61,74,61）。</p>
-<p>第二个 AMF 包：第 1 个字节表示 AMF 包类型，一般总是 0x08，表示数组。第 2-5 个字节为 UI32 类型值，表示数组元素的个数。后面即为各数组元素的封装，数组元素为元素名称和值组成的对。常见的数组元素如下表所示。</p>
-<table>
-<thead>
-<tr>
-<th>name</th>
-<th>comment</th>
-<th>example</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>duration</td>
-<td>时长(秒)</td>
-<td>210.732</td>
-</tr>
-<tr>
-<td>width</td>
-<td>视频宽度</td>
-<td>768.000</td>
-</tr>
-<tr>
-<td>height</td>
-<td>视频高度</td>
-<td>320.000</td>
-</tr>
-<tr>
-<td>videodatarate</td>
-<td>视频码率</td>
-<td>207.260</td>
-</tr>
-<tr>
-<td>framerate</td>
-<td>视频帧率</td>
-<td>25.000</td>
-</tr>
-<tr>
-<td>videocodecid</td>
-<td>视频编码ID</td>
-<td>7.000 (H264为7)</td>
-</tr>
-<tr>
-<td>audiodatarate</td>
-<td>音频码率</td>
-<td>29.329</td>
-</tr>
-<tr>
-<td>audiosamplerate</td>
-<td>音频采样率</td>
-<td>44100.000</td>
-</tr>
-<tr>
-<td>stereo</td>
-<td>是否立体声</td>
-<td>1</td>
-</tr>
-<tr>
-<td>audiocodecid</td>
-<td>音频编码ID</td>
-<td>10.000 (AAC为10)</td>
-</tr>
-<tr>
-<td>major_brand</td>
-<td>格式规范相关</td>
-<td>isom</td>
-</tr>
-<tr>
-<td>minor_version</td>
-<td>格式规范相关</td>
-<td>512</td>
-</tr>
-<tr>
-<td>compatible_brands</td>
-<td>格式规范相关</td>
-<td>isomiso2avc1mp41</td>
-</tr>
-<tr>
-<td>encoder</td>
-<td>封装⼯具名称</td>
-<td>Lavf54.63.104</td>
-</tr>
-<tr>
-<td>filesize</td>
-<td>文件大小（字节）</td>
-<td>6636853.000</td>
-</tr>
-</tbody></table>
-<p>注：Lavf54.63.104 即是 Libavformat version 54.63.104。即是 ffmpeg 对于库的版本 。</p>
-<h4 id="Audio-Tag-Data"><a href="#Audio-Tag-Data" class="headerlink" title="Audio Tag Data"></a>Audio Tag Data</h4><ul>
-<li><p>第一个字节包含了音频数据的参数信息。</p>
-</li>
-<li><p>第二个字节开始为音频流数据。</p>
-</li>
-</ul>
-<p>注：（这两个字节属于 tag 的 data 部分，不是 header 部分）</p>
-<p><strong>FLV Audio Tag Data 的 AAC sequelence header 内容结构</strong></p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-AAC_sequence_header.png" alt="FLV-AAC_sequence_header" style="zoom:70%;">
-
-<p><strong>FLV Audio Tag Data 的 AAC Raw 内容结构</strong></p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-AAC_Raw.png" alt="FLV-AAC_Raw" style="zoom:70%;">
-
-<p>第一个字节为音频的信息（仔细看 spec 发现对于 AAC 而言，比较有用的字段是 SoundFormat），格式如下：</p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Commnet</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>音频格式 SoundFormat</td>
-<td>UB4</td>
-<td>0&#x3D;Linear PCM, platform endian <br>1&#x3D;ADPCM <br>2&#x3D;MP3 <br>3&#x3D;Linear PCM, little endian <br>4&#x3D; Nellymoser 16-kHz mono <br>5&#x3D;Nellymoser 8-kHz mono <br>6&#x3D;Nellymoser <br>7&#x3D;G.711 A-law logarithmic PCM <br>8&#x3D;G.711 mu-law logarithmic PCM <br>9&#x3D;reserved <br>10&#x3D;AAC <br>11&#x3D;Speex <br>14&#x3D;MP3 8-Khz <br>15&#x3D;Device-specific sound</td>
-</tr>
-<tr>
-<td>采样率 SoundRate</td>
-<td>UB2</td>
-<td>0 &#x3D; 5.5kHz <br>1 &#x3D; 11kHz <br>2 &#x3D; 22.05kHz <br>3 &#x3D; 44.1kHz <br>对于AAC总是3。但实际上AAC是可以支持到48khz以上的频率(这个参数对于AAC意义不大)</td>
-</tr>
-<tr>
-<td>采样精度 SoundSize</td>
-<td>UB1</td>
-<td>0&#x3D;snd8Bit <br>1&#x3D;snd16Bit <br>此参数仅适用于未压缩的格式，压缩后的格式都是将其设为1</td>
-</tr>
-<tr>
-<td>音频声道 SoundType</td>
-<td>UB1</td>
-<td>0 &#x3D; sndMono 单声道 <br>1&#x3D;sndStereo 立体声，双声道 <br>对于AAC总是1</td>
-</tr>
-</tbody></table>
-<p>第二个字节开始为音频数据（需要判断该数据是真正的音频数据，还是音频 config 信息）。</p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Commnet</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>音频数据</td>
-<td>UI[8*n]</td>
-<td>if SoundFormat &#x3D;&#x3D; 10 (AAC类型) <br>{AAC AUDIO DATA} <br>else <br>{Sound data—varies by format}</td>
-</tr>
-</tbody></table>
-<h5 id="AAC-AUDIO-DATA"><a href="#AAC-AUDIO-DATA" class="headerlink" title="AAC AUDIO DATA"></a>AAC AUDIO DATA</h5><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Commnet</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>AACPacketType</td>
-<td>UI8</td>
-<td>0:AAC sequelence header <br>1:AAC raw</td>
-</tr>
-<tr>
-<td>Data</td>
-<td>UI8[n]</td>
-<td>if AACPacketType &#x3D;&#x3D; 0 <br>{AudioSpecificConfig} <br>else if (AACPacketType &#x3D;&#x3D; 1) <br>{Raw AAC frame data}</td>
-</tr>
-</tbody></table>
-<p>The AudioSpecificConfig is explained in ISO 14496-3，AAC sequence header 存放的是 AudioSpecificConfig 结构，该结构则在“ISO-14496-3 Audio”中描述。 </p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/AudioSpecificConfig.png" alt="AudioSpecificConfig" style="zoom:50%;">
-
-<h4 id="Video-Tag-Data"><a href="#Video-Tag-Data" class="headerlink" title="Video Tag Data"></a>Video Tag Data</h4><ul>
-<li>第一个字节包含视频数据的参数信息。</li>
-<li>第二个字节开始为视频流数据。</li>
-</ul>
-<p><strong>FLV Video Tag Data 的 AVC sequelence header 内容结构</strong></p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-AVC_sequence_header.png" alt="FLV-AVC_sequence_header" style="zoom:70%;">
-
-<p><strong>FLV Video Tag Data 的 AVC NALU 内容结构</strong></p>
-<img src="/2023/08/28/FLV%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/FLV-AVC_NALU.png" alt="FLV-AVC_NALU" style="zoom:70%;">
-
-<p>第一个字节包含视频信息，格式如下：</p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Commnet</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>帧类型</td>
-<td>UB4</td>
-<td>1: keyframe (for AVC, a seekable frame)——h264的IDR，关键帧 <br>2: inter frame (for AVC, a non- seekable frame)——h264的普通帧 <br>3: disposable inter frame (H.263 only) <br>4: generated keyframe (reserved for server use only) <br>5: video info&#x2F;command frame</td>
-</tr>
-<tr>
-<td>编码ID</td>
-<td>UB4</td>
-<td>使用哪种编码类型：<br>1: JPEG (currently unused) <br>2: Sorenson H.263 <br>3: Screen video <br>4: On2 VP6 <br>5: On2 VP6 with alpha channel <br>6: Screen video version 2 <br>7: AVC</td>
-</tr>
-</tbody></table>
-<p>第二个字节开始为视频数据：</p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Commnet</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>视频数据</td>
-<td>UI[8*n]</td>
-<td>If CodecID &#x3D;&#x3D; 2 <br>{H263VIDEOPACKET} <br>If CodecID &#x3D;&#x3D; 3 <br>{SCREENVIDEOPACKET } <br>If CodecID &#x3D;&#x3D; 4 <br>{VP6FLVVIDEOPACKET} <br>If CodecID &#x3D;&#x3D; 5 <br>{VP6FLVALPHAVIDEOPACKET } <br>If CodecID &#x3D;&#x3D; 6 <br>{SCREENV2VIDEOPACKET} <br>if CodecID &#x3D;&#x3D; 7 <br>{AVCVIDEOPACKET}</td>
-</tr>
-</tbody></table>
-<h5 id="AVC-VIDEO-PACKET"><a href="#AVC-VIDEO-PACKET" class="headerlink" title="AVC VIDEO PACKET"></a>AVC VIDEO PACKET</h5><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Commnet</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>AVCPacketType</td>
-<td>UI8</td>
-<td>0:AVC sequence header<br>1:AVC NALU<br>2:AVC end of sequence (low level NALU sequence ender is not required or supported)</td>
-</tr>
-<tr>
-<td>CompositionTime</td>
-<td>SI24</td>
-<td>if AVCPacketType &#x3D;&#x3D; 1 <br>{Combosition time offset} <br>else <br>{0}</td>
-</tr>
-<tr>
-<td>Data</td>
-<td>UI8[n]</td>
-<td>if AVCPacketType &#x3D;&#x3D; 0 <br>{AVCDecoderConfigurationRecord} <br>else if AVCPacketType &#x3D;&#x3D; 1 <br>{One or more NALUs (can be individual slices pre FLV packets; this is, full frames are not strictlyctly required)} <br>else if AVCPacketType &#x3D;&#x3D; 2 <br>{Empty}</td>
-</tr>
-</tbody></table>
-<p>AVC sequence header 就是 AVCDecoderConfigurationRecord 结构，该结构在标准文档“ISO-14496-15 AVC file format” 。</p>
 
       
     </div>
