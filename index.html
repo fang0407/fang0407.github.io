@@ -1506,9 +1506,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2024-03-05 22:19:38 / Modified: 22:38:37" itemprop="dateCreated datePublished" datetime="2024-03-05T22:19:38+08:00">2024-03-05</time>
+      <time title="Created: 2024-03-05 22:19:38" itemprop="dateCreated datePublished" datetime="2024-03-05T22:19:38+08:00">2024-03-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-04-27 12:10:10" itemprop="dateModified" datetime="2024-04-27T12:10:10+08:00">2024-04-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1533,6 +1539,49 @@
           <h1 id="平滑发送概述"><a href="#平滑发送概述" class="headerlink" title="平滑发送概述"></a>平滑发送概述</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Pacer（又称 Pacing Controller）是一个用于调整媒体数据发送速率的组件。它的主要作用是根据网络条件和接收端的反馈信息，动态地控制媒体数据的发送速率，以便在网络拥塞或带宽变化时提供平滑的数据传输，并尽量避免数据包的丢失和延迟。Pacer 还有一个作用，比如在需要最小发送速率的情况下，可以发送填充数据包。</p>
 <h2 id="核心流程"><a href="#核心流程" class="headerlink" title="核心流程"></a>核心流程</h2><img src="/2024/03/05/Pacer/ Pacer的核心流程.png" alt=" Pacer的核心流程" style="zoom:50%;">
 
+
+
+<h1 id="RTP包平滑发送"><a href="#RTP包平滑发送" class="headerlink" title="RTP包平滑发送"></a>RTP包平滑发送</h1><p><strong>PeerConnection</strong>：P2P 通信类。</p>
+<ul>
+<li><code>std::unique_ptr&lt;RtpTransportControllerSend&gt; transport_send_</code>：RTP 包发送类，使用 <code>EnqueuePacket()</code> 入队列。</li>
+</ul>
+<p><strong>RtpTransportControllerSend</strong>：RTP 包发送控制类。</p>
+<ul>
+<li><code>std::unique_ptr&lt;TaskQueuePacedSender&gt; task_queue_pacer_</code>：平滑发送类。</li>
+<li><code>EnqueuePacket()</code>：调用 <code>TaskQueuePacedSender</code> 的 <code>EnqueuePacket()</code>。</li>
+</ul>
+<p><strong>TaskQueuePacedSender</strong>：平滑发送类。</p>
+<ul>
+<li><code>rtc::TaskQueue task_queue_</code>：实际处理平滑发送的线程。</li>
+<li><code>PacingController pacing_controller_</code>：实现了漏桶数据包平滑发送算法。</li>
+<li><code>EnqueuePacket()</code>：使用 <code>rtc::TaskQueue</code> 内部线程异步调用 <code>PacingController</code> 中的 <code>EnqueuePacket()</code>。</li>
+<li><code>MaybeProcessPackets()</code>：静态周期调度数据包的发送。<ul>
+<li>如果传入的时间等于计划要调度的时间，立即调度任务</li>
+<li>使用 <code>rtc::TaskQueue</code> 延迟调用 <code>MaybeProcessPackets()</code>，实现循环调用</li>
+</ul>
+</li>
+</ul>
+<p><strong>PacingController</strong>：实现了漏桶数据包平滑算法。</p>
+<ul>
+<li><code>RoundRobinPacketQueue packet_queue_</code>：优先级队列。</li>
+<li><code>IntervalBudget media_budget_</code>：发送预算。</li>
+<li><code>SetPacingBitrate()</code>：设置平滑发送码率。</li>
+<li><code>EnqueuePacket()</code>： RTP 包缓存到队列。<ul>
+<li>获取 RTP 包的优先级</li>
+<li>插入 RTP 包到优先级队列</li>
+</ul>
+</li>
+<li><code>ProcessPackets()</code>：静态调度周期，每隔 5ms 调度一次发送。<ul>
+<li>设置发送码率，通过队列中包的总字节数以及剩余字节发送时间计算最小发送码率。（Pacer 延迟优化）</li>
+<li>更新预算，通过距离上一次发送过去的时间以及发送码率，计算本次发送的预算字节数。</li>
+<li>循环发送数据包，从优先级队列获取数据包，发送数据包，更新预算，直到预算不足。</li>
+</ul>
+</li>
+<li><code>UpdateTimeAndGetElapsed()</code>：获取距离上一次发送过去的时间。</li>
+<li><code>UpdateBudgetWithElapsedTime()</code>：更新发送预算。</li>
+<li><code>GetPendingPacket()</code>：从队列获取 RTP 数据包。</li>
+<li><code>OnPacketSent()</code>：更新预算。</li>
+</ul>
 <h1 id="RTP包的优先级"><a href="#RTP包的优先级" class="headerlink" title="RTP包的优先级"></a>RTP包的优先级</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum class</span> <span class="title class_">RtpPacketMediaType</span> : <span class="type">size_t</span> &#123;</span><br><span class="line">    kAudio,</span><br><span class="line">    kVideo,</span><br><span class="line">    kRetransmission,</span><br><span class="line">    kForwardErrorCorrection,</span><br><span class="line">    kPadding</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <p>RTP 包的优先级</p>
@@ -1542,7 +1591,26 @@
 <li>为了尽可能的恢复丢包，降低卡顿，重传包优先级提高</li>
 <li>Padding 包本身是没什么用的，只是为了保持较高的带宽估值，所以优先级可以很低</li>
 </ul>
-<h1 id="优先级队列"><a href="#优先级队列" class="headerlink" title="优先级队列"></a>优先级队列</h1><h2 id="RoundRobinPacketQueue"><a href="#RoundRobinPacketQueue" class="headerlink" title="RoundRobinPacketQueue"></a>RoundRobinPacketQueue</h2><ul>
+<h1 id="优先级队列"><a href="#优先级队列" class="headerlink" title="优先级队列"></a>优先级队列</h1><ul>
+<li>数据是按照时间片（动态和静态）定量发送的，既然是定量发送，一次可能无法全部发送所有的数据，所以需要缓存数据，同时需要优先发送最重要的数据，因此我们需要一个优先级队列</li>
+<li>每个流分别维护一个优先级队列，其中每个流以 SSRC为唯一标识</li>
+<li>流同样有优先级，其判定规则如下：<ul>
+<li>以优先级队列中的 RTP 包的最高优先级作为流的优先级，优先级高的流将被优先发送</li>
+<li>如果每个流的优先级队列中的 RTP 包的最高优先级相同，则发送数据总量小的流优先级高，这样可以保证相同优先级的流，能够交替发送，避免一个流被另外的流阻塞了</li>
+</ul>
+</li>
+</ul>
+<p><strong>QueuedPacket</strong>：优先级队列中的数据结构，以优先级排序，优先级如果相等，先到的包优先级高。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">QueuedPacket</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">QueuedPacket</span>(<span class="type">int</span> priority,</span><br><span class="line">                 webrtc::Timestamp enqueue_time,</span><br><span class="line">                 <span class="type">uint64_t</span> enqueue_order,</span><br><span class="line">                 std::unique_ptr&lt;RtpPacketToSend&gt; packet);</span><br><span class="line">    ~<span class="built_in">QueuedPacket</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>&lt;(<span class="type">const</span> QueuedPacket&amp; other) <span class="type">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (priority_ != other.priority_) &#123;</span><br><span class="line">            <span class="keyword">return</span> priority_ &gt; other.priority_;  <span class="comment">// 值越大，优先级越小</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 优先级如果相等，先到的包优先级高</span></span><br><span class="line">        <span class="keyword">return</span> enqueue_order_ &gt; other.enqueue_order_;</span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> priority_;</span><br><span class="line">    webrtc::Timestamp enqueue_time_;  <span class="comment">// RTP包入队列时间</span></span><br><span class="line">    <span class="type">uint64_t</span> enqueue_order_;          <span class="comment">// RTP包入队列的顺序</span></span><br><span class="line">    RtpPacketToSend* owned_packet_;   <span class="comment">// 原始数据包</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Stream</strong>：每个流分别维护一个优先级队列，其中每个流以 SSRC 为唯一标识。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Stream</span> &#123;</span><br><span class="line">    webrtc::DataSize size;  <span class="comment">// 队列数据大小</span></span><br><span class="line">    <span class="type">uint32_t</span> ssrc;  <span class="comment">// 唯一标识</span></span><br><span class="line">    std::priority_queue&lt;QueuedPacket&gt; packet_queue;  <span class="comment">// 优先级队列</span></span><br><span class="line">    std::multimap&lt;StreamPrioKey, <span class="type">uint32_t</span>&gt;::iterator priority_it;  <span class="comment">// 当前流的优先级位置</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>StreamPrioKey</strong>：流的优先级。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">StreamPrioKey</span> &#123;</span><br><span class="line">    <span class="built_in">StreamPrioKey</span>(<span class="type">int</span> priority, webrtc::DataSize size) :</span><br><span class="line">        <span class="built_in">priority</span>(priority)</span><br><span class="line">      , <span class="built_in">size</span>(size) &#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>&lt;(<span class="type">const</span> StreamPrioKey&amp; other) <span class="type">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (priority != other.priority) &#123;</span><br><span class="line">            <span class="keyword">return</span> priority &lt; other.priority;</span><br><span class="line">        &#125;       </span><br><span class="line">        <span class="keyword">return</span> size &lt; other.size;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">int</span> priority;  <span class="comment">// Stream中RTP数据包最大优先级</span></span><br><span class="line">    webrtc::DataSize size;  <span class="comment">// Stream累积发送字节数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>RoundRobinPacketQueue</strong>：优先级队列，轮询多个流，优先发送最重要的数据。</p>
+<ul>
 <li><p><code>std::unordered_map&lt;uint32_t, Stream&gt; streams_</code>：轮询队列包含多个流，使用 map 存储，其中每个流以 SSRC 为唯一标识。</p>
 </li>
 <li><p><code>std::multimap&lt;StreamPrioKey, uint32_t&gt; stream_priorities_</code>：通过 <code>StreamPrioKey</code> 标识各个 SSRC 的优先级。</p>
@@ -1553,7 +1621,7 @@
 </li>
 <li><p><code>webrtc::TimeDelta queue_time_sum_</code>：所有流队列包排队总时间。</p>
 </li>
-<li><p><code>void push(const QueuedPacket&amp;)</code>：入队列接口。</p>
+<li><p><code>void Push(const QueuedPacket&amp;)</code>：入队列接口。</p>
 <ol>
 <li>通过 SSRC 查找对应的流</li>
 <li>调整流的优先级</li>
@@ -1562,7 +1630,7 @@
 <li>插入对应流的优先级队列</li>
 </ol>
 </li>
-<li><p><code>std::unique_ptr&lt;RtpPacketToSend&gt; pop()</code>：出队列接口。</p>
+<li><p><code>std::unique_ptr&lt;RtpPacketToSend&gt; Pop()</code>：出队列接口。</p>
 <ol>
 <li>获取优先级最高的流</li>
 <li>数据包出队列</li>
@@ -1574,50 +1642,47 @@
 <li><p><code>void UpdateQueueTime(webrtc::Timestamp now)</code>：更新所有流队列包排队总时间。可以用于 Pacer 的延迟优化。</p>
 </li>
 </ul>
-<p>Pacer 的策略是先将数据包缓存到队列，然后定时按量发送，当估计的带宽较小时，每次发送的数据量不多，但是需要发送的数据量又比较大，此时可能会导致数据包在队列中积压，从而引起延迟。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">UpdateQueueTime</span><span class="params">(webrtc::Timestamp now)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (now = last_time_update_)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    </span><br><span class="line">    webrtc::TimeDelta delta = now - last_time_update_;</span><br><span class="line">    queue_time_sum_ += webrtc::TimeDelta::<span class="built_in">Micros</span>(delta.<span class="built_in">us</span>() * size_packets_);</span><br><span class="line">    last_time_update_ = now;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="发送预算处理"><a href="#发送预算处理" class="headerlink" title="发送预算处理"></a>发送预算处理</h1><p>当 <code>ProcessPackets()</code> 被周期性调度之后，该方法会计算当前时间和上一次处理时间的时间差，即为 <code>elapsed_time</code>，然后将这个时间传入预算处理对象 <code>media_budget</code>，<code>media_budget</code> 会根据这个流逝的时间，以及当前发送的目标码率 <code>target_bitrate</code>，计算出当前时间片可以发送的数据量，然后从优先级队列中获取数据包进行发送，每发送一个数据包，会消耗数据包大小的预算值，当预算值小于等于 0 之后，停止发送，等待下一次调度。</p>
+<p>预算计算逻辑：</p>
+<ul>
+<li><p>增加预算，随着时间的流逝，预算不断增加</p>
+<ul>
+<li><p><code>max_send_bytes = elapsed_time * target_bitrate / 8</code> </p>
+</li>
+<li><p><code>elapsed_time</code>：距离上次发送流逝的时间，单位 ms</p>
+</li>
+<li><p><code>target_bitrate</code>：目标发送码率，通常是由带宽估计模块动态设定的，单位 kbps</p>
+</li>
+</ul>
+</li>
+<li><p>消耗预算</p>
+<ul>
+<li>每发送一个数据包，预算减去数据包的大小，预算消耗完毕，停止发送</li>
+</ul>
+</li>
+</ul>
+<p><strong>IntervalBudget</strong>：间隔预算处理类。</p>
+<ul>
+<li><code>int target_bitrate_kbps_</code>：目标码率。</li>
+<li><code>int64_t max_bytes_in_budget_</code>：预算最大值。</li>
+<li><code>int64_t bytes_remaining_</code>：剩余字节数。</li>
+<li><code>bool can_build_up_underuse_</code>：是否使用上一轮剩余预算。</li>
+<li><code>set_target_bitrate_kbps()</code>：设置目标码率。</li>
+<li><code>IncreaseBudget()</code>：随着时间流逝增加预算。</li>
+<li><code>UseBudget()</code>：使用指定字节的预算。</li>
+<li><code>bytes_remaining()</code>：剩余字节预算。</li>
+</ul>
+<h1 id="Pacer延迟优化"><a href="#Pacer延迟优化" class="headerlink" title="Pacer延迟优化"></a>Pacer延迟优化</h1><p>Pacer 的策略是先将数据包缓存到队列，然后定时按量发送，当估计的带宽较小时，每次发送的数据量不多，但是需要发送的数据量又比较大，此时可能会导致数据包在队列中积压，从而引起延迟。</p>
 <p>解决办法：</p>
 <ul>
 <li>设定一个期望的延迟时间 <code>queue_time_limit</code>，同时计算队列中数据包的平均排队时间 <code>average_queue_time</code>。 如果此时队列中排队的数据包字节数为 <code>queue_size_data</code>，为了能够在期望的延迟时间内发送完这些数据，需要的最低码率为：<code>min_rate_need =  queue_size_data / (queue_time_limit – average_queue_time)</code> </li>
 <li>如果 <code>min_rate_need &gt; target_rate</code>，则需要调整 <code>target_rate = min_rate_need</code>，否则延迟会超过 <code>queue_time_limit</code></li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">UpdateQueueTime</span><span class="params">(webrtc::Timestamp now)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (now = last_time_update_)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    </span><br><span class="line">    webrtc::TimeDelta delta = now - last_time_update_;</span><br><span class="line">    queue_time_sum_ += webrtc::TimeDelta::<span class="built_in">Micros</span>(delta.<span class="built_in">us</span>() * size_packets_);</span><br><span class="line">    last_time_update_ = now;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h2><p>每个流分别维护一个优先级队列，其中每个流以 SSRC 为唯一标识。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Stream</span> &#123;</span><br><span class="line">    <span class="built_in">Stream</span>();</span><br><span class="line">    ~<span class="built_in">Stream</span>();</span><br><span class="line">    webrtc::DataSize size;  <span class="comment">// 队列数据大小</span></span><br><span class="line">    <span class="type">uint32_t</span> ssrc;  <span class="comment">// 唯一标识</span></span><br><span class="line">    std::priority_queue&lt;QueuedPacket&gt; packet_queue;  <span class="comment">// 优先级队列</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h2 id="StreamPrioKey"><a href="#StreamPrioKey" class="headerlink" title="StreamPrioKey"></a>StreamPrioKey</h2><p>流同样有优先级，其判定规则如下：</p>
-<ul>
-<li><p>以优先级队列中的 RTP 包的最高优先级作为流的优先级，优先级高的流将被优先发送。</p>
-</li>
-<li><p>如果每个流的优先级队列中的 RTP 包的最高优先级相同，则发送数据总量小的流优先级高，这样可以保证相同优先级的流能够交替发送，避免一个流被另外的流阻塞了。</p>
-</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">StreamPrioKey</span> &#123;</span><br><span class="line">    <span class="built_in">StreamPrioKey</span>(<span class="type">int</span> priority, webrtc::DataSize size) :</span><br><span class="line">        <span class="built_in">priority</span>(priority)</span><br><span class="line">      , <span class="built_in">size</span>(size) &#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>&lt;(<span class="type">const</span> StreamPrioKey&amp; other) <span class="type">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (priority != other.priority) &#123;</span><br><span class="line">            <span class="keyword">return</span> priority &lt; other.priority;</span><br><span class="line">        &#125;       </span><br><span class="line">        <span class="keyword">return</span> size &lt; other.size;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">int</span> priority;  <span class="comment">// Stream中RTP数据包最大优先级</span></span><br><span class="line">    webrtc::DataSize size;  <span class="comment">// Stream累积发送字节数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h2 id="QueuedPacket"><a href="#QueuedPacket" class="headerlink" title="QueuedPacket"></a>QueuedPacket</h2><p>优先级队列中的数据结构，以优先级排序，优先级如果相等，先到的包优先级高。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">QueuedPacket</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">QueuedPacket</span>(<span class="type">int</span> priority,</span><br><span class="line">                 webrtc::Timestamp enqueue_time,</span><br><span class="line">                 <span class="type">uint64_t</span> enqueue_order,</span><br><span class="line">                 std::unique_ptr&lt;RtpPacketToSend&gt; packet);</span><br><span class="line">    ~<span class="built_in">QueuedPacket</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="type">bool</span> <span class="keyword">operator</span>&lt;(<span class="type">const</span> QueuedPacket&amp; other) <span class="type">const</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (priority_ != other.priority_) &#123;</span><br><span class="line">            <span class="keyword">return</span> priority_ &gt; other.priority_; <span class="comment">// 值越大，优先级越小</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 优先级如果相等，先到的包优先级高</span></span><br><span class="line">        <span class="keyword">return</span> enqueue_order_ &gt; other.enqueue_order_;</span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> priority_;</span><br><span class="line">    webrtc::Timestamp enqueue_time_; <span class="comment">// 入队列时间</span></span><br><span class="line">    <span class="type">uint64_t</span> enqueue_order_; <span class="comment">// 入队列的顺序</span></span><br><span class="line">    RtpPacketToSend* owned_packet_; <span class="comment">// 原始数据包</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h1 id="发送预算"><a href="#发送预算" class="headerlink" title="发送预算"></a>发送预算</h1><p>当 <code>ProcessPackets()</code> 被周期性调度之后，该方法会计算当前时间和上一次处理时间的时间差，即为 <code>elapsed_time</code>，然 后将这个时间传入预算处理对象 <code>media_budget</code>，<code>media_budget</code> 会根据这个流逝的时间，以及当前发送的目标码率 <code>target_bitrate</code>，计算出当前时间片可以发送的数据量，然后从优先级队列中获取数据包进行发送，每发送一个数据包，会消耗数据包大小的预算值，当预算值小于等于 0 之 后，停止发送，等待下一次调度。</p>
-<p>预算计算逻辑：</p>
-<ul>
-<li>增加预算，随着时间的流逝，预算不断增加<ul>
-<li><code>max_send_bytes = elapsed_time * target_bitrate / 8</code> </li>
-<li><code>elapsed_time</code>：距离上次发送流逝的时间，单位 ms</li>
-<li><code>target_bitrate</code>：目标发送码率，通常是由带宽估计模块动态设定的，单位 kbps</li>
-</ul>
-</li>
-<li>消耗预算<ul>
-<li>每发送一个数据包，预算减去数据包的大小，预算消耗完毕，停止发送</li>
-</ul>
-</li>
-</ul>
-<h1 id="发送数据包"><a href="#发送数据包" class="headerlink" title="发送数据包"></a>发送数据包</h1><p>静态调度周期，每隔 5ms 调度一次 <code>ProcessPackets()</code>。</p>
-<ol>
-<li>设置发送码率，通过队列中包的总字节数以及剩余字节发送时间计算最小发送码率。</li>
-<li>更新预算，通过距离上一次发送过去的时间以及发送码率，计算本次发送的预算字节数。</li>
-<li>循环发送数据包，从优先级队列获取数据包，发送数据包，更新预算，直到预算不足。</li>
-</ol>
-
+<h1 id><a href="#" class="headerlink" title></a></h1>
       
     </div>
 
