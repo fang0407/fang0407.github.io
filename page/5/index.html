@@ -1912,7 +1912,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-09 16:21:18" itemprop="dateModified" datetime="2024-01-09T16:21:18+08:00">2024-01-09</time>
+      <time title="Modified: 2024-05-08 18:52:03" itemprop="dateModified" datetime="2024-05-08T18:52:03+08:00">2024-05-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1961,10 +1961,10 @@
 <h2 id="RECORD"><a href="#RECORD" class="headerlink" title="RECORD"></a>RECORD</h2><p>client-&gt;server：请求发送数据。</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RECORD rtsp://192.168.2.101:554/live/test RTSP/1.0</span><br><span class="line"><span class="attribute">Range</span><span class="punctuation">: </span>npt=0.000-</span><br><span class="line"><span class="attribute">CSeq</span><span class="punctuation">: </span>5</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Lavf59.30.100</span><br><span class="line"><span class="attribute">Session</span><span class="punctuation">: </span>viBkiUQCL9ES</span><br></pre></td></tr></table></figure>
 
-<p>client-&gt;server：回应该允许的信息。</p>
+<p>server-&gt;client：回应该允许的信息。</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RTSP/1.0 200 OK</span><br><span class="line"><span class="attribute">CSeq</span><span class="punctuation">: </span>5</span><br><span class="line"><span class="attribute">Date</span><span class="punctuation">: </span>Fri, Sep 22 2023 10:07:06 GMT</span><br><span class="line"><span class="attribute">RTP-Info</span><span class="punctuation">: </span>url=rtsp://192.168.2.101:554/live/test/streamid=0,url=rtsp://192.168.2.101:554/live/test/streamid=1</span><br><span class="line"><span class="attribute">Server</span><span class="punctuation">: </span>ZLMediaKit(git hash:f69f3b3/2023-09-09T10:59:27+08:00,branch:master,build time:2023-09-19T18:24:32)</span><br><span class="line"><span class="attribute">Session</span><span class="punctuation">: </span>viBkiUQCL9ES</span><br></pre></td></tr></table></figure>
 
-<h2 id="RTP-数据推送"><a href="#RTP-数据推送" class="headerlink" title="RTP 数据推送"></a>RTP 数据推送</h2><img src="/2023/09/22/RTSP%E5%8D%8F%E8%AE%AE/RTP报文.png" alt="RTP报文" style="zoom:50%;">
+<h2 id="RTP数据推送"><a href="#RTP数据推送" class="headerlink" title="RTP数据推送"></a>RTP数据推送</h2><img src="/2023/09/22/RTSP%E5%8D%8F%E8%AE%AE/RTP报文.png" alt="RTP报文" style="zoom:50%;">
 
 <h2 id="TERDOWN"><a href="#TERDOWN" class="headerlink" title="TERDOWN"></a>TERDOWN</h2><p>client-&gt;server：请求关闭会话。</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TEARDOWN rtsp://192.168.2.101:554/live/test RTSP/1.0</span><br><span class="line"><span class="attribute">CSeq</span><span class="punctuation">: </span>6</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Lavf59.30.100</span><br><span class="line"><span class="attribute">Session</span><span class="punctuation">: </span>viBkiUQCL9ES</span><br></pre></td></tr></table></figure>
@@ -2001,7 +2001,7 @@
 <p>server-&gt;client：回应该请求的信息。</p>
 <figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">RTSP/1.0 200 OK</span><br><span class="line"><span class="attribute">CSeq</span><span class="punctuation">: </span>5</span><br><span class="line"><span class="attribute">Date</span><span class="punctuation">: </span>Fri, Sep 22 2023 11:19:53 GMT</span><br><span class="line"><span class="attribute">Range</span><span class="punctuation">: </span>npt=0.000-</span><br><span class="line"><span class="attribute">RTP-Info</span><span class="punctuation">: </span>url=rtsp://192.168.2.101:554/live/test/streamid=0;seq=6937;rtptime=1382371650,url=rtsp://192.168.2.101:554/live/test/streamid=1;seq=2132;rtptime=-2108239456</span><br><span class="line"><span class="attribute">Server</span><span class="punctuation">: </span>ZLMediaKit(git hash:f69f3b3/2023-09-09T10:59:27+08:00,branch:master,build time:2023-09-19T18:24:32)</span><br><span class="line"><span class="attribute">Session</span><span class="punctuation">: </span>CdplhrJIUmWx</span><br></pre></td></tr></table></figure>
 
-<h2 id="RTP-数据拉取"><a href="#RTP-数据拉取" class="headerlink" title="RTP 数据拉取"></a>RTP 数据拉取</h2><img src="/2023/09/22/RTSP%E5%8D%8F%E8%AE%AE/RTP拉流报文.png" alt="RTP拉流报文" style="zoom:50%;">
+<h2 id="RTP数据拉取"><a href="#RTP数据拉取" class="headerlink" title="RTP数据拉取"></a>RTP数据拉取</h2><img src="/2023/09/22/RTSP%E5%8D%8F%E8%AE%AE/RTP拉流报文.png" alt="RTP拉流报文" style="zoom:50%;">
 
 <p>SSRC 推流是客户端自己定义的，拉流的时候是服务器发送过来的。</p>
 <h2 id="TERDOWN-1"><a href="#TERDOWN-1" class="headerlink" title="TERDOWN"></a>TERDOWN</h2><p>client-&gt;server：请求关闭会话。</p>

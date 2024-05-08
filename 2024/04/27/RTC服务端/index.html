@@ -28,7 +28,7 @@
 <meta property="og:description" content="RTC处理框架1v1模式  RTP 和 RTCP 包可以通过服务端透传转发 如果把服务端看成一个黑盒，相当于两者是进行 P2P 通信  1v多模式 graph LR     subgraph 推流端     PeerConnectionA     end          subgraph 拉流端     PeerConnectionB     PeerConnectionC     end">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-04-27T10:34:04.000Z">
-<meta property="article:modified_time" content="2024-05-05T13:20:59.732Z">
+<meta property="article:modified_time" content="2024-05-08T11:36:50.067Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 
@@ -112,7 +112,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RTC%E5%A4%84%E7%90%86%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">RTC处理框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E8%BD%AC%E5%8F%91%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">多路转发架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8E%A8%E6%B5%81"><span class="nav-number">3.</span> <span class="nav-text">客户端推流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E6%B5%81%E6%8E%A5%E6%94%B6"><span class="nav-number">3.1.</span> <span class="nav-text">视频流接收</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1"><span class="nav-number">3.2.</span> <span class="nav-text">数据统计</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8B%89%E6%B5%81"><span class="nav-number">4.</span> <span class="nav-text">客户端拉流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E6%B5%81%E5%8F%91%E9%80%81"><span class="nav-number">4.1.</span> <span class="nav-text">视频流发送</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Qos%E8%B0%83%E4%BC%98"><span class="nav-number">5.</span> <span class="nav-text">Qos调优</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RTC%E5%A4%84%E7%90%86%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">RTC处理框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E8%B7%AF%E8%BD%AC%E5%8F%91%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">多路转发架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8E%A8%E6%B5%81"><span class="nav-number">3.</span> <span class="nav-text">客户端推流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E6%B5%81%E6%8E%A5%E6%94%B6"><span class="nav-number">3.1.</span> <span class="nav-text">视频流接收</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E6%B5%81%E6%8E%A5%E6%94%B6"><span class="nav-number">3.2.</span> <span class="nav-text">音频流接收</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1"><span class="nav-number">3.3.</span> <span class="nav-text">数据统计</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8B%89%E6%B5%81"><span class="nav-number">4.</span> <span class="nav-text">客户端拉流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E6%B5%81%E5%8F%91%E9%80%81"><span class="nav-number">4.1.</span> <span class="nav-text">视频流发送</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Qos%E8%B0%83%E4%BC%98"><span class="nav-number">5.</span> <span class="nav-text">Qos调优</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -194,7 +194,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-05-05 21:20:59" itemprop="dateModified" datetime="2024-05-05T21:20:59+08:00">2024-05-05</time>
+      <time title="Modified: 2024-05-08 19:36:50" itemprop="dateModified" datetime="2024-05-08T19:36:50+08:00">2024-05-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -443,6 +443,23 @@
 <ul>
 <li><code>OnRtpPacket()</code>：接收重传的 RTX 包，并将恢复的 RTP 包重新调用 <code>RtpVideoStreamReceiver::OnRtpPacket()</code>。</li>
 </ul>
+<h2 id="音频流接收"><a href="#音频流接收" class="headerlink" title="音频流接收"></a>音频流接收</h2><p><strong>AudioReceiveStream</strong>：处理音频流接收类。</p>
+<p><code>PeerConnection</code> 中根据推流端的 SSRC 信息，来创建 <code>AudioReceiveStream</code> 实例。并且解析接收的 RTP 数据包，通过 SSRC 处理不同类型的流，例如音频流使用接口  <code>AudioReceiveStream::OnRtpPacket()</code>  处理。</p>
+<ul>
+<li><code>AudioReceiveStreamConfig config_</code>：音频流配置信息。</li>
+<li><code>ReceiveStat* rtp_receive_stat_</code>：RTP 数据统计。</li>
+<li><code>ChannelReceive channel_receive_</code>：音频接收处理。</li>
+<li><code>OnRtpPacket()</code>：调用 <code>ChannelReceive::OnRtpPacket()</code>。</li>
+<li><code>DeliverRtcp()</code>：调用 <code>ChannelReceive::DeliverRtcp()</code>。</li>
+</ul>
+<p><strong>ChannelReceive</strong>：音频接收处理。</p>
+<ul>
+<li><code>AudioReceiveStreamConfig config_</code>：音频流配置信息。</li>
+<li><code>ReceiveStat *rtp_receive_stat_</code>：RTP 数据统计。</li>
+<li><code>RtpRtcpImpl rtp_rtcp_</code>：实际处理 RTP 和 RTCP 的类。</li>
+<li><code>OnRtpPacket()</code>：统计 RTP 包信息；回调  <code>RtpRtcpModuleObserver::OnRtpPacket()</code> 通知接收到数据。</li>
+<li><code>DeliverRtcp()</code>：调用 <code>RtpRtcpImpl::IncomingRtcpPacket()</code>。</li>
+</ul>
 <h2 id="数据统计"><a href="#数据统计" class="headerlink" title="数据统计"></a>数据统计</h2><p><strong>ReceiveStat</strong>：RTP 数据统计类。</p>
 <ul>
 <li><code>webrtc::flat_map&lt;uint32_t, std::unique_ptr&lt;StreamStat&gt;&gt; stats_</code>：不同流的统计信息。</li>
@@ -587,7 +604,24 @@
 </ul>
 </li>
 </ul>
-<h1 id="Qos调优"><a href="#Qos调优" class="headerlink" title="Qos调优"></a>Qos调优</h1>
+<h1 id="Qos调优"><a href="#Qos调优" class="headerlink" title="Qos调优"></a>Qos调优</h1><ul>
+<li>利用 XR 包计算出接收端的 RTT，可用于设置 NACK 模块定期触发两次重传的间隔时间。</li>
+<li>上行网络传输优化<ul>
+<li>问题：上行链路（推流到服务器）有丢包或者乱序，如果服务端控制不好，即直接转发给多个拉流端，引起大量重传，降低性能</li>
+<li>视频优化：<ul>
+<li>有丢包或者乱序的包，暂时不转发</li>
+<li>如果下一个 I 帧已经 OK，前面的 seq 仍然不连续，则全部丢弃</li>
+</ul>
+</li>
+<li>音频优化：<ul>
+<li>有丢包或者乱序的包，暂时不转发</li>
+<li>最多等待 <code>min(10 * rtt, 300ms)</code> 后重新转发</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
     </div>
 
     
