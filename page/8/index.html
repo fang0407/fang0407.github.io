@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">83</span>
+          <span class="site-state-item-count">84</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,93 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/02/AVIO%E5%86%85%E5%AD%98%E8%BE%93%E5%85%A5%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/09/02/AVIO%E5%86%85%E5%AD%98%E8%BE%93%E5%85%A5%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">AVIO内存输入模式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-02 15:41:02" itemprop="dateCreated datePublished" datetime="2023-09-02T15:41:02+08:00">2023-09-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-16 18:39:28" itemprop="dateModified" datetime="2024-01-16T18:39:28+08:00">2024-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="AVIOContext"><a href="#AVIOContext" class="headerlink" title="AVIOContext"></a>AVIOContext</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Allocate and initialize an AVIOContext for buffered I/O. It must be later</span></span><br><span class="line"><span class="comment"> * freed with avio_context_free().</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param buffer Memory block for input/output operations via AVIOContext.</span></span><br><span class="line"><span class="comment"> *        The buffer must be allocated with av_malloc() and friends.</span></span><br><span class="line"><span class="comment"> *        It may be freed and replaced with a new buffer by libavformat.</span></span><br><span class="line"><span class="comment"> *        AVIOContext.buffer holds the buffer currently in use,</span></span><br><span class="line"><span class="comment"> *        which must be later freed with av_free().</span></span><br><span class="line"><span class="comment"> * @param buffer_size The buffer size is very important for performance.</span></span><br><span class="line"><span class="comment"> *        For protocols with fixed blocksize it should be set to this blocksize.</span></span><br><span class="line"><span class="comment"> *        For others a typical size is a cache page, e.g. 4kb.</span></span><br><span class="line"><span class="comment"> * @param write_flag Set to 1 if the buffer should be writable, 0 otherwise.</span></span><br><span class="line"><span class="comment"> * @param opaque An opaque pointer to user-specific data.</span></span><br><span class="line"><span class="comment"> * @param read_packet  A function for refilling the buffer, may be NULL.</span></span><br><span class="line"><span class="comment"> *                     For stream protocols, must never return 0 but rather</span></span><br><span class="line"><span class="comment"> *                     a proper AVERROR code.</span></span><br><span class="line"><span class="comment"> * @param write_packet A function for writing the buffer contents, may be NULL.</span></span><br><span class="line"><span class="comment"> *        The function may not change the input buffers content.</span></span><br><span class="line"><span class="comment"> * @param seek A function for seeking to specified byte position, may be NULL.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @return Allocated AVIOContext or NULL on failure.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">AVIOContext *<span class="title function_">avio_alloc_context</span><span class="params">(</span></span><br><span class="line"><span class="params">                  <span class="type">unsigned</span> <span class="type">char</span> *buffer,</span></span><br><span class="line"><span class="params">                  <span class="type">int</span> buffer_size,</span></span><br><span class="line"><span class="params">                  <span class="type">int</span> write_flag,</span></span><br><span class="line"><span class="params">                  <span class="type">void</span> *opaque,</span></span><br><span class="line"><span class="params">                  <span class="type">int</span> (*read_packet)(<span class="type">void</span> *opaque, <span class="type">uint8_t</span> *buf, <span class="type">int</span> buf_size),</span></span><br><span class="line"><span class="params">                  <span class="type">int</span> (*write_packet)(<span class="type">void</span> *opaque, <span class="type">uint8_t</span> *buf, <span class="type">int</span> buf_size),</span></span><br><span class="line"><span class="params">                  <span class="type">int64_t</span> (*seek)(<span class="type">void</span> *opaque, <span class="type">int64_t</span> offset, <span class="type">int</span> whence))</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用AVIO输入"><a href="#使用AVIO输入" class="headerlink" title="使用AVIO输入"></a>使用AVIO输入</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavformat/avformat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavcodec/avcodec.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavutil/imgutils.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libswscale/swscale.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUF_SIZE 20480</span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">ReadPacket</span><span class="params">(<span class="type">void</span> *opaque, <span class="type">uint8_t</span> *buf, <span class="type">int</span> buf_size)</span></span><br><span class="line">&#123;</span><br><span class="line">    FILE *in_file = (FILE *)opaque;</span><br><span class="line">    <span class="type">int</span> read_size = fread(buf, <span class="number">1</span>, buf_size, in_file);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;read_packet read_size:%d, buf_size:%d\n&quot;</span>, read_size, buf_size);</span><br><span class="line">    <span class="keyword">if</span>(read_size &lt;=<span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> AVERROR_EOF;     <span class="comment">// 数据读取完毕</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> read_size;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">Decode</span><span class="params">(AVCodecContext* codec_ctx, AVPacket* pkt, AVFrame* frame, FILE* out_fd)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line">    ret = avcodec_send_packet(codec_ctx, pkt);</span><br><span class="line">    <span class="keyword">if</span> (ret == AVERROR(EAGAIN)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;current not recv packet, use avcodec_receive_frame to get frame.\n&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ret == AVERROR_EOF) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;codec is flush can not send packet.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (ret &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//avcodec_receive_frame 每次内部会先调用av_frame_unref</span></span><br><span class="line">        ret = avcodec_receive_frame(codec_ctx, frame);</span><br><span class="line">        <span class="keyword">if</span> (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;error decoding.\n&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//处理解码出来的每一帧</span></span><br><span class="line">        <span class="type">static</span> <span class="type">int</span> print_frame = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (print_frame == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">//打印AVFrame信息</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;ar-samplerate: %uHz\n&quot;</span>, frame-&gt;sample_rate);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;ac-channel: %u\n&quot;</span>, frame-&gt;channels);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;f-format: %u\n&quot;</span>, frame-&gt;format);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;nb_samples: %d\n&quot;</span>, frame-&gt;nb_samples);</span><br><span class="line">            print_frame = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">            P表示Planar（平面），其数据格式排列方式为 :</span></span><br><span class="line"><span class="comment">            LLLLLLRRRRRRLLLLLLRRRRRRLLLLLLRRRRRRL...（每个LLLLLLRRRRRR为一个音频帧）</span></span><br><span class="line"><span class="comment">            而不带P的数据格式（即交错排列）排列方式为：</span></span><br><span class="line"><span class="comment">            LRLRLRLRLRLRLRLRLRLRLRLRLRLRLRLRLRLRL...（每个LR为一个音频样本）</span></span><br><span class="line"><span class="comment">         播放范例：   ffplay -ar 48000 -ac 2 -f f32le test.pcm</span></span><br><span class="line"><span class="comment">          */</span></span><br><span class="line">        <span class="comment">//原始为Planar方式，以交错方式写入文件</span></span><br><span class="line">        <span class="class"><span class="keyword">enum</span> <span class="title">AVSampleFormat</span> <span class="title">sample_fmt</span> =</span> codec_ctx-&gt;sample_fmt;</span><br><span class="line">        <span class="type">int</span> sample_bytes = av_get_bytes_per_sample(sample_fmt);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; frame-&gt;nb_samples; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; frame-&gt;channels; ++j) &#123;</span><br><span class="line">                fwrite(frame-&gt;data[j] + i * sample_bytes, <span class="number">1</span>, sample_bytes, out_fd);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* aac_file = <span class="string">&quot;test.aac&quot;</span>;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* pcm_file = <span class="string">&quot;test.pcm&quot;</span>;</span><br><span class="line"></span><br><span class="line">    FILE* aac_fd = fopen(aac_file, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(!aac_fd) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;open file %s failed\n&quot;</span>, aac_file);</span><br><span class="line">        <span class="keyword">return</span>  <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    FILE* pcm_fd = fopen(pcm_file, <span class="string">&quot;wb&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>(!aac_fd) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;open file %s failed\n&quot;</span>, pcm_file);</span><br><span class="line">        <span class="keyword">return</span>  <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span>* io_buffer = av_malloc(BUF_SIZE);</span><br><span class="line">    AVIOContext* avio_ctx = avio_alloc_context(io_buffer, BUF_SIZE, <span class="number">0</span>, (<span class="type">void</span>*)aac_fd,</span><br><span class="line">                       ReadPacket, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    AVFormatContext* ifmt_ctx = avformat_alloc_context();</span><br><span class="line">    ifmt_ctx-&gt;pb = avio_ctx;</span><br><span class="line">    avformat_open_input(&amp;ifmt_ctx, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">const</span> AVCodec* codec = avcodec_find_decoder(AV_CODEC_ID_AAC);</span><br><span class="line">    AVCodecContext* codec_ctx = avcodec_alloc_context3(codec);</span><br><span class="line">    avcodec_open2(codec_ctx, codec, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    AVPacket *pkt = av_packet_alloc();</span><br><span class="line">    AVFrame *frame = av_frame_alloc();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="type">int</span> ret = av_read_frame(ifmt_ctx, pkt);</span><br><span class="line">        <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        Decode(codec_ctx, pkt, frame, pcm_fd);</span><br><span class="line">        av_packet_unref(pkt);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//刷新解码器</span></span><br><span class="line">    pkt-&gt;data = <span class="literal">NULL</span>;</span><br><span class="line">    pkt-&gt;size = <span class="number">0</span>;</span><br><span class="line">    Decode(codec_ctx, pkt, frame, pcm_fd);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (aac_fd)</span><br><span class="line">        fclose(aac_fd);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pcm_fd)</span><br><span class="line">        fclose(pcm_fd);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (codec_ctx)</span><br><span class="line">        avcodec_free_context(&amp;codec_ctx);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (frame)</span><br><span class="line">        av_frame_free(&amp;frame);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt)</span><br><span class="line">        av_packet_free(&amp;pkt);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2424,256 +2511,6 @@ AVFrame *-- AVBufferRef</pre>
 <h2 id="函数示例"><a href="#函数示例" class="headerlink" title="函数示例"></a>函数示例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//av_packet_alloc()和av_packet_free()配对使用</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test1</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//可以不掉用av_packet_unref(), av_packet_free()内部会自动调用</span></span><br><span class="line">    av_packet_unref(pkt);</span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//误用av_init_packet，导致内存泄露</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test2</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//这里init会把pkt-&gt;buf置空，导致内存泄露</span></span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//av_packet_move_ref()后，可以调用av_init_packet()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test3</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    pkt2 = av_packet_alloc();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//av_packet_move_ref()内部会调用av_init_packet</span></span><br><span class="line">    av_packet_move_ref(pkt2, pkt);</span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line">    </span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//av_packet_clone()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test4</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//av_packet_clone() = av_packet_alloc() + av_packet_ref()</span></span><br><span class="line">    pkt2 = av_packet_clone(pkt);</span><br><span class="line">    <span class="comment">//init将pkt-&gt;buf置空，导致av_packet_free()无法释放buf内存</span></span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line">    </span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//av_packet_ref()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test5</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    <span class="comment">//打印reference_counted，必须保证传入的是有效指针</span></span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test5, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    pkt2 = av_packet_alloc();</span><br><span class="line">    av_packet_move_ref(pkt2, pkt);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//多次连续调用ref会导致无法释放</span></span><br><span class="line">    av_packet_ref(pkt, pkt2);</span><br><span class="line">    av_packet_ref(pkt, pkt2);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt2-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt2-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    av_packet_unref(pkt);</span><br><span class="line">    <span class="comment">//第二次后掉用unref无效，因为pkt-&gt;buf已经置空</span></span><br><span class="line">    av_packet_unref(pkt);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;pkt-&gt;buf没有被置空\n&quot;</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;pkt-&gt;buf有被置空\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt2-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>, </span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt2-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line">    av_packet_unref(pkt2);</span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//赋值+init操作类似av_packet_move_ref()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test6</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test6, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    pkt2 = av_packet_alloc();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//赋值+init操作类似av_packet_move_ref()</span></span><br><span class="line">    *pkt2 = *pkt;</span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line"></span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">av_frame_test1</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVFrame* frame = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    frame = av_frame_alloc();</span><br><span class="line">    frame-&gt;nb_samples = <span class="number">1024</span>;</span><br><span class="line">    frame-&gt;format = AV_SAMPLE_FMT_S16;	<span class="comment">//AV_SAMPLE_FMT_S16 AV_SAMPLE_FMT_S16P</span></span><br><span class="line">    frame-&gt;channel_layout = AVA_CH_LAYOUT_MONO;</span><br><span class="line">    ret = av_frame_get_buffer(frame, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) size(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, frame-&gt;buf[<span class="number">0</span>]-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//AV_SAMPLE_FMT_S16P格式，buf[0]左声道数据，buf[1]右声道数据 </span></span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">1</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) size(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, frame-&gt;buf[<span class="number">1</span>]-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ret_count(frame-&gt;buf[<span class="number">0</span>]));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ret = av_frame_make_writable(frame);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ret_count(frame-&gt;buf[<span class="number">0</span>]));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    av_frame_unref(frame);</span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ret_count(frame-&gt;buf[<span class="number">0</span>]));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    av_frame_free(&amp;frame);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/08/24/FFmpeg%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/08/24/FFmpeg%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">FFmpeg基础</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-08-24 21:45:15" itemprop="dateCreated datePublished" datetime="2023-08-24T21:45:15+08:00">2023-08-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-16 18:36:38" itemprop="dateModified" datetime="2024-01-16T18:36:38+08:00">2024-01-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="播放器框架"><a href="#播放器框架" class="headerlink" title="播放器框架"></a>播放器框架</h1><pre class="mermaid">graph LR
-    媒体文件-->解复用器
-    解复用器-->音频包队列
-    音频包队列-->音频解码
-    音频解码-->采样帧队列
-    采样帧队列-->音频处理
-    音频处理-->扬声器
-    解复用器-->视频包队列
-    视频包队列-->视频解码
-    视频解码-->图像帧队列
-    图像帧队列-->图像处理
-    图像处理-->显示器</pre>
-
-<h1 id="常见音视频概念"><a href="#常见音视频概念" class="headerlink" title="常见音视频概念"></a>常见音视频概念</h1><h2 id="常用音视频术语"><a href="#常用音视频术语" class="headerlink" title="常用音视频术语"></a>常用音视频术语</h2><ul>
-<li><p>容器／文件（Conainer&#x2F;File）：即特定格式的多媒体文件，比如 mp4、flv、mkv 等。</p>
-</li>
-<li><p>媒体流（Stream）：表示时间轴上的一段连续数据，如一段声音数据、一段视频数据或一段字幕数据，可以是压缩的，也可以是非压缩的，压缩的数据需要关联特定的编解码器（有些码流音频他是纯 PCM）。</p>
-</li>
-<li><p>数据帧／数据包（Frame&#x2F;Packet）：通常，一个媒体流是由大量的数据帧组成的，对于压缩数据，帧对应着编解码器的最小处理单元，分属于不同媒体流的数据帧交错存储于容器之中。</p>
-</li>
-<li><p>编解码器：编解码器是以帧为单位实现压缩数据和原始数据之间的相互转换的。</p>
-</li>
-</ul>
-<h2 id="复用器"><a href="#复用器" class="headerlink" title="复用器"></a>复用器</h2><pre class="mermaid">graph LR
-    音频流-->按一定规则组合
-    视频流-->按一定规则组合
-    字幕流-->按一定规则组合
-    其他成分-->按一定规则组合
-    按一定规则组合-->视频文件</pre>
-
-<pre class="mermaid">graph LR
-    视频文件-->按一定规则拆分
-    按一定规则拆分-->音频流
-    按一定规则拆分-->视频流
-    按一定规则拆分-->字幕流
-    按一定规则拆分-->其他成分</pre>
-
-<h2 id="编解码器"><a href="#编解码器" class="headerlink" title="编解码器"></a>编解码器</h2><pre class="mermaid">graph LR
-    图像YUV数据--H264编码器-->H264帧
-    H264帧--H264解码器-->图像YUV数据</pre>
-
-<pre class="mermaid">graph LR
-    声音PCM数据--AAC编码器-->AAC帧
-    AAC帧--AAC解码器-->声音PCM数据</pre>
-
-<h1 id="FFmpeg库简介"><a href="#FFmpeg库简介" class="headerlink" title="FFmpeg库简介"></a>FFmpeg库简介</h1><h2 id="FFmpeg的整体结构"><a href="#FFmpeg的整体结构" class="headerlink" title="FFmpeg的整体结构"></a>FFmpeg的整体结构</h2><ul>
-<li>二进制程序：ffplay，ffprobe，ffmpeg</li>
-<li>ffmpeg库：libavutil，libavformat，libavcodec，libswscale，libswresample，libavfilter，libpostproc</li>
-<li>第三方编解码插件：fdk-aac，voaac_enc，x264</li>
-</ul>
-<h2 id="FFmpeg常用库"><a href="#FFmpeg常用库" class="headerlink" title="FFmpeg常用库"></a>FFmpeg常用库</h2><ul>
-<li><p>AVUtil：核心工具库，下面的许多其他模块都会依赖该库做一些基本的音视频处理操作。</p>
-</li>
-<li><p>AVFormat：文件格式和协议库，该模块是最重要的模块之一，封装了 Protocol层 和 Demuxer、Muxer 层，使得协议和格式对于开发者来说是透明的。</p>
-</li>
-<li><p>AVCodec：编解码库，封装了 Codec 层，但是有一些Codec是具备自己的License的，<strong>FFmpeg 是不会默认添加像 libx264、FDK-AAC 等库的</strong>，但是 FFmpeg 就像一个平台一样，可以将其他的第三方的 Codec 以插件的方式添加进来，然后为开发者提供统一的接口。</p>
-</li>
-<li><p>AVFilter：音视频滤镜库，该模块提供了包括<strong>音频特效和视频特效</strong>的处理，在使用 FFmpeg 的 API 进行编解码的过程中，直接使用该模块为音视频数据做特效处理是非常方便同时也非常高效的一种方式。</p>
-</li>
-<li><p>AVDevice：输入输出设备库，比如，需要编译出播放声音或者视频的工具ffplay，就需要确保该模块是打开的，同时也需要SDL的预先编译，因为该设备模块播放声音与播放视频使用的都是 SDL 库。</p>
-</li>
-<li><p>SwrRessample：该模块可用于<strong>音频重采样</strong>，可以对数字音频进行声道数、数据格式、采样率等多种基本信息的转换。</p>
-</li>
-<li><p>SWScale：该模块是将<strong>图像进行格式转换</strong>的模块，比如，可以将 YUV 的数据转换为 RGB 的数据，缩放尺寸由 1280 * 720 变为 800 * 480。 </p>
-</li>
-<li><p>PostProc：该模块可用于进行后期处理，当我们使用 AVFilter 的时候需要打开该模块的开关，因为 Filter 中会使用到该模块的一些基础函数。</p>
-</li>
-</ul>
-<h1 id="FFmpeg函数简介"><a href="#FFmpeg函数简介" class="headerlink" title="FFmpeg函数简介"></a>FFmpeg函数简介</h1><h2 id="封装格式函数"><a href="#封装格式函数" class="headerlink" title="封装格式函数"></a>封装格式函数</h2><ul>
-<li>avformat_alloc_context()：负责申请一个 AVFormatContext 结构的内存，并进行简单初始化。</li>
-<li>avformat_free_context()：释放该结构里的所有东西以及该结构本身。</li>
-<li>avformat_open_input()；打开输入视频文件。</li>
-<li>avformat_close_input()；关闭解复用器。关闭后就不再需要使用 avformat_free_context 进行释放。</li>
-<li>avformat_find_stream_info()：获取音视频文件信息。</li>
-<li>av_read_frame()：读取音视频包。</li>
-<li>avformat_seek_file()：定位文件。</li>
-<li>av_seek_frame()：定位文件。</li>
-</ul>
-<h2 id="解封装流程"><a href="#解封装流程" class="headerlink" title="解封装流程"></a>解封装流程</h2><pre class="mermaid">graph TB
-    A[分配解复用器上下文 avformat_alloc_context]-->B[根据url打开本地文件或网络流 avformat_open_input]
-    B-->C[读取媒体的部分数据包以获取码流信息 avformat_find_stream_info]
-    C-->D[定位文件 avformat_seek_file 或 av_seek_frame]
-    D-->E[从文件中循环读取数据包 av_read_frame]
-    E-->F[关闭解复用器 avformat_close_input]</pre>
-
-<h2 id="解码器函数"><a href="#解码器函数" class="headerlink" title="解码器函数"></a>解码器函数</h2><ul>
-<li>avcodec_alloc_context3()：分配解码器上下文。</li>
-<li>avcodec_find_decoder()：根据 ID 查找解码器。</li>
-<li>avcodec_find_decoder_by_name()：根据解码器名字查找解码器。</li>
-<li>avcodec_open2()：打开编解码器。</li>
-<li><del>avcodec_decode_video2()：解码一帧视频数据。</del></li>
-<li><del>avcodec_decode_audio4()：解码一帧音频数据。</del></li>
-<li>avcodec_send_packet()：发送编码数据包。</li>
-<li>avcodec_receive_frame()：接收解码后数据。</li>
-<li>avcodec_free_context()：释放解码器上下文，包含了 avcodec_close()。</li>
-<li>avcodec_close()：关闭解码器。</li>
-</ul>
-<h2 id="解码流程"><a href="#解码流程" class="headerlink" title="解码流程"></a>解码流程</h2><pre class="mermaid">graph TB
-    A[分配编解码器上下文 avcodec_alloc_context3]-->B[将码流中的编解码器信息拷贝到 AVCodecContex avcodec_parameters_to_context]
-    B-->C[根据编解码器信息查找相应的解码器或指定解码器 avcodec_find_decoder/avcodec_find_decoder_by_name]
-    C-->D[打开编解码器并关联到 AVCodecContex avcodec_open2]
-    D-->E[循环向解码器发送数据包 avcodec_send_packet]
-    E-->F[循环接收解码后的帧 avcodec_receive_frame]
-    F-->G[关闭解码器和释放上下文avcodec_close avcodec_free_context]</pre>
-
-<h1 id="FFmpeg组件注册方式"><a href="#FFmpeg组件注册方式" class="headerlink" title="FFmpeg组件注册方式"></a>FFmpeg组件注册方式</h1><h2 id="FFmpeg3-x组件注册方式"><a href="#FFmpeg3-x组件注册方式" class="headerlink" title="FFmpeg3.x组件注册方式"></a>FFmpeg3.x组件注册方式</h2><p>使用 ffmpeg，首先要执行 av_register_all，把全局的解码器、编码器等结构体注册到<strong>各自全局的对象链表里</strong>，以便后面查找调用。</p>
-<h2 id="FFmpeg4-x组件注册方式"><a href="#FFmpeg4-x组件注册方式" class="headerlink" title="FFmpeg4.x组件注册方式"></a>FFmpeg4.x组件注册方式</h2><p>FFmpeg内部去做，不需要用户调用API去注册。</p>
-<ul>
-<li>以codec编解码器为例：<ul>
-<li>在configure的时候生成要注册的组件</li>
-<li>.&#x2F;configure:7203:print_enabled_components libavcodec&#x2F;codec_list.c AVCodec codec_list $CODEC_LIST 这里会生成一个codec_list.c 文件，里面只有 static const AVCodec * const codec_list[] 数组。</li>
-<li>在libavcodec&#x2F;allcodecs.c 将 static const AVCodec * const codec_list[] 的编解码器用链表的方式组织起来。</li>
-</ul>
-</li>
-</ul>
-<h1 id="FFmpeg数据结构"><a href="#FFmpeg数据结构" class="headerlink" title="FFmpeg数据结构"></a>FFmpeg数据结构</h1><h2 id="常见数据结构简介"><a href="#常见数据结构简介" class="headerlink" title="常见数据结构简介"></a>常见数据结构简介</h2><ul>
-<li><p>AVFormatContext：封装格式上下文结构体，也是统领全局的结构体，保存了视频文件封装格式相关信息。</p>
-</li>
-<li><p>AVInputFormat：demuxer，每种封装格式（例如 FLV, MKV, MP4, AVI）对应一个该结构体。</p>
-</li>
-<li><p>AVOutputFormat：muxer。</p>
-</li>
-<li><p>AVStream：视频文件中每个视频（音频）流对应一个该结构体。</p>
-</li>
-<li><p>AVCodecContext：编解码器上下文结构体，保存了视频（音频）编解码相关信息。</p>
-</li>
-<li><p>AVCodec：每种视频（音频）编解码器(例如 H.264 解码器)对应一个该结构体。</p>
-</li>
-<li><p>AVPacket：存储一帧压缩编码数据。</p>
-</li>
-<li><p>AVFrame：存储一帧解码后像素（采样）数据。</p>
-</li>
-</ul>
-<h2 id="FFmpeg数据结构之间的关系"><a href="#FFmpeg数据结构之间的关系" class="headerlink" title="FFmpeg数据结构之间的关系"></a>FFmpeg数据结构之间的关系</h2><ul>
-<li><p>面向对象的思想，包含数据结构和方法的结构体。</p>
-</li>
-<li><p>AVFormatContext 和 AVInputFormat 之间的关系</p>
-<ul>
-<li><p>AVFormatContext API 用户调用，AVInputFormat 主要是 FFMPEG 内部调用。</p>
-</li>
-<li><p>AVFormatContext 封装格式上下文结构体——&gt;数据。</p>
-</li>
-<li><p>AVInputFormat 每种封装格式（例如 FLV, MKV, MP4）——&gt;方法。</p>
-</li>
-</ul>
-</li>
-<li><p>AVCodecContext 和 AVCodec 之间的关系</p>
-<ul>
-<li>AVCodecContext 编码器上下文结构体——&gt;数据。</li>
-<li>AVCodec 每种视频（音频）编解码器——&gt;方法。</li>
-</ul>
-</li>
-<li><p>AVFormatContext，AVStream 和 AVCodecContext 之间的关系</p>
-<ul>
-<li>AVFormatContext 包含多种 AVStream。</li>
-<li>AVStream 包含 AVCodecParameters，通过 avformat_find_stream_info() 查找相应流参数。</li>
-<li>通过 avcodec_parameters_to_context() 拷贝 AVCodecParameters 到 AVCodecContext 中。</li>
-</ul>
-</li>
-<li><p>AVPacket 和 AVFrame 之间的关系</p>
-<ul>
-<li>AVPacket 解码获得 AVFrame。</li>
-<li>AVFrame 编码获得 AVPacket。</li>
-</ul>
-</li>
-</ul>
 
       
     </div>

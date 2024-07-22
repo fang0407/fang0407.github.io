@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">83</span>
+          <span class="site-state-item-count">84</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,135 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/07/22/YOLOv5%E8%AE%AD%E7%BB%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/07/22/YOLOv5%E8%AE%AD%E7%BB%83/" class="post-title-link" itemprop="url">YOLOv5训练</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-07-22 19:04:20 / Modified: 19:05:37" itemprop="dateCreated datePublished" datetime="2024-07-22T19:04:20+08:00">2024-07-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DeepLearning/" itemprop="url" rel="index"><span itemprop="name">DeepLearning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h1><p>系统环境：</p>
+<ul>
+<li>操作系统：ubuntu16.04</li>
+<li>显卡：Tesla T4</li>
+<li>显卡驱动：460.39</li>
+</ul>
+<p>YOLOv5 下载：</p>
+<ul>
+<li>YOLO v5&#x2F;v6.0 <a target="_blank" rel="noopener" href="https://github.com/ultralytics/yolov5/archive/refs/tags/v6.0.tar.gz">源代码</a> </li>
+<li>预训练模型 <a target="_blank" rel="noopener" href="https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5s.pt">yolov5s.pt</a></li>
+</ul>
+<p>依赖环境：</p>
+<ul>
+<li><p>下载 Anaconda，创建 <code>conda create -n yolo_v5</code>，并进入 <code>conda activate yolo_v5</code></p>
+</li>
+<li><p>安装 torch gpu 版本 <code>pip install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html</code> 参考 <a target="_blank" rel="noopener" href="https://pytorch.org/get-started/previous-versions/">https://pytorch.org/get-started/previous-versions/</a></p>
+</li>
+<li><p>修改 YOLOv5 的源代码中的 requirements.txt 文件后安装 <code>pip install -r requirements.txt</code></p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"># pip install -r requirements.txt</span><br><span class="line">  </span><br><span class="line"># Base ----------------------------------------</span><br><span class="line">matplotlib==3.2.2</span><br><span class="line">numpy==1.18.5</span><br><span class="line">opencv-python==4.1.2.30</span><br><span class="line">Pillow==7.1.2</span><br><span class="line">PyYAML==5.3.1</span><br><span class="line">requests==2.23.0</span><br><span class="line">scipy==1.4.1</span><br><span class="line"># torch&gt;=1.7.0</span><br><span class="line"># torchvision&gt;=0.8.1</span><br><span class="line">tqdm==4.41.0</span><br><span class="line"></span><br><span class="line"># Logging -------------------------------------</span><br><span class="line">tensorboard==2.4.1</span><br><span class="line"># wandb</span><br><span class="line"></span><br><span class="line"># Plotting ------------------------------------</span><br><span class="line">pandas==1.1.4</span><br><span class="line">seaborn==0.11.0</span><br><span class="line"></span><br><span class="line"># Export --------------------------------------</span><br><span class="line"># coremltools&gt;=4.1  # CoreML export</span><br><span class="line"># onnx&gt;=1.9.0  # ONNX export</span><br><span class="line"># onnx-simplifier&gt;=0.3.6  # ONNX simplifier</span><br><span class="line"># scikit-learn==0.19.2  # CoreML quantization</span><br><span class="line"># tensorflow&gt;=2.4.1  # TFLite export</span><br><span class="line"># tensorflowjs&gt;=3.9.0  # TF.js export</span><br><span class="line"></span><br><span class="line"># Extras --------------------------------------</span><br><span class="line"># albumentations&gt;=1.0.3</span><br><span class="line"># Cython  # for pycocotools https://github.com/cocodataset/cocoapi/issues/172</span><br><span class="line"># pycocotools&gt;=2.0  # COCO mAP</span><br><span class="line"># roboflow</span><br><span class="line">thop  # FLOPs computation</span><br></pre></td></tr></table></figure>
+
+<h1 id="生成数据集"><a href="#生成数据集" class="headerlink" title="生成数据集"></a>生成数据集</h1><ul>
+<li><p>分别创建 <code>test</code>、<code>train</code> 和 <code>val</code> 目录，各个目录分别创建 <code>images</code> 和 <code>labels</code> 目录</p>
+<ul>
+<li><p><code>images</code> 用于存储图片</p>
+</li>
+<li><p><code>labels</code> 用于存储标签</p>
+<ul>
+<li>每个文件对应 <code>images</code> 中的图片名称后缀变成 .txt</li>
+<li>每个目标对应一行</li>
+<li>其中每一行格式为 <code>class x_center y_center width height</code></li>
+<li>归一化 xywh，将 <code>x_center</code> 和 <code>width</code> 除以图片宽度，<code>y_center</code> 和 <code>height</code> 除以图片高度</li>
+<li>类别数字从零开始索引</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>创建 <code>data/mydataset.yml</code> 文件</p>
+<ul>
+<li>修改数据集的路径</li>
+<li>修改类别数量以及名字</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]</span></span><br><span class="line"><span class="attr">path:</span> <span class="string">/path/data/dataset</span>  <span class="comment"># dataset root dir</span></span><br><span class="line"><span class="attr">train:</span> <span class="string">train/images</span>  <span class="comment"># train images (relative to &#x27;path&#x27;) 128 images</span></span><br><span class="line"><span class="attr">val:</span> <span class="string">val/images</span>  <span class="comment"># val images (relative to &#x27;path&#x27;) 128 images</span></span><br><span class="line"><span class="attr">test:</span> <span class="string">test/images</span>  <span class="comment"># test images (optional)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Classes</span></span><br><span class="line"><span class="attr">nc:</span> <span class="number">11</span>  <span class="comment"># number of classes</span></span><br><span class="line"><span class="attr">names:</span> [<span class="string">&quot;animals&quot;</span>, <span class="string">&quot;cat&quot;</span>, <span class="string">&quot;chicken&quot;</span>, <span class="string">&quot;cow&quot;</span>, <span class="string">&quot;dog&quot;</span>, <span class="string">&quot;fox&quot;</span>, <span class="string">&quot;goat&quot;</span>, <span class="string">&quot;horse&quot;</span>, <span class="string">&quot;person&quot;</span>, <span class="string">&quot;racoon&quot;</span>, <span class="string">&quot;skunk&quot;</span>]  <span class="comment"># class names</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h1><p><code>python train.py --weights ./yolov5s.pt --cfg ./models/yolov5s.yaml --data ./data/mydataset.yaml --device 0,1</code></p>
+<p>训练完成后在当前目录 <code>runs/train/exp/weights</code> 生成 best.pt 和 last.pt</p>
+<h1 id="预测"><a href="#预测" class="headerlink" title="预测"></a>预测</h1><p><code>python detect.py --weights ./runs/train/exp/weights/best.pt --source ./data/dataset/test/images --device 0</code></p>
+<p>预测完成后的图片当前目录 <code>runs/detect/exp/</code></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2715,110 +2844,6 @@
 <li>mime&#x2F;multipart.Part 实现了 io.Reader</li>
 <li>net&#x2F;conn 分别实现了 io.Reader 和 io.Writer(Conn接口定义了Read&#x2F;Write)</li>
 </ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/01/20/Go-%E8%A7%A3%E6%9E%90JSON/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/01/20/Go-%E8%A7%A3%E6%9E%90JSON/" class="post-title-link" itemprop="url">Go-解析JSON</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2024-01-20 09:48:43" itemprop="dateCreated datePublished" datetime="2024-01-20T09:48:43+08:00">2024-01-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-21 21:32:27" itemprop="dateModified" datetime="2024-01-21T21:32:27+08:00">2024-01-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="编码JSON"><a href="#编码JSON" class="headerlink" title="编码JSON"></a>编码JSON</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 编码 json</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Marshal</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>)</span><br><span class="line"><span class="comment">// 格式化编码</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MarshalIndent</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;, prefix, indent <span class="type">string</span>)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>)</span><br></pre></td></tr></table></figure>
-
-<h2 id="基本序列化"><a href="#基本序列化" class="headerlink" title="基本序列化"></a>基本序列化</h2><p>通过结构体生成 JSON，示例代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> user <span class="keyword">struct</span> &#123;</span><br><span class="line">    Id       <span class="type">int</span></span><br><span class="line">    Name     <span class="type">string</span></span><br><span class="line">    Subjects []<span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewUser</span><span class="params">(id <span class="type">int</span>, name <span class="type">string</span>, subjects []<span class="type">string</span>)</span></span> *user &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;user&#123;</span><br><span class="line">        Id:       id,</span><br><span class="line">        Name:     name,	</span><br><span class="line">        Subjects: subjects,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	u := NewUser(<span class="number">1</span>, <span class="string">&quot;小明&quot;</span>, []<span class="type">string</span>&#123;<span class="string">&quot;c++&quot;</span>, <span class="string">&quot;golang&quot;</span>&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> jsUser, err := json.Marshal(u); err == <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="type">string</span>(jsUser))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过 map 生成 JSON，示例代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 创建一个保存键值对的映射</span></span><br><span class="line">    user := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;)</span><br><span class="line">    user[<span class="string">&quot;name&quot;</span>] = <span class="string">&quot;小明&quot;</span></span><br><span class="line">    user[<span class="string">&quot;age&quot;</span>] = <span class="number">18</span></span><br><span class="line">    user[<span class="string">&quot;subjects &quot;</span>] = []<span class="type">string</span>&#123;<span class="string">&quot;Go&quot;</span>, <span class="string">&quot;C++&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> jsUser, err := json.Marshal(user); err == <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="type">string</span>(jsUser))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>注意：结构体中各个字段名的<strong>首字母必须大写</strong>，只有导出的字段首字母是大写才能被外部包访问。</p>
-<h2 id="使用tag指定字段名"><a href="#使用tag指定字段名" class="headerlink" title="使用tag指定字段名"></a>使用tag指定字段名</h2><p>默认情况下使用结构体的字段名，可以通过给结构体字段添加 <code>tag</code> 来指定序列化生成的字段名。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> user <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// Id 不会导出到 JSON 中</span></span><br><span class="line">	Id <span class="type">int</span> <span class="string">`json:&quot;-&quot;`</span></span><br><span class="line">	<span class="comment">// Name 的键改成 uname</span></span><br><span class="line">	Name <span class="type">string</span> <span class="string">`json:&quot;uname&quot;`</span></span><br><span class="line">	<span class="comment">// 如果 Subjects 为空，不输出到 JSON 中</span></span><br><span class="line">	Subjects []<span class="type">string</span> <span class="string">`json:&quot;subjects,omitempty&quot;`</span></span><br><span class="line">	<span class="comment">// 转换为字符串类型输出</span></span><br><span class="line">	Age <span class="type">int</span> <span class="string">`json:&quot;age,string&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	u := user&#123;</span><br><span class="line">		Id:   <span class="number">1</span>,</span><br><span class="line">		Name: <span class="string">&quot;小明&quot;</span>,</span><br><span class="line">		Age:  <span class="number">18</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> jsUser, err := json.MarshalIndent(u, <span class="string">&quot;&quot;</span>, <span class="string">&quot;  &quot;</span>); err == <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="type">string</span>(jsUser))</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">        // 输出结果</span></span><br><span class="line"><span class="comment">        &#123;</span></span><br><span class="line"><span class="comment">         &quot;uname&quot;: &quot;小明&quot;,</span></span><br><span class="line"><span class="comment">         &quot;age&quot;: &quot;18&quot;</span></span><br><span class="line"><span class="comment">        &#125;</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>总结：</p>
-<ol>
-<li>字段的 <code>tag</code> 是 <code>-</code>，那么这个字段不会输出到 JSON。</li>
-<li><code>tag</code> 中带有自定义名称，那么这个自定义名称会出现在 JSON 的字段名中。</li>
-<li><code>tag</code> 中如果带有 <code>,omitempty</code> 选项，那么如果该字段值为空，就不会输出到 JSON 串中。</li>
-<li>如果字段类型是 bool、int、int64 等，而 <code>tag</code> 中带有 <code>,string</code> 选项，那么这个字段在输出到 JSON 的时候会把该字段的值转换成字符串。</li>
-</ol>
-<p>参考链接：<a target="_blank" rel="noopener" href="https://www.liwenzhou.com/posts/Go/json-tricks/#c-0-0-1">https://www.liwenzhou.com/posts/Go/json-tricks/#c-0-0-1</a></p>
 
       
     </div>

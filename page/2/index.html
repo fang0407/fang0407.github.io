@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">83</span>
+          <span class="site-state-item-count">84</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,110 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/01/20/Go-%E8%A7%A3%E6%9E%90JSON/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/01/20/Go-%E8%A7%A3%E6%9E%90JSON/" class="post-title-link" itemprop="url">Go-解析JSON</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-01-20 09:48:43" itemprop="dateCreated datePublished" datetime="2024-01-20T09:48:43+08:00">2024-01-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-21 21:32:27" itemprop="dateModified" datetime="2024-01-21T21:32:27+08:00">2024-01-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="编码JSON"><a href="#编码JSON" class="headerlink" title="编码JSON"></a>编码JSON</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 编码 json</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Marshal</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>)</span><br><span class="line"><span class="comment">// 格式化编码</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MarshalIndent</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;, prefix, indent <span class="type">string</span>)</span></span> ([]<span class="type">byte</span>, <span class="type">error</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="基本序列化"><a href="#基本序列化" class="headerlink" title="基本序列化"></a>基本序列化</h2><p>通过结构体生成 JSON，示例代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> user <span class="keyword">struct</span> &#123;</span><br><span class="line">    Id       <span class="type">int</span></span><br><span class="line">    Name     <span class="type">string</span></span><br><span class="line">    Subjects []<span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewUser</span><span class="params">(id <span class="type">int</span>, name <span class="type">string</span>, subjects []<span class="type">string</span>)</span></span> *user &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;user&#123;</span><br><span class="line">        Id:       id,</span><br><span class="line">        Name:     name,	</span><br><span class="line">        Subjects: subjects,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	u := NewUser(<span class="number">1</span>, <span class="string">&quot;小明&quot;</span>, []<span class="type">string</span>&#123;<span class="string">&quot;c++&quot;</span>, <span class="string">&quot;golang&quot;</span>&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> jsUser, err := json.Marshal(u); err == <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="type">string</span>(jsUser))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过 map 生成 JSON，示例代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 创建一个保存键值对的映射</span></span><br><span class="line">    user := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">interface</span>&#123;&#125;)</span><br><span class="line">    user[<span class="string">&quot;name&quot;</span>] = <span class="string">&quot;小明&quot;</span></span><br><span class="line">    user[<span class="string">&quot;age&quot;</span>] = <span class="number">18</span></span><br><span class="line">    user[<span class="string">&quot;subjects &quot;</span>] = []<span class="type">string</span>&#123;<span class="string">&quot;Go&quot;</span>, <span class="string">&quot;C++&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> jsUser, err := json.Marshal(user); err == <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="type">string</span>(jsUser))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：结构体中各个字段名的<strong>首字母必须大写</strong>，只有导出的字段首字母是大写才能被外部包访问。</p>
+<h2 id="使用tag指定字段名"><a href="#使用tag指定字段名" class="headerlink" title="使用tag指定字段名"></a>使用tag指定字段名</h2><p>默认情况下使用结构体的字段名，可以通过给结构体字段添加 <code>tag</code> 来指定序列化生成的字段名。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> user <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// Id 不会导出到 JSON 中</span></span><br><span class="line">	Id <span class="type">int</span> <span class="string">`json:&quot;-&quot;`</span></span><br><span class="line">	<span class="comment">// Name 的键改成 uname</span></span><br><span class="line">	Name <span class="type">string</span> <span class="string">`json:&quot;uname&quot;`</span></span><br><span class="line">	<span class="comment">// 如果 Subjects 为空，不输出到 JSON 中</span></span><br><span class="line">	Subjects []<span class="type">string</span> <span class="string">`json:&quot;subjects,omitempty&quot;`</span></span><br><span class="line">	<span class="comment">// 转换为字符串类型输出</span></span><br><span class="line">	Age <span class="type">int</span> <span class="string">`json:&quot;age,string&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	u := user&#123;</span><br><span class="line">		Id:   <span class="number">1</span>,</span><br><span class="line">		Name: <span class="string">&quot;小明&quot;</span>,</span><br><span class="line">		Age:  <span class="number">18</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> jsUser, err := json.MarshalIndent(u, <span class="string">&quot;&quot;</span>, <span class="string">&quot;  &quot;</span>); err == <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="type">string</span>(jsUser))</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">        // 输出结果</span></span><br><span class="line"><span class="comment">        &#123;</span></span><br><span class="line"><span class="comment">         &quot;uname&quot;: &quot;小明&quot;,</span></span><br><span class="line"><span class="comment">         &quot;age&quot;: &quot;18&quot;</span></span><br><span class="line"><span class="comment">        &#125;</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总结：</p>
+<ol>
+<li>字段的 <code>tag</code> 是 <code>-</code>，那么这个字段不会输出到 JSON。</li>
+<li><code>tag</code> 中带有自定义名称，那么这个自定义名称会出现在 JSON 的字段名中。</li>
+<li><code>tag</code> 中如果带有 <code>,omitempty</code> 选项，那么如果该字段值为空，就不会输出到 JSON 串中。</li>
+<li>如果字段类型是 bool、int、int64 等，而 <code>tag</code> 中带有 <code>,string</code> 选项，那么这个字段在输出到 JSON 的时候会把该字段的值转换成字符串。</li>
+</ol>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://www.liwenzhou.com/posts/Go/json-tricks/#c-0-0-1">https://www.liwenzhou.com/posts/Go/json-tricks/#c-0-0-1</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -5804,174 +5908,6 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BenchmarkHello    10000000    282 ns/op</span><br></pre></td></tr></table></figure>
 
 <p>意味着循环执行了 10000000 次，每次循环花费 282 纳秒 (ns)。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/12/07/Janus%E6%90%AD%E5%BB%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/12/07/Janus%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">Janus搭建</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-12-07 20:21:42" itemprop="dateCreated datePublished" datetime="2023-12-07T20:21:42+08:00">2023-12-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:39:19" itemprop="dateModified" datetime="2023-12-30T22:39:19+08:00">2023-12-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Janus/" itemprop="url" rel="index"><span itemprop="name">Janus</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Janus 是⼀个开源的，通过 C 语⾔实现了对 WebRTC ⽀持的 Gateway；Janus ⾃身实现得很简单，提供插件机制来⽀持不同的业务逻辑，配合官⽅⾃带插件就可以⽤来实现⾼效的 Media Server 服务。</p>
-<p>本⽂主要介绍如何在 Ubuntu 16.04 下搭建起 janus 服务器，实现 janus 官⽅ Demo 浏览器与 Android APP Demo（janus-gateway-android）之间的⾳视频通话。 </p>
-<h1 id="命令安装依赖"><a href="#命令安装依赖" class="headerlink" title="命令安装依赖"></a>命令安装依赖</h1><p>编译运⾏ Janus Server 需要依赖较多的⼀些第三⽅库，⽽这些依赖库在 Ubuntu 下主要通过 aptitude 进⾏安装，⾸先通过安装 aptitude：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install aptitude</span><br></pre></td></tr></table></figure>
-
-<p>Ubuntu 下通过 aptitude 批量安装依赖⼯具包：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">sudo aptitude install libmicrohttpd-dev libjansson-dev libnice-dev \</span><br><span class="line">	libssl1.0.1-dev libsrtp-dev libsofia-sip-ua-dev libglib2.3.4-dev \</span><br><span class="line">	libopus-dev libogg-dev libcurl4-openssl-dev pkg-config gengetopt \</span><br><span class="line">	libtool automake</span><br><span class="line">	</span><br><span class="line">sudo apt install cmake</span><br><span class="line">sudo aptitude install libconfig-dev</span><br><span class="line">sudo aptitude install libssl-dev</span><br><span class="line">sudo aptitude install doxygen graphviz</span><br><span class="line"></span><br><span class="line"># ffmpeg库 ⽀持--enable-post-processing</span><br><span class="line">sudo aptitude install libavcodec-dev libavformat-dev libswscale-dev libavutil-dev</span><br></pre></td></tr></table></figure>
-
-<h1 id="源码安装依赖"><a href="#源码安装依赖" class="headerlink" title="源码安装依赖"></a>源码安装依赖</h1><h2 id="安装WebSocket"><a href="#安装WebSocket" class="headerlink" title="安装WebSocket"></a>安装WebSocket</h2><p>janus ⽀持 WebSocket 是可选项，如果不安装，编译 janus 时，默认不⽀持 WebSocket 的链接请求，⽽ Android APP Demo 是通过 WebSocket 与 janus 进⾏通信的，因为我们希望 Android APP Demo 能与浏览器（HTTP）进⾏视频通话，所以就必须要在编译 janus 时⽀持 WebSocket。</p>
-<p>依次执⾏以下命令，分别进⾏下载，编译，安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/warmcat/libwebsockets.git</span><br><span class="line">cd libwebsockets</span><br><span class="line">git branch -a 查看选择最新的稳定版本</span><br><span class="line">git checkout v3.2-stable 切换到最新稳定版本</span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_C_FLAGS=&quot;-fpic&quot; ..</span><br><span class="line">make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
-
-<p>安装成功后，在编译 janus 时，janus 默认会增加对 WebSocket 的集成，或者通过增加编译参数 <code>--enable-websockets</code> 打开 WebSocket 开关。</p>
-<h2 id="安装libsrtp"><a href="#安装libsrtp" class="headerlink" title="安装libsrtp"></a>安装libsrtp</h2><p>Janus 需要⾄少 version 1.5 以上的 libsrtp，如果系统中已经安装了 libsrtp，则⾸先卸载后，⼿动安装新版本，这⾥我们安装 libsrtp 2.2，依次执⾏以下命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/cisco/libsrtp/archive/v2.2.0.tar.gz</span><br><span class="line">tar xfv v2.2.0.tar.gz</span><br><span class="line">cd libsrtp-2.2.0</span><br><span class="line">./configure --prefix=/usr --enable-openssl</span><br><span class="line">make shared_library &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装libusrsctp"><a href="#安装libusrsctp" class="headerlink" title="安装libusrsctp"></a>安装libusrsctp</h2><p>libusrsctp⽀持<code>--enable-data-channels</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/Kurento/libusrsctp.git</span><br><span class="line">cd libusrsctp</span><br><span class="line">./bootstrap</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装libmicrohttpd"><a href="#安装libmicrohttpd" class="headerlink" title="安装libmicrohttpd"></a>安装libmicrohttpd</h2><p>libmicrohttpd⽀持<code>--enable-rest</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.71.tar.gz</span><br><span class="line">tar zxf libmicrohttpd-0.9.71.tar.gz</span><br><span class="line">cd libmicrohttpd-0.9.71/</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-
-<h2 id="编译Janus"><a href="#编译Janus" class="headerlink" title="编译Janus"></a>编译Janus</h2><p>通过 Git 下载 Janus 源码，并编译安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/meetecho/janus-gateway.git</span><br><span class="line">git tag 查看当前的 tag</span><br><span class="line">git checkout v0.10.4</span><br><span class="line">sh autogen.sh</span><br><span class="line">./configure --prefix=/opt/janus --enable-websockets --enable-post-processing --enable-docs --enable-rest --enable-data-channels</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-
-<p>Janus安装到 <code>/opt/janus</code> 路径，插件的so库在 <code>/opt/janus/lib/janus/plugins</code>。</p>
-<h1 id="配置和运⾏Janus"><a href="#配置和运⾏Janus" class="headerlink" title="配置和运⾏Janus"></a>配置和运⾏Janus</h1><h2 id="配置启动nginx"><a href="#配置启动nginx" class="headerlink" title="配置启动nginx"></a>配置启动nginx</h2><p>安装nginx，主要⽤来提供web访问。</p>
-<p><strong>⽣成证书</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/cert</span><br><span class="line">cd ~/cert</span><br><span class="line"># CA私钥</span><br><span class="line">openssl genrsa -out key.pem 2048</span><br><span class="line"># ⾃签名证书</span><br><span class="line">openssl req -new -x509 -key key.pem -out cert.pem -days 1095</span><br></pre></td></tr></table></figure>
-
-<p><strong>安装nginx</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#下载nginx 1.15.8版本</span><br><span class="line">wget http://nginx.org/download/nginx-1.15.8.tar.gz</span><br><span class="line">tar xvzf nginx-1.15.8.tar.gz</span><br><span class="line">cd nginx-1.15.8/</span><br><span class="line"></span><br><span class="line"># 配置，⼀定要⽀持https</span><br><span class="line">./configure --with-http_ssl_module</span><br><span class="line"></span><br><span class="line"># 编译</span><br><span class="line">make</span><br><span class="line"></span><br><span class="line">#安装</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-
-<p><strong>修改nginx配置⽂件</strong></p>
-<p>nginx配置文件路径<code>/usr/local/nginx/conf/nginx.conf</code>。</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># HTTPS server</span></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>       <span class="number">443</span> ssl;</span><br><span class="line">    <span class="attribute">server_name</span>  localhost;</span><br><span class="line">            <span class="comment"># 配置相应的key</span></span><br><span class="line">    <span class="attribute">ssl_certificate</span>      /root/cert/cert.pem;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span>  /root/cert/key.pem;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">ssl_session_cache</span>    shared:SSL:<span class="number">1m</span>;</span><br><span class="line">    <span class="attribute">ssl_session_timeout</span>  <span class="number">5m</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">ssl_ciphers</span>  HIGH:!aNULL:!MD5;</span><br><span class="line">    <span class="attribute">ssl_prefer_server_ciphers</span>  <span class="literal">on</span>;</span><br><span class="line">            <span class="comment"># 指向janus demo所在目录</span></span><br><span class="line">    <span class="section">location</span> / &#123;</span><br><span class="line">        <span class="attribute">root</span>   /opt/janus/share/janus/demos;</span><br><span class="line">        <span class="attribute">index</span>  index.html index.htm;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>启动nginx</strong></p>
-<p><code>sudo /usr/local/nginx/sbin/nginx</code></p>
-<p>可以访问到界面，但此时还不能正常通话。</p>
-<h2 id="安装启动coturn"><a href="#安装启动coturn" class="headerlink" title="安装启动coturn"></a>安装启动coturn</h2><p><strong>安装</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libssl-dev</span><br><span class="line">sudo apt-get install libevent-dev</span><br><span class="line"></span><br><span class="line">wget http://coturn.net/turnserver/v4.5.0.7/turnserver-4.5.0.7.tar.gz</span><br><span class="line">tar xfz turnserver-4.5.0.7.tar.gz</span><br><span class="line">cd turnserver-4.5.0.7</span><br><span class="line"></span><br><span class="line">./configure</span><br><span class="line">make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure>
-
-<p><strong>启动</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo turnserver -L 0.0.0.0 --min-port 50000 --max-port 60000  -a -u test:123456 -v -f -r nort.gov</span><br></pre></td></tr></table></figure>
-
-<h2 id="启动Video-Room"><a href="#启动Video-Room" class="headerlink" title="启动Video Room"></a>启动Video Room</h2><h3 id="jcfg文件"><a href="#jcfg文件" class="headerlink" title="jcfg文件"></a>jcfg文件</h3><p>上述Janus安装目录在<code>/opt/janus</code>。其中各个目录的作用：</p>
-<table>
-<thead>
-<tr>
-<th>bin</th>
-<th>etc</th>
-<th>include</th>
-<th>lib</th>
-<th>share</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>可执行文件</td>
-<td>janus配置文件</td>
-<td>janus头文件</td>
-<td>janus库</td>
-<td>存放脚本或者文档，web demo也在这里</td>
-</tr>
-</tbody></table>
-<p>要先把.sample后缀的文件拷贝成jcfg后缀。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># 进到对应的目录</span><br><span class="line">cd /opt/janus/etc/janus</span><br><span class="line"></span><br><span class="line"># 拷贝文件</span><br><span class="line">sudo cp janus.jcfg.sample janus.jcfg</span><br><span class="line">sudo cp janus.transport.http.jcfg.sample janus.transport.http.jcfg</span><br><span class="line">sudo cp janus.transport.websockets.jcfg.sample janus.transport.websockets.jcfg</span><br><span class="line">sudo cp janus.plugin.videoroom.jcfg.sample janus.plugin.videoroom.jcfg</span><br><span class="line">sudo cp janus.transport.pfunix.jcfg.sample janus.transport.pfunix.jcfg</span><br><span class="line">sudo cp janus.plugin.streaming.jcfg.sample janus.plugin.streaming.jcfg</span><br><span class="line">sudo cp janus.plugin.recordplay.jcfg.sample janus.plugin.recordplay.jcfg</span><br><span class="line">sudo cp janus.plugin.voicemail.jcfg.sample janus.plugin.voicemail.jcfg</span><br><span class="line">sudo cp janus.plugin.sip.jcfg.sample janus.plugin.sip.jcfg</span><br><span class="line">sudo cp janus.plugin.nosip.jcfg.sample janus.plugin.nosip.jcfg</span><br><span class="line">sudo cp janus.plugin.textroom.jcfg.sample  janus.plugin.textroom.jcfg</span><br><span class="line">sudo cp janus.plugin.echotest.jcfg.sample janus.plugin.echotest.jcfg</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置janus-jcfg"><a href="#配置janus-jcfg" class="headerlink" title="配置janus.jcfg"></a>配置janus.jcfg</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 搜索 stun_server 修改：</span><br><span class="line">stun_server = &quot;IP地址&quot;</span><br><span class="line">stun_port = 3478</span><br><span class="line">nice_debug = false       </span><br><span class="line"></span><br><span class="line"># 搜索 turn_server 修改：</span><br><span class="line">turn_server = &quot;IP地址&quot;</span><br><span class="line">turn_port = 3478</span><br><span class="line">turn_type = &quot;udp&quot;</span><br><span class="line">turn_user = &quot;test&quot;</span><br><span class="line">turn_pwd = &quot;123456&quot;</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置janus-transport-http-jcfg"><a href="#配置janus-transport-http-jcfg" class="headerlink" title="配置janus.transport.http.jcfg"></a>配置janus.transport.http.jcfg</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">general: &#123;</span><br><span class="line">        #events = true              # Whether to notify event handlers about transport events (default=true)</span><br><span class="line">        json = &quot;indented&quot;           # Whether the JSON messages should be indented (default),</span><br><span class="line">                                    # plain (no indentation) or compact (no indentation and no spaces)</span><br><span class="line">        base_path = &quot;/janus&quot;        # Base path to bind to in the web server (plain HTTP only)</span><br><span class="line">        threads = &quot;unlimited&quot;       # unlimited=thread per connection, number=thread pool</span><br><span class="line">        http = true                 # Whether to enable the plain HTTP interface</span><br><span class="line">        port = 8088                 # Web server HTTP port</span><br><span class="line">        #interface = &quot;eth0&quot;         # Whether we should bind this server to a specific interface only</span><br><span class="line">        #ip = &quot;192.168.0.1&quot;     # Whether we should bind this server to a specific IP address (v4 or v6) only</span><br><span class="line">        https = true           # Whether to enable HTTPS (default=false)</span><br><span class="line">        secure_port = 8089     # Web server HTTPS port, if enabled</span><br><span class="line">        #secure_interface = &quot;eth0&quot;    # Whether we should bind this server to a specific interface only</span><br><span class="line">        #secure_ip = &quot;192.168.0.1&quot;    # Whether we should bind this server to a specific IP address (v4 or v6) only</span><br><span class="line">        #acl = &quot;127.,192.168.0.&quot;   # Only allow requests coming from this comma separated list of addresses</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">certificates: &#123;</span><br><span class="line">        cert_pem = &quot;/root/cert/cert.pem&quot;</span><br><span class="line">        cert_key = &quot;/root/cert/key.pem&quot;</span><br><span class="line">        #cert_pwd = &quot;secretpassphrase&quot;</span><br><span class="line">        #ciphers = &quot;PFS:-VERS-TLS1.0:-VERS-TLS1.1:-3DES-CBC:-ARCFOUR-128&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置janus-transport-websockets-jcfg"><a href="#配置janus-transport-websockets-jcfg" class="headerlink" title="配置janus.transport.websockets.jcfg"></a>配置janus.transport.websockets.jcfg</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">general: &#123;</span><br><span class="line">        #events = true            # Whether to notify event handlers about transport events (default=true)</span><br><span class="line">        json = &quot;indented&quot;         # Whether the JSON messages should be indented (default),</span><br><span class="line">                                  # plain (no indentation) or compact (no indentation and no spaces)</span><br><span class="line">        #pingpong_trigger = 30    # After how many seconds of idle, a PING should be sent</span><br><span class="line">        #pingpong_timeout = 10    # After how many seconds of not getting a PONG, a timeout should be detected</span><br><span class="line"></span><br><span class="line">        ws = true                 # Whether to enable the WebSockets API</span><br><span class="line">        ws_port = 8188            # WebSockets server port</span><br><span class="line">        #ws_interface = &quot;eth0&quot;    # Whether we should bind this server to a specific interface only</span><br><span class="line">        #ws_ip = &quot;192.168.0.1&quot;    # Whether we should bind this server to a specific IP address only</span><br><span class="line">        wss = true                # Whether to enable secure WebSockets</span><br><span class="line">        wss_port = 8989           # WebSockets server secure port, if enabled</span><br><span class="line">        #wss_interface = &quot;eth0&quot;   # Whether we should bind this server to a specific interface only</span><br><span class="line">        #wss_ip = &quot;192.168.0.1&quot;   # Whether we should bind this server to a specific IP address only</span><br><span class="line">        #ws_logging = &quot;err,warn&quot;  # libwebsockets debugging level as a comma separated list of things</span><br><span class="line">                                  # to debug, supported values: err, warn, notice, info, debug, parser,</span><br><span class="line">                                  # header, ext, client, latency, user, count (plus &#x27;none&#x27; and &#x27;all&#x27;)</span><br><span class="line">        #ws_acl = &quot;127.,192.168.0.&quot;   # Only allow requests coming from this comma separated list of addresses</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">certificates: &#123;</span><br><span class="line">        cert_pem = &quot;/root/cert/cert.pem&quot;</span><br><span class="line">        cert_key = &quot;/root/cert/key.pem&quot;</span><br><span class="line">        #cert_pwd = &quot;secretpassphrase&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="修改网页默认支持的wss协议"><a href="#修改网页默认支持的wss协议" class="headerlink" title="修改网页默认支持的wss协议"></a>修改网页默认支持的wss协议</h3><p>修改 <code>/opt/janus/share/janus/demos/videoroomtest.js</code>文件。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> server = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">protocol</span> === <span class="string">&#x27;http:&#x27;</span>)</span><br><span class="line">        server = <span class="string">&quot;http://&quot;</span> + <span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">hostname</span> + <span class="string">&quot;:8088/janus&quot;</span>;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">        server = <span class="string">&quot;https://&quot;</span> + <span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">hostname</span> + <span class="string">&quot;:8089/janus&quot;</span>;</span><br></pre></td></tr></table></figure>
-
-<p>将默认的https协议改为wss</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> server = <span class="string">&quot;wss://&quot;</span> + <span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">hostname</span> + <span class="string">&quot;:8989&quot;</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="运行-Janus"><a href="#运行-Janus" class="headerlink" title="运行 Janus"></a>运行 Janus</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/opt/janus/bin/janus --debug-level=5 --log-file=$HOME/janus-log</span><br></pre></td></tr></table></figure>
-
-<h3 id="测试web和web的通话"><a href="#测试web和web的通话" class="headerlink" title="测试web和web的通话"></a>测试web和web的通话</h3><p>开两个同样的网页，然后点击Demos中的Video Room的start，输入名字则开始进行音视频通话测试。</p>
-<p>参考链接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/205056453">https://zhuanlan.zhihu.com/p/205056453</a></p>
 
       
     </div>
