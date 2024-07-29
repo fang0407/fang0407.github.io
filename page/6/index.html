@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">84</span>
+          <span class="site-state-item-count">85</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,163 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/22/SDP%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/09/22/SDP%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">SDP协议</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-22 20:37:35" itemprop="dateCreated datePublished" datetime="2023-09-22T20:37:35+08:00">2023-09-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-16 18:45:29" itemprop="dateModified" datetime="2024-01-16T18:45:29+08:00">2024-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="SDP介绍"><a href="#SDP介绍" class="headerlink" title="SDP介绍"></a>SDP介绍</h1><p>SDP（Session Description Protocol） 完全是<strong>一种会话描述格式</strong>，它<strong>不属于传输协议</strong>，只使用不同的适当的传输协议，包括会话通知协议（SAP）、会话初始协议（SIP）、实时流协议（RTSP）、MIME 扩展协议的电子邮件以及超文本传输协议（HTTP）。SDP 协议是也是基于文本的协议，这样就能保证协议的可扩展性比较强，这样就使其具有广泛的应用范围。SDP 不支持会话内容或媒体编码的协商，所以在流媒体中只用来描述媒体信息。</p>
+<h1 id="SDP格式"><a href="#SDP格式" class="headerlink" title="SDP格式"></a>SDP格式</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;type&gt;=&lt;value&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>&lt;type&gt;</code>：大小写敏感的一个字符，代表特定的属性，比如 v 代表版本。</p>
+</li>
+<li><p><code>&lt;value&gt;</code>：结构化文本，格式与属性类型有关，UTF8 编码。</p>
+</li>
+<li><p><code>=</code> 两边不允许存在空格。</p>
+</li>
+</ul>
+<h2 id="必需字段"><a href="#必需字段" class="headerlink" title="必需字段"></a>必需字段</h2><ul>
+<li>v&#x3D;（协议版本号），一个会话描述的开始，前一个会话结束标志。</li>
+<li>o&#x3D;（会话源或者会话生成者，以及会话标识符）。</li>
+<li>s&#x3D;（会话名称）这个字段是个文本字符串，可以显示给会话参与者。</li>
+<li>t&#x3D;（会话时间）这个字段指明会话开始时间与结束时间。</li>
+<li>m&#x3D;（媒体）该字段用来指明媒体类型、数据应该发送到的传输端口，传输协议（例如 RTP）以及媒体格式（例如 RTP 负载格式）。</li>
+</ul>
+<h2 id="可选字段"><a href="#可选字段" class="headerlink" title="可选字段"></a>可选字段</h2><p>SDP 可选字段中，一些只能应用于会话级，一些只能应用于媒体级，还有一些可以应用于两种级别。对于应用于两种级别的字段，在某个具体媒体上，<strong>应用于媒体级的字段会覆盖应用于会话级的字段值</strong>。例如，某个字段其会话级的字段值为 X，媒体 1 的该字段值为 Y，那么值 X 应用于会话中除媒体类型 1 之外的所有媒体，而媒体 1 应用值 Y。</p>
+<p>可选字段如下：</p>
+<ul>
+<li>i&#x3D;（会话信息）对字段的文本描述，提供了比会话名称更多的信息。该字段既可以用于会话级也可以用于媒体级。 </li>
+<li>u&#x3D;（描述的 URI 地址）URI 信息，通过这个地址可以获取更多会话相关信息。例如，一个会议可能公布在 WEB 页面上，所以需要该 WEB 的 URI。每个会话只能提供一个 URI。</li>
+<li>E&#x3D;（E-mail 地址）负责会话个体的 E-mail 地址，可以有多个。只能用于会话级别。</li>
+<li>p&#x3D;（电话号码）同 email 一样，多个会话级别。</li>
+<li>c&#x3D;（连接信息）该字段提供连接数据，包括连接类型、网络类型和连接地址。可应用于会话级也可以用于媒体级。</li>
+<li>b&#x3D;（带宽信息）指明带宽需求，单位 kbit&#x2F;s, 可用于两个级别。</li>
+<li>r&#x3D;（重复次数）如果是有规律的日程安排活动，这个字段用来指明会话重复频次和时间。</li>
+<li>z&#x3D;（时区调整）用于按日程安排的有规律活动会话。会话可能会跨时区，避免时区变更造成的混乱。</li>
+<li>k&#x3D;（加密密钥）为了对媒体加密、解密，该字段提供了一个加密密钥或者规定了一个获取密钥的机制。可用于两个级别。</li>
+<li>a&#x3D;（属性）用于描述会话或者某个媒体的额外属性。</li>
+</ul>
+<p>可选字段中，连接信息字段是特别与条件相关的。因为该字段定义了数据应发送到的网络地址，所以必须被包含进会话描述中的某个地方。 </p>
+<h2 id="子字段"><a href="#子字段" class="headerlink" title="子字段"></a>子字段</h2><p>在 SDP 中许多字段采用多个子字段的形式，此时，这些字段值由多个以空格符间隔的多个值组成。格式如下：</p>
+<ul>
+<li>字段 名称&#x3D;&lt;子字段1的值&gt; &lt;子字段2的值&gt; &lt;子字段3的值&gt;</li>
+</ul>
+<p>例如：</p>
+<ul>
+<li>会话源（o） ：有六个子字段：用户名、会话 ID、版本、网络类型、地址类型、地址。 </li>
+<li>连接信息（c）：有三个子字段：网络类型、地址类型和连接地址。同会话源中含义不同，他们表示需要接收媒体数据的网络和地址，而不是生成会话的网络和地址。</li>
+<li>媒体信息（m）：有四个子字段：媒体类型、端口、传输协议、格式。</li>
+</ul>
+<p><strong>媒体信息</strong></p>
+<p>格式： m&#x3D;(媒体类型)（端口）（传送层）（格式列表）。</p>
+<p>媒体类型：音频、视频、应用、数据和控制。</p>
+<p>端口：媒体传送层端口。</p>
+<p>传送层：ip4 上大多基于 rtp&#x2F;udp上传送（RTP&#x2F;AVP）IETF RTP 协议，在 udp 上传输。</p>
+<p>格式列表： 对应对应的音频负载类型（PT）。</p>
+<p>例子：m&#x3D;video 0 RTP&#x2F;AVP 96 </p>
+<p><strong>属性</strong></p>
+<p>属性有两种形式，第一种是特征属性，第二种属于值属性。SDP 描述了多个建议属性。 </p>
+<ul>
+<li><p>特征属性</p>
+<ul>
+<li><p>例如 a&#x3D;sendonly，表明会话描述的发送者只希望发送数据而不打算接收数据，端口号无意义，可以置为 0。 </p>
+</li>
+<li><p>例如 a&#x3D;recvonly，表明这个会话描述的发送者只想接收数据而不打算发送数据。</p>
+</li>
+</ul>
+</li>
+<li><p>值属性</p>
+<ul>
+<li><p>例如 a&#x3D;rtpmp:&lt;负载类型&gt;&lt;编码名称&gt;&#x2F;&lt;时钟速率&gt;[&lt;编码参数&gt;]</p>
+</li>
+<li><p>rtpmap 属性提供了一个在 VoIP 应用中的重要属性使用方法，该属性可用于媒体流，在媒体格式不是静态的RTP负载类型时特别有用。严格来说，“rtpmap”只在使用动态负载类型情况下才是必须的，例如标准的 G.711 语音是静态 RTP 负载类型，采用如下方法就可以对它完整描述：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m=audio 45678 RTP/AVP 0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>而对动态负载来说需要指定更多信息才能使远端完全识别到媒体编码，例如 16 位线性编码 16 kHz 取样的立体声音就是一个动态 RTP 负载类型，如果我们采用动态负载类型 98 表示这个媒体流，那么 SDP 格式如下：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">m=audio 45678 RTP/AVP 98 </span><br><span class="line">a=rtpmap 98 L16/16000/2</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -3126,132 +3283,6 @@ SSRC3--RTP1-->混合器SSRC4
 
 <p>用于获取相对时间（relative time）。它返回一个 <code>int64_t</code> 类型的整数，表示当前系统时钟的相对时间，通常以微秒（μs）为单位。</p>
 <p>参考链接：<a target="_blank" rel="noopener" href="https://ffmpeg.xianwaizhiyin.net/ffplay/video_sync.html">https://ffmpeg.xianwaizhiyin.net/ffplay/video_sync.html</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/09/FFplay%E9%9F%B3%E8%A7%86%E9%A2%91%E8%A7%A3%E7%A0%81%E7%BA%BF%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/09/09/FFplay%E9%9F%B3%E8%A7%86%E9%A2%91%E8%A7%A3%E7%A0%81%E7%BA%BF%E7%A8%8B/" class="post-title-link" itemprop="url">FFplay音视频解码线程</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-09-09 15:25:21" itemprop="dateCreated datePublished" datetime="2023-09-09T15:25:21+08:00">2023-09-09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:40:11" itemprop="dateModified" datetime="2023-12-30T22:40:11+08:00">2023-12-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/FFplay/" itemprop="url" rel="index"><span itemprop="name">FFplay</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="视频解码线程"><a href="#视频解码线程" class="headerlink" title="视频解码线程"></a>视频解码线程</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">video_thread</span><span class="params">(<span class="type">void</span> *arg)</span></span><br><span class="line">&#123;</span><br><span class="line">    VideoState *is = arg;</span><br><span class="line">    AVFrame *frame = av_frame_alloc();</span><br><span class="line">    <span class="type">double</span> pts;</span><br><span class="line">    <span class="comment">//帧持续时间</span></span><br><span class="line">    <span class="type">double</span> duration;</span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line">    AVRational tb = is-&gt;video_st-&gt;time_base;</span><br><span class="line">    <span class="comment">//获取帧率</span></span><br><span class="line">    AVRational frame_rate = av_guess_frame_rate(is-&gt;ic, is-&gt;video_st, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!frame)</span><br><span class="line">        <span class="keyword">return</span> AVERROR(ENOMEM);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="comment">//获取解码后的视频帧</span></span><br><span class="line">        ret = get_video_frame(is, frame);</span><br><span class="line">        <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">goto</span> the_end;</span><br><span class="line">        <span class="keyword">if</span> (!ret)</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">            <span class="comment">// 1/帧率 = duration 单位秒, 没有帧率时则设置为0, 有帧率帧计算出帧间隔</span></span><br><span class="line">            duration = (frame_rate.num &amp;&amp; frame_rate.den ? </span><br><span class="line">                        av_q2d((AVRational)&#123;frame_rate.den, frame_rate.num&#125;) : <span class="number">0</span>);</span><br><span class="line">            <span class="comment">//根据AVStream timebase计算出pts值, 单位为秒</span></span><br><span class="line">            pts = (frame-&gt;pts == AV_NOPTS_VALUE) ? NAN : frame-&gt;pts * av_q2d(tb);</span><br><span class="line">            <span class="comment">//将解码后的视频帧插⼊队列</span></span><br><span class="line">            ret = queue_picture(is, frame, pts, duration, frame-&gt;pkt_pos, is-&gt;viddec.pkt_serial);</span><br><span class="line">            av_frame_unref(frame);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">goto</span> the_end;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">the_end:</span><br><span class="line">    av_frame_free(&amp;frame);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="获取解码后的视频帧"><a href="#获取解码后的视频帧" class="headerlink" title="获取解码后的视频帧"></a>获取解码后的视频帧</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">get_video_frame</span><span class="params">(VideoState *is, AVFrame *frame)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> got_picture;</span><br><span class="line">    <span class="comment">//解码</span></span><br><span class="line">    <span class="keyword">if</span> ((got_picture = decoder_decode_frame(&amp;is-&gt;viddec, frame, <span class="literal">NULL</span>)) &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="comment">//丢帧逻辑</span></span><br><span class="line">    <span class="keyword">if</span> (got_picture) &#123;</span><br><span class="line">        <span class="type">double</span> dpts = NAN;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (frame-&gt;pts != AV_NOPTS_VALUE)</span><br><span class="line">            dpts = av_q2d(is-&gt;video_st-&gt;time_base) * frame-&gt;pts;</span><br><span class="line"></span><br><span class="line">        frame-&gt;sample_aspect_ratio = av_guess_sample_aspect_ratio(is-&gt;ic, is-&gt;video_st, frame);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (framedrop&gt;<span class="number">0</span> || (framedrop &amp;&amp; get_master_sync_type(is) != AV_SYNC_VIDEO_MASTER)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (frame-&gt;pts != AV_NOPTS_VALUE) &#123;</span><br><span class="line">                <span class="type">double</span> diff = dpts - get_master_clock(is);</span><br><span class="line">                <span class="keyword">if</span> (!isnan(diff) &amp;&amp; <span class="built_in">fabs</span>(diff) &lt; AV_NOSYNC_THRESHOLD &amp;&amp;</span><br><span class="line">                    diff - is-&gt;frame_last_filter_delay &lt; <span class="number">0</span> &amp;&amp;</span><br><span class="line">                    is-&gt;viddec.pkt_serial == is-&gt;vidclk.serial &amp;&amp;</span><br><span class="line">                    is-&gt;videoq.nb_packets) &#123;</span><br><span class="line">                    is-&gt;frame_drops_early++;</span><br><span class="line">                    av_frame_unref(frame);</span><br><span class="line">                    got_picture = <span class="number">0</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> got_picture;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h3><p>调用decoder_decode_frame处理音视频帧解码。</p>
-<h4 id="获取解码后的帧"><a href="#获取解码后的帧" class="headerlink" title="获取解码后的帧"></a>获取解码后的帧</h4><p>同⼀播放序列流连续的情况下，不断调⽤avcodec_receive_frame获取解码后的frame。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (d-&gt;<span class="built_in">queue</span>-&gt;serial == d-&gt;pkt_serial) &#123;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (d-&gt;<span class="built_in">queue</span>-&gt;abort_request)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (d-&gt;avctx-&gt;codec_type) &#123;</span><br><span class="line">        <span class="keyword">case</span> AVMEDIA_TYPE_VIDEO:</span><br><span class="line">            ret = avcodec_receive_frame(d-&gt;avctx, frame);</span><br><span class="line">            <span class="keyword">if</span> (ret &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">/*</span></span><br><span class="line"><span class="comment">                decoder_reorder_pts：让ffmpeg排序pts 0=off 1=on -1=auto，默认为-1 </span></span><br><span class="line"><span class="comment">                （ffplay配置 -drp value 进⾏设置）</span></span><br><span class="line"><span class="comment">                0：frame的pts使⽤pkt_dts，这种情况基本不会出现</span></span><br><span class="line"><span class="comment">                1：frame保留⾃⼰的pts</span></span><br><span class="line"><span class="comment">                -1：frame的pts使⽤frame-&gt;best_effort_timestamp，</span></span><br><span class="line"><span class="comment">                    best_effort_timestamp是经过算法计算出来的值，</span></span><br><span class="line"><span class="comment">                    主要是“尝试为可能有错误的时间戳猜测出适当单调的时间戳”，</span></span><br><span class="line"><span class="comment">                    ⼤部分情况下还是frame-&gt;pts，或者就是frame-&gt;pkt_dts。</span></span><br><span class="line"><span class="comment">                */</span></span><br><span class="line">                <span class="keyword">if</span> (decoder_reorder_pts == <span class="number">-1</span>) &#123;</span><br><span class="line">                    frame-&gt;pts = frame-&gt;best_effort_timestamp;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!decoder_reorder_pts) &#123;</span><br><span class="line">                    frame-&gt;pts = frame-&gt;pkt_dts;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (ret == AVERROR_EOF) &#123;</span><br><span class="line">            d-&gt;finished = d-&gt;pkt_serial;</span><br><span class="line">            <span class="comment">//使⽤flush_pkt冲刷解码器后，如果要再次解码则需要调⽤avcodec_flush_buffers()</span></span><br><span class="line">            avcodec_flush_buffers(d-&gt;avctx);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//有取到帧就返回</span></span><br><span class="line">        <span class="keyword">if</span> (ret &gt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">while</span> (ret != AVERROR(EAGAIN));	<span class="comment">//没帧可读时ret返回EAGAIN</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="获取⼀个packet"><a href="#获取⼀个packet" class="headerlink" title="获取⼀个packet"></a>获取⼀个packet</h4><p>如果播放序列不⼀致（数据不连续）则过滤掉“过时”的packet。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (d-&gt;<span class="built_in">queue</span>-&gt;nb_packets == <span class="number">0</span>)</span><br><span class="line">        SDL_CondSignal(d-&gt;empty_queue_cond);	<span class="comment">//通知read_thread产生数据</span></span><br><span class="line">    <span class="keyword">if</span> (d-&gt;packet_pending) &#123;</span><br><span class="line">        <span class="comment">//如果还有待定的packet则使⽤它</span></span><br><span class="line">        <span class="comment">//如果avcodec_send_packet返回EAGAIN，则把当前pkt存⼊d-&gt;pkt，然后置标志位packet_pending为1。</span></span><br><span class="line">        av_packet_move_ref(&amp;pkt, &amp;d-&gt;pkt);</span><br><span class="line">        d-&gt;packet_pending = <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (packet_queue_get(d-&gt;<span class="built_in">queue</span>, &amp;pkt, <span class="number">1</span>, &amp;d-&gt;pkt_serial) &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">while</span> (d-&gt;<span class="built_in">queue</span>-&gt;serial != d-&gt;pkt_serial);	<span class="comment">//如果不是同⼀播放序列则继续读取</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="将packet送⼊解码器"><a href="#将packet送⼊解码器" class="headerlink" title="将packet送⼊解码器"></a>将packet送⼊解码器</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (pkt.data == flush_pkt.data) &#123;</span><br><span class="line">    avcodec_flush_buffers(d-&gt;avctx);</span><br><span class="line">    d-&gt;finished = <span class="number">0</span>;</span><br><span class="line">    d-&gt;next_pts = d-&gt;start_pts;</span><br><span class="line">    d-&gt;next_pts_tb = d-&gt;start_pts_tb;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (d-&gt;avctx-&gt;codec_type == AVMEDIA_TYPE_SUBTITLE) &#123;</span><br><span class="line">        <span class="type">int</span> got_frame = <span class="number">0</span>;</span><br><span class="line">        ret = avcodec_decode_subtitle2(d-&gt;avctx, sub, &amp;got_frame, &amp;pkt);</span><br><span class="line">        <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            ret = AVERROR(EAGAIN);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (got_frame &amp;&amp; !pkt.data) &#123;</span><br><span class="line">                d-&gt;packet_pending = <span class="number">1</span>;</span><br><span class="line">                av_packet_move_ref(&amp;d-&gt;pkt, &amp;pkt);</span><br><span class="line">            &#125;</span><br><span class="line">            ret = got_frame ? <span class="number">0</span> : (pkt.data ? AVERROR(EAGAIN) : AVERROR_EOF);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (avcodec_send_packet(d-&gt;avctx, &amp;pkt) == AVERROR(EAGAIN)) &#123;</span><br><span class="line">            av_log(d-&gt;avctx, AV_LOG_ERROR, </span><br><span class="line">                   <span class="string">&quot;Receive_frame and send_packet both returned EAGAIN, which is an API violation.\n&quot;</span>);</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            <span class="comment">//缓存到了⾃封装的Decoder的pkt（即是d-&gt;pkt），并将d-&gt;packet_pending = 1，以备下次继续使⽤该packet</span></span><br><span class="line">            d-&gt;packet_pending = <span class="number">1</span>;</span><br><span class="line">            av_packet_move_ref(&amp;d-&gt;pkt, &amp;pkt);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    av_packet_unref(&amp;pkt);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="丢帧"><a href="#丢帧" class="headerlink" title="丢帧"></a>丢帧</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//丢帧逻辑</span></span><br><span class="line"><span class="keyword">if</span> (got_picture) &#123;</span><br><span class="line">    <span class="type">double</span> dpts = NAN;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;pts != AV_NOPTS_VALUE)</span><br><span class="line">        dpts = av_q2d(is-&gt;video_st-&gt;time_base) * frame-&gt;pts;</span><br><span class="line"></span><br><span class="line">    frame-&gt;sample_aspect_ratio = av_guess_sample_aspect_ratio(is-&gt;ic, is-&gt;video_st, frame);</span><br><span class="line">	</span><br><span class="line">    <span class="comment">//framedrop &gt; 0 允许drop帧</span></span><br><span class="line">    <span class="keyword">if</span> (framedrop&gt;<span class="number">0</span> || (framedrop &amp;&amp; get_master_sync_type(is) != AV_SYNC_VIDEO_MASTER)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (frame-&gt;pts != AV_NOPTS_VALUE) &#123;</span><br><span class="line">            <span class="type">double</span> diff = dpts - get_master_clock(is);</span><br><span class="line">            <span class="keyword">if</span> (!isnan(diff) &amp;&amp; <span class="built_in">fabs</span>(diff) &lt; AV_NOSYNC_THRESHOLD &amp;&amp;	<span class="comment">//差值在可同步范围</span></span><br><span class="line">                diff - is-&gt;frame_last_filter_delay &lt; <span class="number">0</span> &amp;&amp;</span><br><span class="line">                is-&gt;viddec.pkt_serial == is-&gt;vidclk.serial &amp;&amp;	<span class="comment">//同⼀序列的包</span></span><br><span class="line">                is-&gt;videoq.nb_packets) &#123;	<span class="comment">//packet队列⾄少有1帧数据</span></span><br><span class="line">                is-&gt;frame_drops_early++;</span><br><span class="line">                av_frame_unref(frame);</span><br><span class="line">                got_picture = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="解码后的视频帧插⼊队列"><a href="#解码后的视频帧插⼊队列" class="headerlink" title="解码后的视频帧插⼊队列"></a>解码后的视频帧插⼊队列</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">queue_picture</span><span class="params">(VideoState *is, AVFrame *src_frame, <span class="type">double</span> pts, <span class="type">double</span> duration, <span class="type">int64_t</span> pos, <span class="type">int</span> serial)</span></span><br><span class="line">&#123;</span><br><span class="line">    Frame *vp;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(DEBUG_SYNC)</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;frame_type=%c pts=%0.3f\n&quot;</span>,</span><br><span class="line">           av_get_picture_type_char(src_frame-&gt;pict_type), pts);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!(vp = frame_queue_peek_writable(&amp;is-&gt;pictq)))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    vp-&gt;sar = src_frame-&gt;sample_aspect_ratio;</span><br><span class="line">    vp-&gt;uploaded = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    vp-&gt;width = src_frame-&gt;width;</span><br><span class="line">    vp-&gt;height = src_frame-&gt;height;</span><br><span class="line">    vp-&gt;format = src_frame-&gt;format;</span><br><span class="line"></span><br><span class="line">    vp-&gt;pts = pts;</span><br><span class="line">    vp-&gt;duration = duration;</span><br><span class="line">    vp-&gt;pos = pos;</span><br><span class="line">    vp-&gt;serial = serial;</span><br><span class="line"></span><br><span class="line">    set_default_window_size(vp-&gt;width, vp-&gt;height, vp-&gt;sar);</span><br><span class="line">    <span class="comment">//将src中所有数据拷⻉到dst中，并复位src，src无效</span></span><br><span class="line">    av_frame_move_ref(vp-&gt;frame, src_frame);</span><br><span class="line">    <span class="comment">//更新写索引位置</span></span><br><span class="line">    frame_queue_push(&amp;is-&gt;pictq);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="音频解码线程"><a href="#音频解码线程" class="headerlink" title="音频解码线程"></a>音频解码线程</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">audio_thread</span><span class="params">(<span class="type">void</span> *arg)</span></span><br><span class="line">&#123;</span><br><span class="line">    VideoState *is = arg;</span><br><span class="line">    AVFrame *frame = av_frame_alloc();</span><br><span class="line">    Frame *af;</span><br><span class="line">    <span class="type">int</span> got_frame = <span class="number">0</span>;</span><br><span class="line">    AVRational tb;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!frame)</span><br><span class="line">        <span class="keyword">return</span> AVERROR(ENOMEM);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> ((got_frame = decoder_decode_frame(&amp;is-&gt;auddec, frame, <span class="literal">NULL</span>)) &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">goto</span> the_end;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (got_frame) &#123;</span><br><span class="line">            <span class="comment">//设置sample_rate为timebase</span></span><br><span class="line">            tb = (AVRational)&#123;<span class="number">1</span>, frame-&gt;sample_rate&#125;;</span><br><span class="line">            <span class="keyword">if</span> (!(af = frame_queue_peek_writable(&amp;is-&gt;sampq)))</span><br><span class="line">                <span class="keyword">goto</span> the_end;</span><br><span class="line">            <span class="comment">//设置Frame</span></span><br><span class="line">            af-&gt;pts = (frame-&gt;pts == AV_NOPTS_VALUE) ? NAN : frame-&gt;pts * av_q2d(tb);</span><br><span class="line">            af-&gt;pos = frame-&gt;pkt_pos;</span><br><span class="line">            af-&gt;serial = is-&gt;auddec.pkt_serial;</span><br><span class="line">            <span class="comment">//帧播放时间</span></span><br><span class="line">            af-&gt;duration = av_q2d((AVRational)&#123;frame-&gt;nb_samples, frame-&gt;sample_rate&#125;);</span><br><span class="line">            <span class="comment">//转移</span></span><br><span class="line">            av_frame_move_ref(af-&gt;frame, frame);</span><br><span class="line">            frame_queue_push(&amp;is-&gt;sampq);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (ret &gt;= <span class="number">0</span> || ret == AVERROR(EAGAIN) || ret == AVERROR_EOF);</span><br><span class="line">    </span><br><span class="line">the_end:</span><br><span class="line">    av_frame_free(&amp;frame);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>decoder_decode_frame流程和视频解码类似，对于音频注意时间基变化。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> AVMEDIA_TYPE_AUDIO:</span><br><span class="line">    ret = avcodec_receive_frame(d-&gt;avctx, frame);</span><br><span class="line">    <span class="keyword">if</span> (ret &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        AVRational tb = (AVRational)&#123;<span class="number">1</span>, frame-&gt;sample_rate&#125;;</span><br><span class="line">        <span class="keyword">if</span> (frame-&gt;pts != AV_NOPTS_VALUE)</span><br><span class="line">            <span class="comment">//d-&gt;avctx-&gt;pkt_timebase实质是AVStream中的time_base</span></span><br><span class="line">            <span class="comment">//stream_component_open函数中avctx-&gt;pkt_timebase = ic-&gt;streams[stream_index]-&gt;time_base;</span></span><br><span class="line">            <span class="comment">//转换为采样率表示的时间基</span></span><br><span class="line">            frame-&gt;pts = av_rescale_q(frame-&gt;pts, d-&gt;avctx-&gt;pkt_timebase, tb);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (d-&gt;next_pts != AV_NOPTS_VALUE)</span><br><span class="line">            <span class="comment">//如果frame-&gt;pts不正常则使⽤上⼀帧更新的next_pts和next_pts_tb</span></span><br><span class="line">            frame-&gt;pts = av_rescale_q(d-&gt;next_pts, d-&gt;next_pts_tb, tb);</span><br><span class="line">        <span class="keyword">if</span> (frame-&gt;pts != AV_NOPTS_VALUE) &#123;</span><br><span class="line">            <span class="comment">//保存预测的next_pts 预防中间pts无效</span></span><br><span class="line">            d-&gt;next_pts = frame-&gt;pts + frame-&gt;nb_samples;</span><br><span class="line">            d-&gt;next_pts_tb = tb;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
-
-<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><h2 id="FFmpeg函数"><a href="#FFmpeg函数" class="headerlink" title="FFmpeg函数"></a>FFmpeg函数</h2><h3 id="av-guess-frame-rate"><a href="#av-guess-frame-rate" class="headerlink" title="av_guess_frame_rate"></a>av_guess_frame_rate</h3><p>用于猜测视频帧率。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AVRational <span class="title function_">av_guess_frame_rate</span><span class="params">(AVFormatContext *ctx, AVStream *stream, AVFrame *frame)</span>;</span><br></pre></td></tr></table></figure>
-
-<p><code>formatContext</code>：指向包含视频流的格式上下文的指针。</p>
-<p><code>stream</code>：指向视频流的指针。</p>
-<p><code>frame</code>：指向视频帧的指针，可以为空。</p>
-<p>返回一个 <code>AVRational</code> 结构，其中包含猜测出的帧率的分子和分母。</p>
-<h3 id="av-guess-sample-aspect-ratio"><a href="#av-guess-sample-aspect-ratio" class="headerlink" title="av_guess_sample_aspect_ratio"></a>av_guess_sample_aspect_ratio</h3><p>用于猜测单个像素的宽高比（aspect ratio）。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AVRational <span class="title function_">av_guess_sample_aspect_ratio</span><span class="params">(AVFormatContext *format, AVStream *stream, AVFrame *frame)</span>;</span><br></pre></td></tr></table></figure>
-
-<p><code>formatContext</code>：指向包含视频流的格式上下文的指针。</p>
-<p><code>stream</code>：指向视频流的指针。</p>
-<p><code>frame</code>：指向视频帧的指针。</p>
-<p>返回一个 <code>AVRational</code> 结构，其中包含猜测出的宽高比的分子和分母。若没结果，则返回值为0&#x2F;1。</p>
-<h3 id="avcodec-flush-buffers"><a href="#avcodec-flush-buffers" class="headerlink" title="avcodec_flush_buffers"></a>avcodec_flush_buffers</h3><p>调用这个函数将丢弃编解码器内部缓冲区中的任何待处理数据，可以从一个干净的状态开始解码或编码。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">avcodec_flush_buffers</span><span class="params">(AVCodecContext *avctx)</span>;</span><br></pre></td></tr></table></figure>
-
-<p><code>avctx</code>：指向 <code>AVCodecContext</code> 结构的指针，表示编解码器的上下文。这是要清空缓冲区的目标编解码器上下文。</p>
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000042611851">https://segmentfault.com/a/1190000042611851</a></p>
 
       
     </div>
