@@ -28,7 +28,7 @@
 <meta property="og:description" content="mac m1 平台编译  编译环境准备  12345678910111213mkdir WebRTC# 获取depot_toolsgit clone https:&#x2F;&#x2F;chromium.googlesource.com&#x2F;chromium&#x2F;tools&#x2F;depot_tools.git depot_toolsvim ~&#x2F;.zshrc# 添加如下# depot_tools目录添加到系统PATH目录expor">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-08-10T01:39:07.000Z">
-<meta property="article:modified_time" content="2024-08-10T01:40:11.156Z">
+<meta property="article:modified_time" content="2024-08-10T08:35:51.898Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 
@@ -187,7 +187,16 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2024-08-10 09:39:07 / Modified: 09:40:11" itemprop="dateCreated datePublished" datetime="2024-08-10T09:39:07+08:00">2024-08-10</time>
+      <time title="Created: 2024-08-10 09:39:07 / Modified: 16:35:51" itemprop="dateCreated datePublished" datetime="2024-08-10T09:39:07+08:00">2024-08-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
+        </span>
     </span>
 
   
@@ -218,7 +227,7 @@
 <ul>
 <li>编译</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">构建</span></span><br><span class="line">gn gen out/Default</span><br><span class="line">vim out/Default/args.gn</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加构建参数</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Set build arguments here. See `gn <span class="built_in">help</span> buildargs`.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编译成debug版本</span></span><br><span class="line">is_debug = true</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不使用clang编译器，如果使用clang编译，集成到一些UI框架，可能无法使用 is_clang = <span class="literal">false</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不编译单元测试</span></span><br><span class="line">rtc_include_tests = false</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不将warning当成errros</span></span><br><span class="line">treat_warnings_as_errors = false</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不使用内置的h264，关闭掉clang之后，如果启用内置的h264编解码，则无法编译通过 rtc_use_h264 = <span class="literal">false</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编译成arm64位版本</span></span><br><span class="line">target_cpu = &quot;arm6</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编译</span></span><br><span class="line">ninja -C out/Default</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">清理</span></span><br><span class="line">gn clean out/Default</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"># 构建</span><br><span class="line">gn gen out/Default</span><br><span class="line"></span><br><span class="line">vim out/Default/args.gn</span><br><span class="line"># Set build arguments here. See `gn help buildargs`.</span><br><span class="line"></span><br><span class="line"># 编译平台</span><br><span class="line">target_os=&quot;mac&quot;</span><br><span class="line"># 编译成arm64位版本</span><br><span class="line">target_cpu = &quot;arm64&quot;</span><br><span class="line"># 编译成debug版本</span><br><span class="line">is_debug = true</span><br><span class="line"># 不编译单元测试</span><br><span class="line">rtc_include_tests = false</span><br><span class="line"># 不将warning当成errros</span><br><span class="line">treat_warnings_as_errors = false</span><br><span class="line"># 导出符号</span><br><span class="line">rtc_enable_symbol_export=true</span><br><span class="line">use_custom_libcxx=false</span><br><span class="line"></span><br><span class="line"># 不使用clang编译器，如果使用clang编译，集成到一些UI框架，可能无法使用</span><br><span class="line"># is_clang = false</span><br><span class="line"># 不使用内置的h264，关闭掉clang之后，如果启用内置的h264编解码，则无法编译通过</span><br><span class="line"># rtc_use_h264 = false</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 编译</span><br><span class="line">ninja -C out/Default</span><br><span class="line"></span><br><span class="line"># 清理</span><br><span class="line">gn clean out/Default</span><br></pre></td></tr></table></figure>
 
     </div>
 
