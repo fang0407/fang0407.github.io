@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">86</span>
+          <span class="site-state-item-count">87</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,508 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/03/08/GCC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/03/08/GCC/" class="post-title-link" itemprop="url">GCC</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-03-08 23:10:16" itemprop="dateCreated datePublished" datetime="2024-03-08T23:10:16+08:00">2024-03-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-04-04 17:37:12" itemprop="dateModified" datetime="2024-04-04T17:37:12+08:00">2024-04-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="RTP头部扩展"><a href="#RTP头部扩展" class="headerlink" title="RTP头部扩展"></a>RTP头部扩展</h1><p>要实现基于延迟的带宽估计，第一步需要计算包组之间的到达延迟差，而新版本的 GCC 将基于延迟的带宽估计移到了发送端进行实现，但是不像接收端，发送端由于不接收 RTP 数据包，无法直接进行包组间到达延迟差的计算。</p>
+<p>为了解决这一问题，RTP 注册 transport-cc 头部扩展，记录 <code>transport_sequence_number</code> ，同一个 <code>PeerConnection</code> 连接下的所有流的 <code>transport_sequence_number</code> ，使用统一的计数器进行计数，方便进行同一个 <code>PeerConnection</code> 下的带宽估计。</p>
+<p><strong>RTPExtensionType</strong>：定义 RTP 扩展类型的枚举。</p>
+<p><strong>RtpHeaderExtensionMap</strong>：管理 RTP 扩展，内部使用数组管理，数组的索引代表 <code>RTPExtensionType</code> 枚举的值，数组的值代表扩展的 ID。</p>
+<ul>
+<li><code>RegisterUri()</code>：注册 transport-cc 头部扩展<ul>
+<li>id 的大小必须是在 [1, 255] 的范围之内</li>
+<li>检查 type 是否已经注册过，如果已经注册过，不用重复注册</li>
+<li>检查 type 是否已经被占用，如果占用，返回 false</li>
+<li>注册 type</li>
+</ul>
+</li>
+</ul>
+<p><strong>TransportSequenceNumber</strong>：头部扩展具体定义，提供写入和解析 <code>transport_sequence_number</code> 的接口。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TransportSequenceNumber</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">using</span> value_type = <span class="type">uint16_t</span>;</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> RTPExtensionType kId = kRtpExtensionTransportSequenceNumber;</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">size_t</span> kValueSizeBytes = <span class="number">2</span>;</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">const</span> absl::string_view <span class="title">Uri</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> webrtc::RtpExtension::kTransportSequenceNumberUri;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">size_t</span> <span class="title">ValueSize</span><span class="params">(<span class="type">uint16_t</span>)</span> </span>&#123; <span class="keyword">return</span> kValueSizeBytes; &#125;</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">bool</span> <span class="title">Parse</span><span class="params">(rtc::ArrayView&lt;<span class="type">const</span> <span class="type">uint8_t</span>&gt; data, <span class="type">uint16_t</span>* transport_sequence_number)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">bool</span> <span class="title">Write</span><span class="params">(rtc::ArrayView&lt;<span class="type">uint8_t</span>&gt; data, <span class="type">uint16_t</span> transport_sequence_number)</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>RtpPacket</strong>：RTP 包的封装结构。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Extension</span> &#123;</span><br><span class="line">    <span class="type">uint8_t</span> id;     <span class="comment">// 扩展的id </span></span><br><span class="line">    <span class="type">size_t</span> length;  <span class="comment">// 扩展的长度</span></span><br><span class="line">    <span class="type">size_t</span> offset;  <span class="comment">// 扩展在RTP头部的偏移量</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Feedback解析"><a href="#Feedback解析" class="headerlink" title="Feedback解析"></a>Feedback解析</h1><p>当推流端发送RTP 包时，如果在头部添加了 <code>transport_sequence_number</code> 扩展，拉流端收到 RTP 包时会处理这个头部扩展，并向推流端发送 Transport Feedback RTCP 包，该包记录了 RTP 包到达接收端的时间信息，以及 RTP 包的丢失信息。发送方基于这些信息来估计延迟梯度。</p>
+<p>在标准的 WebRTC 环境下，需要在 SDP 当中添加 RTP 头部扩展描述信息：</p>
+<ul>
+<li><code>a=extmap:1 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01</code></li>
+<li>id 信息需要与代码中注册的 id 保持一致，否则无法处理</li>
+</ul>
+<p><strong>TransportFeedback</strong>：解析 Transport Feedback RTCP 包，获取接收端收到每个 RTP 包的时间。</p>
+<h1 id="拥塞控制模块"><a href="#拥塞控制模块" class="headerlink" title="拥塞控制模块"></a>拥塞控制模块</h1><p><strong>RtpTransportControllerSend</strong>：RTP 传输控制，有独立的线程分别处理 Pacer 和 GCC。</p>
+<ul>
+<li><code>OnNetworkOk()</code>：ICE 连接状态反馈，成功连接会创建  <code>GoogCcNetworkController</code>，并且其调用  <code>OnNetworkOk()</code> 接口。</li>
+<li><code>OnAddPacket()</code>：重写接口，调用 <code>TransportFeedbackAdapter</code>  接口 <code>AddPacket()</code> 具体实现。</li>
+<li><code>OnTransportFeedback()</code>：重写接口，调用 <code>TransportFeedbackAdapter</code>  接口  <code>ProcessTransportFeedback()</code>  具体实现。</li>
+<li><code>OnSentPacket()</code>：调用 <code> TransportFeedbackAdapter</code>  接口  <code>ProcessSentPacket()</code>  具体实现，成功后会调用 <code>GoogCcNetworkController</code>  接口  <code>OnSentPacket()</code>。</li>
+<li><code>OnNetworkUpdate()</code>：传递丢包信息和 RTT 信息给基于延迟和基于丢包的带宽估计模块，调用  <code>GoogCcNetworkController</code>  接口 <code>OnRttUpdate()</code> 和 <code>OnTransportLoss()</code> 具体实现。</li>
+<li><code>PostUpdate()</code>：应用发送端码率估计值：更新估计的目标码率到 Pacer 和编码器；以及将探测配置作用到 Pacer。</li>
+<li><code>StartProcessPeriodicTasks()</code>：定时调用 <code>GoogCcNetworkController</code>  接口 <code>OnProcessInterval()</code>。</li>
+</ul>
+<p><strong>GoogCcNetworkController</strong>：google 拥塞控制模块。</p>
+<ul>
+<li><code>OnTransportPacketsFeedback()</code>：接受 Feedback 数据，进行吞吐量估计、Probe 探测码率和估计目标码率等。</li>
+<li><code>OnNetWorkOk()</code>：设置带宽估计模块和 Probe 探测上下限以及起始码率。</li>
+<li><code>OnRttUpdate()</code>：根据 RR 包解析的信息计算 RTT，提供给基于延迟和基于丢包的带宽估计模块。</li>
+<li><code>OnTransportLoss()</code>：根据 RR 包解析的丢包相关信息，提供给基于丢包的带宽估计模块。</li>
+<li><code>OnProcessInterval()</code>：周期性更新目标码率到 Pacer 和编码器。</li>
+<li><code>OnSentPacket()</code>：调用 ALR 检测更新剩余发送预算。</li>
+</ul>
+<p><strong>TransportFeedbackObserver</strong>：观察者模式获得 Feedback 数据。</p>
+<ul>
+<li><code>OnAddPacket()</code>：<code>PeerConnection</code> 中发送数据包之前调用存储数据包。</li>
+<li><code>OnTransportFeedback</code>：<code>RtcpReceiver</code> 中收到 Feedback 数据包后回调。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TransportFeedbackObserver</span> &#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">TransportFeedbackObserver</span>() &#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">OnAddPacket</span><span class="params">(<span class="type">const</span> RtpPacketSendInfo&amp; send_info)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">OnTransportFeedback</span><span class="params">(<span class="type">const</span> rtcp::TransportFeedback&amp; feedback)</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>TransportFeedbackAdapter</strong>：处理 <code>TransportFeedback</code> 转换成  <code>webrtc::TransportPacketsFeedback</code></p>
+<ul>
+<li><p><code>ProcessTransportFeedback()</code>：完成 Feedback 转换成内部的数据结构。</p>
+</li>
+<li><p><code>ProcessSentPacket()</code>：发送 RTP 数据包时调用，更新存储的发送包中发送时间。</p>
+</li>
+<li><p><code>AddPacket()</code>：存储时间窗口内的发送数据包。</p>
+</li>
+</ul>
+<p>​	RTP 包发送状态存储结构：<code>TransportFeedbackAdapter</code> 存储 RTP 包信息的结构：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">PacketFeedback</span> &#123;</span><br><span class="line">    webrtc::Timestamp creation_time = webrtc::Timestamp::<span class="built_in">MinusInfinity</span>();</span><br><span class="line">    webrtc::SentPacket sent;</span><br><span class="line">    webrtc::Timestamp receive_time = webrtc::Timestamp::<span class="built_in">PlusInfinity</span>();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>​	RTP 包发送信息的基本结构：<code>PeerConnection</code> 传递 RTP 包的上下文信息：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">RtpPacketSendInfo</span> &#123;</span><br><span class="line">    <span class="type">uint16_t</span> transport_sequence_number = <span class="number">0</span>;</span><br><span class="line">    absl::optional&lt;<span class="type">uint32_t</span>&gt; media_ssrc;</span><br><span class="line">    <span class="type">uint16_t</span> rtp_sequence_number = <span class="number">0</span>;</span><br><span class="line">    <span class="type">uint32_t</span> rtp_timestamp = <span class="number">0</span>;</span><br><span class="line">    <span class="type">size_t</span> length = <span class="number">0</span>;</span><br><span class="line">    absl::optional&lt;RtpPacketMediaType&gt; packet_type;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="基于延迟的带宽估计"><a href="#基于延迟的带宽估计" class="headerlink" title="基于延迟的带宽估计"></a>基于延迟的带宽估计</h1><img src="/2024/03/08/GCC/基于延迟的带宽估计核心原理.png" alt="基于延迟的带宽估计核心原理" style="zoom:50%;">
+
+<p><strong>DelayBasedBwe</strong>：基于延迟的带宽估计入口类。</p>
+<ul>
+<li><code>IncomingPacketFeedbackVector()</code>：输入 Feedback，输出估计的目标码率。<ul>
+<li>数据包按照到达时间进行排序</li>
+<li>收到的包依次调用 <code>IncomingPacketFeedback()</code>  判断网络状态</li>
+<li>最后调用 <code>MaybeUpdateEstimate()</code>  估计目标码率</li>
+</ul>
+</li>
+<li><code>IncomingPacketFeedback()</code>：通过延迟趋势估计，判断网络状态。</li>
+<li><code>MaybeUpdateEstimate()</code>：根据网络状态来动态调整发送码率。<ul>
+<li>网络过载时的码率调整<ul>
+<li>未知吞吐量：每次降低为当前码率的 50%</li>
+<li>已知吞吐量：使用码率控制模块调整发送码率</li>
+</ul>
+</li>
+<li>网络没过载时的码率调整<ul>
+<li>使用码率控制模块调整发送码率</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="包组延迟差"><a href="#包组延迟差" class="headerlink" title="包组延迟差"></a>包组延迟差</h2><p><strong>InterArrivalDelta</strong>：包组时间差计算类。</p>
+<ul>
+<li><code>SendTimeGroup current_timestamp_group_</code>：当前到达的包组。</li>
+<li><code>SendTimeGroup pre_timestamp_group_</code>：上一个到达的包组。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">SendTimeGroup</span> &#123;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">IsFirstPacket</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> complete_time.<span class="built_in">IsInfinite</span>(); &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 包组中所有包的累计字节数</span></span><br><span class="line">    <span class="type">size_t</span> size;</span><br><span class="line">    <span class="comment">// 包组第一个包的发送时间</span></span><br><span class="line">    webrtc::Timestamp first_send_time;</span><br><span class="line">    <span class="comment">// 包组最后一个包的发送时间</span></span><br><span class="line">    webrtc::Timestamp send_time;</span><br><span class="line">    <span class="comment">// 包组中的包第一个到达对端时间</span></span><br><span class="line">    webrtc::Timestamp first_arrival;</span><br><span class="line">    <span class="comment">// 包组中的包最后到达对端的时间</span></span><br><span class="line">    webrtc::Timestamp complete_time;</span><br><span class="line">    <span class="comment">// 最新的系统时间</span></span><br><span class="line">    webrtc::Timestamp last_system_time;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>ComputeDeltas()</code>：计算包组延迟差。</p>
+<ul>
+<li>通过前面的内容，可以获得如下数据<ul>
+<li>每个包的发送时间</li>
+<li>每个包达到对端的时间（换算成发送端的时间，包间隔保持不变）</li>
+<li>每个包的大小</li>
+<li>Transport Feedback 包到达发送端的时间（利用系统时间纠正时钟发生跳变的情况）</li>
+</ul>
+</li>
+<li>利用这些数据，可以计算如下数据<ul>
+<li>两个包之间的发送时间差</li>
+<li>两个包之间的到达时间差</li>
+<li>两个包之间的数据大小差</li>
+</ul>
+</li>
+<li>计算出这些差值数据之后，可以用计算出这些差值数据之后，可以用于下一步来判断网络是否拥塞。</li>
+<li>如果以单个包来计算时间差，会存在比较大的误差，一个重要的原因是：WebRTC 发送数据通常使用 Pacer，它在静态模式下，通常每隔 5ms 会集中发送一批数据，这些突发数据由于是集中发送，接收的延迟基本相同，接收的时间差值非常小。这些差值数据显然不能用于网络拥塞的判断。</li>
+<li>为了避免这种误差，我们会对数据包进行分组，比如 5ms 之内的数据分成一组，然后计算包组之间的时间差。</li>
+</ul>
+</li>
+<li><p><code>NewTimestampGroup()</code>：是否创建新的分组。</p>
+<ul>
+<li>如何进行包分组<ul>
+<li>突发的包（集中发送的包）分为一组：<ul>
+<li>两个包的发送时间相同</li>
+<li>两个包的传播延迟（<code>arrival_time_delta – send_time_delta</code>）相差为负值（很可能前一个包在链路中积压了）&amp;&amp; 包的到达时间差在突发时间阈值（5ms）范围之内 &amp;&amp; 和第一个到达的包时间相差小于 100ms，认为是突发包。通常发生的场景为：当网络拥塞发生缓解时，100ms 内发送的报文，在网络中缓存，然后突然全部到达。</li>
+</ul>
+</li>
+<li>包的发送时间与当前包组中第一个包的发送时间相差在一个包组时间长度之内（比如 5ms）的包，分到一组。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="延迟趋势估计"><a href="#延迟趋势估计" class="headerlink" title="延迟趋势估计"></a>延迟趋势估计</h2><p>通过已经获得的数据，可以计算出两个包组之间的单向传输延迟差。这些延迟差是一系列数据，或者称为样本数据，利用这些样本数据，可以估计出单向网络传输延迟增加趋势。</p>
+<p>当单向网络传输延迟存在增加趋势的时候（注意这里是增加趋势，而不是单纯的增加，相当于速度和加速度的关系） ，很可能是发生了网络拥塞，因为网络拥塞时数据包在网络传输队列中排队积压，导致延迟发生了变化。所以，如果我们能够计算出单向网络传输延迟增加的趋势，就能够判断网络是否发生了拥塞，从而进行后续的处理。</p>
+<p><strong>TrendlineEstimator</strong>：trendline 单向延迟趋势估计器。</p>
+<ul>
+<li><p><code>std::deque&lt;PacketTiming&gt; delay_hist_</code>：样本数据存放队列，默认 20 个样本数据。</p>
+</li>
+<li><p><code>UpdateTrendline()</code>：保存样本数据，并使用 <code>LinearFitSlope()</code>  更新 trend，最后使用 <code>Detect()</code>  进行过载检测。</p>
+</li>
+<li><p><code>LinearFitSlope()</code>：通过包的延迟差、包到达时间，线性回归最小二乘法计算 trend。</p>
+<ul>
+<li>trend 值的含义：<ul>
+<li>表示延迟趋势，也是线性回归最小二乘法拟合的直线斜率</li>
+<li>当发送码率 send_rate 小于网络链路的容量 link_capacity 时，数据包不会在网络队列中排队积压，延迟趋势 trend 值基本为 0（网络存在波动，不可能完全等于 0）</li>
+<li>当发送码率 send_rate 大于网络链路的容量 link_capacity 时，数据包会在网络队列中排队积压，数据包的传输延迟逐步增大，此时的延迟趋势 trend 值 &gt; 0，表示网络出现拥塞</li>
+<li>当网络拥塞得到缓解时，网络队列会逐渐排空，数据包的传输延迟开始下降，此时的延迟趋势 trend 值 &lt; 0</li>
+<li>trend 等价于 estimate <code>((send_rate – link_capacity) / link_capacity)</code></li>
+</ul>
+</li>
+<li>trend 值我们可以利用包组延迟样本数据，通过线性回归最小二乘法计算斜率获得，有了 trend 值我们就能判断网络是否出现过载拥塞，然后调整发送码率 send_rate，使得网络不处于过载或者负载过低的状态，此时的发送码率就接近于网络的容量，即比较准确的网络带宽估计值。</li>
+</ul>
+</li>
+</ul>
+<p>线性回归最小二乘法样本数据：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">PacketTiming</span> &#123;</span><br><span class="line">    <span class="comment">// rtp包的到达时间（x轴的值）</span></span><br><span class="line">    <span class="type">double</span> arrival_time_ms;</span><br><span class="line">    <span class="comment">// 指数平滑后的传输延迟差（y轴的值）</span></span><br><span class="line">    <span class="type">double</span> smoothed_delay_ms;</span><br><span class="line">    <span class="comment">// 原始的传输延迟差</span></span><br><span class="line">    <span class="type">double</span> raw_delay_ms;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="过载检测"><a href="#过载检测" class="headerlink" title="过载检测"></a>过载检测</h3><ul>
+<li><p><code>Detect()</code>：利用 trend 进行过载检测。</p>
+<ul>
+<li><p>网络状态</p>
+<ul>
+<li>正常状态</li>
+<li>低负载状态</li>
+<li>过载状态</li>
+</ul>
+</li>
+<li><p>基本策略</p>
+<ul>
+<li>原始的 trend 值比较小，区分度不高，需要进行增益处理为 modified_trend</li>
+<li>设定一个阈值 threshold，初始值为 12.5，后续会动态自适应调整</li>
+<li>网络状态检测<ul>
+<li>当 modified_trend 超过了 threshold，表明网络可能进入了过载状态，但此时还不会立即进入过载状态，防止一些误差带来误判，只有检测过载的次数超过一次，并且持续一段时间，同时延迟趋势还在增加的情况下，才会判断网络状态为过载状态</li>
+<li>当 modified_trend &lt; -threshold，此时的延迟趋势非常低了，判定网络为低负载状态</li>
+<li>非以上情况，判定网络状态为正常状态</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="过载检测阈值自适应调整"><a href="#过载检测阈值自适应调整" class="headerlink" title="过载检测阈值自适应调整"></a>过载检测阈值自适应调整</h3><ul>
+<li><code>UpdateThreshold()</code>：过载检测阈值自适应调整。<ul>
+<li>网络正常时，通常 trend 值和阈值是基本相同的，当网络发生拥塞或者拥塞缓解时，trend 值会发生较大的变化，两者才会有明显的差距，随着网络的稳定，两者又趋于相同</li>
+<li>初始时，只能设定一个经验值，WebRTC 中设置为 12.5</li>
+<li>如果当前 |trend| &lt; 阈值，此时网络通常处于正常状态，trend 值认为更接近真实的阈值，此时应当将当前阈值快速（k_down&#x3D;0.039）向 trend 值逼近减少</li>
+<li>如果当前 |trend| &gt; 阈值，通常是网络刚发生拥塞或者刚开始缓解，trend 变化很大，当前的阈值认为更接近真实的阈值，此时可以让当前阈值缓慢（k_up&#x3D;0.0087）向 trend 值增加</li>
+</ul>
+</li>
+</ul>
+<h2 id="码率控制"><a href="#码率控制" class="headerlink" title="码率控制"></a>码率控制</h2><p>AIMD（Additive Increase Multiplicative Decrease）码率控制，指的是加性增加，乘性减少。当网络过载时，以乘性的方式减少码率；当网络没有过载时，以加性的方式增加码率。另外，当我们认为可用带宽发生了变化或者未知时，会切换到慢启动模式，此种模式会以倍速的方式增加码率。</p>
+<p><strong>AimdRatecontrol</strong>：码率控制器，通过检测的网络状态调整码率。</p>
+<ul>
+<li><p><code>TimeToReduceFutther()</code>：判断是否进一步降低码率。</p>
+<ul>
+<li>码率进一步降低的策略：<ul>
+<li>码率调整的时间间隔，如果大于 1 个 RTT，继续降低</li>
+<li>如果调整的时间间隔小于 1 个 RTT，并且最新估计码率的一半必须大于吞吐量，才能继续降低，避免估计码率值降得过低了</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>ChangeState()</code>：状态机状态转换。</p>
+<ul>
+<li>三种状态<ul>
+<li>保持码率不变</li>
+<li>增加码率</li>
+<li>减少码率</li>
+</ul>
+</li>
+<li>有限状态机的目标是最小化端到端路径上的缓冲区的排队延迟，基本原理：当瓶颈缓冲区开始堆积时，估计的单向延迟趋势 trend 会变为正值，过载检测器检测到这种变化后会触发 overuse（带宽过载使用）信号，然后驱动码率控制状态机变为 decrease（降低码率）状态。因此，发送码率会降低，瓶颈缓冲区的堆积数据逐步排空，直到估计的单向延迟趋势 trend 变为负值。之后过载检测器会触发 underuse（带宽使用不足）信号，然后驱动码率控制状态机变为 hold 状态。状态机会维持 hold 状态直到瓶颈 buffer 完全排空。当出现此种情况时，trend 值会接近为 0，过载检测器会产生一个 normal 信号，该信号驱动码率控制状态机进入 increase（码率增加状态）</li>
+<li>上述的状态机可以简述为：<ul>
+<li>当 Overuse 发生时，无论什么状态都进入衰减</li>
+<li>当 Underuse 发生时，无论什么状态都进入保持状态</li>
+<li>在保持和增长阶段，Normal 状态将保持继续增长</li>
+<li>在衰减阶段，Normal 状态会将状态拉回保持状态</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>ChangeBitrate()</code>：调整码率策略。</p>
+<ul>
+<li>加性增加码率<ul>
+<li>为了避免无限制的码率增加，我们基于吞吐量来限制新的码率</li>
+<li>如果当前的吞吐量和链路容量估计值相差太大，会重置链路容量估计值。因此，如果链路容量估计值存在，我们可以认为当前的目标码率已经非常接近链路容量了，此时增加码率应当谨慎一些，采用加性增加策略</li>
+<li>加性增加的策略<ul>
+<li>当目标码率已经接近链路容量时，如何缓慢的增加一个合理的值，使其不要增加太大而发生排队拥塞？WebRTC 的策略是，一个 RTT 内只允许发送一个包，即增加的码率为一个 RTT 内发送一个包的码率</li>
+<li>计算方法<ul>
+<li><code>increase_rate_bps_per_second = avg_packet_size / response_time</code></li>
+<li>假定 1s 中 30 帧，最大包大小 1200：<code>avg_packet_size = frame_size / packets_per_frame</code></li>
+<li>假定过载时的延迟增大为 100ms：<code>response_time = rtt_ + 100ms</code></li>
+<li>为了保证不增加的过慢，增加的码率不小于 4kbps</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>慢启动模式增加码率<ul>
+<li>如果当前还不知道链路的容量估计值时，即还没有达到链路的容量瓶颈，可以快速的增加码率，以指数的方式增加，快速发现容量</li>
+<li>计算公式：<code>multiplicative_increase = std::max(current_bitrate_ * (1.08^∆𝑡− 1), 1000bps),其中0 &lt; ∆𝑡 ≤ 1</code></li>
+</ul>
+</li>
+<li>乘性降低码率<ul>
+<li>码率降低为当前吞吐量的 0.85</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="链路容量估计"><a href="#链路容量估计" class="headerlink" title="链路容量估计"></a>链路容量估计</h2><p>利用吞吐量和码率控制状态来初估链路的容量，作为码率调整的重要参考。</p>
+<p><strong>LinkCapacityEstimator</strong>：链路容量估计。</p>
+<p><code>OnOveruseDetected()</code>：网络过载时输入此时的吞吐量，进行估计链路容量。</p>
+<ul>
+<li>链路容量估计策略<ul>
+<li>取码率控制状态为 kDecrease（下调码率）时的吞吐量为估计样本，因为此时已经出现了过载情况，当前的吞吐量可认为已经达到了链路容量瓶颈</li>
+<li>对吞吐量样本按照 95 分位进行指数平滑得到链路容量的估计值</li>
+<li>计算链路容量估计值的方差，并且进行归一化</li>
+<li>链路容量估计值加减 3 倍的标准差，得到链路容量的上限和下限。按照统计学原理，正负 3 倍的标准差范围，可以覆盖 99.6% 的置信区间</li>
+</ul>
+</li>
+</ul>
+<h2 id="吞吐量估计"><a href="#吞吐量估计" class="headerlink" title="吞吐量估计"></a>吞吐量估计</h2><p>Feedback 反馈包里面包含了每个 RTP 包是否被对端收到的信息，我们可以利用这个确认收到的信息，来估计当前发送的吞吐量。</p>
+<p>如何来估计呢？这里可能有很多方法。不同方法的准确度是不同的，首先肯定不能用某个时间窗口内的统计数据作为吞吐量，因为它的随机性很大，有比较大的误差。当然我们可以考虑指数平滑或者求平均之类的方法来减少误差，在 WebRTC 中是采用贝叶斯估计的方法来估计吞吐量，可以得到一个相对靠谱的结果。</p>
+<p><strong>AcknowledgeBitrateEstimator</strong>：吞吐量估计类。</p>
+<p><strong>BitrateEstimator</strong>：具体吞吐量估计实现类。</p>
+<p><code>UpdateWindow()</code>：通过 Feedback 包提供的包大小以及在一定窗口时间计算码率；启动开始，使用一个较大的时间窗口，获得一个更加稳定的样本，用于初始化估计值，WebRTC 中 500ms，稳定后，使用小一点的时间窗口，WebRTC 中使用 150ms。</p>
+<p><code>Update()</code>：通过贝叶斯估计吞吐量。</p>
+<ul>
+<li><p>贝叶斯估计中的共轭先验</p>
+<ul>
+<li>在贝叶斯估计当中，如果先验分布和后验分布服从相同的分布，这种情形，我们称之为共轭先验。如果分布符合正态分布，通过一系列复杂的数学计算，得到一个公式：<code>θ(x) = 𝜎2𝜇/(𝜎2 + 𝜏2) + 𝜏2𝑥/(𝜎2 + 𝜏2)</code></li>
+<li><code>θ(x)</code>：表示估计的参数值</li>
+<li><code>𝜎2</code>：后验分布方差</li>
+<li><code>𝜏2</code>：先验分布的方差</li>
+<li><code>𝜇</code>：先验分布的均值</li>
+<li><code>𝑥</code>：后验分布的均值</li>
+</ul>
+</li>
+<li><p>利用贝叶斯估计吞吐量</p>
+<ul>
+<li><p>以一段时间作为计算窗口，统计该窗口内的吞吐量，作为样本数据</p>
+</li>
+<li><p>在吞吐量的估计中，我们认为先验分布和后验分布都服从正态分布，那么它们就构成了共轭先验，这里面可以形成一个先验链，用现在的后验分布作为下一个计算的先验分布</p>
+</li>
+<li><p>在 WebRTC 实现中：</p>
+<ul>
+<li>后验方差使用样本的方差</li>
+<li>后验均值为当前的样本值</li>
+<li>先验方差起始值设为 50， 后续会根据后验方差进行调整</li>
+<li>先验均值为当前的估计值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="基于丢包的带宽估计"><a href="#基于丢包的带宽估计" class="headerlink" title="基于丢包的带宽估计"></a>基于丢包的带宽估计</h1><p>基本策略</p>
+<ul>
+<li>丢包率小于 2%，增加码率，增加为当前码率的 1.05 倍</li>
+<li>丢包率大于 10%，降低码率，码率降低的倍数为丢包率的 50%</li>
+<li>丢包率为[2%, 10%]，码率保持不变</li>
+</ul>
+<p><strong>SendSideBandwidthEstimator</strong>：基于丢包的带宽估计入口类。</p>
+<p><code>UpdatePacketsLost()</code>：根据 RR 包信息统计丢包指数 [0, 255]，每轮统计包的总数需要大于 20 个，最后调用 <code>UpdateEstimate()</code> 估计带宽。</p>
+<p><code>UpdateEstimate()</code>：基于丢包的带宽估计。</p>
+<ul>
+<li><p>在刚开始启动的前 2s，还没有收到任何丢包的报告数据，此时信任 remb 或者基于延迟的估计码率</p>
+</li>
+<li><p>根据丢包率调整目标码率，具体参考上述基本策略</p>
+</li>
+</ul>
+<p><code>SetBitrates()</code>：设置估计码率的上下限。</p>
+<p><code>UpdateTargetBitrate()</code>：通过限制码率的上下限更新当前码率。</p>
+<ul>
+<li>基于延迟的带宽估计的码率作为基于丢包的带宽估计的码率的上限</li>
+<li>可以设置最小和最大的码率作为约束条件</li>
+</ul>
+<h1 id="ALR检测"><a href="#ALR检测" class="headerlink" title="ALR检测"></a>ALR检测</h1><p>ALR（Application Limit Region），简单翻译成中文的含义是应用限制区域，这是啥意思？在实际的应用场景当中，可能存在一些受限的情况，导致我们的发送码率突然降低，但是这种受限并不是网络原因造成的，而是比如系统负载过高，导致采集&#x2F;编码的帧率降低等等。 如果出现这种情况而没有进行必要的处理，会导致估计出的码率值存在很大的偏差。所以，我们需要能够检测出这种情况的发生，并做出相应的优化处理。</p>
+<p>如何检测 ALR？这里会使用 Pacer 里面用到的 <code>IntervalBudget</code> 功能，它的基本原理是设定一个时间窗口（WebRTC 中设置为 500ms）和码率值，两者相乘就是最大的发送字节预算总量。如果发送了数据，就减少预算。随着时间的流逝，会增加预算。当预算的剩余率（预算剩余量&#x2F;最大预算）超过一定的阈值，说明发送码率存在突降，此时应当进入 ALR 状态。当预算的剩余率低于一定的阈值，认为发送码率基本恢复，此时应当解除 ALR 状态。</p>
+<p>ALR 在 WebRTC 中的具体优化点：</p>
+<ul>
+<li>优化吞吐量估计</li>
+<li>优化基于延迟的带宽估计</li>
+<li>优化 Probe</li>
+</ul>
+<p>利用 ALR 优化吞吐量估计：</p>
+<ul>
+<li><p>当处于 ALR 状态时， 利用贝叶斯估计法估计吞吐量时，可以设置一个与正常情况不同的不确定系数，该优化在 WebRTC 中默认没有开启</p>
+</li>
+<li><p>当从 ALR 状态恢复时，此时我们可以让吞吐量的估计值以更快的速度收敛到正常值</p>
+</li>
+</ul>
+<p>利用 ALR 优化基于延迟的码率估计</p>
+<ul>
+<li>在进行 AIMD 码率调整时，如果当前处于 ALR 状态，此时不增加基于延迟的码率估计值，因为码率太低无法获得必要的 transport feedback 数据，从而无法保证新的估计的正确性。WebRTC 中默认没有开启这个功能，如果需要开启需要配置参数：WebRTC–DontIncreaseDelayBasedBweInAlr</li>
+<li>当出现网络过载时，需要降低当前的目标码率，如果此时处于 ALR 状态，需要进行退避处理。退避策略为：此时因为吞吐量的估计值比较低而且不准确，不宜在当前吞吐量的基础上进行下降，而是在上一个目标的码率值的基础上进行下降。WebRTC 默认没有开启这个功能，如果需要开启需要配置参数：WebRTC-Bwe-AlrLimitedBackoff</li>
+</ul>
+<p><strong>AlrDetector</strong>：ALR 检测入口类。</p>
+<p><code>IntervalBudget alr_budget_</code>：设定码率和时间窗口，两者相乘可以得到最大预算发送量。</p>
+<p><code>OnBytesSent()</code>：通过当前发送数据量和时间间隔来更新预算，并且计算预算剩余量来判断是否进入 ALR 状态。</p>
+<p><code>SetEstimateBitrate()</code>：设置预算量。</p>
+<h1 id="Probe技术"><a href="#Probe技术" class="headerlink" title="Probe技术"></a>Probe技术</h1><p>GCC 是以 AIMD 的方式来调节码率的，但是 AIMD 增加码率的速度是非常慢的，这样在会话起始阶段、网络从中断中恢复时或者其它的场景，要达到目标带宽值就非常慢，此时会影响用户体验。为了解决这个问题，GCC 提供了 Probe 机制，可以在较短的时间探测到链路的可用带宽。</p>
+<p>Probe 的基本思想：在较短的时间内，以目标码率发送数据，如果被对方确认收到的码率达到发送码率的一定比例，即认为探测成功，此时计算出的带宽就认为是链路的可用带宽。Probe 虽然能够在较短的时间探测到可用带宽，并且对网络的影响较小，但是其缺点也很明显，因为发送时间较短，很容易受到各种干扰而失败，而且在网络抖动时，结果可能不准。</p>
+<p>GCC Probe 探测三大部分</p>
+<ul>
+<li>ProbeController，用于控制是否进行探测，探测的次数以及探测的码率是多少，最终会输出探测任务配置</li>
+<li>Pacing 模块，负责执行探测报文的发送，如果码率不够，会用 padding 包进行补充</li>
+<li>ProbeBitrateEstimator，负责计算最终的探测结果</li>
+</ul>
+<p><strong>ProbeController</strong>：获取探测任务配置类。</p>
+<p>探测状态</p>
+<ul>
+<li><code>kInit</code>：初始状态，探测没有触发；此时启动指数探测</li>
+<li><code>kWaitingForProbingResult</code>：等待探测结果，才能继续进一步探测</li>
+<li><code>kProbingComplete</code>：探测完成</li>
+</ul>
+<p><code>SetBitrate()</code>：设置起始和最大探测码率，根据探测状态执行相应逻辑，最终会输出探测任务配置。</p>
+<p><code>SetEstimateBitrate()</code>：设置码率估计值，每次估计码率后会调用，当状态为  <code>kWaitingForProbingResult</code> 会输出探测配置。</p>
+<p><code>RequestProbe()</code>：获取主动请求探测配置，当前处于 ALR 状态或者刚刚结束 ALR 状态不久，此时应考虑触发主动探测，但仍需满足一定的条件。</p>
+<p><code>InitExpProbing()</code>：指数探测，在会话刚开始的时候，为了能够尽快的获得目标带宽，此时会触发带宽探测。我们会采用指数级探测，探测主要分为两次，第一次为起始码率的 3 倍，第二次为起始码率的 6 倍。</p>
+<p><code>InitProbing()</code>：本质上是构造一组探测任务的配置，包括探测的码率、探测的持续时间、探测包发送的个数，探测的 id 等，这组任务配置最终会发给 Pacer 去执行。如果需要继续探测，下一次探测的最小码率应该不低于最后一次探测码率的 0.7 倍，太小就没有意义。</p>
+<p><strong>BitrateProber</strong>：保存探测信息。</p>
+<p>探测状态</p>
+<ul>
+<li><code>kDisabled</code>：此状态下，不会触发探测</li>
+<li><code>kInactive</code>：准备触发探测的状态</li>
+<li><code>kActive</code>：正在探测的状态</li>
+<li><code>kSuspended</code>：探测被挂起，需要被再次启动</li>
+</ul>
+<p><code>CreateProbeCluster()</code>：获得的探测任务配置信息，存储到 <code>ProbeCluster</code> 信息到队列。</p>
+<ul>
+<li>探测任务结构：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">ProbeCluster</span> &#123;</span><br><span class="line">    webrtc::PacedPacketInfo pace_info;</span><br><span class="line">    <span class="type">int</span> sent_probes = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> sent_bytes = <span class="number">0</span>;</span><br><span class="line">    webrtc::Timestamp created_at = webrtc::Timestamp::<span class="built_in">MinusInfinity</span>();</span><br><span class="line">    webrtc::Timestamp started_at = webrtc::Timestamp::<span class="built_in">MinusInfinity</span>();</span><br><span class="line">    <span class="type">int</span> retries = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>OnIncomingPacket()</code>：当有新的 <code>ProbeCluster</code> 创建之后，此时探测状态进入准备探测状态，在此状态下，如果 Pacer 有新数据需要发送，则会尝试启动探测，如果将要发送的数据包大小大于 200 字节或者大于推荐的最小探测大小，则启动探测，否则暂时不启动。</p>
+<p><code>RecommendedMinProbeSize()</code>：推荐的最小探测数据大小 &#x3D; 2 * 探测码率 * 探测间隔。</p>
+<p><code>ProbeSent()</code>：更新 <code>ProbeCluster</code> 结构信息。</p>
+<ul>
+<li>探测包发送后，需要更新  <code>ProbeCluster</code> 结构信息，包括发送的时间、发送包的总字节数，发送包的个数</li>
+<li>计算下一轮探测的时间：下一轮探测的发送时间 &#x3D; 上一轮探测的发送时间 + 上一轮探测的持续时间</li>
+<li>如果发送字节和个数达到 <code>ProbeCluster</code> 配置要求，需要删除当前 <code>ProbeCluster</code></li>
+<li>当 <code>ProbeCluster</code> 队列为空时，探测状态置为 <code>kSuspended</code></li>
+</ul>
+<p><code>NextProbeTime()</code>：下一次探测的时间。</p>
+<p><strong>PacingController</strong>：平滑发送控制类。</p>
+<p><code>ProcessPackets()</code>：从队列中获取数据包处理并更新预算。</p>
+<ul>
+<li>如果需要探测，从 <code>BitrateProber</code> 中获取当前的  <code>webrtc::PacedPacketInfo</code></li>
+<li>如果第一次发送探测包，先发送一个一字节的填充包，可以获得一个可靠的估计码率的起始窗口</li>
+<li>当队列为空，但是发送的数据大小小于推荐的最小探测数据大小时，需要继续填充包进行发送</li>
+<li>本轮数据处理完成后，更新探测的相关状态信息</li>
+</ul>
+<p><code>GetPendingPacket()</code>：从队列中获取数据，直到预算耗尽，如果当前处于探测状态，此时发送探测需要的数据大小，不进行预算判断。</p>
+<p><code>PaddingToAdd()</code>：获取需要填充包的大小，但是当没有发送任何正常数据包之前，不能发送填充包。</p>
+<p><strong>ProbeBitrateEstimator</strong>：Probe 码率估计器。</p>
+<p><code>HandleProbeAdEstimateBitrate()</code>：通过 Feedback 响应包估计码率。</p>
+<ul>
+<li>定义一个结构来聚合探测信息，方便进行统计</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">AggregatedCluster</span> &#123;</span></span><br><span class="line">    <span class="comment">// 探测次数</span></span><br><span class="line">    <span class="type">int</span> num_probes = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 第一次发送探测数据的时间</span></span><br><span class="line">    webrtc::Timestamp first_send = webrtc::Timestamp::PlusInfinity();</span><br><span class="line">    <span class="comment">// 最后一次发送探测数据的时间</span></span><br><span class="line">    webrtc::Timestamp last_send = webrtc::Timestamp::MinusInfinity();</span><br><span class="line">    <span class="comment">// 第一次收到探测数据的时间</span></span><br><span class="line">    webrtc::Timestamp first_receive = webrtc::Timestamp::PlusInfinity();</span><br><span class="line">    <span class="comment">// 最后一次收到探测数据的时间</span></span><br><span class="line">    webrtc::Timestamp last_receive = webrtc::Timestamp::MinusInfinity();</span><br><span class="line">    <span class="comment">// 最后一次发送包的大小</span></span><br><span class="line">    webrtc::DataSize size_last_send = webrtc::DataSize::Zero();</span><br><span class="line">    <span class="comment">// 第一次收到包的大小</span></span><br><span class="line">    webrtc::DataSize size_first_receive = webrtc::DataSize::Zero();</span><br><span class="line">    <span class="comment">// 累计探测反馈的包大小</span></span><br><span class="line">    webrtc::DataSize size_total = webrtc::DataSize::Zero();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>为了能够获得有效的估计码率值，收到反馈的探测包个数不低于要求的最小反馈探测包个数的 80%，并且收到的反馈数据量不低于要求收到的最低数据量的 80%</p>
+</li>
+<li><p>通过计算发送间隔和时间段累计发送的数据量、接受间隔和时间段累计接受的数据量估算码率值</p>
+</li>
+<li><p>计算估计码率值的时候，需要注意，对于发送者来说，发送间隔不包含最后一个数据包的发送时间，所以计算发送码率时需要减去最后一个发送数据包大小；对于接收者来说，接收间隔不包含第一个数据包的接收时间，所以计算接收码率的时候需要减去第一个接收数据包大小</p>
+</li>
+<li><p>如果接收的码率明显低于发送码率（kMinRatioForUnsaturatedLink &#x3D; 0.9） ，这表明我们已经找到了链路的真实容量。在这种情况下，将目标码率设置的稍低（kTargetUtilizationFraction &#x3D; 0.95） ，以避免立即出现网络过载</p>
+</li>
+</ul>
+<p><code>FetchAndResetLastEstimateBitrate()</code>：获取探测码率并重置。</p>
+<ul>
+<li>探测的结果作用到基于延迟的码率估计中，当网络没有发生过载时直接作为估计码率</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -4473,446 +4975,6 @@
 <h1 id="具体例子"><a href="#具体例子" class="headerlink" title="具体例子"></a>具体例子</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">    httpSwagger <span class="string">&quot;github.com/swaggo/http-swagger&quot;</span></span><br><span class="line">    <span class="string">&quot;log&quot;</span></span><br><span class="line">    <span class="string">&quot;net/http&quot;</span></span><br><span class="line">    <span class="string">&quot;strings&quot;</span></span><br><span class="line">    _ <span class="string">&quot;goweb/docs&quot;</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> errorResp <span class="keyword">struct</span> &#123;</span><br><span class="line">    Error <span class="type">string</span> <span class="string">`json:&quot;error&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> indexResp <span class="keyword">struct</span> &#123;</span><br><span class="line">    Message <span class="type">string</span> <span class="string">`json:&quot;message&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> meResp <span class="keyword">struct</span> &#123;</span><br><span class="line">    Username <span class="type">string</span> <span class="string">`json:&quot;username&quot;`</span></span><br><span class="line">    Fullname <span class="type">string</span> <span class="string">`json:&quot;fullname&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> authResp <span class="keyword">struct</span> &#123;</span><br><span class="line">    Token <span class="type">string</span> <span class="string">`json:&quot;token&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> authParam <span class="keyword">struct</span> &#123;</span><br><span class="line">    Username <span class="type">string</span> <span class="string">`json:&quot;username&quot;`</span></span><br><span class="line">    Password <span class="type">string</span> <span class="string">`json:&quot;password&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="comment">// writeJSON provides function to format output response in JSON</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">writeJSON</span><span class="params">(w http.ResponseWriter, code <span class="type">int</span>, payload <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    resp, err := json.Marshal(payload)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(<span class="string">&quot;Error Parsing JSON&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    w.Header().Set(<span class="string">&quot;Content-type&quot;</span>, <span class="string">&quot;application/json&quot;</span>)</span><br><span class="line">    w.WriteHeader(code)</span><br><span class="line">    w.Write(resp)</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// basicAuthMW is middleware function to check whether user is authenticated or not</span></span><br><span class="line"><span class="comment">// actually you could write better code for this function</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">basicAuthMW</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span> &#123;</span><br><span class="line">    errorAuth := errorResp&#123;</span><br><span class="line">        Error: <span class="string">&quot;Unauthorized access&quot;</span>,</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    header := r.Header.Get(<span class="string">&quot;Authorization&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> header == <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">        writeJSON(w, <span class="number">401</span>, errorAuth)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span>&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    apiKey := strings.Split(header, <span class="string">&quot; &quot;</span>)</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(apiKey) != <span class="number">2</span> &#123;</span><br><span class="line">        writeJSON(w, <span class="number">401</span>, errorAuth)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span>&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> apiKey[<span class="number">0</span>] != <span class="string">&quot;Basic&quot;</span> &#123;</span><br><span class="line">        writeJSON(w, <span class="number">401</span>, errorAuth)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span>&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    users := <span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span>&#123;</span><br><span class="line">        <span class="string">&quot;28b662d883b6d76fd96e4ddc5e9ba780&quot;</span>: <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span>&#123;</span><br><span class="line">            <span class="string">&quot;username&quot;</span>: <span class="string">&quot;linggar&quot;</span>,</span><br><span class="line">            <span class="string">&quot;fullname&quot;</span>: <span class="string">&quot;Linggar Primahastoko&quot;</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> _ , ok := users[apiKey[<span class="number">1</span>]]; !ok &#123;</span><br><span class="line">        writeJSON(w, <span class="number">401</span>, errorAuth)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span>&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> users[apiKey[<span class="number">1</span>]]</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">decodePost</span><span class="params">(r *http.Request, structure <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    decoder := json.NewDecoder(r.Body)</span><br><span class="line">    err := decoder.Decode(structure)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(<span class="string">&quot;Error parsing post data&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// authLogin godoc</span></span><br><span class="line"><span class="comment">// @Summary Auth Login</span></span><br><span class="line"><span class="comment">// @Description Auth Login</span></span><br><span class="line"><span class="comment">// @Tags auth</span></span><br><span class="line"><span class="comment">// @ID auth-login</span></span><br><span class="line"><span class="comment">// @Accept  json</span></span><br><span class="line"><span class="comment">// @Produce  json</span></span><br><span class="line"><span class="comment">// @Param authLogin body main.authParam true &quot;Auth Login Input&quot;</span></span><br><span class="line"><span class="comment">// @Success 200 &#123;object&#125; main.authResp</span></span><br><span class="line"><span class="comment">// @Router /auth/login [post]</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">authLogin</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> param authParam</span><br><span class="line">    decodePost(r, &amp;param)</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> param.Username == <span class="string">&quot;linggar&quot;</span> &amp;&amp; param.Password == <span class="string">&quot;linggar&quot;</span> &#123;</span><br><span class="line">        respAuth := authResp&#123;</span><br><span class="line">            Token: <span class="string">&quot;28b662d883b6d76fd96e4ddc5e9ba780&quot;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">        writeJSON(w, <span class="number">200</span>, respAuth)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        failResp := errorResp&#123;</span><br><span class="line">            Error: <span class="string">&quot;Wrong username/password&quot;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">        writeJSON(w, <span class="number">401</span>, failResp)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// userProfile godoc</span></span><br><span class="line"><span class="comment">// @Summary User Profile</span></span><br><span class="line"><span class="comment">// @Description User Profile</span></span><br><span class="line"><span class="comment">// @Tags users</span></span><br><span class="line"><span class="comment">// @ID user-profile</span></span><br><span class="line"><span class="comment">// @Accept  json</span></span><br><span class="line"><span class="comment">// @Produce  json</span></span><br><span class="line"><span class="comment">// @Success 200 &#123;object&#125; main.meResp</span></span><br><span class="line"><span class="comment">// @Router /users/profile [get]</span></span><br><span class="line"><span class="comment">// @Security ApiKeyAuth</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">userProfile</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">    info := basicAuthMW(w, r)</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(info) == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    respMe := meResp&#123;</span><br><span class="line">        Username: info[<span class="string">&quot;username&quot;</span>],</span><br><span class="line">        Fullname: info[<span class="string">&quot;fullname&quot;</span>],</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    writeJSON(w, <span class="number">200</span>, respMe)</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// @title Go Restful API with Swagger</span></span><br><span class="line"><span class="comment">// @version 1.0</span></span><br><span class="line"><span class="comment">// @description Simple swagger implementation in Go HTTP</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">// @contact.name Linggar Primahastoko</span></span><br><span class="line"><span class="comment">// @contact.url https://linggar.asia</span></span><br><span class="line"><span class="comment">// @contact.email x@linggar.asia</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">// @securityDefinitions.apikey ApiKeyAuth</span></span><br><span class="line"><span class="comment">// @in header</span></span><br><span class="line"><span class="comment">// @name Authorization</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">// @host localhost:8082</span></span><br><span class="line"><span class="comment">// @BasePath /</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    http.HandleFunc(<span class="string">&quot;/swagger/&quot;</span>, httpSwagger.WrapHandler)</span><br><span class="line"> </span><br><span class="line">    http.HandleFunc(<span class="string">&quot;/auth/login&quot;</span>, authLogin)</span><br><span class="line">    http.HandleFunc(<span class="string">&quot;/users/profile&quot;</span>, userProfile)</span><br><span class="line"> </span><br><span class="line">    http.ListenAndServe(<span class="string">&quot;:8082&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>参考链接：<a target="_blank" rel="noopener" href="https://linggar.asia/?p=594">https://linggar.asia/?p=594</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/12/21/CGO/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/12/21/CGO/" class="post-title-link" itemprop="url">CGO</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-12-21 19:27:03" itemprop="dateCreated datePublished" datetime="2023-12-21T19:27:03+08:00">2023-12-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:41:14" itemprop="dateModified" datetime="2023-12-30T22:41:14+08:00">2023-12-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="CGO入门"><a href="#CGO入门" class="headerlink" title="CGO入门"></a>CGO入门</h1><p>本节通过一系列由浅入深的小例子来快速掌握 CGO 的基本用法。</p>
-<h2 id="使用标准库函数"><a href="#使用标准库函数" class="headerlink" title="使用标准库函数"></a>使用标准库函数</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">#include &lt;stdio.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;stdlib.h&gt;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;unsafe&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    c_str := C.CString(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">    <span class="keyword">defer</span> C.free(unsafe.Pointer(c_str))</span><br><span class="line">    C.puts(c_str)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过 CGO 包的 <code>C.CString</code> 函数将 Go 语言字符串转为 C 语言字符串，然后调用 CGO 包的 <code>C.puts</code> 函数向标准输出窗口打印转换后的 C 字符串。</p>
-<h2 id="使用自定义函数"><a href="#使用自定义函数" class="headerlink" title="使用自定义函数"></a>使用自定义函数</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">#include &lt;stdio.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;stdlib.h&gt;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">static void Hello(const char* s) &#123;</span></span><br><span class="line"><span class="comment">	puts(s);</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;unsafe&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    c_str := C.CString(<span class="string">&quot;Hello, World&quot;</span>)</span><br><span class="line">    <span class="keyword">defer</span> C.free(unsafe.Pointer(c_str))</span><br><span class="line">    C.Hello(c_str)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="模块化"><a href="#模块化" class="headerlink" title="模块化"></a>模块化</h2><p>当代码语句变多时，我们可以将相似的代码封装到一个个函数中。</p>
-<p>在前面的例子中，我们可以抽象一个名为 hello 的模块，模块的全部接口函数都在 hello.h 头文件定义：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello.h</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">Hello</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* s)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>下面是 Hello 函数的 C 语言实现，对应 hello.c 文件：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;hello.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">Hello</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* s)</span> &#123;</span><br><span class="line">    <span class="built_in">puts</span>(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>并且在 CGO 部分需要引入头文件：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">#include &lt;stdlib.h&gt;</span></span><br><span class="line"><span class="comment">#include &quot;hello.h&quot;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;unsafe&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    c_str := C.CString(<span class="string">&quot;Hello, World&quot;</span>)</span><br><span class="line">    <span class="keyword">defer</span> C.free(unsafe.Pointer(c_str))</span><br><span class="line">    C.Hello(c_str)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>注意，如果之前运行的命令是 <code>go run hello.go</code> 或 <code>go build hello.go</code> 的话，此处须使用 <code>go run &quot;your/package&quot;</code> 或 <code>go build &quot;your/package&quot;</code> 才可以。若本就在包路径下的话，也可以直接运行 <code>go run .</code> 或 <code>go build</code>。</p>
-<p>接口文件 hello.h 是 hello 模块的实现者和使用者共同的约定，但是该约定并没有要求必须使用 C 语言来实现 Hello 函数。我们也可以用 C++ 语言来重新实现这个 C 语言函数：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line">    <span class="meta">#<span class="keyword">include</span> <span class="string">&quot;hello.h&quot;</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Hello</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* s)</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在 C++ 版本的 Hello 函数实现中，我们通过 C++ 特有的 <code>std::cout</code> 输出流输出字符串。不过为了保证 C++ 语言实现的 Hello 函数满足 C 语言头文件 hello.h 定义的函数规范，我们需要通过 <code>extern &quot;C&quot;</code> 语句指示该函数的链接符号遵循 C 语言的规则。</p>
-<h2 id="使用Go重新实现"><a href="#使用Go重新实现" class="headerlink" title="使用Go重新实现"></a>使用Go重新实现</h2><p>其实 CGO 不仅仅用于 Go 语言中调用 C 语言函数，还可以用于导出 Go 语言函数给 C 语言函数调用。在前面的例子中，我们已经抽象一个名为 hello 的模块，模块的全部接口函数都在 hello.h 头文件定义：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello.h</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">Hello</span><span class="params">(<span class="comment">/*const*/</span> <span class="type">char</span>* s)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>现在创建一个 hello.go 文件，用 Go 语言重新实现 C 语言接口的 Hello 函数:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//export Hello</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Hello</span><span class="params">(s *C.char)</span></span> &#123;</span><br><span class="line">    fmt.Println(C.GoString(s))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过 CGO 的 <code>//export SayHello</code> 指令将 Go 语言实现的函数 <code>SayHello</code> 导出为 C 语言函数。</p>
-<p>同样在 Go 代码中调用：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">#include &lt;stdlib.h&gt;</span></span><br><span class="line"><span class="comment">#include &quot;hello.h&quot;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;unsafe&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    c_str := C.CString(<span class="string">&quot;Hello, World&quot;</span>)</span><br><span class="line">    <span class="keyword">defer</span> C.free(unsafe.Pointer(c_str))</span><br><span class="line">    C.Hello(c_str)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="面向C接口的Go编程"><a href="#面向C接口的Go编程" class="headerlink" title="面向C接口的Go编程"></a>面向C接口的Go编程</h2><p>在开始的例子中，我们的全部 CGO 代码都在一个 Go 文件中。然后，通过面向 C 接口编程的技术将 Hello 分别拆分到不同的 C 文件，而 main 依然是 Go 文件。再然后，是用 Go 函数重新实现了 C 语言接口的 Hello 函数。但是对于目前的例子来说只有一个函数，要拆分到三个不同的文件确实有些繁琐了。</p>
-<p>现在尝试将例子中的几个文件重新合并到一个 Go 文件。<strong>为了适配 CGO 导出的 C 语言函数，我们禁止了在函数的声明语句中的 const 修饰符</strong>。下面是合并后的成果：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">//void Hello(char* s);</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    C.Hello(C.CString(<span class="string">&quot;Hello, World\n&quot;</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//export Hello</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Hello</span><span class="params">(s *C.char)</span></span> &#123;</span><br><span class="line">    fmt.Print(C.GoString(s))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>现在的 CGO 代码中 C 语言代码的比例已经很少了，但是我们依然可以进一步以 Go 语言的思维来提炼我们的 CGO 代码。通过分析可以发现 <code>SayHello</code> 函数的参数如果可以直接使用 Go 字符串是最直接的。在 Go1.10 中 CGO 新增加了一个 <code>_GoString_</code> 预定义的 C 语言类型，用来表示 Go 语言字符串。下面是改进后的代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">//void Hello(_GoString_ s);</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    C.Hello(<span class="string">&quot;Hello, World\n&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//export Hello</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Hello</span><span class="params">(s <span class="type">string</span>)</span></span> &#123;</span><br><span class="line">    fmt.Print(s)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>虽然看起来全部是 Go 语言代码，但是执行的时候是先从 Go 语言的 <code>main</code> 函数，到 CGO 自动生成的 C 语言版本 <code>SayHello</code> 桥接函数，最后又回到了 Go 语言环境的 <code>SayHello</code> 函数。</p>
-<h1 id="CGO基础"><a href="#CGO基础" class="headerlink" title="CGO基础"></a>CGO基础</h1><p>要使用 CGO 特性，需要安装 C&#x2F;C++ 构建工具链，在 macOS 和 Linux 下是要安装 GCC，在 windows 下是需要安装 MinGW 工具。同时需要保证环境变量 <code>CGO_ENABLED</code> 被设置为 1，这表示 CGO 是被启用的状态。在本地构建时 <code>CGO_ENABLED</code> 默认是启用的，当交叉构建时 CGO 默认是禁止的。比如要交叉构建 ARM 环境运行的 Go 程序，需要手工设置好 C&#x2F;C++ 交叉构建的工具链，同时开启 <code>CGO_ENABLED</code> 环境变量。然后通过 <code>import &quot;C&quot;</code> 语句启用 CGO 特性。</p>
-<h2 id="import-“C”语句"><a href="#import-“C”语句" class="headerlink" title="import “C”语句"></a>import “C”语句</h2><p>如果在 Go 代码中出现了 <code>import &quot;C&quot;</code> 语句则表示使用了 CGO 特性，紧跟在这行语句前面的注释是一种特殊语法，里面包含的是正常的 C 语言代码。当确保 CGO 启用的情况下，还可以在当前目录中包含 C&#x2F;C++ 对应的源文件。</p>
-<p>举个例子：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">#include &lt;stdio.h&gt;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">void printint(int v) &#123;</span></span><br><span class="line"><span class="comment">    printf(&quot;printint: %d\n&quot;, v);</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    v := <span class="number">42</span></span><br><span class="line">    C.printint(C.<span class="type">int</span>(v))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>开头的注释中写了要调用的 C 函数和相关的头文件，头文件被 include 之后里面的所有的 C 语言元素都会被加入到”C” 这个虚拟的包中。</p>
-</li>
-<li><p>import “C” 导入语句推荐单独一行，不与其他包一同 import（在 Go 早期版本中必须单独 import）。</p>
-</li>
-<li><p>Go 是强类型语言，所以 cgo 中传递的参数类型必须与声明的类型完全一致，而且传递前必须用”C” 中的转化函数转换成对应的 C 类型，不能直接传入 Go 中类型的变量。</p>
-</li>
-<li><p>通过虚拟的 C 包导入的 C 语言符号并不需要是大写字母开头，它们不受 Go 语言的导出规则约束。</p>
-</li>
-</ul>
-<p>注意：cgo 将当前包引用的 C 语言符号都放到了虚拟的 C 包中，同时当前包依赖的其它 Go 语言包内部可能也通过 cgo 引入了相似的虚拟 C 包，<strong>但是不同的 Go 语言包引入的虚拟的 C 包之间的类型是不能通用的</strong>。</p>
-<h2 id="cgo语句"><a href="#cgo语句" class="headerlink" title="#cgo语句"></a>#cgo语句</h2><p>在 <code>import &quot;C&quot;</code> 语句前的注释中可以通过 <code>#cgo</code> 语句设置编译阶段和链接阶段的相关参数。编译阶段的参数主要用于定义相关宏和指定头文件检索路径。链接阶段的参数主要是指定库文件检索路径和要链接的库文件。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// #cgo CFLAGS: -DPNG_DEBUG=1 -I./include</span></span><br><span class="line"><span class="comment">// #cgo LDFLAGS: -L/usr/local/lib -lpng</span></span><br><span class="line"><span class="comment">// #include &lt;png.h&gt;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>上面的代码中，CFLAGS 部分，<code>-D</code> 部分定义了宏 PNG_DEBUG，值为 1；<code>-I</code> 定义了头文件包含的检索目录。LDFLAGS 部分，<code>-L</code> 指定了链接时库文件检索目录，<code>-l</code> 指定了链接时需要链接 png 库。</p>
-<p>因为 C&#x2F;C++ 遗留的问题，C 头文件检索目录可以是相对目录，但是库文件检索目录则需要绝对路径。在库文件的检索目录中可以通过 <code>$&#123;SRCDIR&#125;</code> 变量表示当前包目录的绝对路径：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">// #cgo LDFLAGS: -L$&#123;SRCDIR&#125;/libs -lfoo</span><br></pre></td></tr></table></figure>
-
-<p><code>#cgo</code> 语句主要影响 CFLAGS、CPPFLAGS、CXXFLAGS、FFLAGS 和 LDFLAGS 几个编译器环境变量。LDFLAGS 用于设置链接时的参数，除此之外的几个变量用于改变编译阶段的构建参数 (CFLAGS 用于针对 C 语言代码设置编译参数)。</p>
-<p>对于在 cgo 环境混合使用 C 和 C++ 的用户来说，可能有三种不同的编译选项：其中 CFLAGS 对应 C 语言特有的编译选项、CXXFLAGS 对应是 C++ 特有的编译选项、CPPFLAGS 则对应 C 和 C++ 共有的编译选项。但是在链接阶段，C 和 C++ 的链接选项是通用的，因此这个时候已经不再有 C 和 C++ 语言的区别，它们的目标文件的类型是相同的。</p>
-<p><code>#cgo</code> 指令还支持条件选择，当满足某个操作系统或某个 CPU 架构类型时后面的编译或链接选项生效。比如下面是分别针对 windows 和非 windows 下平台的编译和链接选项：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// #cgo windows CFLAGS: -DX86=1</span><br><span class="line">// #cgo !windows LDFLAGS: -lm</span><br></pre></td></tr></table></figure>
-
-<p>其中在 windows 平台下，编译前会预定义 X86 宏为 1；在非 windows 平台下，在链接阶段会要求链接 math 数学库。这种用法对于在不同平台下只有少数编译选项差异的场景比较适用。</p>
-<p>如果在不同的系统下 cgo 对应着不同的 c 代码，我们可以先使用 <code>#cgo</code> 指令定义不同的 C 语言的宏，然后通过宏来区分不同的代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">#cgo windows CFLAGS: -DCGO_OS_WINDOWS=1</span></span><br><span class="line"><span class="comment">#cgo darwin CFLAGS: -DCGO_OS_DARWIN=1</span></span><br><span class="line"><span class="comment">#cgo linux CFLAGS: -DCGO_OS_LINUX=1</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">#if defined(CGO_OS_WINDOWS)</span></span><br><span class="line"><span class="comment">    const char* os = &quot;windows&quot;;</span></span><br><span class="line"><span class="comment">#elif defined(CGO_OS_DARWIN)</span></span><br><span class="line"><span class="comment">    const char* os = &quot;darwin&quot;;</span></span><br><span class="line"><span class="comment">#elif defined(CGO_OS_LINUX)</span></span><br><span class="line"><span class="comment">    const char* os = &quot;linux&quot;;</span></span><br><span class="line"><span class="comment">#else</span></span><br><span class="line"><span class="comment">#   error(unknown os)</span></span><br><span class="line"><span class="comment">#endif</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="built_in">print</span>(C.GoString(C.os))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="build-tag条件编译"><a href="#build-tag条件编译" class="headerlink" title="build tag条件编译"></a>build tag条件编译</h2><p>build tag 是在 Go 或 cgo 环境下的 C&#x2F;C++ 文件开头的一种特殊的注释。条件编译类似于前面通过 <code>#cgo</code> 指令针对不同平台定义的宏，只有在对应平台的宏被定义之后才会构建对应的代码。但是通过 <code>#cgo</code> 指令定义宏有个限制，它只能是基于 Go 语言支持的 windows、darwin 和 linux 等已经支持的操作系统。如果我们希望定义一个 DEBUG 标志的宏，<code>#cgo</code> 指令就无能为力了。而 Go 语言提供的 build tag 条件编译特性则可以简单做到。</p>
-<p>比如下面的源文件只有在设置 debug 构建标志时才会被构建：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// +build debug</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">var</span> buildMode = <span class="string">&quot;debug&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>可以用以下命令构建：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">go build -tags=&quot;debug&quot;</span><br><span class="line">go build -tags=&quot;windows debug&quot;</span><br></pre></td></tr></table></figure>
-
-<p>我们可以通过 <code>-tags</code> 命令行参数同时指定多个 build 标志，它们之间用空格分隔。</p>
-<p>当有多个 build tag 时，我们将多个标志通过逻辑操作的规则来组合使用。比如以下的构建标志表示只有在 linux&#x2F;386 或 darwin 平台下非 cgo 环境 “才进行构建。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">// +build linux,386 darwin,!cgo</span><br></pre></td></tr></table></figure>
-
-<p>其中 <code>linux,386</code> 中 linux 和 386 用逗号链接表示 AND 的意思；而 <code>linux,386</code> 和 <code>darwin,!cgo</code> 之间通过空白分割来表示 OR 的意思。</p>
-<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><p>要想利用好 CGO 特性，自然需要了解此二语言类型之间的转换规则，这是本节要讨论的问题。</p>
-<h2 id="数值类型"><a href="#数值类型" class="headerlink" title="数值类型"></a>数值类型</h2><table>
-<thead>
-<tr>
-<th>C 语言类型</th>
-<th>CGO 类型</th>
-<th>Go 语言类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>char</td>
-<td>C.char</td>
-<td>byte</td>
-</tr>
-<tr>
-<td>singed char</td>
-<td>C.schar</td>
-<td>int8</td>
-</tr>
-<tr>
-<td>unsigned char</td>
-<td>C.uchar</td>
-<td>uint8</td>
-</tr>
-<tr>
-<td>short</td>
-<td>C.short</td>
-<td>int16</td>
-</tr>
-<tr>
-<td>unsigned short</td>
-<td>C.ushort</td>
-<td>uint16</td>
-</tr>
-<tr>
-<td>int</td>
-<td>C.int</td>
-<td>int32</td>
-</tr>
-<tr>
-<td>unsigned int</td>
-<td>C.uint</td>
-<td>uint32</td>
-</tr>
-<tr>
-<td>long</td>
-<td>C.long</td>
-<td>int32</td>
-</tr>
-<tr>
-<td>unsigned long</td>
-<td>C.ulong</td>
-<td>uint32</td>
-</tr>
-<tr>
-<td>long long int</td>
-<td>C.longlong</td>
-<td>int64</td>
-</tr>
-<tr>
-<td>unsigned long long int</td>
-<td>C.ulonglong</td>
-<td>uint64</td>
-</tr>
-<tr>
-<td>float</td>
-<td>C.float</td>
-<td>float32</td>
-</tr>
-<tr>
-<td>double</td>
-<td>C.double</td>
-<td>float64</td>
-</tr>
-<tr>
-<td>size_t</td>
-<td>C.size_t</td>
-<td>uint</td>
-</tr>
-</tbody></table>
-<p>Go 语言类型 <code>&lt;stdint.h&gt;</code> 头文件类型对比：</p>
-<table>
-<thead>
-<tr>
-<th>C 语言类型</th>
-<th>CGO 类型</th>
-<th>Go 语言类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>int8_t</td>
-<td>C.int8_t</td>
-<td>int8</td>
-</tr>
-<tr>
-<td>uint8_t</td>
-<td>C.uint8_t</td>
-<td>uint8</td>
-</tr>
-<tr>
-<td>int16_t</td>
-<td>C.int16_t</td>
-<td>int16</td>
-</tr>
-<tr>
-<td>uint16_t</td>
-<td>C.uint16_t</td>
-<td>uint16</td>
-</tr>
-<tr>
-<td>int32_t</td>
-<td>C.int32_t</td>
-<td>int32</td>
-</tr>
-<tr>
-<td>uint32_t</td>
-<td>C.uint32_t</td>
-<td>uint32</td>
-</tr>
-<tr>
-<td>int64_t</td>
-<td>C.int64_t</td>
-<td>int64</td>
-</tr>
-<tr>
-<td>uint64_t</td>
-<td>C.uint64_t</td>
-<td>uint64</td>
-</tr>
-</tbody></table>
-<p> 64 位环境下，<code>_cgo_export.h</code> 头文件生成的 Go 数值类型的定义：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">signed</span> <span class="type">char</span> GoInt8;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">char</span> GoUint8;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">short</span> GoInt16;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">short</span> GoUint16;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">int</span> GoInt32;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">int</span> GoUint32;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> GoInt64;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> GoUint64;</span><br><span class="line"><span class="keyword">typedef</span> GoInt64 GoInt;</span><br><span class="line"><span class="keyword">typedef</span> GoUint64 GoUint;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">float</span> GoFloat32;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">double</span> GoFloat64;</span><br></pre></td></tr></table></figure>
-
-<h2 id="字符串和切片"><a href="#字符串和切片" class="headerlink" title="字符串和切片"></a>字符串和切片</h2><p>在 CGO 生成的 <code>_cgo_export.h</code> 头文件中还会为 Go 语言的字符串、切片、字典、接口和管道等特有的数据类型生成对应的 C 语言类型：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span><span class="type">const</span> <span class="type">char</span> *p; GoInt n;&#125; GoString;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">void</span> *GoMap;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">void</span> *GoChan;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span><span class="type">void</span> *t; <span class="type">void</span> *v;&#125; GoInterface;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span><span class="type">void</span> *data; GoInt len; GoInt cap;&#125; GoSlice;</span><br></pre></td></tr></table></figure>
-
-<p>不过需要注意的是，其中只有字符串和切片在 CGO 中有一定的使用价值，因为 CGO 为他们的某些 GO 语言版本的操作函数生成了 C 语言版本，因此二者可以在 Go 调用 C 语言函数时马上使用; 而 CGO 并未针对其他的类型提供相关的辅助函数，且 Go 语言特有的内存模型导致我们无法保持这些由 Go 语言管理的内存指针，所以它们 C 语言环境并无使用的价值。</p>
-<p>在导出的 C 语言函数中我们可以直接使用 Go 字符串和切片。假设有以下两个导出函数：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//export helloString</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">helloString</span><span class="params">(s <span class="type">string</span>)</span></span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//export helloSlice</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">helloSlice</span><span class="params">(s []<span class="type">byte</span>)</span></span> &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>CGO 生成的 <code>_cgo_export.h</code> 头文件会包含以下的函数声明：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">helloString</span><span class="params">(GoString p0)</span>;</span><br><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">helloSlice</span><span class="params">(GoSlice p0)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>不过需要注意的是，如果使用了 GoString 类型则会对 <code>_cgo_export.h</code> 头文件产生依赖，而这个头文件是动态输出的。</p>
-<p>Go1.10 针对 Go 字符串增加了一个 <code>_GoString_</code> 预定义类型，可以降低在 cgo 代码中可能对 <code>_cgo_export.h</code> 头文件产生的循环依赖的风险。我们可以调整 helloString 函数的 C 语言声明为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">helloString</span><span class="params">(_GoString_ p0)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>因为 <code>_GoString_</code> 是预定义类型，我们无法通过此类型直接访问字符串的长度和指针等信息。Go1.10 同时也增加了以下两个函数用于获取字符串结构中的长度和指针信息：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">size_t</span> _GoStringLen(_GoString_ s);</span><br><span class="line"><span class="type">const</span> <span class="type">char</span> *_GoStringPtr(_GoString_ s);</span><br></pre></td></tr></table></figure>
-
-<p>更严谨的做法是为 C 语言函数接口定义严格的头文件，然后基于稳定的头文件实现代码。</p>
-<h1 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h1><p>CGO 技术我们不仅仅可以在 Go 语言中调用 C 语言函数，也可以将 Go 语言函数导出为 C 语言函数。</p>
-<h2 id="Go调用C函数"><a href="#Go调用C函数" class="headerlink" title="Go调用C函数"></a>Go调用C函数</h2><p>对于一个启用 CGO 特性的程序，CGO 会构造一个虚拟的 C 包。通过这个虚拟的 C 包可以调用 C 语言函数。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">static int add(int a, int b) &#123;</span></span><br><span class="line"><span class="comment">	return a+b;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    C.add(<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="C函数的返回值"><a href="#C函数的返回值" class="headerlink" title="C函数的返回值"></a>C函数的返回值</h2><p>对于有返回值的 C 函数：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">static int div(int a, int b) &#123;</span></span><br><span class="line"><span class="comment">	return a/b;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    v := C.div(<span class="number">6</span>, <span class="number">3</span>)</span><br><span class="line">    fmt.Println(v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="void函数的返回值"><a href="#void函数的返回值" class="headerlink" title="void函数的返回值"></a>void函数的返回值</h2><p>C 语言函数还有一种没有返回值类型的函数，用 void 表示返回值类型。一般情况下，我们无法获取 void 类型函数的返回值，因为没有返回值可以获取。前面的例子中提到，cgo 对 errno 做了特殊处理，可以通过第二个返回值来获取 C 语言的错误状态。对于 void 类型函数，这个特性依然有效。</p>
-<p>以下的代码是获取没有返回值函数的错误状态码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">//static void noreturn() &#123;&#125;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    _, err := C.noreturn()</span><br><span class="line">    fmt.Println(err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>此时，我们忽略了第一个返回值，只获取第二个返回值对应的错误码。</p>
-<p>我们也可以尝试获取第一个返回值，它对应的是 C 语言的 void 对应的 Go 语言类型：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">//static void noreturn() &#123;&#125;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    v, _ := C.noreturn()</span><br><span class="line">    fmt.Printf(<span class="string">&quot;%#v&quot;</span>, v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行这个代码将会产生以下输出：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">main._Ctype_void&#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们可以看出 C 语言的 void 类型对应的是当前的 main 包中的 <code>_Ctype_void</code> 类型。其实也将 C 语言的 noreturn 函数看作是返回 <code>_Ctype_void</code> 类型的函数，这样就可以直接获取 void 类型函数的返回值：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">//static void noreturn() &#123;&#125;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(C.noreturn())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行这个代码将会产生以下输出：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[]</span><br></pre></td></tr></table></figure>
-
-<p>其实在 CGO 生成的代码中，<code>_Ctype_void</code> 类型对应一个 0 长的数组类型 <code>[0]byte</code>，因此 <code>fmt.Println</code> 输出的是一个表示空数值的方括弧。</p>
-<h2 id="C调用Go导出函数"><a href="#C调用Go导出函数" class="headerlink" title="C调用Go导出函数"></a>C调用Go导出函数</h2><p>将 Go 函数导出为 C 语言函数。这样的话我们可以定义好 C 语言接口，然后通过 Go 语言实现。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//export add</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(a, b C.<span class="type">int</span>)</span></span> C.<span class="type">int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> a+b</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>add 函数名以小写字母开头，对于 Go 语言来说是包内的私有函数。但是从 C 语言角度来看，导出的 add 函数是一个可全局访问的 C 语言函数。如果在两个不同的 Go 语言包内，都存在一个同名的要导出为 C 语言函数的 add 函数，那么在最终的链接阶段将会出现符号重名的问题。</p>
-<p>当导出 C 语言接口时，<strong>需要保证函数的参数和返回值类型都是 C 语言友好的类型</strong>，同时<strong>返回值不得直接或间接包含 Go 语言内存空间的指针</strong>。</p>
-<h2 id="回调函数作为参数"><a href="#回调函数作为参数" class="headerlink" title="回调函数作为参数"></a>回调函数作为参数</h2><p>回调函数作为参数也是很常见的使用场景，通常用于异步处理数据。</p>
-<p>创建 <code>process.h</code> 如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __PROCESS_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __PROCESS_H__</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">void</span> <span class="params">(*CallbackFuncCpp)</span> <span class="params">(<span class="type">const</span> <span class="type">char</span>*)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">process</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* data, CallbackFuncCpp callback)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<p>创建 <code>process.cpp</code> 如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line">    <span class="meta">#<span class="keyword">include</span> <span class="string">&quot;process.h&quot;</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟数据处理过程</span></span><br><span class="line"><span class="function">std::string <span class="title">processData</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* data)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;Processed: &quot;</span> + std::<span class="built_in">string</span>(data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数接受回调函数作为参数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">process</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* data, CallbackFuncCpp callback)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 处理数据</span></span><br><span class="line">    std::string result = <span class="built_in">processData</span>(data);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用回调函数</span></span><br><span class="line">    <span class="built_in">callback</span>(result.<span class="built_in">c_str</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>注意到 <code>prcess</code> 函数带有回调函数，创建 <code>main.go</code> ：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">#include &quot;process.h&quot;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;unsafe&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//export CallbackFuncGo</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CallbackFuncGo</span><span class="params">(result *C.char)</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;Callback called:&quot;</span>, C.GoString(result))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cb := C.CallbackFuncCpp(unsafe.Pointer(C.CallbackFuncGo))</span><br><span class="line">    C.process(C.CString(<span class="string">&quot;Input Data&quot;</span>), cb)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>该代码是编译不过去的，因为在 <code>main.go</code> 中并不认识 <code>CallbackFuncGo</code>。</p>
-<p>要使其编译过需要创建 <code>go_export.go</code>：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//export CallbackFuncGo</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CallbackFuncGo</span><span class="params">(result *C.char)</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;Callback called:&quot;</span>, C.GoString(result))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后 <code>main.go</code> 修改为：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">#include &quot;process.h&quot;</span></span><br><span class="line"><span class="comment">void CallbackFuncGo(const char* result);</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;unsafe&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cb := C.CallbackFuncCpp(unsafe.Pointer(C.CallbackFuncGo))</span><br><span class="line">    C.process(C.CString(<span class="string">&quot;Input Data&quot;</span>), cb)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到修改后独立出了 Go 导出函数，以及增加了该函数的声明。</p>
-<p>有时候我们希望 Go 导出函数和 <code>main.go</code> 放在一起，此时需要创建 <code>bridge.go</code> 文件：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">void CallbackFuncGo(const char* result);</span></span><br><span class="line"><span class="comment">void Bridge(const char* result)</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">    CallbackFuncGo(result);</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>因为在 <code>main.go</code> 中无法直接调用 <code>CallbackFuncGo</code> 所以需要创建桥接函数间接调用。</p>
-<p>同时在 <code>main.go</code> 中导出 <code>CallbackFuncGo</code> ，并且调用时使用 <code>Bridge</code>。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">#include &quot;process.h&quot;</span></span><br><span class="line"><span class="comment">void Bridge(const char* result);</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;unsafe&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//export CallbackFuncGo</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CallbackFuncGo</span><span class="params">(result *C.char)</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;Callback called:&quot;</span>, C.GoString(result))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    cb := C.CallbackFuncCpp(unsafe.Pointer(C.Bridge))</span><br><span class="line">    C.process(C.CString(<span class="string">&quot;Input Data&quot;</span>), cb)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="静态库和动态库"><a href="#静态库和动态库" class="headerlink" title="静态库和动态库"></a>静态库和动态库</h1><p>CGO 在使用 C&#x2F;C++ 资源的时候一般有三种形式：直接使用源码；链接静态库；链接动态库。直接使用源码就是在 <code>import &quot;C&quot;</code> 之前的注释部分包含 C 代码，或者在当前包中包含 C&#x2F;C++ 源文件。链接静态库和动态库的方式比较类似，都是通过在 LDFLAGS 选项指定要链接的库方式链接。</p>
-<h2 id="使用静态库"><a href="#使用静态库" class="headerlink" title="使用静态库"></a>使用静态库</h2><p>静态库因为是静态链接，最终的目标程序并不会产生额外的运行时依赖，也不会出现动态库特有的跨运行时资源管理的错误。不过静态库对链接阶段会有一定要求：静态库一般包含了全部的代码，里面会有大量的符号，如果不同静态库之间出现了符号冲突则会导致链接的失败。</p>
-<p>使用静态库例子，先用纯 C 语言构造一个简单的静态库。我们要构造的静态库名叫 number，库中只有一个 number_add_mod 函数，用于表示数论中的模加法运算。number 库的文件都在 number 目录下。</p>
-<p><code>number/number.h</code> 头文件只有一个纯 C 语言风格的函数声明：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">number_add_mod</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b, <span class="type">int</span> mod)</span>;</span><br></pre></td></tr></table></figure>
-
-<p><code>number/number.c</code> 对应函数的实现：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;number.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">number_add_mod</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b, <span class="type">int</span> mod)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (a+b)%mod;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>因为 CGO 使用的是 GCC 命令来编译和链接 C 和 Go 桥接的代码。因此静态库也必须是 GCC 兼容的格式。</p>
-<p>通过以下命令可以生成一个叫 libnumber.a 的静态库：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ./number</span><br><span class="line">gcc -c -o number.o number.c</span><br><span class="line">ar rcs libnumber.a number.o</span><br></pre></td></tr></table></figure>
-
-<p>生成 libnumber.a 静态库之后，我们就可以在 CGO 中使用该资源了。</p>
-<p>创建 main.go 文件如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line"><span class="comment">//#cgo CFLAGS: -I./number</span></span><br><span class="line"><span class="comment">//#cgo LDFLAGS: -L$&#123;SRCDIR&#125;/number -lnumber</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//#include &quot;number.h&quot;</span></span><br><span class="line">import <span class="string">&quot;C&quot;</span></span><br><span class="line">import <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line">func <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    fmt.Println(C.number_add_mod(<span class="number">10</span>, <span class="number">5</span>, <span class="number">12</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="使用动态库"><a href="#使用动态库" class="headerlink" title="使用动态库"></a>使用动态库</h2><p>动态库出现的初衷是对于相同的库，多个进程可以共享同一个，以节省内存和磁盘资源。但是在磁盘和内存已经白菜价的今天，这两个作用已经显得微不足道了，那么除此之外动态库还有哪些存在的价值呢？从库开发角度来说，动态库可以隔离不同动态库之间的关系，减少链接时出现符号冲突的风险。而且对于 windows 等平台，动态库是跨越 VC 和 GCC 不同编译器平台的唯一的可行方式。</p>
-<p>对于 CGO 来说，使用动态库和静态库是一样的，因为动态库也必须要有一个小的静态导出库用于链接动态库（Linux 下可以直接链接 so 文件，但是在 Windows 下必须为 dll 创建一个 <code>.a</code> 文件用于链接）。我们还是以前面的 number 库为例来说明如何以动态库方式使用。</p>
-<p>对于在 macOS 和 Linux 系统下的 gcc 环境，我们可以用以下命令创建 number 库的的动态库：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd number</span><br><span class="line">gcc -shared -o libnumber.so number.c</span><br></pre></td></tr></table></figure>
-
-<p>因为动态库和静态库的基础名称都是 libnumber，只是后缀名不同而已。因此 Go 语言部分的代码和静态库版本完全一样。</p>
-<p>编译时 GCC 会自动找到 libnumber.a 或 libnumber.so 进行链接。</p>
-<h2 id="导出静态库"><a href="#导出静态库" class="headerlink" title="导出静态库"></a>导出静态库</h2><p>CGO 不仅可以使用 C 静态库，也可以将 Go 实现的函数导出为 C 静态库。我们现在用 Go 实现前面的 number 库的模加法函数。</p>
-<p>创建 number.go，内容如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//export number_add_mod</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">number_add_mod</span><span class="params">(a, b, mod C.<span class="type">int</span>)</span></span> C.<span class="type">int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (a + b) % mod</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>根据 CGO 文档的要求，我们需要<strong>在 main 包中导出 C 函数</strong>。对于 C 静态库构建方式来说，会忽略 main 包中的 main 函数，只是简单导出 C 函数。采用以下命令构建：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go build -buildmode=c-archive -o number.a</span><br></pre></td></tr></table></figure>
-
-<p>在生成 number.a 静态库的同时，cgo 还会生成一个 number.h 文件。</p>
-<p>number.h 文件的内容如下（为了便于显示，内容做了精简）：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="type">int</span> <span class="title function_">number_add_mod</span><span class="params">(<span class="type">int</span> p0, <span class="type">int</span> p1, <span class="type">int</span> p2)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<h2 id="导出动态库"><a href="#导出动态库" class="headerlink" title="导出动态库"></a>导出动态库</h2><p>CGO 导出动态库的过程和静态库类似，只是将构建模式改为 <code>c-shared</code>，输出文件名改为 <code>number.so</code> 而已：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go build -buildmode=c-shared -o number.so</span><br></pre></td></tr></table></figure>
-
-<h2 id="导出非main包的函数"><a href="#导出非main包的函数" class="headerlink" title="导出非main包的函数"></a>导出非main包的函数</h2><p>通过 <code>go help buildmode</code> 命令可以查看 C 静态库和 C 动态库的构建说明：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">-buildmode=c-archive</span><br><span class="line">    Build the listed main package, plus all packages it imports,</span><br><span class="line">    into a C archive file. The only callable symbols will be those</span><br><span class="line">    functions exported using a cgo //export comment. Requires</span><br><span class="line">    exactly one main package to be listed.</span><br><span class="line"></span><br><span class="line">-buildmode=c-shared</span><br><span class="line">    Build the listed main package, plus all packages it imports,</span><br><span class="line">    into a C shared library. The only callable symbols will</span><br><span class="line">    be those functions exported using a cgo //export comment.</span><br><span class="line">    Requires exactly one main package to be listed.</span><br></pre></td></tr></table></figure>
-
-<p>文档说明<strong>导出的 C 函数必须是在 main 包导出</strong>，然后才能在生成的头文件包含声明的语句。但是很多时候我们可能更希望将不同类型的导出函数组织到不同的 Go 包中，然后统一导出为一个静态库或动态库。</p>
-<p>要实现从是从非 main 包导出 C 函数，或者是多个包导出 C 函数（因为只能有一个 main 包），<strong>我们需要自己提供导出 C 函数对应的头文件</strong>（因为 CGO 无法为非 main 包的导出函数生成头文件）。</p>
-<p>假设我们先创建一个 number 子包，用于提供模加法函数：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> number</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//export number_add_mod</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">number_add_mod</span><span class="params">(a, b, mod C.<span class="type">int</span>)</span></span> C.<span class="type">int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (a + b) % mod</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后是当前的 main 包：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line">    _ <span class="string">&quot;./number&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="built_in">println</span>(<span class="string">&quot;Done&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//export goPrintln</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">goPrintln</span><span class="params">(s *C.char)</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;goPrintln:&quot;</span>, C.GoString(s))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中我们导入了 number 子包，在 number 子包中有导出的 C 函数 number_add_mod，同时我们在 main 包也导出了 goPrintln 函数。</p>
-<p>通过以下命令创建 C 静态库：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">go</span> build -buildmode=c-archive -o main.a</span><br></pre></td></tr></table></figure>
-
-<p>这时候在生成 main.a 静态库的同时，也会生成一个 main.h 头文件。<strong>但是 main.h 头文件中只有 main 包中导出的 goPrintln 函数的声明</strong>，<strong>并没有 number 子包导出函数的声明</strong>。其实 number_add_mod 函数在生成的 C 静态库中是存在的，我们可以直接使用。<strong>但是对于头文件要自己添加number 子包导出函数的声明</strong>。</p>
-<h1 id="编译和链接参数"><a href="#编译和链接参数" class="headerlink" title="编译和链接参数"></a>编译和链接参数</h1><p>构建每一个 C&#x2F;C++ 应用均需要经过编译和链接两个步骤，CGO 也是如此。</p>
-<h2 id="编译参数：CFLAGS-CPPFLAGS-CXXFLAGS"><a href="#编译参数：CFLAGS-CPPFLAGS-CXXFLAGS" class="headerlink" title="编译参数：CFLAGS&#x2F;CPPFLAGS&#x2F;CXXFLAGS"></a>编译参数：CFLAGS&#x2F;CPPFLAGS&#x2F;CXXFLAGS</h2><p>编译参数主要是头文件的检索路径，预定义的宏等参数。</p>
-<p>CFLAGS 对应 C 语言编译参数（以 <code>.c</code> 后缀名）。</p>
-<p>CPPFLAGS 对应 C&#x2F;C++ 代码编译参数（<code>.c,.cc,.cpp,.cxx</code>）。</p>
-<p>CXXFLAGS 对应纯 C++ 编译参数（<code>.cc,.cpp,.cxx</code>）。</p>
-<h2 id="链接参数：LDFLAGS"><a href="#链接参数：LDFLAGS" class="headerlink" title="链接参数：LDFLAGS"></a>链接参数：LDFLAGS</h2><p>链接参数主要包含要链接库的检索目录和要链接库的名字。</p>
-<p>因为历史遗留问题，链接库不支持相对路径，我们必须为链接库指定绝对路径。</p>
-<p>cgo 中的 ${SRCDIR} 为当前目录的绝对路径。</p>
-<p>经过编译后的 C 和 C++ 目标文件格式是一样的，因此 LDFLAGS 对应 C&#x2F;C++ 共同的链接参数。</p>
-<h2 id="pkg-config"><a href="#pkg-config" class="headerlink" title="pkg-config"></a>pkg-config</h2><p>为不同 C&#x2F;C++ 库提供编译和链接参数是一项非常繁琐的工作，因此 cgo 提供了对应 <code>pkg-config</code> 工具的支持。 我们可以通过 <code>#cgo pkg-config xxx</code> 命令来生成 xxx 库需要的编译和链接参数，其底层通过调用 <code>pkg-config xxx --cflags</code> 生成编译参数，通过 <code>pkg-config xxx --libs</code> 命令生成链接参数。 需要注意的是 <code>pkg-config</code> 工具生成的编译和链接参数是 C&#x2F;C++ 公用的，无法做更细的区分。</p>
-<p><code>pkg-config</code> 工具虽然方便，但是有很多非标准的 C&#x2F;C++ 库并没有实现对其支持。 这时候我们可以手工为 <code>pkg-config</code> 工具创建对应库的编译和链接参数实现支持。</p>
-<h2 id="go-get"><a href="#go-get" class="headerlink" title="go get"></a>go get</h2><p>在使用 <code>go get</code> 获取 Go 语言包的同时会获取包依赖的包。比如 A 包依赖 B 包，B 包依赖 C 包，C 包依赖 D 包： <code>pkgA -&gt; pkgB -&gt; pkgC -&gt; pkgD -&gt; ...</code>。再 go get 获取 A 包之后会依次线获取 BCD 包。 如果在获取 B 包之后构建失败，那么将导致链条的断裂，从而导致 A 包的构建失败。</p>
-<p>参考链接：<a target="_blank" rel="noopener" href="https://github.com/chai2010/advanced-go-programming-book/tree/master/ch2-cgo">https://github.com/chai2010/advanced-go-programming-book/tree/master/ch2-cgo</a></p>
 
       
     </div>

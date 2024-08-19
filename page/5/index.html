@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">86</span>
+          <span class="site-state-item-count">87</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,160 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/" class="post-title-link" itemprop="url">WebRTC介绍</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-10-09 19:16:26" itemprop="dateCreated datePublished" datetime="2023-10-09T19:16:26+08:00">2023-10-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-18 13:48:18" itemprop="dateModified" datetime="2024-01-18T13:48:18+08:00">2024-01-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="WebRTC介绍"><a href="#WebRTC介绍" class="headerlink" title="WebRTC介绍"></a>WebRTC介绍</h1><p>WebRTC（Web Real­Time Communication）是 Google 于 2010 以 6829 万美元从 Global IP Solutions 公司购买，并于 2011 年将其开源，旨在建立一个互联网浏览器间的实时通信的平台，让 WebRTC 技术成为 H5 标准之一。WebRTC 是一个免费的开放项目，它通过简单的 API 为浏览器和移动应用程序提供实时通信（RTC）功能。</p>
+<h1 id="WebRTC框架"><a href="#WebRTC框架" class="headerlink" title="WebRTC框架"></a>WebRTC框架</h1><img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/WebRTC框架.png" alt="WebRTC框架" style="zoom:50%;">
+
+<p>上图的框架对于不同的开发人员关注点不同： </p>
+<ul>
+<li>紫色部分是 Web 应用开发者 API 层</li>
+<li>蓝色实线部分是面向浏览器厂商的 API 层</li>
+<li>蓝色虚线部分浏览器厂商可以自定义实现</li>
+</ul>
+<p>特别是图中的 PeerConnection 为 Web 开发人员提供了一个抽象，从复杂的内部结构中抽象出来。注意关注 PeerConnection 这个对象即可以开发音视频通话应用。 </p>
+<h2 id="WebRTC架构组件介绍"><a href="#WebRTC架构组件介绍" class="headerlink" title="WebRTC架构组件介绍"></a>WebRTC架构组件介绍</h2><h3 id="Web-APP"><a href="#Web-APP" class="headerlink" title="Web APP"></a>Web APP</h3><p>Web 开发者开发的程序，Web 开发者可以基于集成 WebRTC 的浏览器提供的 Web API 开发基于视频、音频的实时通信应用。</p>
+<h3 id="Web-API"><a href="#Web-API" class="headerlink" title="Web API"></a>Web API</h3><p>面向第三方开发者的 WebRTC 标准 API（Javascript），使开发者能够容易地开发出类似于网络视频聊天的 Web 应用。</p>
+<h3 id="WebRTC-Native-C-API"><a href="#WebRTC-Native-C-API" class="headerlink" title="WebRTC Native C++ API"></a>WebRTC Native C++ API</h3><p>本地 C++ API 层，使浏览器厂商容易实现 WebRTC 标准的 Web API，抽象地对数字信号过程进行处理。</p>
+<h3 id="Transport-Session"><a href="#Transport-Session" class="headerlink" title="Transport &#x2F; Session"></a>Transport &#x2F; Session</h3><p>传输&#x2F;会话层，会话层组件采用了 libjingle 库的部分组件实现，无需使用 xmpp&#x2F;jingle 协议。</p>
+<h3 id="VoiceEngine"><a href="#VoiceEngine" class="headerlink" title="VoiceEngine"></a>VoiceEngine</h3><p>WebRTC 音频处理引擎，包含一系列音频多媒体处理的框架，VoiceEngine 是 WebRTC 极具价值的技术之一，是 Google 收购 GIPS 公司后开源的。在 VoIP上，技术业界领先。</p>
+<p>Opus：支持从 6 kbit&#x2F;s 到 510 kbit&#x2F;s 的恒定和可变比特率编码，帧大小从 2.5 ms 到 60 ms，各种采样率从 8 kHz（4 kHz 带宽）到 48 kHz（20 kHz 带宽，可复制人类听觉系统的整个听力范围）。由 IETF RFC 6176 定义。</p>
+<p>NetEQ 模块是 WebRTC 语音引擎中的核心模块 ，一种动态抖动缓冲和错误隐藏算法，用于隐藏网络抖动和数据包丢失的负面影响。保持尽可能低的延迟，同时保持最高的语音质量。</p>
+<h3 id="VideoEngine"><a href="#VideoEngine" class="headerlink" title="VideoEngine"></a>VideoEngine</h3><p>WebRTC 视频处理引擎，VideoEngine 是包含一系列视频处理的整体框架，从摄像头采集视频到视频信息网络传输再到视频显示整个完整过程的解决方案。VP8 视频图像编解码器，是 WebRTC 视频引擎的默认的编解码，VP8 适合实时通信应用场景，因为它主要是针对低延时而设计的编解码器。 </p>
+<h1 id="WebRTC发展前景"><a href="#WebRTC发展前景" class="headerlink" title="WebRTC发展前景"></a>WebRTC发展前景</h1><p>WebRTC 虽然冠以“web”之名，但并不受限于传统互联网应用或浏览器的终端运行环境。实际上<strong>无论终端运行环境是浏览器、桌面应用、移动设备（Android 或 iOS）还是 IoT 设备，只要IP连接可到达且符合 WebRTC 规范就可以互通</strong>。这一点释放了大量智能终端（或运行在智能终端上的app）的实时通信能力，打开了许多对于实时交互性要求较高的应用场景的想象空间，譬如在线教育、视频会议、视频社交、远程协助、远程操控等等都是其合适的应用领域。</p>
+<h1 id="WebRTC通话原理"><a href="#WebRTC通话原理" class="headerlink" title="WebRTC通话原理"></a>WebRTC通话原理</h1><p>问题：两个不同网络环境的（具备摄像头&#x2F;麦克风多媒体设备的）浏览器，要实现点对点的实时音视频对话，难点在哪里？ </p>
+<h2 id="媒体协商"><a href="#媒体协商" class="headerlink" title="媒体协商"></a>媒体协商</h2><p><strong>彼此要了解对方支持的媒体格式。</strong></p>
+<p>在 WebRTC 中用来描述网络信息的术语叫 <strong>SDP</strong>。</p>
+<p>比如：Peer­A端可支持 VP8、H264 多种编码格式，而 Peer­B 端支持 VP9、H264，要保证二端都正确的编解码，最简单的办法就是取它们的交集 H264。</p>
+<p>注：有一个专门的协议 ，称为Session Description Protocol （SDP），可用于描述上述这类信息，在 WebRTC 中，<strong>参与视频通讯的双方必须先交换SDP信息</strong>，这样双方才能知根知底，而交换SDP的过程，也称为”<strong>媒体协商</strong>“。</p>
+<h2 id="网络协商"><a href="#网络协商" class="headerlink" title="网络协商"></a>网络协商</h2><p><strong>彼此要了解对方的网络情况，这样才有可能找到一条相互通讯的链路。</strong></p>
+<p>在 WebRTC 中用来描述网络信息的术语叫 <strong>Candidate</strong>。</p>
+<p>解决方式：</p>
+<ul>
+<li>获取外网IP地址映射。</li>
+<li>通过信令服务器（signal server）交换网络信息。</li>
+</ul>
+<p>对于理想的网络情况是每个浏览器的电脑都是私有公网 IP，可以直接进行点对点连接。</p>
+<img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/理想网络情况.png" alt="理想网络情况" style="zoom:50%;">
+
+
+
+<p>但是实际情况是我们的电脑和电脑之前或大或小都是在某个局域网中，需要 NAT（Network Address Translation，网络地址转换）。</p>
+<img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/实际网络情况.png" alt="实际网络情况" style="zoom:50%;">
+
+<p>在解决 WebRTC 使用过程中的上述问题的时候，我们需要用到 STUN 和 TURN。</p>
+<h3 id="STUN"><a href="#STUN" class="headerlink" title="STUN"></a>STUN</h3><p>STUN（Session Traversal Utilities for NAT，NAT会话穿越应用程序）是一种网络协议，它允许位于 NAT（或多重 NAT）后的<strong>客户端找出自己的公网地址</strong>，查出自己位于哪种类型的 NAT 之后以及 <strong>NAT 为某一个本地端口所绑定的 Internet 端端口</strong>。这些信息被用来在两个同时处于 NAT 路由器之后的主机之间创建 UDP 通信。该协议由 RFC 5389 定义。</p>
+<p>在遇到上述情况的时候，我们可以建立一个 STUN 服务器，这个服务器做什么用的呢？主要是<strong>给无法在公网环境下的视频通话设备分配公网 IP 用的</strong>。这样两台电脑就可以在公网 IP 中进行通话。</p>
+<img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/STUN服务器.png" alt="STUN服务器" style="zoom:50%;">
+
+<p>使用一句话说明 STUN 做的事情就是：<strong>告诉我你的公网 IP 地址+端口是什么</strong>。搭建 STUN 服务器很简单，媒体流传输是按照 P2P 的方式。</p>
+<p>那么问题来了，<strong>STUN 并不是每次都能成功的为需要 NAT 的通话设备分配 IP 地址的</strong>，P2P 在传输媒体流时，使用的本地带宽，在多人视频通话的过程中，通话质量的好坏往往需要根据使用者本地的带宽确定。那么怎么办？TURN 可以很好的解决这个问题。</p>
+<h3 id="TURN"><a href="#TURN" class="headerlink" title="TURN"></a>TURN</h3><p>TURN 的全称为 Traversal Using Relays around NAT，是 STUN&#x2F;RFC5389 的一个拓展，主要添加了 <strong>Relay</strong> 功能。如果终端在 NAT 之后， 那么在特定的情景下，有可能使得终端无法和其对等端（peer）进行直接的通信，这时就需要公网的服务器作为一个中继， 对来往的数据进行转发。这个转发的协议就被定义为 TURN。</p>
+<img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/TURN服务器.png" alt="TURN服务器" style="zoom:50%;">
+
+<p>在 STUN 分配公网 IP 失败后，可以通过 TURN 服务器请求公网 IP 地址作为中继地址。<strong>这种方式的带宽由服务器端承担</strong>，在多人视频聊天的时候，本地带宽压力较小，并且，根据 Google 的说明，TURN 协议可以使用在所有的环境中。（单向数据 200kbps 一对一通话）。</p>
+<p>以上是 WebRTC 中经常用到的两个协议，STUN 和 TURN 服务器我们使用 coturn 开源项目来搭建。</p>
+<p>补充：ICE 跟 STUN 和 TURN 不一样，ICE 不是一种协议，而是一个框架（Framework），它整合了 STUN 和 TURN。coturn 开源项目集成了 STUN 和 TURN 的功能。</p>
+<h2 id="信令服务器"><a href="#信令服务器" class="headerlink" title="信令服务器"></a>信令服务器</h2><p>从上面我们知道了两个客户端协商媒体信息和网络信息，那怎么去交换？是不是需要一个中间商去做交换？所以我们需要一个信令服务器（Signal Server）转发彼此的媒体信息和网络信息。 </p>
+<img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/信令服务器.png" alt="信令服务器" style="zoom:50%;">
+
+<p>如上图，我们在基于 WebRTC API 开发应用（APP）时，可以将彼此的 APP 连接到信令服务器（Signal Server，一般搭建在公网，或者两端都可以访问到的局域网），<strong>借助信令服务器，就可以实现上面提到的 SDP 媒体信息及 Candidate 网络信息交换</strong>。</p>
+<p>注意：信令服务器不只是交互媒体信息 sdp 和网络信息 candidate，比如：</p>
+<ul>
+<li><p>房间管理</p>
+</li>
+<li><p>人员进出房间</p>
+</li>
+</ul>
+<h2 id="WebRTC-API"><a href="#WebRTC-API" class="headerlink" title="WebRTC API"></a>WebRTC API</h2><ul>
+<li><strong>MediaStream</strong> — MediaStream 用来表示一个媒体数据流（通过 getUserMedia 接口获取），允许你访问输入设备，如麦克风和 Web摄像机，该 API 允许从其中任意一个获取媒体流。</li>
+<li><strong>RTCPeerConnection</strong> — RTCPeerConnection 对象允许用户在两个浏览器之间直接通讯 ，你可以通过网络将捕获的音频和视频流实时发送到另一个 WebRTC 端点。使用这些 API，你可以在本地机器和远程对等点之间创建连接。它提供了连接到远程对等点、维护和监视连接以及在不再需要连接时关闭连接的方法。</li>
+</ul>
+<h2 id="一对一通话"><a href="#一对一通话" class="headerlink" title="一对一通话"></a>一对一通话</h2><img src="/2023/10/09/WebRTC%E4%BB%8B%E7%BB%8D/一对一通话.png" alt="一对一通话" style="zoom:70%;">
+
+<p>在一对一通话场景中，每个 Peer 均创建有一个 PeerConnection 对象，由一方主动发 Offer SDP，另一方则应答 Answer SDP，最后双方交换 ICE Candidate 从而完成通话链路的建立。但是在中国的网络环境中，据一些统计数据显示，至少一半的网络是无法直接穿透打通，这种情况下只能借助 TURN 服务器中转。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2180,177 +2334,6 @@
 <p>参考链接：</p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rell336/article/details/38109621">https://blog.csdn.net/rell336/article/details/38109621</a> </p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rongdeguoqian/article/details/18214627">https://blog.csdn.net/rongdeguoqian/article/details/18214627</a> </p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/27/HLS%E7%AE%80%E4%BB%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/09/27/HLS%E7%AE%80%E4%BB%8B/" class="post-title-link" itemprop="url">HLS简介</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-09-27 20:26:58" itemprop="dateCreated datePublished" datetime="2023-09-27T20:26:58+08:00">2023-09-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-16 18:46:42" itemprop="dateModified" datetime="2024-01-16T18:46:42+08:00">2024-01-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="SRC流媒体服务器"><a href="#SRC流媒体服务器" class="headerlink" title="SRC流媒体服务器"></a>SRC流媒体服务器</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><strong>编译</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/ossrs/srs.git</span><br><span class="line">cd srs/trunk</span><br><span class="line">./configure &amp;&amp; make</span><br></pre></td></tr></table></figure>
-
-<p><strong>配置文件</strong></p>
-<p><code>conf/srs.conf</code></p>
-<p><strong>启动</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./objs/srs -c conf/srs.conf</span><br></pre></td></tr></table></figure>
-
-<p><strong>日志</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -n 30 -f ./objs/srs.log</span><br></pre></td></tr></table></figure>
-
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p><strong>推流</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -re -i test.mp4 -codec copy -f flv -y rtmp://127.0.0.1:1935/live/test</span><br></pre></td></tr></table></figure>
-
-<p>默认情况下srs的rtmp采用1935端口。</p>
-<p><strong>拉流</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">HLS</span></span><br><span class="line">ffplay http://127.0.0.1:8080/live/test.m3u8</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">RTMP</span></span><br><span class="line">ffplay rtmp://127.0.0.1/live/live/test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">HTTP FLV</span></span><br><span class="line">ffplay http://127.0.0.1:8080/live/test.flv</span><br></pre></td></tr></table></figure>
-
-<p>SRC播放器：<a target="_blank" rel="noopener" href="http://ossrs.net/srs.release/trunk/research/players/srs_player.html">http://ossrs.net/srs.release/trunk/research/players/srs_player.html</a> </p>
-<h1 id="HLS框架"><a href="#HLS框架" class="headerlink" title="HLS框架"></a>HLS框架</h1><img src="/2023/09/27/HLS%E7%AE%80%E4%BB%8B/HLS框架.png" alt="HLS框架" style="zoom:50%;">
-
-<img src="/2023/09/27/HLS%E7%AE%80%E4%BB%8B/HLS流程.png" alt="HLS流程" style="zoom:50%;">
-
-<h2 id="HLS简介"><a href="#HLS简介" class="headerlink" title="HLS简介"></a>HLS简介</h2><p>HLS 协议由三部分组成：HTTP、M3U8、TS。这三部分中，<strong>HTTP 是传输协议，M3U8 是索引文件，TS 是音视频的媒体信息。</strong></p>
-<ul>
-<li><strong>索引文件采用扩展的 M3U 播放列表格式，后缀名为 .m3u8。</strong> M3U 播放列表是一个由若干文本行组成的文本文件，其中每一行要么是一个 URI，一个空行，或者是一个以注释符“#”起始的行。每个 URI 行指向一个分段的媒体文件，或者一个衍生的索引（播放列表）文件。除了以“#EXT”起始的行是标签行外，其他以“#”起始的行是注释，应予忽略。</li>
-<li><strong>TS 文件中必须仅包含一个 MPEG-2 节目，在每个文件的开头应包含一个节目关联表（PAT）和一个节目映射表（PMT）</strong>，包含视频的文件中还必须含有至少一个关键帧和其他足够信息（如序列头）用以完成解码器的初始化。</li>
-</ul>
-<h2 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h2><p>服务器部分负责将输入的音视频媒体内容转换成为适合于内容分发组件进行递送的格式。</p>
-<ul>
-<li>Media Encoder：<ul>
-<li><strong>编码器首先将摄像机实时采集的音视频数据压缩编码为符合特定标准的音视频基本流（例如 H264 视频和 AAC 音频），然后再复用和封装成为符合 MPEG-2 系统层标准的传输流（TS）格式进行输出。</strong></li>
-<li>之所以采用 MPEG-2 TS 格式来对编码后的媒体流进行统一封装，是因为它能够将音视频媒体流严格按时序进行交织复用，<strong>任意截取和分段后，每一个分段都可能不依赖于之前的分段而独立进行解码和播放。</strong></li>
-</ul>
-</li>
-<li>Stream Segmenter：<ul>
-<li><strong>流分割器负责将编码器输出的 MPEG-2 TS 流分割为一系列连续的、长度均等的小 TS 文件（后缀名为.ts），并依次发送至内容分发组件中的 Web 服务器进行存储。</strong></li>
-<li>与此同时，为了跟踪播放过程中媒体文件的可用性和当前位置，流分割器还需创建一个含有指向这些小 TS 文件指针的<strong>索引文件</strong>，同样放置于 Web 服务器之中。</li>
-<li><strong>对于视频直播</strong>：这个索引文件可以看作是一个连续媒体流中的播放列表滑动窗口，<strong>每当流分割器生成一个新的 TS 文件时，这个索引文件的内容也被更新，新的文件 URI 加入到滑动窗口的末尾，老的文件 URI 则被移去</strong>，这样索引文件中将始终包含最新的固定数量的x个分段。</li>
-<li><strong>对于视频点播</strong>：与直播型会话不同的是，<strong>索引文件是一个不随时间而更新的静态文件</strong>，其中包含一个节目从头到尾所有分段文件的URI列表，并以<code>#EXT-X-ENDLIST</code>标签结尾。</li>
-<li>流分割器还可以对其生成的每个小 TS 文件进行加密，并生生成相应的密钥文件。</li>
-</ul>
-</li>
-</ul>
-<h2 id="内容分发"><a href="#内容分发" class="headerlink" title="内容分发"></a>内容分发</h2><p>内容分发系统用于通过 HTTP 协议将分割后的小媒体文件及其索引文件递送至客户端播放器，它既可以是一个<strong>普通的 Web 服务器</strong>，也可以是一个 Web 缓存系统。几乎不需要对 Web 服务器做任何特殊的配置，以及增加其他定制的模块。推荐的配置仅限于对 .m3u8 文件和 .ts 文件的 MIME 类型关联，如表所示。 </p>
-<table>
-<thead>
-<tr>
-<th>文件扩展名</th>
-<th>MIME类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>.m3u8</td>
-<td>application&#x2F;x-mpegURL或vnd.apple.mpegURL</td>
-</tr>
-<tr>
-<td>.ts</td>
-<td>video&#x2F;MP2T</td>
-</tr>
-</tbody></table>
-<p>由于索引文件需要频繁更新和下载，因此在 Web Cache 的配置中有必要对 .m3u8 文件的 TTL（time-to-live） 值进行微调以保证客户端每次请求该文件时都能够下载到它的最新版本。 </p>
-<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><ul>
-<li>通常情况下，客户端软件通过访问 Web 网页中的 URL 链接来获取和下载<strong>一个流媒体会话的索引文件</strong>。这个索引文件进一步指定了服务器上当前可用的 TS 格式媒体文件、解密密钥和其他替换流的位置。</li>
-<li>对于选定的媒体流，客户端依次下载索引文件中列出的每一个可用媒体文件。<strong>当这些媒体文件缓冲够一定数量后，客户端将它们按顺序重新拼装成一个连贯的 TS 流，然后发送至播放器进行解码和呈现</strong>。</li>
-<li>对于加密的媒体文件，客户端还负责根据索引文件的指引来获取解密密钥，提供用户认证接口，并按需进行解密。对于视频点播，上述过程不断持续下去，直到客户端碰到索引文件中的<code>#EXT-X-ENDLIST</code>标签。</li>
-<li>对于视频直播，索引文件中不存在<code>#EXT-X-ENDLIST</code>标签，客户端将周期性地向 Web 服务器重新请求获取该索引文件的更新版本，然后在这个更新版的索引文件中查找新的媒体文件和解密密钥，并将它们的 URI  添加至下载队列的末尾。</li>
-<li>HTTP Live Streaming 并不是一个真正实时的流媒体系统，这是因为对应于媒体分段的大小和持续时间有一定潜在的时间延迟。在客户端中，至少在一个分段媒体文件被完全下载之后才能够开始播放，而<strong>通常要求下载完成两个分段媒体文件之后才开始播放以保证不同分段音视频之间的无缝连接</strong>。</li>
-<li>此外，在客户端开始下载之前，必须等待服务器端的编码器和流分割器至少生成一个 TS 文件，这也会带来潜在的时延。</li>
-</ul>
-<h2 id="网络自适应的流间切换和故障保护"><a href="#网络自适应的流间切换和故障保护" class="headerlink" title="网络自适应的流间切换和故障保护"></a>网络自适应的流间切换和故障保护</h2><ul>
-<li><p>在基于 HTTP Live Streaming 的流媒体系统中，<strong>服务器可以为同一节目源准备多份以不同码率和质量编码的替换流</strong>，并为每个替换流都生成一个衍生的索引文件。在主索引文件中通过包含一系列指向其他衍生索引文件的URI指针来找到相应的替换流。</p>
-</li>
-<li><p>此时客户端软件可根据网络和带宽的变化情况随时切换到不同衍生索引文件所指向的替换流进行下载，<strong>从而自适应地为用户提供相应网络条件下接近最优的音视频 QoS 体验</strong>。上述替换流和衍生索引文件机制除了可以用于基于带宽波动的动态流间切换外，还可以用于服务器的故障保护。为此目的，首先在一台服务器上按照正常流程生成一个媒体流或者多个替换流，以及对应的索引文件，然后再在另一台服务器上生成一套并行的备份媒体流和索引文件。<strong>接下来将指向备份流的索引加入到主索引文件之中，使得其中针对每个带宽值都对应有一个主媒体流和一个备份媒体流</strong>。</p>
-</li>
-<li><p>相对于常见的流媒体直播协议，例如 RTMP 协议、 RTSP 协议、 MMS 协议等， HLS 直播最大的不同在于，直播客户端获取到的，并不是一个完整的数据流。<strong>HLS 协议在服务器端将直播数据流存储为连续的、很短时长的媒体文件</strong>（MPEG-TS格式），而客户端则不断的下载并播放这些小文件，因为服务器端总是会将最新的直播数据生成新的小文件，这样客户端只要不停的按顺序播放从服务器获取到的文件，就实现了直播。由此可见，基本上可以认为，<strong>HLS 是以点播的技术方式来实现直播</strong>。由于数据通过 HTTP 协议传输，所以完全不用考虑防火墙或者代理的问题，而且分段文件的时长很短，客户端可以很快的选择和切换码率，以适应不同带宽条件下的播放。不过 HLS 的这种技术特点，决定了它的延迟一般总是会高于普通的流媒体直播协议。</p>
-</li>
-</ul>
-<h1 id="H协议"><a href="#H协议" class="headerlink" title="H协议"></a>H协议</h1><ul>
-<li><p>作为 Apple 提出的一种基于 HTTP 的协议，HLS（HTTP Live Streaming）用于解决实时音视频流的传输。尤其是在移动端，由于 iOS&#x2F;H5 不支持 flash，使得 HLS 成了移动端实时视频流传输的首选。</p>
-</li>
-<li><p>HLS（HTTP Live Streaming） 把整个流分成一个个小的基于 HTTP 的文件来下载，每次只下载一些。HLS 协议由三部分组成：HTTP、M3U8、TS。这三部分中，<strong>HTTP 是传输协议，M3U8 是索引文件，TS 是音视频的媒体信息</strong>。</p>
-</li>
-<li><p>HLS 是提供一个 M3U8 地址，<strong>Apple 的 Safari 浏览器直接就能打开 M3U8 地址</strong>；Android 不能直接打开，需要使用 HTML5 的 video 标签，然后在浏览器中打开这个页面即可：</p>
-</li>
-</ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- livestream.html --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">video</span> <span class="attr">width</span>=<span class="string">&quot;640&quot;</span> <span class="attr">height</span>=<span class="string">&quot;360&quot;</span></span></span><br><span class="line"><span class="tag">		<span class="attr">autoplay</span> <span class="attr">controls</span> <span class="attr">autobuffer</span></span></span><br><span class="line"><span class="tag">		<span class="attr">src</span>=<span class="string">&quot;http://127.0.0.1:8080/live/test.m3u8&quot;</span></span></span><br><span class="line"><span class="tag">		<span class="attr">type</span>=<span class="string">&quot;application/vnd.apple.mpegurl&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">video</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
       
     </div>
