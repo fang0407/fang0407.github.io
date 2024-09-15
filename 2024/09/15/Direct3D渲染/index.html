@@ -20,27 +20,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="IO接口Reader 接口： 123type Reader interface &amp;#123;    Read(p []byte) (n int, err error)&amp;#125;  Writer 接口： 123type Writer interface &amp;#123;    Write(p []byte) (n int, err error)&amp;#125;  实现了 io.Reader 或 io.Wr">
+    <meta name="description" content="Direct3D图形管道graph LR     顶点数据--&gt;转换处理     原始数据--&gt;转换处理     转换处理--&gt;顶点处理     顶点处理--&gt;几何处理     几何处理--&gt;像素处理     纹理资源--&gt;像素处理     像素处理--&gt;像素渲染  Direct3D相关概念Direct3D设备Direct3D 设备时渲染组件，封装并存储渲染状态，此外，还执行转换和照明操作，并将图">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Go-IO">
-<meta property="og:url" content="https://fang0407.github.io/2024/01/25/Go-IO/index.html">
+<meta property="og:title" content="Direct3D渲染">
+<meta property="og:url" content="https://fang0407.github.io/2024/09/15/Direct3D%E6%B8%B2%E6%9F%93/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="IO接口Reader 接口： 123type Reader interface &amp;#123;    Read(p []byte) (n int, err error)&amp;#125;  Writer 接口： 123type Writer interface &amp;#123;    Write(p []byte) (n int, err error)&amp;#125;  实现了 io.Reader 或 io.Wr">
+<meta property="og:description" content="Direct3D图形管道graph LR     顶点数据--&gt;转换处理     原始数据--&gt;转换处理     转换处理--&gt;顶点处理     顶点处理--&gt;几何处理     几何处理--&gt;像素处理     纹理资源--&gt;像素处理     像素处理--&gt;像素渲染  Direct3D相关概念Direct3D设备Direct3D 设备时渲染组件，封装并存储渲染状态，此外，还执行转换和照明操作，并将图">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2024-01-25T06:50:19.000Z">
-<meta property="article:modified_time" content="2024-01-25T06:53:07.384Z">
+<meta property="article:published_time" content="2024-09-15T07:07:12.000Z">
+<meta property="article:modified_time" content="2024-09-15T08:05:48.172Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://fang0407.github.io/2024/01/25/Go-IO/">
+<link rel="canonical" href="https://fang0407.github.io/2024/09/15/Direct3D%E6%B8%B2%E6%9F%93/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2024/01/25/Go-IO/","path":"2024/01/25/Go-IO/","title":"Go-IO"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2024/09/15/Direct3D%E6%B8%B2%E6%9F%93/","path":"2024/09/15/Direct3D渲染/","title":"Direct3D渲染"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Go-IO | NOTE</title>
+<title>Direct3D渲染 | NOTE</title>
   
 
 
@@ -112,7 +112,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#IO%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">IO接口</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Direct3D%E5%9B%BE%E5%BD%A2%E7%AE%A1%E9%81%93"><span class="nav-number">1.</span> <span class="nav-text">Direct3D图形管道</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Direct3D%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">Direct3D相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Direct3D%E8%AE%BE%E5%A4%87"><span class="nav-number">2.1.</span> <span class="nav-text">Direct3D设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Direct3D%E8%B5%84%E6%BA%90"><span class="nav-number">2.2.</span> <span class="nav-text">Direct3D资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Surface"><span class="nav-number">2.3.</span> <span class="nav-text">Surface</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%92%95%E8%A3%82%E9%97%AE%E9%A2%98"><span class="nav-number">2.4.</span> <span class="nav-text">撕裂问题</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -158,7 +158,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/01/25/Go-IO/">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/09/15/Direct3D%E6%B8%B2%E6%9F%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -171,12 +171,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Go-IO | NOTE">
+      <meta itemprop="name" content="Direct3D渲染 | NOTE">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Go-IO
+          Direct3D渲染
         </h1>
 
         <div class="post-meta-container">
@@ -188,7 +188,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2024-01-25 14:50:19 / Modified: 14:53:07" itemprop="dateCreated datePublished" datetime="2024-01-25T14:50:19+08:00">2024-01-25</time>
+      <time title="Created: 2024-09-15 15:07:12 / Modified: 16:05:48" itemprop="dateCreated datePublished" datetime="2024-09-15T15:07:12+08:00">2024-09-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -196,7 +196,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Golang/" itemprop="url" rel="index"><span itemprop="name">Golang</span></a>
+          <a href="/categories/%E5%85%B6%E4%BB%96/" itemprop="url" rel="index"><span itemprop="name">其他</span></a>
         </span>
     </span>
 
@@ -209,25 +209,38 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="IO接口"><a href="#IO接口" class="headerlink" title="IO接口"></a>IO接口</h1><p>Reader 接口：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Reader <span class="keyword">interface</span> &#123;</span><br><span class="line">    Read(p []<span class="type">byte</span>) (n <span class="type">int</span>, err <span class="type">error</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    <div class="post-body" itemprop="articleBody"><h1 id="Direct3D图形管道"><a href="#Direct3D图形管道" class="headerlink" title="Direct3D图形管道"></a>Direct3D图形管道</h1><pre class="mermaid">graph LR
+    顶点数据-->转换处理
+    原始数据-->转换处理
+    转换处理-->顶点处理
+    顶点处理-->几何处理
+    几何处理-->像素处理
+    纹理资源-->像素处理
+    像素处理-->像素渲染</pre>
 
-<p>Writer 接口：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Writer <span class="keyword">interface</span> &#123;</span><br><span class="line">    Write(p []<span class="type">byte</span>) (n <span class="type">int</span>, err <span class="type">error</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>实现了 io.Reader 或 io.Writer 接口的类型：</p>
+<h1 id="Direct3D相关概念"><a href="#Direct3D相关概念" class="headerlink" title="Direct3D相关概念"></a>Direct3D相关概念</h1><h2 id="Direct3D设备"><a href="#Direct3D设备" class="headerlink" title="Direct3D设备"></a>Direct3D设备</h2><p>Direct3D 设备时渲染组件，封装并存储渲染状态，此外，还执行转换和照明操作，并将图像光栅化到表面。体系架构上，Direct3D 设备包含转换模块、光线模块和光栅模块。</p>
+<p>Direct3D 目前支持两种设备类型：</p>
 <ul>
-<li>os.File 同时实现了 io.Reader 和 io.Writer</li>
-<li>strings.Reader 实现了 io.Reader</li>
-<li>bufio.Reader&#x2F;Writer 分别实现了 io.Reader 和 io.Writer</li>
-<li>bytes.Buffer 同时实现了 io.Reader 和 io.Writer</li>
-<li>bytes.Reader 实现了 io.Reader</li>
-<li>compress&#x2F;gzip.Reader&#x2F;Writer 分别实现了 io.Reader 和 io.Writer</li>
-<li>crypto&#x2F;cipher.StreamReader&#x2F;StreamWriter 分别实现了 io.Reader 和 io.Writer</li>
-<li>crypto&#x2F;tls.Conn 同时实现了 io.Reader 和 io.Writer</li>
-<li>encoding&#x2F;csv.Reader&#x2F;Writer 分别实现了 io.Reader 和 io.Writer</li>
-<li>mime&#x2F;multipart.Part 实现了 io.Reader</li>
-<li>net&#x2F;conn 分别实现了 io.Reader 和 io.Writer(Conn接口定义了Read&#x2F;Write)</li>
+<li>HAL 设备，支持硬件加速，但可能不支持所有功能</li>
+<li>参考设备，不使用硬件加速，因此速度很慢，但保证正确的支持一整套 Direct3D 的功能</li>
+</ul>
+<h2 id="Direct3D资源"><a href="#Direct3D资源" class="headerlink" title="Direct3D资源"></a>Direct3D资源</h2><p>资源是用于渲染场景的纹理和缓冲区。应用程序需要创建、加载、复制和使用资源。</p>
+<h2 id="Surface"><a href="#Surface" class="headerlink" title="Surface"></a>Surface</h2><p>Surface（表明），表示显存当中的一个线性区域，通常位于显卡的显存当中，虽然可以存在于系统的内存当中。</p>
+<ul>
+<li>前台缓冲表面，由显卡转换并在显示器上显示的内存矩形。应用程序不会直接写入前台缓冲表面。</li>
+<li>后台缓冲表面，应用程序可以直接写入的矩形内存，后台缓冲表面永远不会直接显示在显示器上。</li>
+<li>翻转表面，将后台缓冲表面移动到前台缓冲表面的过程。</li>
+<li>交换链，可以串行呈现给前台缓冲表面的一个或者多个后台缓冲表面的集合。</li>
+</ul>
+<h2 id="撕裂问题"><a href="#撕裂问题" class="headerlink" title="撕裂问题"></a>撕裂问题</h2><p>显卡中有一个指向 surface 的指针，该 surface 表示显示器正在显示的图像，称为前台缓冲表面。随着显示器不断的刷新，显卡会将前台缓冲表面的内容发送到显示器进行显示。但是，这会导致呈现实时图形时出现问题。该问题的核心是，显示器的刷新率（60hz~120hz）与计算机其它部分相比非常缓慢。<strong>如果应用程序在显示器刷新的过程中更新前台缓冲表面，显示的图像将被截成两部分， 一部分是旧图像，一部分是新图像，此问题称为撕裂。</strong></p>
+<p>为了解决撕裂问题，Direct3D 提供了两种选项:</p>
+<ul>
+<li><p>一种选项是只允许显示器在垂直同步操作时才允许更新前台缓冲表面。显示器刷新图像的方式通常是水平扫描，从显示器左上角开始，Z 字形移动到右下角。光标到达底部时，显示器将重新校准，将其移回左上角，重新开始刷新过程。此重新校准的过程称为垂直同步。<strong>在垂直同步期间，显示器不会绘制任何内容，因此在显示器再次开始绘制之前，不会看到对前台缓冲区的任何更新</strong>。垂直同步相对较慢，但是，还不足以在此期间渲染复杂场景。若要避免撕裂，同时能够渲染复杂场景，则需要进行后台缓冲表面。</p>
+</li>
+<li><p>后台缓冲表面。除前台缓冲表面外，其余的表面缓冲表面都称为后台缓冲表面。<strong>通过使用后台缓冲表面，应用程序可以在系统空闲时自由渲染场景，而无需考虑显示器的刷新频率</strong>。<strong>后台缓冲带来一个新的问题：如何以及何时将后台缓冲表面的内容移至前台缓冲表面?</strong></p>
+</li>
+<li><p>表面翻转&amp;交换链。<strong>由于显卡只使用指针来引用前台缓冲区表面，所以只需要更改指针就可以将后台缓冲表面移至前台缓冲表面，这个过程称为表面翻转。</strong>表面翻转的结果是前台缓冲区表面变成了后台缓冲区表面，后台缓冲区表面变成了前台缓冲区表面。如果后台缓冲区不止一个，指针会以圆形的方式切换，这样就形成了一个交换链。</p>
+</li>
 </ul>
 
     </div>
@@ -242,14 +255,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/01/20/Go-%E8%A7%A3%E6%9E%90JSON/" rel="prev" title="Go-解析JSON">
-                  <i class="fa fa-angle-left"></i> Go-解析JSON
+                <a href="/2024/08/17/WebRTC-API/" rel="prev" title="WebRTC-API">
+                  <i class="fa fa-angle-left"></i> WebRTC-API
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/03/05/Pacer/" rel="next" title="Pacer">
-                  Pacer <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>

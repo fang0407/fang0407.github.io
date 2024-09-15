@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">87</span>
+          <span class="site-state-item-count">88</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,107 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/10/11/WebSocket%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/10/11/WebSocket%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">WebSocket协议</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-10-11 22:59:27" itemprop="dateCreated datePublished" datetime="2023-10-11T22:59:27+08:00">2023-10-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-16 18:47:25" itemprop="dateModified" datetime="2024-01-16T18:47:25+08:00">2024-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="WebSocket介绍"><a href="#WebSocket介绍" class="headerlink" title="WebSocket介绍"></a>WebSocket介绍</h1><p>WebSocket 是 HTML5 开始提供的一种在单个 TCP 连接上进行全双工通讯的协议。 WebSocket 使得客户端和服务器之间的数据交换变得更加简单，允许服务端主动向客户端推送数据。在 WebSocket API 中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输。</p>
+<p>WebSocket 通信流程：</p>
+<img src="/2023/10/11/WebSocket%E5%8D%8F%E8%AE%AE/WebSocket通信流程.png" alt="WebSocket通信流程" style="zoom:80%;">
+
+<p>为了建立一个 WebSocket 连接，客户端浏览器首先要向服务器发起一个 HTTP 请求，这个请求和通常的 HTTP 请求不同，包含了一些附加头信息，其中附加头信息”<strong>Upgrade: WebSocket</strong>“表明这是一个申请协议升级的 HTTP 请求，服务器端解析这些附加的头信息然后产生应答信息返回给客户端，客户端和服务器端的 WebSocket 连接就建立起来了，双方就可以通过这个连接通道自由的传递信息，并且这个连接会持续存在直到客户端或者服务器端的某一方主动的关闭连接。</p>
+<p>申请协议升级 HTTP 请求响应：</p>
+<img src="/2023/10/11/WebSocket%E5%8D%8F%E8%AE%AE/HTTP升级WebSocket报文.png" alt="HTTP升级WebSocket报文" style="zoom:50%;">
+
+<p>WebSocket 报文格式：</p>
+<img src="/2023/10/11/WebSocket%E5%8D%8F%E8%AE%AE/websocket报文.png" alt="websocket报文" style="zoom:50%;">
+
+<h1 id="WebSocket例子"><a href="#WebSocket例子" class="headerlink" title="WebSocket例子"></a>WebSocket例子</h1><h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Websocket通信<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;sendMsg&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;submitBtn&quot;</span>&gt;</span>Send<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">function</span> <span class="title function_">showMessage</span>(<span class="params">str, type</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">var</span> div = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;div&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      div.<span class="property">innerHTML</span> = str;</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">if</span> (type == <span class="string">&quot;enter&quot;</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        div.<span class="property">style</span>.<span class="property">color</span> = <span class="string">&quot;blue&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (type == <span class="string">&quot;leave&quot;</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        div.<span class="property">style</span>.<span class="property">color</span> = <span class="string">&quot;red&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">      &#125;</span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(div);</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">var</span> websocket = <span class="keyword">new</span> <span class="title class_">WebSocket</span>(<span class="string">&quot;ws://127.0.0.1:8010&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    <span class="comment">//open connection</span></span></span><br><span class="line"><span class="language-javascript">    websocket.<span class="property">onopen</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;connect to server&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      <span class="comment">//bind btn click event</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;submitBtn&quot;</span>).<span class="property">onclick</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">var</span> txt = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;sendMsg&quot;</span>).<span class="property">value</span>;</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">if</span> (txt) &#123;</span></span><br><span class="line"><span class="language-javascript">          websocket.<span class="title function_">send</span>(txt);</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">      &#125;;</span></span><br><span class="line"><span class="language-javascript">    &#125;;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">//close connection</span></span></span><br><span class="line"><span class="language-javascript">    websocket.<span class="property">onclose</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;websocket close&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    &#125;;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">//error connection</span></span></span><br><span class="line"><span class="language-javascript">    websocket.<span class="property">onerror</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;websocket error&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    &#125;;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">//receive message</span></span></span><br><span class="line"><span class="language-javascript">    websocket.<span class="property">onmessage</span> = <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">var</span> mes = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(e.<span class="property">data</span>);</span></span><br><span class="line"><span class="language-javascript">      <span class="title function_">showMessage</span>(mes.<span class="property">data</span>, mes.<span class="property">type</span>);</span></span><br><span class="line"><span class="language-javascript">    &#125;;</span></span><br><span class="line"><span class="language-javascript">  </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h2><p>服务器端使用 WebSocket 需要安装 nodejs­-websocket。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm init # 创建package.json文件，系统会提示相关配置，也可以使用命令： </span><br><span class="line">npm init ‐y </span><br><span class="line">npm install nodejs-websocket</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ws = <span class="built_in">require</span>(<span class="string">&quot;nodejs-websocket&quot;</span>)</span><br><span class="line"><span class="keyword">var</span> port = <span class="number">8010</span>;</span><br><span class="line"><span class="keyword">var</span> user = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = ws.<span class="title function_">createServer</span>(<span class="keyword">function</span> (<span class="params">conn</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;create a new connection...&quot;</span>);</span><br><span class="line">    user++;</span><br><span class="line">    conn.<span class="property">nickname</span> = <span class="string">&quot;user&quot;</span> + user;</span><br><span class="line">    conn.<span class="property">fd</span> = <span class="string">&quot;user&quot;</span> + user;</span><br><span class="line">    <span class="keyword">var</span> mes = &#123;&#125;;</span><br><span class="line">    mes.<span class="property">type</span> = <span class="string">&quot;enter&quot;</span>;</span><br><span class="line">    mes.<span class="property">data</span> = conn.<span class="property">nickname</span> + <span class="string">&quot;进来了&quot;</span>;</span><br><span class="line">    <span class="title function_">broadcast</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(mes));</span><br><span class="line"></span><br><span class="line">    <span class="comment">//send message</span></span><br><span class="line">    conn.<span class="title function_">on</span>(<span class="string">&quot;text&quot;</span>, <span class="keyword">function</span>(<span class="params">str</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;回复:&quot;</span> + str);</span><br><span class="line">        mes.<span class="property">type</span> = <span class="string">&quot;message&quot;</span>;</span><br><span class="line">        mes.<span class="property">data</span> = conn.<span class="property">nickname</span> + <span class="string">&quot; 说: &quot;</span> + str;</span><br><span class="line">        <span class="title function_">broadcast</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(mes));</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//close connection</span></span><br><span class="line">    conn.<span class="title function_">on</span>(<span class="string">&quot;close&quot;</span>, <span class="keyword">function</span>(<span class="params">code, reason</span>)&#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;关闭连接&quot;</span>);</span><br><span class="line">        mes.<span class="property">type</span> = <span class="string">&quot;leave&quot;</span>;</span><br><span class="line">        mes.<span class="property">data</span> = conn.<span class="property">nickname</span> + <span class="string">&quot; 离开了&quot;</span>;</span><br><span class="line">        <span class="title function_">broadcast</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(mes));</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//error</span></span><br><span class="line">    conn.<span class="title function_">on</span>(<span class="string">&quot;error&quot;</span>, <span class="keyword">function</span>(<span class="params">err</span>)&#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;监听错误:&quot;</span> + err);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;).<span class="title function_">listen</span>(port);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;server listen on port: &quot;</span> + port);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">broadcast</span>(<span class="params">str</span>) &#123;</span><br><span class="line">    server.<span class="property">connections</span>.<span class="title function_">forEach</span>(<span class="keyword">function</span>(<span class="params">connection</span>)&#123;</span><br><span class="line">        connection.<span class="title function_">sendText</span>(str);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1665,675 +1766,6 @@
 
 
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> INITIAL_BUFFER_SIZE 32768</span></span><br><span class="line"><span class="comment">// 读取数据，每次来读取数据都是希望读到32k的数据</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">read_data</span><span class="params">(<span class="type">void</span> *opaque, <span class="type">uint8_t</span> *buf, <span class="type">int</span> buf_size)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">playlist</span> *<span class="title">v</span> =</span> opaque;</span><br><span class="line">    HLSContext *c = v-&gt;parent-&gt;priv_data;</span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line">    <span class="type">int</span> just_opened = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> reload_count = <span class="number">0</span>;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">segment</span> *<span class="title">seg</span>;</span></span><br><span class="line"></span><br><span class="line">restart:  <span class="comment">/* 标签：重启新的下载 */</span></span><br><span class="line">    <span class="keyword">if</span> (!v-&gt;needed)</span><br><span class="line">        <span class="keyword">return</span> AVERROR_EOF;     <span class="comment">// 播放结束</span></span><br><span class="line">    <span class="comment">// 进入的条件，当前http连接还没有建立，或者使用了http_persistent以及上一个segment数据读完了</span></span><br><span class="line">    <span class="comment">// 读取m3u8文件，更新playlist</span></span><br><span class="line">    <span class="keyword">if</span> (!v-&gt;input || (c-&gt;http_persistent &amp;&amp; v-&gt;input_read_done)) &#123;        </span><br><span class="line">        <span class="type">int64_t</span> reload_interval;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Check that the playlist is still needed before opening a new segment. */</span></span><br><span class="line">        v-&gt;needed = playlist_needed(v);</span><br><span class="line">        <span class="comment">/* 检查playlist是否需要下载，如果不需要了，直接返回EOF */</span></span><br><span class="line">        <span class="keyword">if</span> (!v-&gt;needed) &#123;</span><br><span class="line">            av_log(v-&gt;parent, AV_LOG_INFO, <span class="string">&quot;No longer receiving playlist %d (&#x27;%s&#x27;)\n&quot;</span>,</span><br><span class="line">                   v-&gt;index, v-&gt;url);</span><br><span class="line">            <span class="keyword">return</span> AVERROR_EOF;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* If this is a live stream and the reload interval has elapsed since</span></span><br><span class="line"><span class="comment">         * the last playlist reload, reload the playlists now. */</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">/* 对于直播流，定期更新playlist */</span></span><br><span class="line">        reload_interval = default_reload_interval(v);</span><br><span class="line"></span><br><span class="line">reload: <span class="comment">/* 标签：重新下载playlist */</span></span><br><span class="line">        reload_count++;</span><br><span class="line">        <span class="comment">// 超过次数</span></span><br><span class="line">        <span class="keyword">if</span> (reload_count &gt; c-&gt;max_reload)</span><br><span class="line">            <span class="keyword">return</span> AVERROR_EOF;</span><br><span class="line">        <span class="keyword">if</span> (!v-&gt;finished &amp;&amp; <span class="comment">// 直播流才进来，点播m3u8是固定的不需要更新</span></span><br><span class="line">            av_gettime_relative() - v-&gt;last_load_time &gt;= reload_interval) &#123; <span class="comment">// 超过一个segment duration</span></span><br><span class="line">            <span class="keyword">if</span> ((ret = parse_playlist(c, v-&gt;url, v, <span class="literal">NULL</span>)) &lt; <span class="number">0</span>) &#123;  <span class="comment">// 下载playlist</span></span><br><span class="line">                <span class="keyword">if</span> (ret != AVERROR_EXIT)</span><br><span class="line">                    av_log(v-&gt;parent, AV_LOG_WARNING, <span class="string">&quot;Failed to reload playlist %d\n&quot;</span>,</span><br><span class="line">                           v-&gt;index);</span><br><span class="line">                <span class="keyword">return</span> ret;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">/* If we need to reload the playlist again below (if</span></span><br><span class="line"><span class="comment">             * there&#x27;s still no more segments), switch to a reload</span></span><br><span class="line"><span class="comment">             * interval of half the target duration. */</span></span><br><span class="line">            <span class="comment">// 按照HLS协议规定，如果还需要请求playlist，请求间隔可以设置为segment时长的一半</span></span><br><span class="line">            reload_interval = v-&gt;target_duration / <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">/* 这种情况下客户端因为某些原因下载过慢，直接调整cur_seq_no，跳过一些segment */</span></span><br><span class="line">        <span class="keyword">if</span> (v-&gt;cur_seq_no &lt; v-&gt;start_seq_no) &#123;  </span><br><span class="line">            av_log(v-&gt;parent, AV_LOG_WARNING,</span><br><span class="line">                   <span class="string">&quot;skipping %d segments ahead, expired from playlists\n&quot;</span>,</span><br><span class="line">                   v-&gt;start_seq_no - v-&gt;cur_seq_no);</span><br><span class="line">            v-&gt;cur_seq_no = v-&gt;start_seq_no;    <span class="comment">// 更新新的下载序号</span></span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 服务器还没有更新m3u8文件，比如当前m3u8的start_seq_no是1181,n_segments是3 等于当前要播发的序号1184</span></span><br><span class="line">        <span class="keyword">if</span> (v-&gt;cur_seq_no &gt;= v-&gt;start_seq_no + v-&gt;n_segments) &#123;</span><br><span class="line">            <span class="keyword">if</span> (v-&gt;finished)    <span class="comment">/* 点播的情况下，表示读取完成 */</span></span><br><span class="line">                <span class="keyword">return</span> AVERROR_EOF;</span><br><span class="line">            <span class="keyword">while</span> (av_gettime_relative() - v-&gt;last_load_time &lt; reload_interval) &#123;</span><br><span class="line">                <span class="keyword">if</span> (ff_check_interrupt(c-&gt;interrupt_callback))  <span class="comment">//这里就是设置的回调</span></span><br><span class="line">                    <span class="keyword">return</span> AVERROR_EXIT;</span><br><span class="line">                av_usleep(<span class="number">100</span>*<span class="number">1000</span>);    <span class="comment">// 直播的情况，休眠100ms继续去尝试</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">/* Enough time has elapsed since the last reload */</span></span><br><span class="line">            <span class="comment">// 上面的循环用于等待给定的时间，然后重新加载playlist </span></span><br><span class="line">            <span class="keyword">goto</span> reload;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">/* 所有的前提都满足，可以开始读segment了 */</span></span><br><span class="line">        v-&gt;input_read_done = <span class="number">0</span>;</span><br><span class="line">        seg = current_segment(v);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* load/update Media Initialization Section, if any Media Initialization Section*/</span></span><br><span class="line">        ret = update_init_section(v, seg);</span><br><span class="line">        <span class="keyword">if</span> (ret)</span><br><span class="line">            <span class="keyword">return</span> ret;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (c-&gt;http_multiple == <span class="number">1</span> &amp;&amp; v-&gt;input_next_requested) &#123;</span><br><span class="line">            <span class="comment">// 如果之前有提前建立http连接则将input_next赋值给input</span></span><br><span class="line">            FFSWAP(AVIOContext *, v-&gt;input, v-&gt;input_next);</span><br><span class="line">            v-&gt;input_next_requested = <span class="number">0</span>;        </span><br><span class="line">            ret = <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;    <span class="comment">/* 这里发起了新的HTTP请求 */</span></span><br><span class="line">            ret = open_input(c, v, seg, &amp;v-&gt;input);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;  <span class="comment">/* 请求失败的情况下的处理，默认直接跳过当前segment */</span></span><br><span class="line">            <span class="keyword">if</span> (ff_check_interrupt(c-&gt;interrupt_callback))</span><br><span class="line">                <span class="keyword">return</span> AVERROR_EXIT;</span><br><span class="line">            av_log(v-&gt;parent, AV_LOG_WARNING, <span class="string">&quot;Failed to open segment %d of playlist %d\n&quot;</span>,</span><br><span class="line">                   v-&gt;cur_seq_no,</span><br><span class="line">                   v-&gt;index);</span><br><span class="line">            v-&gt;cur_seq_no += <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">goto</span> reload;</span><br><span class="line">        &#125;</span><br><span class="line">        just_opened = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (c-&gt;http_multiple == <span class="number">-1</span>) &#123;</span><br><span class="line">        <span class="type">uint8_t</span> *http_version_opt = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="type">int</span> r = av_opt_get(v-&gt;input, <span class="string">&quot;http_version&quot;</span>, AV_OPT_SEARCH_CHILDREN, &amp;http_version_opt);</span><br><span class="line">        <span class="keyword">if</span> (r &gt;= <span class="number">0</span>) &#123;  <span class="comment">//在HTTP1.1中所有连接都是Keep-alive的，也就是默认都是持续连接的（Persistent Connection）</span></span><br><span class="line">            c-&gt;http_multiple = (!<span class="built_in">strncmp</span>((<span class="type">const</span> <span class="type">char</span> *)http_version_opt, <span class="string">&quot;1.1&quot;</span>, <span class="number">3</span>) || !<span class="built_in">strncmp</span>((<span class="type">const</span> <span class="type">char</span> *)http_version_opt, <span class="string">&quot;2.0&quot;</span>, <span class="number">3</span>));</span><br><span class="line">            av_freep(&amp;http_version_opt);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    seg = next_segment(v);     <span class="comment">/* 这是使用单HTTP发起请求的处理 */</span></span><br><span class="line">    <span class="keyword">if</span> (c-&gt;http_multiple == <span class="number">1</span> &amp;&amp; !v-&gt;input_next_requested &amp;&amp;</span><br><span class="line">        seg &amp;&amp; seg-&gt;key_type == KEY_NONE &amp;&amp; av_strstart(seg-&gt;url, <span class="string">&quot;http&quot;</span>, <span class="literal">NULL</span>)) &#123;</span><br><span class="line">        ret = open_input(c, v, seg, &amp;v-&gt;input_next);</span><br><span class="line">        <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (ff_check_interrupt(c-&gt;interrupt_callback))</span><br><span class="line">                <span class="keyword">return</span> AVERROR_EXIT;</span><br><span class="line">            av_log(v-&gt;parent, AV_LOG_WARNING, <span class="string">&quot;Failed to open segment %d of playlist %d\n&quot;</span>,</span><br><span class="line">                   v-&gt;cur_seq_no + <span class="number">1</span>,</span><br><span class="line">                   v-&gt;index);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            v-&gt;input_next_requested = <span class="number">1</span>;        <span class="comment">// 只是打开链接，建立连接</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* 在任何实际数据返回之前，首先返回init section（解码器可能会依赖这些数据做初始化） */</span></span><br><span class="line">    <span class="keyword">if</span> (v-&gt;init_sec_buf_read_offset &lt; v-&gt;init_sec_data_len) &#123;</span><br><span class="line">        <span class="comment">/* Push init section out first before first actual segment */</span></span><br><span class="line">        <span class="type">int</span> copy_size = FFMIN(v-&gt;init_sec_data_len - v-&gt;init_sec_buf_read_offset, buf_size);</span><br><span class="line">        <span class="built_in">memcpy</span>(buf, v-&gt;init_sec_buf, copy_size);</span><br><span class="line">        v-&gt;init_sec_buf_read_offset += copy_size;</span><br><span class="line">        <span class="keyword">return</span> copy_size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    seg = current_segment(v);<span class="comment">/* 这是实际通过HTTP读取buf_size长度的数据，这个数据是交织后的数据，从server上获取的 */</span></span><br><span class="line">    ret = read_from_url(v, seg, buf, buf_size);</span><br><span class="line">    <span class="keyword">if</span> (ret &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (just_opened &amp;&amp; v-&gt;is_id3_timestamped != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">/* Intercept ID3 tags here, elementary audio streams are required</span></span><br><span class="line"><span class="comment">             * to convey timestamps using them in the beginning of each segment. */</span></span><br><span class="line">            intercept_id3(v, buf, buf_size, &amp;ret);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ret; <span class="comment">// 大于0说明已经读取到数据了</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (c-&gt;http_persistent &amp;&amp;       <span class="comment">// keep-alive</span></span><br><span class="line">        seg-&gt;key_type == KEY_NONE &amp;&amp; av_strstart(seg-&gt;url, <span class="string">&quot;http&quot;</span>, <span class="literal">NULL</span>)) &#123;</span><br><span class="line">        v-&gt;input_read_done = <span class="number">1</span>;     <span class="comment">// 当前的已经下载完毕</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ff_format_io_close(v-&gt;parent, &amp;v-&gt;input);<span class="comment">/* 读取完成了，可以关闭segment所使用的HTTP资源了 */</span></span><br><span class="line">    &#125;</span><br><span class="line">    v-&gt;cur_seq_no++;    <span class="comment">/* 更新当前读取的seg_no，同时更新全局的，保证流切换之后可以同步 */</span></span><br><span class="line"></span><br><span class="line">    c-&gt;cur_seq_no = v-&gt;cur_seq_no;  <span class="comment">/* 回到上面继续循环了 */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">goto</span> restart;   <span class="comment">// 读取新的ts流</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">HLS协议</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-09-27 22:59:19" itemprop="dateCreated datePublished" datetime="2023-09-27T22:59:19+08:00">2023-09-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-16 18:46:05" itemprop="dateModified" datetime="2024-01-16T18:46:05+08:00">2024-01-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="M3U8格式"><a href="#M3U8格式" class="headerlink" title="M3U8格式"></a>M3U8格式</h1><p>M3U8（也称为 HLS 播放列表）是一种文本文件格式，用于描述 HTTP Live Streaming（HLS）协议中的媒体播放列表。HLS 是一种流媒体传输协议，广泛用于将音频和视频内容分发到互联网上的移动设备和桌面浏览器。</p>
-<p>M3U8 文件是一个纯文本文件，其中包含了多个媒体片段的 URL 和其他相关信息，以便客户端能够按顺序下载和播放这些片段。</p>
-<h2 id="播放列表"><a href="#播放列表" class="headerlink" title="播放列表"></a>播放列表</h2><ul>
-<li>一个 M3U8 的播放列表（playlist） 就是一个由多个独立行组成的文本文件，每行由回车&#x2F;换行区分。</li>
-<li>每一行可以是一个 URI、空白行或是一个以 “#” 号开头的字符串，并且空格只能存在于一行中不同元素间的分隔。</li>
-<li>一个 URI 表示一个媒体段或是 “variant playlist file”（最多支持一层嵌套，即一个 M3U8 文件中嵌套另一个 M3U8）。以 “EXT” 开头的表示一个 “tag”，否则表示注释，直接忽略。</li>
-<li>每一个 M3U8 文件，分别对应若干个 TS 文件，这些 <strong>TS 文件才是真正存放视频的数据</strong>。<strong>M3U8 文件只是存放了一些 TS 文件的配置信息和相关路径</strong>。</li>
-</ul>
-<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>标签（Tags）提供了有关媒体流和播放列表本身的信息。</p>
-<p><strong>#EXTM3U</strong></p>
-<ul>
-<li><p>格式：<code>#EXTM3U</code></p>
-</li>
-<li><p>作用：每个 m3u8 文件第一行必须是这个 tag，请标示作用。</p>
-</li>
-</ul>
-<p><strong>#EXT-X-VERSION</strong></p>
-<ul>
-<li>格式：<code>#EXT-X-VERSION:&lt;v&gt;</code></li>
-<li>作用：m3u8 文件版本号，比如#EXT-X-VERSION:3。</li>
-</ul>
-<p><strong>#EXT-X-TARGETDURATION</strong></p>
-<ul>
-<li>格式： <code>#EXT-X-TARGETDURATION:&lt;s&gt;</code></li>
-<li>作用：指定当前视频流中的单个切片（即 ts）文件的最大时长（秒）。所以 #EXTINF 中指定的时间长度必须小于或是等于这个最大值。这个 tag 在整个 playlist 文件中只能出现一次（在嵌套的情况下，一般有真正 ts url 的 m3u8 才会出现该 tag）。</li>
-</ul>
-<p><strong>#EXT-X-MEDIA-SEQUENCE</strong></p>
-<ul>
-<li>格式：<code>#EXT-X-MEDIA-SEQUENCE:&lt;number&gt;</code></li>
-<li>作用：指定 meida segment 的开始序号，每一个 media uri 在 playlist 中只有唯一的序号，相邻之间序号 +1。 一个 media uri 并不是必须要包含的，如果没有，默认为 0。</li>
-</ul>
-<p><strong>#EXT-X-ALLOW-CACHE</strong></p>
-<ul>
-<li>格式：<code>#EXT-X-ALLOW-CACHE:&lt;YES|NO&gt;</code></li>
-<li>作用：指示客户端是否被允许缓存媒体片段，可以在 m3u8 文件中任意地方出现，并且最多只出现一次，作用效果是所有的媒体段。</li>
-</ul>
-<p><strong>#EXTINF</strong></p>
-<ul>
-<li>格式：<code>#EXTINF:&lt;duration&gt;,&lt;title&gt;</code></li>
-<li>作用：指定每个媒体段（ts）的持续时间（单位秒），这个仅对其后面的 uri 有效，每两个媒体段 uri 间被这个 tag 分隔开；比如<code>#EXTINF:14.357, no desc</code>。</li>
-</ul>
-<p><strong>#EXT-X-ENDLIST</strong></p>
-<ul>
-<li>格式：<code>#EXT-X-ENDLIST</code></li>
-<li>作用：表示 m3u8 文件的结束，live m3u8 没有该 tag。它可以在 playlist 中任意位置出现，但是只能出现一个。</li>
-</ul>
-<p><strong>#EXT-X-STREAM-INF</strong></p>
-<ul>
-<li>格式：<code>#EXT-X-STREAM-INF:&lt;attribute-list&gt;</code></li>
-<li>作用：指定一个包含多媒体信息的 media uri 作为 playlist，一般做 m3u8 的嵌套使用，它只对紧跟后面的 uri 有效。</li>
-<li>常用的属性如下：<ul>
-<li>BANDWIDTH：带宽，必须有。</li>
-<li>CODECS：指定流的编码类型，不是必须的。</li>
-<li>RESOLUTION：分辨率。</li>
-<li>AUDIO：这个值必须和 AUDIO 类别的 “EXT-X-MEDIA” 标签中 “GROUP-ID” 属性值相匹配。</li>
-<li>VIDEO：同上。</li>
-</ul>
-</li>
-</ul>
-<p><strong>#EXT-X-KEY</strong></p>
-<ul>
-<li>格式：<code>#EXT-X-KEY:&lt;attribute-list&gt;</code></li>
-<li>作用：表示怎么对 media segments 进行解密。其作用范围是下次该 tag 出现前的所有 media URI。</li>
-<li>参考链接：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/jruing/p/15820950.html">https://www.cnblogs.com/jruing/p/15820950.html</a></li>
-</ul>
-<h2 id="M3U8示例"><a href="#M3U8示例" class="headerlink" title="M3U8示例"></a>M3U8示例</h2><h3 id="点播媒体播放列表"><a href="#点播媒体播放列表" class="headerlink" title="点播媒体播放列表"></a>点播媒体播放列表</h3><p>主要特征：文件包含 <code>EXT-X-ENDLIST</code> 标签，<code>EXT-X-PLAYLIST-TYPE</code> 标签（可选）值为 VOD，表示播放列表不可变。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-PLAYLIST-TYPE:VOD</span><br><span class="line">#EXT-X-TARGETDURATION:10</span><br><span class="line">#EXT-X-VERSION:3</span><br><span class="line">#EXTINF:9.009,</span><br><span class="line">http://media.example.com/first.ts</span><br><span class="line">#EXTINF:9.009,</span><br><span class="line">http://media.example.com/second.ts</span><br><span class="line">#EXTINF:3.003,</span><br><span class="line">http://media.example.com/third.ts</span><br><span class="line">#EXT-X-ENDLIST</span><br></pre></td></tr></table></figure>
-
-<p>M3U8 文件支持绝对路径，也支持相对路径，所以上面的格式等效于：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-PLAYLIST-TYPE:VOD</span><br><span class="line">#EXT-X-TARGETDURATION:10</span><br><span class="line">#EXT-X-VERSION:3</span><br><span class="line">#EXTINF:9.009,</span><br><span class="line">first.ts</span><br><span class="line">#EXTINF:9.009,</span><br><span class="line">second.ts</span><br><span class="line">#EXTINF:3.003,</span><br><span class="line">third.ts</span><br><span class="line">#EXT-X-ENDLIST</span><br></pre></td></tr></table></figure>
-
-<h3 id="EVENT播放列表"><a href="#EVENT播放列表" class="headerlink" title="EVENT播放列表"></a>EVENT播放列表</h3><p>主要特征：<code>EXT-X-PLAYLIST-TYPE</code> 标签值为 EVENT，表示播放列表内容可变，不过只能在文件末尾改变。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-PLAYLIST-TYPE:EVENT</span><br><span class="line">#EXT-X-TARGETDURATION:10</span><br><span class="line">#EXT-X-MEDIA-SEQUENCE:0</span><br><span class="line">#EXTINF:10,</span><br><span class="line">fileSequence0.ts</span><br><span class="line">#EXTINF:10,</span><br><span class="line">fileSequence1.ts</span><br><span class="line">#EXTINF:10,</span><br><span class="line">fileSequence2.ts</span><br><span class="line">#EXTINF:10,</span><br><span class="line">fileSequence3.ts</span><br></pre></td></tr></table></figure>
-
-<p>结束时，M3U8 文件内容如下所示：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-PLAYLIST-TYPE:EVENT</span><br><span class="line">#EXT-X-TARGETDURATION:10</span><br><span class="line">#EXT-X-MEDIA-SEQUENCE:0</span><br><span class="line">#EXTINF:10,</span><br><span class="line">fileSequence0.ts</span><br><span class="line">#EXTINF:10,</span><br><span class="line">fileSequence1.ts</span><br><span class="line">#EXTINF:10,</span><br><span class="line">fileSequence2.ts</span><br><span class="line">#EXTINF:10,</span><br><span class="line">fileSequence3.ts</span><br><span class="line">...</span><br><span class="line">#EXTINF:10,</span><br><span class="line">fileSequence120.ts</span><br><span class="line">#EXTINF:10,</span><br><span class="line">fileSequence121.ts</span><br><span class="line">#EXT-X-ENDLIST</span><br></pre></td></tr></table></figure>
-
-<h3 id="直播播放列表"><a href="#直播播放列表" class="headerlink" title="直播播放列表"></a>直播播放列表</h3><p>主要特征：不包含 <code>EXT-X-ENDLIST</code> 标签，不包含 <code>EXT-X-PLAYLIST-TYPE</code> 标签。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-VERSION:3</span><br><span class="line">#EXT-X-TARGETDURATION:8</span><br><span class="line">#EXT-X-MEDIA-SEQUENCE:2680</span><br><span class="line"></span><br><span class="line">#EXTINF:7.975,</span><br><span class="line">https://priv.example.com/fileSequence2680.ts</span><br><span class="line">#EXTINF:7.941,</span><br><span class="line">https://priv.example.com/fileSequence2681.ts</span><br><span class="line">#EXTINF:7.975,</span><br><span class="line">https://priv.example.com/fileSequence2682.ts</span><br></pre></td></tr></table></figure>
-
-<p>直播播放列表是一个会动态更新的 M3U8 文件，服务端会对直播流进行实时转码生成直播流切片，并定期更新 M3U8 文件。这个 M3U8 文件一般为会包括 3-5 个切片。</p>
-<p>直播播放列表中的任意一个切片的 URI 被移除时，都需要更新 <code>EXT-X-MEDIA-SEQUENCE</code> 标签的值（+1）。移除切片 URI 时必须按顺序，以保证客户端通过更新的 M3U8 文件拿到的是连续的切片数据。</p>
-<h3 id="加密的媒体播放列表"><a href="#加密的媒体播放列表" class="headerlink" title="加密的媒体播放列表"></a>加密的媒体播放列表</h3><p>主要特征：包含 <code>EXT-X-KEY</code> 标签。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-VERSION:3</span><br><span class="line">#EXT-X-MEDIA-SEQUENCE:7794</span><br><span class="line">#EXT-X-TARGETDURATION:15</span><br><span class="line"></span><br><span class="line">#EXT-X-KEY:METHOD=AES-128,URI=&quot;https://priv.example.com/key.php?r=52&quot;</span><br><span class="line"></span><br><span class="line">#EXTINF:2.833,</span><br><span class="line">http://media.example.com/fileSequence52-A.ts</span><br><span class="line">#EXTINF:15.0,</span><br><span class="line">http://media.example.com/fileSequence52-B.ts</span><br><span class="line">#EXTINF:13.333,</span><br><span class="line">http://media.example.com/fileSequence52-C.ts</span><br><span class="line"></span><br><span class="line">#EXT-X-KEY:METHOD=AES-128,URI=&quot;https://priv.example.com/key.php?r=53&quot;</span><br><span class="line"></span><br><span class="line">#EXTINF:15.0,</span><br><span class="line">http://media.example.com/fileSequence53-A.ts</span><br></pre></td></tr></table></figure>
-
-<h3 id="BYTERANGE播放列表"><a href="#BYTERANGE播放列表" class="headerlink" title="BYTERANGE播放列表"></a>BYTERANGE播放列表</h3><p>主要特征：<code>EXT-X-VERSION</code> 标签的值为 4 以上，确保 HLS 支持。通过 <code>EXT-X-BYTERANGE</code> 来指定切片偏移量。语法是：<code>#EXT-X-BYTERANGE:length[@offset]</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-PLAYLIST-TYPE:VOD</span><br><span class="line">#EXT-X-TARGETDURATION:10</span><br><span class="line">#EXT-X-VERSION:4</span><br><span class="line">#EXTINF:9.009,</span><br><span class="line">#EXT-X-BYTERANGE:752320</span><br><span class="line">media.ts</span><br><span class="line">#EXTINF:9.009,</span><br><span class="line">#EXT-X-BYTERANGE:82112@752321</span><br><span class="line">media.ts</span><br><span class="line">#EXTINF:3.003,</span><br><span class="line">#EXT-X-BYTERANGE:69864</span><br><span class="line">media.ts</span><br><span class="line">#EXT-X-ENDLIST</span><br></pre></td></tr></table></figure>
-
-<p>使用 BYTERANGE 播放列表可以不用在服务端存储大量的小切片文件，只通过一个文件再加上文件偏移量信息就可以支持分片。</p>
-<p>比如，上面示例的 BYTERANGE 播放列表等价于下面简单的播放列表：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-PLAYLIST-TYPE:VOD</span><br><span class="line">#EXT-X-TARGETDURATION:10</span><br><span class="line">#EXT-X-VERSION:3</span><br><span class="line">#EXTINF:9.009,</span><br><span class="line">first.ts</span><br><span class="line">#EXTINF:9.009,</span><br><span class="line">second.ts</span><br><span class="line">#EXTINF:3.003,</span><br><span class="line">third.ts</span><br><span class="line">#EXT-X-ENDLIST</span><br></pre></td></tr></table></figure>
-
-<h3 id="插播不同格式内容的播放列表"><a href="#插播不同格式内容的播放列表" class="headerlink" title="插播不同格式内容的播放列表"></a>插播不同格式内容的播放列表</h3><p>主要特征：包含 <code>EXT-X-DISCONTINUITY</code> 标签。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-TARGETDURATION:10</span><br><span class="line">#EXT-X-VERSION:3</span><br><span class="line">#EXT-X-MEDIA-SEQUENCE:0</span><br><span class="line">#EXTINF:10.0,</span><br><span class="line">ad0.ts</span><br><span class="line">#EXTINF:8.0,</span><br><span class="line">ad1.ts</span><br><span class="line">#EXT-X-DISCONTINUITY</span><br><span class="line">#EXTINF:10.0,</span><br><span class="line">movieA.ts</span><br><span class="line">#EXTINF:10.0,</span><br><span class="line">movieB.ts</span><br></pre></td></tr></table></figure>
-
-<p>在一些场景下，我们需要在点播或直播中插入其他内容，比如广告，这时候可能这段广告内容的编码格式与原视频的编码格式存在差异，这种差异可能造成客户端播放出问题，这时候就需要告知客户端。这就需要用到 EXT-X-DISCONTINUITY 标签。</p>
-<h3 id="主播放列表"><a href="#主播放列表" class="headerlink" title="主播放列表"></a>主播放列表</h3><p>主要特征：包含 <code>EXT-X-STREAM-INF</code> 标签。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-STREAM-INF:BANDWIDTH=1280000,AVERAGE-BANDWIDTH=1000000</span><br><span class="line">http://example.com/low.m3u8</span><br><span class="line">#EXT-X-STREAM-INF:BANDWIDTH=2560000,AVERAGE-BANDWIDTH=2000000</span><br><span class="line">http://example.com/mid.m3u8</span><br><span class="line">#EXT-X-STREAM-INF:BANDWIDTH=7680000,AVERAGE-BANDWIDTH=6000000</span><br><span class="line">http://example.com/hi.m3u8</span><br><span class="line">#EXT-X-STREAM-INF:BANDWIDTH=65000,CODECS=&quot;mp4a.40.5&quot;</span><br><span class="line">http://example.com/audio-only.m3u8</span><br></pre></td></tr></table></figure>
-
-<p>上面示例中，通过 3 个不同码率的视频流和 1 个音频流来描述一个内容。</p>
-<h3 id="I帧播放列表"><a href="#I帧播放列表" class="headerlink" title="I帧播放列表"></a>I帧播放列表</h3><p>主要特征：包含 <code>EXT-X-I-FRAME-STREAM-INF</code> 标签。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-STREAM-INF:BANDWIDTH=1280000</span><br><span class="line">low/audio-video.m3u8</span><br><span class="line">#EXT-X-I-FRAME-STREAM-INF:BANDWIDTH=86000,URI=&quot;low/iframe.m3u8&quot;</span><br><span class="line">#EXT-X-STREAM-INF:BANDWIDTH=2560000</span><br><span class="line">mid/audio-video.m3u8</span><br><span class="line">#EXT-X-I-FRAME-STREAM-INF:BANDWIDTH=150000,URI=&quot;mid/iframe.m3u8&quot;</span><br><span class="line">#EXT-X-STREAM-INF:BANDWIDTH=7680000</span><br><span class="line">hi/audio-video.m3u8</span><br><span class="line">#EXT-X-I-FRAME-STREAM-INF:BANDWIDTH=550000,URI=&quot;hi/iframe.m3u8&quot;</span><br><span class="line">#EXT-X-STREAM-INF:BANDWIDTH=65000,CODECS=&quot;mp4a.40.5&quot;</span><br><span class="line">audio-only.m3u8</span><br></pre></td></tr></table></figure>
-
-<p>HLS 是通过<strong>主播放列表标签 EXT-X-I-FRAME-STREAM-INF 和媒体播放列表标签 EXT-X-I-FRAMES-ONLY 配合来实现 I 帧播放列表</strong>，从而支持视频播放常用的快进和快退功能。</p>
-<p>上面的示例是在主播放列表中通过 EXT-X-I-FRAME-STREAM-INF 标签指定 I 帧播放列表，那么对应的 I 帧播放列表内容示例如下：</p>
-<p>主要特征：<code>EXT-X-VERSION</code> 标签的值为 4 以上，确保 HLS 支持；包含 <code>EXT-X-I-FRAMES-ONLY</code> 标签。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-VERSION:4</span><br><span class="line">#EXT-X-I-FRAMES-ONLY</span><br><span class="line">...</span><br><span class="line">#EXTINF:4.12,</span><br><span class="line">#EXT-X-BYTERANGE:9400@376</span><br><span class="line">segment1.ts</span><br><span class="line">#EXTINF:3.56,</span><br><span class="line">#EXT-X-BYTERANGE:7144@47000</span><br><span class="line">segment1.ts</span><br><span class="line">#EXTINF:3.82,</span><br><span class="line">#EXT-X-BYTERANGE:10340@1880</span><br><span class="line">segment2.ts</span><br></pre></td></tr></table></figure>
-
-<p>上面的示例是用 EXT-X-BYTERANGE 来指定每个 I 帧对应的数据。这里需要注意的是 EXTINF 表示的时长是<strong>当前 I 帧到下一个 I 帧的时长</strong>。</p>
-<h3 id="HTTP传输M3U8"><a href="#HTTP传输M3U8" class="headerlink" title="HTTP传输M3U8"></a>HTTP传输M3U8</h3><p>顶级 M3U8 文件主要是做码率适配的，⼆级 M3U8 才是真正的切片文件。客户端会默认选择码率最高的请求，如果发现码率达不到，会请求降低码率的流。客户端拿到二级 M3U8 文件后，会继续请求里面的文件，这时就可以进行播放了。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">GET /live/test.m3u8 HTTP/1.1</span><br><span class="line">User-Agent: Lavf/59.30.100</span><br><span class="line">Accept: */*</span><br><span class="line">Range: bytes=0-</span><br><span class="line">Connection: close</span><br><span class="line">Host: 192.168.2.101:8080</span><br><span class="line">Icy-MetaData: 1</span><br><span class="line"></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Connection: Close</span><br><span class="line">Content-Length: 90</span><br><span class="line">Content-Type: application/vnd.apple.mpegurl</span><br><span class="line">Server: SRS/6.0.75(Bee)</span><br><span class="line"></span><br><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-STREAM-INF:BANDWIDTH=1,AVERAGE-BANDWIDTH=1</span><br><span class="line">/live/test.m3u8?hls_ctx=18201z96</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">GET /live/test.m3u8?hls_ctx=18201z96 HTTP/1.1</span><br><span class="line">User-Agent: Lavf/59.30.100</span><br><span class="line">Accept: */*</span><br><span class="line">Range: bytes=0-</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Host: 192.168.2.101:8080</span><br><span class="line">Icy-MetaData: 1</span><br><span class="line"></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Connection: Close</span><br><span class="line">Content-Type: application/vnd.apple.mpegurl</span><br><span class="line">Content-Length: 330</span><br><span class="line">Server: SRS/6.0.75(Bee)</span><br><span class="line"></span><br><span class="line">#EXTM3U</span><br><span class="line">#EXT-X-VERSION:3</span><br><span class="line">#EXT-X-MEDIA-SEQUENCE:7</span><br><span class="line">#EXT-X-TARGETDURATION:15</span><br><span class="line">#EXTINF:14.994, no desc</span><br><span class="line">test-7.ts?hls_ctx=18201z96</span><br><span class="line">#EXTINF:14.994, no desc</span><br><span class="line">test-8.ts?hls_ctx=18201z96</span><br><span class="line">#EXTINF:14.994, no desc</span><br><span class="line">test-9.ts?hls_ctx=18201z96</span><br><span class="line">#EXTINF:14.994, no desc</span><br><span class="line">test-10.ts?hls_ctx=18201z96</span><br><span class="line">#EXTINF:8.933, no desc</span><br><span class="line">test-11.ts?hls_ctx=18201z96</span><br><span class="line"></span><br><span class="line">#EXT-X-ALLOW-CACHE:YES</span><br></pre></td></tr></table></figure>
-
-<h1 id="TS格式"><a href="#TS格式" class="headerlink" title="TS格式"></a>TS格式</h1><h2 id="TS格式介绍"><a href="#TS格式介绍" class="headerlink" title="TS格式介绍"></a>TS格式介绍</h2><p>TS 全称为 <strong>MPEG2-TS</strong>，是一种封装的格式，视频编码主要格式为 H264&#x2F;MPEG4，音频为 AAC&#x2F;MP3。</p>
-<ul>
-<li>TS 分层格式：</li>
-</ul>
-<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/ts⽂件分层.png" alt="ts⽂件分层" style="zoom:50%;">
-
-<ul>
-<li><p>TS 包大小<strong>固定为 188 字节</strong>，TS 文件分为三层：</p>
-<ul>
-<li>TS 层：Transport Stream，<strong>是在 PES 层的基础上加⼊数据流的识别和传输必须的信息</strong>。</li>
-<li>PES 层： Packet Elemental Stream，<strong>是在音视频数据上加了时间戳等对数据帧的说明信息</strong>。</li>
-<li>ES 层：Elementary Stream，<strong>即音视频数据</strong>。</li>
-</ul>
-</li>
-<li><p>解析 TS 流数据的流程：</p>
-<ul>
-<li><strong>查找 PID 为 0x0 的包，解析 PAT，PAT 包中的 Program Map PID 表示 PMT 的 PID</strong>；</li>
-<li><strong>查找 PMT，PMT 包中的 Elementary PID 表示音视频包的 PID，PMT 包中的 PCR PID 表示 PCR 的 PID</strong>，有的时候 PCR 的 PID 跟音频或者视频的 PID 相同，说明 PCR 会融进音视频的包，有的时候 PCR 又是自己单独的包。</li>
-</ul>
-</li>
-<li><p>报文预览：</p>
-</li>
-</ul>
-<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/HLS报文.png" alt="HLS报文" style="zoom:50%;">
-
-<h2 id="包头"><a href="#包头" class="headerlink" title="包头"></a>包头</h2><p>Header 报文格式：</p>
-<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/tsheader报文.png" alt="tsheader报文" style="zoom:50%;">
-
-<p>MPEG2-TS 包的包头占据了 4 字节，用于标识包的类型和其他信息。包头的字段包括：</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>比特数量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Sync Byte</td>
-<td>8b</td>
-<td>同步字节，固定为 0x47</td>
-</tr>
-<tr>
-<td>Transport Error Indicator</td>
-<td>1b</td>
-<td>传输错误指示符，表明在 ts 头的 adapt 域后有一个无用字节，通常都为 0，这个字节算在 adapt 域⻓度内</td>
-</tr>
-<tr>
-<td>Payload Unit Start Indicator</td>
-<td>1b</td>
-<td>负载单元起始标示符，一个完整的数据包开始时标记为 1</td>
-</tr>
-<tr>
-<td>Transport Priority</td>
-<td>1b</td>
-<td>传输优先级，0 为低优先级，1 为⾼优先级，通常取 0</td>
-</tr>
-<tr>
-<td><strong>PID</strong></td>
-<td>13b</td>
-<td>用于标识包中的数据流类型，例如音频、视频、字幕等</td>
-</tr>
-<tr>
-<td>Transport Scrambling Contor</td>
-<td>2b</td>
-<td>用于指示包是否经过了加扰处理，00 表示未加密</td>
-</tr>
-<tr>
-<td>Adaptation Field Control</td>
-<td>2b</td>
-<td>用于指示是否存在自适应字段，<br>‘00’保留；‘01’为⽆⾃适应域，仅含有效负载；<br>‘10’为仅含⾃适应域，⽆有效负载；<br>‘11’为同时带有⾃适应域和有效负载</td>
-</tr>
-<tr>
-<td>Continuity Counter</td>
-<td>4b</td>
-<td>递增计数器，从 0-f，起始值不一定取 0，但必须是连续的，可用于检测丢失的包</td>
-</tr>
-</tbody></table>
-<p><strong>TS 的内容是通过 PID 值来标识的，主要内容包括：PAT 表、PMT 表、音频流、视频流。</strong>PAT 表的和 PMT 表需要定期插入 TS 流，因为用户随时可能加入 TS 流，这个间隔比较小，通常每隔几个视频帧就要加入 PAT 和 PMT。PAT 和 PMT 表是必须的，还可以加入其它表如 SDT（业务描述表）等，不过 HLS 流只要有 PAT 和 PMT 就可以播放了。 </p>
-<h2 id="自适应字段"><a href="#自适应字段" class="headerlink" title="自适应字段"></a>自适应字段</h2><p>Adaptation Field 报文格式：</p>
-<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/AdaptationField报文.png" alt="AdaptationField报文" style="zoom:50%;">
-
-<p>自适应字段（Adaptation Field）是可选的，长度不固定，用于在需要时包含额外的控制信息。它可以包括时钟调整、加扰解除、字节对齐等信息。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>比特数量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Adaptation Field Length</td>
-<td>8b</td>
-<td>自适应域长度，后面的字节数</td>
-</tr>
-<tr>
-<td>Discontinuity Indicator</td>
-<td>1b</td>
-<td>通常用于指示数据流的不连续性。如果有多个数据流，这个标志可以用于标识它们之间的切换</td>
-</tr>
-<tr>
-<td>Random Access Indicator</td>
-<td>1b</td>
-<td>指示是否存在关键帧或I帧。这对于视频流中的随机访问非常重要</td>
-</tr>
-<tr>
-<td>Elementary Stream Priority Indicator</td>
-<td>1b</td>
-<td>指示当前包的元素流的优先级</td>
-</tr>
-<tr>
-<td>PCR Flag</td>
-<td>1b</td>
-<td>指示是否存在 PCR（Program Clock Reference）字段。PCR 用于同步多个数据流的时钟</td>
-</tr>
-<tr>
-<td>OPCR Flag</td>
-<td>1b</td>
-<td>指示是否存在 OPCR（Original Program Clock Reference）字段。OPCR用于描述原始数据流的时钟</td>
-</tr>
-<tr>
-<td>Splicing Point Flag</td>
-<td>1b</td>
-<td>指示当前包是否可以被拷贝，即是否可以在此处进行剪切</td>
-</tr>
-<tr>
-<td>Transport Private Data Flag</td>
-<td>1b</td>
-<td>指示是否存在拷贝权标志信息</td>
-</tr>
-<tr>
-<td>Adaptation Field Extension Flag</td>
-<td>1b</td>
-<td>指示是否存在自适应字段扩展</td>
-</tr>
-<tr>
-<td>Program Clock Reference</td>
-<td>48b</td>
-<td>如果 PCR 标志为 1，则包含 PCR 字段，用于同步音频和视频的时钟</td>
-</tr>
-<tr>
-<td>…</td>
-<td>…</td>
-<td>…</td>
-</tr>
-</tbody></table>
-<p>自适应区的长度要包含传输错误指示符标识的一个字节。</p>
-<p>打包 TS 流时 PAT 和 PMT 表是没有 adaptation field 的，<strong>不够的长度直接补 0xff 即可</strong>。视频流和音频流都需要加 adaptation field，通常加在一个帧的第一个  TS 包和最后一个 TS 包里，中间的 TS 包不加。</p>
-<p>pcr 是节目时钟参考，pcr、dts、pts 都是对同一个系统时钟的采样值，pcr 是递增的，因此可以将其设置为 dts 值，音频数据不需要 pcr。如果没有字段，ipad 是可以播放的，但 vlc 无法播放。</p>
-<h2 id="有效负载"><a href="#有效负载" class="headerlink" title="有效负载"></a>有效负载</h2><p>有效负载（Payload）包含了音频、视频、字幕等媒体数据。有效负载的长度可以根据包头中的信息变化，通常为 0 到 184 字节。有效负载的具体格式取决于所传输的内容和编码方式。<strong>在解析 MPEG-TS 流时，需要根据 PID（Packet Identifier）字段中的标识来确定有效负载的类型，并使用相应的解码器来解析数据。</strong>不同的 PID 值对应不同的数据流类型，例如音频、视频、字幕等。</p>
-<h3 id="PAT"><a href="#PAT" class="headerlink" title="PAT"></a>PAT</h3><p>PAT 报文格式：</p>
-<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/PAT报文.png" alt="PAT报文" style="zoom:50%;">
-
-<p><strong>TS 包头中的 PID 值为 0x0，表示当前负载为 PAT（Program Association Table）。</strong>PAT 数据的信息可以理解为整个 TS 流包含的节目信息。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>比特数量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Table ID</td>
-<td>8b</td>
-<td>PAT 表固定为 0x00</td>
-</tr>
-<tr>
-<td>Syntax indicator</td>
-<td>1b</td>
-<td>固定为 1</td>
-</tr>
-<tr>
-<td>Reserverd</td>
-<td>3b</td>
-<td>固定为 011</td>
-</tr>
-<tr>
-<td>Length</td>
-<td>12b</td>
-<td>后面数据的长度</td>
-</tr>
-<tr>
-<td>Transport Stream Id</td>
-<td>16b</td>
-<td>传输流 ID，固定为 0x0001</td>
-</tr>
-<tr>
-<td>Reserved</td>
-<td>2b</td>
-<td>固定为 11</td>
-</tr>
-<tr>
-<td>Version Number</td>
-<td>5b</td>
-<td>版本号，固定为 00000，如果 PAT 有变化则版本号加 1</td>
-</tr>
-<tr>
-<td>Current&#x2F;Next Indicator</td>
-<td>1b</td>
-<td>固定为 1，表示这个 PAT 表可以用，如果为 0 则要等待下一个 PAT 表</td>
-</tr>
-<tr>
-<td>Section Number</td>
-<td>8b</td>
-<td>固定为 0x00</td>
-</tr>
-<tr>
-<td>Last Section Number</td>
-<td>8b</td>
-<td>固定为 0x00</td>
-</tr>
-<tr>
-<td>开始循环</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td><strong>Program Number</strong></td>
-<td>16b</td>
-<td>节目号</td>
-</tr>
-<tr>
-<td>Reserved</td>
-<td>3b</td>
-<td>固定为 111</td>
-</tr>
-<tr>
-<td><strong>Program Map PID</strong></td>
-<td>13b</td>
-<td>节目号对应内容的 PID 值</td>
-</tr>
-<tr>
-<td>结束循环</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>CRC32</td>
-<td>32b</td>
-<td>前面数据的 CRC32 校验码</td>
-</tr>
-</tbody></table>
-<h3 id="PMT"><a href="#PMT" class="headerlink" title="PMT"></a>PMT</h3><p>PMT 报文格式：</p>
-<img src="/2023/09/27/HLS%E5%8D%8F%E8%AE%AE/PMT报文.png" alt="PMT报文" style="zoom:50%;">
-
-<p>PMT（Program Map Table）是 MPEG2-TS（MPEG Transport Stream）中的一种表格，用于描述一个或多个节目的组成，包括音频、视频、字幕等多个元素的信息。PMT 表格的主要作用是告诉接收设备如何解析和处理特定节目的数据流。以下是 PMT 表格的基本格式：</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>比特数量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Table Id</td>
-<td>8b</td>
-<td>PMT 表取值随意，0x02</td>
-</tr>
-<tr>
-<td>Syntax Indicator</td>
-<td>1b</td>
-<td>固定为 1</td>
-</tr>
-<tr>
-<td>Reserved</td>
-<td>2b</td>
-<td>固定为 011</td>
-</tr>
-<tr>
-<td>Length</td>
-<td>12b</td>
-<td>后面数据的长度</td>
-</tr>
-<tr>
-<td>Program Number</td>
-<td>16b</td>
-<td>频道号码，表示当前的 PMT 关联到的频道，取值 0x0001</td>
-</tr>
-<tr>
-<td>Reserved</td>
-<td>2b</td>
-<td>固定为 11</td>
-</tr>
-<tr>
-<td>Version Number</td>
-<td>5b</td>
-<td>版本号，固定为 00000，如果 PAT 有变化则版本号加 1</td>
-</tr>
-<tr>
-<td>Current&#x2F;Next Indicator</td>
-<td>1b</td>
-<td>固定为1</td>
-</tr>
-<tr>
-<td>Section Number</td>
-<td>8b</td>
-<td>固定为 0x00</td>
-</tr>
-<tr>
-<td>Last Section Number</td>
-<td>8b</td>
-<td>固定为 0x00</td>
-</tr>
-<tr>
-<td>Reserved</td>
-<td>3b</td>
-<td>固定为 111</td>
-</tr>
-<tr>
-<td><strong>PCR_PID</strong></td>
-<td>13b</td>
-<td>PCR（节目参考时钟）所在 TS 分组的 PID，指定为视频 PID</td>
-</tr>
-<tr>
-<td>Reserved</td>
-<td>4b</td>
-<td>固定为 1111</td>
-</tr>
-<tr>
-<td>Program Info Length</td>
-<td>12b</td>
-<td>节目描述信息，指定为0x000表示没有</td>
-</tr>
-<tr>
-<td>开始循环</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>Stream type</td>
-<td>8b</td>
-<td>流类型，标志是 Video 还是 Audio 还是其他数据，h.264 编码对应 0x1b，aac 编码对应 0x0f，mp3 编码对应 0x03</td>
-</tr>
-<tr>
-<td>Reserved</td>
-<td>3b</td>
-<td>固定为 111</td>
-</tr>
-<tr>
-<td><strong>Elementary PID</strong></td>
-<td>13b</td>
-<td>与 Stream type 对应的 PID</td>
-</tr>
-<tr>
-<td>Reserved</td>
-<td>4b</td>
-<td>固定为 1111</td>
-</tr>
-<tr>
-<td>ES info length</td>
-<td>12b</td>
-<td>描述信息，指定为 0x000 表示没有</td>
-</tr>
-<tr>
-<td>结束循环</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>CRC32</td>
-<td>32b</td>
-<td>前面数据的 CRC32 校验码</td>
-</tr>
-</tbody></table>
-<h3 id="PES"><a href="#PES" class="headerlink" title="PES"></a>PES</h3><p><strong>PES（Packetized Elementary Stream）用于传输和存储音频、视频和其他媒体数据。</strong>PES 将媒体数据分成小包，每个包包含了媒体数据及其相关信息，使其易于传输和解析。以下是 PES 包头的基本格式：</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>比特数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Prefix</td>
-<td>24b</td>
-<td>PES 包起始码，通常为 0x000001</td>
-</tr>
-<tr>
-<td>Stream</td>
-<td>8b</td>
-<td>PES 包所包含数据类型，如视频为 0xe0</td>
-</tr>
-<tr>
-<td>Length</td>
-<td>16b</td>
-<td>指示 PES 包的长度，包含包头、扩展头和有效负载</td>
-</tr>
-<tr>
-<td>10</td>
-<td>2b</td>
-<td>固定为二进制 10，标志 PES 包头结束，实际数据开始</td>
-</tr>
-<tr>
-<td>Scrambling Control</td>
-<td>2b</td>
-<td>表示对 PES 包进行加扰控制</td>
-</tr>
-<tr>
-<td>priority</td>
-<td>1b</td>
-<td>优先级标识位</td>
-</tr>
-<tr>
-<td>Data Alignment</td>
-<td>1b</td>
-<td>数据对齐标志位，指示包头的结束位置</td>
-</tr>
-<tr>
-<td>Copyright</td>
-<td>1b</td>
-<td>版权标志</td>
-</tr>
-<tr>
-<td>Original</td>
-<td>1b</td>
-<td>表示数据的原始性</td>
-</tr>
-<tr>
-<td>PTS Flag</td>
-<td>1b</td>
-<td>是否包含 PTS 字段</td>
-</tr>
-<tr>
-<td>DTS Flag</td>
-<td>1b</td>
-<td>是否包含 DTS 字段</td>
-</tr>
-<tr>
-<td>ESCR Flag</td>
-<td>1b</td>
-<td>是否包含 ESCR 字段</td>
-</tr>
-<tr>
-<td>ES Rate Flag</td>
-<td>1b</td>
-<td>是否包含 ES Rate 字段</td>
-</tr>
-<tr>
-<td>DSM Trick Model Flag</td>
-<td>1b</td>
-<td>是否包含 Additional Copy Info 字段</td>
-</tr>
-<tr>
-<td>Additional Copy Info Flag</td>
-<td>1b</td>
-<td>是否包含 DSM Trick Mode 字段</td>
-</tr>
-<tr>
-<td>CRC Flag</td>
-<td>1b</td>
-<td>是否包含 CRC 字段</td>
-</tr>
-<tr>
-<td>Extension Flag</td>
-<td>1b</td>
-<td>是否包含扩展头字段</td>
-</tr>
-<tr>
-<td>Header Data Length</td>
-<td>8b</td>
-<td>PES 包头数据的长度，包括可选的扩展头</td>
-</tr>
-</tbody></table>
-<h1 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h1><p>参考：<a target="_blank" rel="noopener" href="https://www.kancloud.cn/spirit-ling/http-study/636182">https://www.kancloud.cn/spirit-ling/http-study/636182</a></p>
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rell336/article/details/38109621">https://blog.csdn.net/rell336/article/details/38109621</a> </p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rongdeguoqian/article/details/18214627">https://blog.csdn.net/rongdeguoqian/article/details/18214627</a> </p>
 
       
     </div>
