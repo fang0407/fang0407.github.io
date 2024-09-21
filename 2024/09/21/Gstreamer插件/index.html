@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Gstreamer编译环境：ubuntu16.04，gcc version 5.4.0 20160609 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051# 编译Python3.8wget --no-check-certificate https:&#x2F;&#x2F;www.p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gstreamer插件">
+<meta property="og:url" content="https://fang0407.github.io/2024/09/21/Gstreamer%E6%8F%92%E4%BB%B6/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="Gstreamer编译环境：ubuntu16.04，gcc version 5.4.0 20160609 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051# 编译Python3.8wget --no-check-certificate https:&#x2F;&#x2F;www.p">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-09-21T01:10:16.000Z">
+<meta property="article:modified_time" content="2024-09-21T01:12:09.625Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2024/09/21/Gstreamer%E6%8F%92%E4%BB%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2024/09/21/Gstreamer%E6%8F%92%E4%BB%B6/","path":"2024/09/21/Gstreamer插件/","title":"Gstreamer插件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Gstreamer插件 | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Gstreamer%E7%BC%96%E8%AF%91"><span class="nav-number">1.</span> <span class="nav-text">Gstreamer编译</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6%E6%A8%A1%E6%9D%BF"><span class="nav-number">2.</span> <span class="nav-text">插件模板</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.</span> <span class="nav-text">插件接口</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#plugin-init"><span class="nav-number">3.1.</span> <span class="nav-text">plugin_init</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#class-init"><span class="nav-number">3.2.</span> <span class="nav-text">_class_init</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gst-element-class-set-details-simple"><span class="nav-number">3.2.1.</span> <span class="nav-text">gst_element_class_set_details_simple</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gst-element-class-add-pad-template"><span class="nav-number">3.2.2.</span> <span class="nav-text">gst_element_class_add_pad_template</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#property"><span class="nav-number">3.2.3.</span> <span class="nav-text">_property</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#start-stop-create"><span class="nav-number">3.2.4.</span> <span class="nav-text">start&#x2F;stop&#x2F;create</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#init"><span class="nav-number">3.3.</span> <span class="nav-text">_init</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gst-pad-new-from-static-template"><span class="nav-number">3.3.1.</span> <span class="nav-text">gst_pad_new_from_static_template</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gst-element-add-pad"><span class="nav-number">3.3.2.</span> <span class="nav-text">gst_element_add_pad</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chain"><span class="nav-number">3.3.3.</span> <span class="nav-text">_chain</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#event"><span class="nav-number">3.3.4.</span> <span class="nav-text">_event</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#query"><span class="nav-number">3.3.5.</span> <span class="nav-text">_query</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#state"><span class="nav-number">3.3.6.</span> <span class="nav-text">_state</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/09/21/Gstreamer%E6%8F%92%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Gstreamer插件 | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Gstreamer插件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-09-21 09:10:16 / Modified: 09:12:09" itemprop="dateCreated datePublished" datetime="2024-09-21T09:10:16+08:00">2024-09-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Gstreamer/" itemprop="url" rel="index"><span itemprop="name">Gstreamer</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Gstreamer编译"><a href="#Gstreamer编译" class="headerlink" title="Gstreamer编译"></a>Gstreamer编译</h1><p>环境：ubuntu16.04，gcc version 5.4.0 20160609</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"># 编译Python3.8</span><br><span class="line">wget --no-check-certificate https://www.python.org/ftp/python/3.8.17/Python-3.8.17.tgz</span><br><span class="line">tar xzvf Python-3.8.17.tgz</span><br><span class="line">cd Python-3.8.17</span><br><span class="line">./configure --enable-optimizations</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line">wget --no-check-certificate  https://www.openssl.org/source/old/1.1.1/openssl-1.1.1w.tar.gz</span><br><span class="line">tar xzvf openssl-1.1.1w.tar.gz</span><br><span class="line">cd openssl-1.1.1w</span><br><span class="line">./config </span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line">wget --no-check-certificate https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.7.4.tar.gz</span><br><span class="line">tar xzvf  libressl-2.7.4.tar.gz</span><br><span class="line">cd libressl-2.7.4</span><br><span class="line">./config --prefix=/usr/local</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line">回到 Python3.8 目录，编辑安装文件 Modules/Setup</span><br><span class="line">删除有关 ssl 编译代码的注释，共 4 行</span><br><span class="line">SSL=/usr/local/ssl</span><br><span class="line">_ssl _ssl.c \</span><br><span class="line">        -DUSE_SSL -I$(SSL)/include -I$(SSL)/include/openssl \</span><br><span class="line">        -L$(SSL)/lib -lssl -lcrypto</span><br><span class="line"></span><br><span class="line"># meson</span><br><span class="line">pip3 install --user meson</span><br><span class="line">ln -s ~/.local/bin/meson  /usr/bin/meson</span><br><span class="line"></span><br><span class="line"># ninja</span><br><span class="line">wget --no-check-certificate  https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-linux.zip</span><br><span class="line">mv ninja /usr/bin</span><br><span class="line"></span><br><span class="line"># gstreamer</span><br><span class="line">wget --no-check-certificate  https://github.com/GStreamer/gstreamer/archive/refs/tags/1.24.0.tar.gz</span><br><span class="line">cd gstreamer-1.24.0</span><br><span class="line">mkdir build</span><br><span class="line">meson setup</span><br><span class="line">meson configure</span><br><span class="line">meson --reconfigure --prefix=`pwd`/gst_install -Dgst_plugins-base:opus=disabled -Dbad=disabled</span><br><span class="line">meson compile</span><br><span class="line">meson install</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">参考链接</span><br><span class="line">https://github.com/GStreamer/gstreamer?tab=readme-ov-file</span><br><span class="line">https://blog.csdn.net/Aidam_Bo/article/details/112919330</span><br><span class="line">https://tsaiyuyan.github.io/2020/05/11/gstreamer-bian-yi-bi-ji/</span><br></pre></td></tr></table></figure>
+
+<h1 id="插件模板"><a href="#插件模板" class="headerlink" title="插件模板"></a>插件模板</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://gitlab.freedesktop.org/gstreamer/gst-template.git</span><br><span class="line">cd gst-template/gst-plugin/src</span><br><span class="line">../tools/make_element plugin</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编译生成的插件库添加到 <code>GST_PLUGIN_PATH</code> 环境变量</li>
+</ul>
+<h1 id="插件接口"><a href="#插件接口" class="headerlink" title="插件接口"></a>插件接口</h1><h2 id="plugin-init"><a href="#plugin-init" class="headerlink" title="plugin_init"></a>plugin_init</h2><ul>
+<li><code>plugin_init</code>：初始化插件并注册插件中的元素</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> gboolean <span class="title">plugin_init</span> <span class="params">(GstPlugin *plugin)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">GST_ELEMENT_REGISTER</span> (plugin_template, plugin);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>GST_ELEMENT_REGISTER (plugin_template, plugin)</code></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="keyword">define</span> GST_ELEMENT_REGISTER (plugin_template, plugin) gst_element_register_plugin_template (plugin)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>GST_ELEMENT_REGISTER_DEFINE (plugin_template, &quot;plugin_template&quot;, GST_RANK_NONE, GST_TYPE_PLUGIN_TEMPLATE)</code></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">gboolen <span class="title">gst_element_register_plugin_template</span> <span class="params">(GSTPlugin* plugin)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">gst_element_register</span>(plugin, <span class="string">&quot;plugin_template&quot;</span>, GST_RANK_NONE, GST_TYPE_PLUGIN_TEMPLATE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>函数原型：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">gboolean <span class="title">gst_element_register</span> <span class="params">(GstPlugin *plugin, <span class="type">const</span> gchar *name, GstRank rank, GType type)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<p><code>GstPlugin *plugin</code>：指向 <code>GstPlugin</code> 结构的指针，表示当前插件的元数据。</p>
+<p><code>const gchar *name</code>：要注册的元素名称，这个名称在 <code>GStreamer</code> 的 pipeline 中用于标识元素。</p>
+<p><code>GstRank rank</code>：元素的排名，决定了在自动连接时元素的优先级。排名越低，优先级越高。</p>
+<p><code>GType type</code>：元素类型的 <code>GType</code> 值，通常通过 <code>G_DEFINE_TYPE</code> 宏定义。</p>
+<hr>
+<ul>
+<li><code>GST_TYPE_PLUGIN_TEMPLATE</code></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> GST_TYPE_PLUGIN_TEMPLATE (gst_plugin_template_get_type())</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>G_DEFINE_TYPE (GstPluginTemplate, gst_plugin_template, GST_TYPE_ELEMENT)</code></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span>     <span class="title">gst_plugin_template_init</span>       <span class="params">(GstPluginTemplate      *self)</span></span>;</span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span>     <span class="title">gst_plugin_template_class_init</span> <span class="params">(GstPluginTemplateClass *klass)</span></span>;</span><br><span class="line"><span class="type">static</span> gpointer gst_plugin_template_parent_class = <span class="literal">NULL</span>;</span><br><span class="line"><span class="type">static</span> gint     GstPluginTemplate_private_offset;</span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span>     <span class="title">gst_plugin_template_class_intern_init</span> <span class="params">(gpointer klass)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    gst_plugin_template_parent_class = <span class="built_in">g_type_class_peek_parent</span> (klass);</span><br><span class="line">    <span class="keyword">if</span> (GstPluginTemplate_private_offset != <span class="number">0</span>)</span><br><span class="line">        <span class="built_in">g_type_class_adjust_private_offset</span> (klass, &amp;GstPluginTemplate_private_offset);</span><br><span class="line">    <span class="built_in">gst_plugin_template_class_init</span> ((GstPluginTemplateClass*) klass);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">static</span> <span class="keyword">inline</span> gpointer <span class="title">gst_plugin_template_get_instance_private</span> <span class="params">(GstPluginTemplate *self)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="built_in">G_STRUCT_MEMBER_P</span> (self, GstPluginTemplate_private_offset));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">GType <span class="title">gst_plugin_template_get_type</span> <span class="params">(<span class="type">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">static</span> gsize static_g_define_type_id = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">g_once_init_enter</span> (&amp;static_g_define_type_id))</span><br><span class="line">    &#123;</span><br><span class="line">        GType g_define_type_id =</span><br><span class="line">            <span class="built_in">g_type_register_static_simple</span> (GST_TYPE_ELEMENT,</span><br><span class="line">                                           <span class="built_in">g_intern_static_string</span> (<span class="string">&quot;GstPluginTemplate&quot;</span>),</span><br><span class="line">                                           <span class="built_in">sizeof</span> (GstPluginTemplateClass),</span><br><span class="line">                                           (GClassInitFunc) gst_plugin_template_class_intern_init,</span><br><span class="line">                                           <span class="built_in">sizeof</span> (GstPluginTemplate),</span><br><span class="line">                                           (GInstanceInitFunc) gst_plugin_template_init,</span><br><span class="line">                                           <span class="number">0</span>);</span><br><span class="line">        &#123;</span><br><span class="line">            GstPluginTemplate_private_offset =</span><br><span class="line">                <span class="built_in">g_type_add_instance_private</span> (g_define_type_id, <span class="built_in">sizeof</span> (GstPluginTemplatePrivate));</span><br><span class="line">        &#125;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">const</span> GInterfaceInfo g_implement_interface_info = &#123;</span><br><span class="line">                (GInterfaceInitFunc) gst_plugin_template_gizmo_init</span><br><span class="line">            &#125;;</span><br><span class="line">            <span class="built_in">g_type_add_interface_static</span> (g_define_type_id, TYPE_GIZMO, &amp;g_implement_interface_info);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">g_once_init_leave</span> (&amp;static_g_define_type_id, g_define_type_id);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> static_g_define_type_id;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>G_DECLARE_FINAL_TYPE (GstPluginTemplate, gst_plugin_template, GST, PLUGIN_TEMPLATE, GstElement)</code></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">GType <span class="title">gst_plugin_template_get_type</span> <span class="params">(<span class="type">void</span>)</span></span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">_GstPluginTemplate</span> GstPluginTemplate;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123; GstElementClass parent_class; &#125; GstPluginTemplateClass;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>GstElement</code> 和 <code>GstElementClass</code> 区别<ul>
+<li><code>GstElement</code><ul>
+<li>是自定义元素的实例结构体。每个 <code>GstElement</code> 实例代表 GStreamer 管道中的一个元素实体。</li>
+<li>它通常包含实际处理数据所需的成员变量，实例结构体定义了元素的状态信息，这些信息对于元素的运行时行为是特定的。</li>
+</ul>
+</li>
+<li><code>GstElementClass</code><ul>
+<li>是自定义元素的类结构体，它定义了元素的行为和功能。</li>
+<li>类似于面向对象编程中的类，它包含了方法（虚函数）的实现。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="class-init"><a href="#class-init" class="headerlink" title="_class_init"></a>_class_init</h2><p>用于初始化类一次（指定类具有哪些信号、参数和虚函数，并设置全局状态）。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">gst_plugin_template_class_init</span> <span class="params">(GstPluginTemplateClass *klass)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    GObjectClass *gobject_class;</span><br><span class="line">    GstElementClass *gstelement_class;</span><br><span class="line">    </span><br><span class="line">    gobject_class = (GObjectClass *) klass;</span><br><span class="line">    gstelement_class = (GstElementClass *) klass;</span><br><span class="line">    </span><br><span class="line">    gobject_class-&gt;set_property = gst_plugin_template_set_property;</span><br><span class="line">    gobject_class-&gt;get_property = gst_plugin_template_get_property;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">g_object_class_install_property</span> (gobject_class, PROP_SILENT,</span><br><span class="line">                                     <span class="built_in">g_param_spec_boolean</span> (<span class="string">&quot;silent&quot;</span>, <span class="string">&quot;Silent&quot;</span>, <span class="string">&quot;Produce verbose output ?&quot;</span>,</span><br><span class="line">                                                           FALSE, G_PARAM_READWRITE));</span><br><span class="line">    <span class="built_in">gst_element_class_set_details_simple</span> (gstelement_class,</span><br><span class="line">                                          <span class="string">&quot;Plugin&quot;</span>,</span><br><span class="line">                                          <span class="string">&quot;FIXME:Generic&quot;</span>,</span><br><span class="line">                                          <span class="string">&quot;FIXME:Generic Template Element&quot;</span>,</span><br><span class="line">                                          <span class="string">&quot;AUTHOR_NAME AUTHOR_EMAIL&quot;</span>);</span><br><span class="line">    <span class="built_in">gst_element_class_add_pad_template</span> (gstelement_class,</span><br><span class="line">                                        <span class="built_in">gst_static_pad_template_get</span> (&amp;src_factory));</span><br><span class="line">    <span class="built_in">gst_element_class_add_pad_template</span> (gstelement_class,</span><br><span class="line">                                        <span class="built_in">gst_static_pad_template_get</span> (&amp;sink_factory));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="gst-element-class-set-details-simple"><a href="#gst-element-class-set-details-simple" class="headerlink" title="gst_element_class_set_details_simple"></a>gst_element_class_set_details_simple</h3><p>用于设置 <code>GstElement</code> 类的元数据。允许开发者快速定义元素的名称、描述、作者和 <code>Klass</code> 结构，通常在元素类的初始化函数中调用。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">gst_element_class_set_details_simple</span> (gstelement_class,  <span class="comment">// 指向 GstElement 类的类的指针</span></span><br><span class="line">                                      <span class="string">&quot;Plugin&quot;</span>,          <span class="comment">// 元素的长名称，通常是元素的全名</span></span><br><span class="line">                                      <span class="string">&quot;FIXME:Generic&quot;</span>,   <span class="comment">// 元素的分类，用于描述元素的类型，例如 &quot;Source/Audio&quot;</span></span><br><span class="line">                                      <span class="string">&quot;FIXME:Generic Template Element&quot;</span>,  <span class="comment">// 元素的简短描述，说明元素的功能</span></span><br><span class="line">                                      <span class="string">&quot;AUTHOR_NAME AUTHOR_EMAIL&quot;</span>  <span class="comment">// 元素作者的名称和联系信息</span></span><br><span class="line">                                     );</span><br></pre></td></tr></table></figure>
+
+<h3 id="gst-element-class-add-pad-template"><a href="#gst-element-class-add-pad-template" class="headerlink" title="gst_element_class_add_pad_template"></a>gst_element_class_add_pad_template</h3><p>用于向 <code>GstElement</code> 类添加一个新的 pad 模板。Pad 是 GStreamer 元素的输入或输出点，用于连接元素形成处理管道。通过添加 pad 模板，可以定义元素的静态连接端口，指明它们可以接受或提供什么样的媒体数据。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> GstStaticPadTemplate src_factory = <span class="built_in">GST_STATIC_PAD_TEMPLATE</span> (</span><br><span class="line">    <span class="string">&quot;src&quot;</span>,</span><br><span class="line">    GST_PAD_SINK,</span><br><span class="line">    GST_PAD_ALWAYS,</span><br><span class="line">    <span class="built_in">GST_STATIC_CAPS</span> (<span class="string">&quot;ANY&quot;</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> GstStaticPadTemplate sink_factory = <span class="built_in">GST_STATIC_PAD_TEMPLATE</span> (</span><br><span class="line">    <span class="string">&quot;sink&quot;</span>,</span><br><span class="line">    GST_PAD_SINK,</span><br><span class="line">    GST_PAD_ALWAYS,</span><br><span class="line">    <span class="built_in">GST_STATIC_CAPS</span> (<span class="string">&quot;audio/x-raw, format=(string)S16LE, rate=(int)44100, channels=(int)2&quot;</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">gst_my_plugin_class_init</span> <span class="params">(GstMyPluginClass *klass)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    GstElementClass *element_class = <span class="built_in">GST_ELEMENT_CLASS</span> (klass);</span><br><span class="line">    <span class="comment">// 添加 pad 模板到插件</span></span><br><span class="line">    <span class="built_in">gst_plugin_add_pad_template</span> (element_class, <span class="built_in">gst_static_pad_template_get</span> (&amp;src_factory));</span><br><span class="line">    <span class="built_in">gst_plugin_add_pad_template</span> (element_class, <span class="built_in">gst_static_pad_template_get</span> (&amp;sink_factory));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="property"><a href="#property" class="headerlink" title="_property"></a>_property</h3><p><code>GObjectClass</code> 的方法，用于设置和获取成员。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* properties */</span></span><br><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">  PROP_0,</span><br><span class="line">  PROP_SILENT</span><br><span class="line">  <span class="comment">/* FILL ME */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">gst_plugin_template_set_property</span> <span class="params">(GObject *object, guint prop_id,</span></span></span><br><span class="line"><span class="params"><span class="function">                                              <span class="type">const</span> GValue *value, GParamSpec *pspec)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    GstPluginTemplate *filter = <span class="built_in">GST_PLUGIN_TEMPLATE</span> (object);</span><br><span class="line">    <span class="keyword">switch</span> (prop_id) &#123;</span><br><span class="line">        <span class="keyword">case</span> PROP_SILENT:</span><br><span class="line">            filter-&gt;silent = <span class="built_in">g_value_get_boolean</span> (value);</span><br><span class="line">            <span class="built_in">g_print</span> (<span class="string">&quot;Silent argument was changed to %s\n&quot;</span>,</span><br><span class="line">                     filter-&gt;silent ? <span class="string">&quot;true&quot;</span> : <span class="string">&quot;false&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="built_in">G_OBJECT_WARN_INVALID_PROPERTY_ID</span> (object, prop_id, pspec);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">gst_plugin_template_get_property</span> <span class="params">(GObject *object, guint prop_id,</span></span></span><br><span class="line"><span class="params"><span class="function">                                              GValue *value, GParamSpec *pspec)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    GstPluginTemplate *filter = <span class="built_in">GST_PLUGIN_TEMPLATE</span> (object);</span><br><span class="line">    <span class="keyword">switch</span> (prop_id) &#123;</span><br><span class="line">        <span class="keyword">case</span> PROP_SILENT:</span><br><span class="line">            <span class="built_in">g_value_set_boolean</span> (value, filter-&gt;silent);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="built_in">G_OBJECT_WARN_INVALID_PROPERTY_ID</span> (object, prop_id, pspec);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">gst_plugin_template_class_init</span> <span class="params">(GstPluginTemplateClass *klass)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    GObjectClass *object_class = <span class="built_in">G_OBJECT_CLASS</span> (klass);</span><br><span class="line">    <span class="comment">/* define virtual function pointers */</span></span><br><span class="line">    object_class-&gt;set_property = gst_plugin_template_set_property;</span><br><span class="line">    object_class-&gt;get_property = gst_plugin_template_get_property;</span><br><span class="line">    <span class="comment">/* define properties */</span></span><br><span class="line">    <span class="built_in">g_object_class_install_property</span> (object_class, PROP_SILENT,</span><br><span class="line">                                     <span class="built_in">g_param_spec_boolean</span> (<span class="string">&quot;silent&quot;</span>, <span class="string">&quot;Silent&quot;</span>,</span><br><span class="line">                                                           <span class="string">&quot;Whether to be very verbose or not&quot;</span>,</span><br><span class="line">                                                           FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="start-stop-create"><a href="#start-stop-create" class="headerlink" title="start&#x2F;stop&#x2F;create"></a>start&#x2F;stop&#x2F;create</h3><p><code>GstBaseSrcClass</code> 的方法，<code>start</code> 进行资源的初始化和准备工作；<code>stop</code> 进行资源的清理工作；<code>create</code> 生产数据。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> gboolean <span class="title">gst_plugin_template_start</span> <span class="params">(GstBaseSrc *base_src)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 资源初始化代码</span></span><br><span class="line">    <span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> gboolean <span class="title">gst_plugin_template_stop</span> <span class="params">(GstBaseSrc *base_src)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 资源清理代码</span></span><br><span class="line">    <span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> GstFlowReturn <span class="title">gst_plugin_template_create</span> <span class="params">(GstBaseSrc *src, guint64 offset, guint size, GstBuffer **buf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 生产数据</span></span><br><span class="line">    <span class="keyword">return</span> GST_FLOW_OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">gst_plugin_template_class_init</span> <span class="params">(GstPluginTemplateClass *klass)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    GstBaseSrcClass *base_src_class = <span class="built_in">GST_BASE_SRC_CLASS</span> (klass);</span><br><span class="line">    base_src_class-&gt;start = <span class="built_in">GST_DEBUG_FUNCPTR</span> (gst_plugin_template_start);</span><br><span class="line">    base_src_class-&gt;stop = <span class="built_in">GST_DEBUG_FUNCPTR</span> (gst_plugin_template_stop);</span><br><span class="line">    base_src_class-&gt;create = <span class="built_in">GST_DEBUG_FUNCPTR</span> (gst_plugin_template_create);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="init"><a href="#init" class="headerlink" title="_init"></a>_init</h2><p>用于初始化这种类型的特定实例。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">gst_plugin_template_init</span> <span class="params">(GstPluginTemplate* plugin)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* pad through which data comes in to the element */</span></span><br><span class="line">    plugin-&gt;sinkpad = <span class="built_in">gst_pad_new_from_static_template</span> (&amp;sink_factory, <span class="string">&quot;sink&quot;</span>);</span><br><span class="line">    <span class="built_in">gst_pad_set_event_function</span> (plugin-&gt;sinkpad,</span><br><span class="line">                                <span class="built_in">GST_DEBUG_FUNCPTR</span> (gst_plugin_template_sink_event));</span><br><span class="line">    <span class="comment">/* configure chain function on the pad before adding the pad to the element */</span></span><br><span class="line">    <span class="built_in">gst_pad_set_chain_function</span> (plugin-&gt;sinkpad,</span><br><span class="line">                                <span class="built_in">GST_DEBUG_FUNCPTR</span> (gst_plugin_template_chain));</span><br><span class="line">    <span class="built_in">GST_PAD_SET_PROXY_CAPS</span> (plugin-&gt;sinkpad);</span><br><span class="line">    <span class="built_in">gst_element_add_pad</span> (<span class="built_in">GST_ELEMENT</span> (plugin), plugin-&gt;sinkpad);</span><br><span class="line">    <span class="comment">/* pad through which data goes out of the element */</span></span><br><span class="line">    plugin-&gt;srcpad = <span class="built_in">gst_pad_new_from_static_template</span> (&amp;src_factory, <span class="string">&quot;src&quot;</span>);</span><br><span class="line">    <span class="built_in">GST_PAD_SET_PROXY_CAPS</span> (plugin-&gt;srcpad);</span><br><span class="line">    <span class="built_in">gst_element_add_pad</span> (<span class="built_in">GST_ELEMENT</span> (plugin), plugin-&gt;srcpad);</span><br><span class="line">    <span class="comment">/* properties initial value */</span></span><br><span class="line">    plugin-&gt;silent = FALSE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="gst-pad-new-from-static-template"><a href="#gst-pad-new-from-static-template" class="headerlink" title="gst_pad_new_from_static_template"></a>gst_pad_new_from_static_template</h3><p>用于根据静态 pad 模板创建一个新的 pad 实例。它通常在元素的实例初始化函数中被调用，用于根据预先定义的 pad 模板创建 pad。</p>
+<h3 id="gst-element-add-pad"><a href="#gst-element-add-pad" class="headerlink" title="gst_element_add_pad"></a>gst_element_add_pad</h3><p>用于将一个已经创建的 <code>GstPad</code> 添加到 <code>GstElement</code> 中。</p>
+<h3 id="chain"><a href="#chain" class="headerlink" title="_chain"></a>_chain</h3><p>用于处理通过 <code>GStreamer</code> 管道流动的数据包（通常称为缓冲区或 buffers）的函数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> GstFlowReturn <span class="title">gst_plugin_template_chain</span> <span class="params">(GstPad *pad, GstObject *parent, GstBuffer *buf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  GstPluginTemplate *plugin = <span class="built_in">GST_PLUGIN_TEMPLATE</span> (parent);</span><br><span class="line">  GstBuffer *outbuf;</span><br><span class="line"></span><br><span class="line">  outbuf = <span class="built_in">gst_plugin_template_process_data</span> (plugin, buf);</span><br><span class="line">  <span class="built_in">gst_buffer_unref</span> (buf);</span><br><span class="line">  <span class="keyword">if</span> (!outbuf) &#123;</span><br><span class="line">    <span class="comment">/* something went wrong - signal an error */</span></span><br><span class="line">    <span class="built_in">GST_ELEMENT_ERROR</span> (<span class="built_in">GST_ELEMENT</span> (plugin), STREAM, FAILED, (<span class="literal">NULL</span>), (<span class="literal">NULL</span>));</span><br><span class="line">    <span class="keyword">return</span> GST_FLOW_ERROR;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">gst_pad_push</span> (plugin-&gt;srcpad, outbuf);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="event"><a href="#event" class="headerlink" title="_event"></a>_event</h3><p>通知数据流中发生的特殊事件（如上限、流结束、新闻片段、标签等）。事件可以向上游和下游传播，可以在 <code>GstPad</code> 上接收它们。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> gboolean <span class="title">gst_plugin_template_sink_event</span> <span class="params">(GstPad *pad, GstObject *parent, GstEvent *event)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    gboolean ret;</span><br><span class="line">    GstPluginTemplate *plugin = <span class="built_in">GST_PLUGIN_TEMPLATE</span> (parent);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">switch</span> (<span class="built_in">GST_EVENT_TYPE</span> (event)) &#123;</span><br><span class="line">        <span class="keyword">case</span> GST_EVENT_CAPS:</span><br><span class="line">            <span class="comment">/* we should handle the format here */</span></span><br><span class="line">            <span class="comment">/* push the event downstream */</span></span><br><span class="line">            ret = <span class="built_in">gst_pad_push_event</span> (plugin-&gt;srcpad, event);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> GST_EVENT_EOS:</span><br><span class="line">            <span class="comment">/* end-of-stream, we should close down all stream leftovers here */</span></span><br><span class="line">            <span class="built_in">gst_plugin_template_stop_processing</span> (plugin);</span><br><span class="line">            ret = <span class="built_in">gst_pad_event_default</span> (pad, parent, event);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">/* just call the default handler */</span></span><br><span class="line">            ret = <span class="built_in">gst_pad_event_default</span> (pad, parent, event);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="query"><a href="#query" class="headerlink" title="_query"></a>_query</h3><p>通过查询功能，元素将收到它必须回复的查询。这些查询包括位置、持续时间，以及您的元素支持的格式和调度模式。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> gboolean <span class="title">gst_plugin_template_src_query</span> <span class="params">(GstPad *pad, GstObject *parent, GstQuery *query)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    gboolean ret;</span><br><span class="line">    GstPluginTemplate *plugin = <span class="built_in">GST_PLUGIN_TEMPLATE</span> (parent);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">switch</span> (<span class="built_in">GST_QUERY_TYPE</span> (query)) &#123;</span><br><span class="line">        <span class="keyword">case</span> GST_QUERY_POSITION:</span><br><span class="line">            <span class="comment">/* we should report the current position */</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> GST_QUERY_DURATION:</span><br><span class="line">            <span class="comment">/* we should report the duration here */</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> GST_QUERY_CAPS:</span><br><span class="line">            <span class="comment">/* we should report the supported caps here */</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">/* just call the default handler */</span></span><br><span class="line">            ret = <span class="built_in">gst_pad_query_default</span> (pad, parent, query);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="state"><a href="#state" class="headerlink" title="_state"></a>_state</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> GstStateChangeReturn <span class="title">gst_my_filter_change_state</span> <span class="params">(GstElement *element, GstStateChange transition)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">gst_my_filter_class_init</span> <span class="params">(GstMyFilterClass *klass)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    GstElementClass *element_class = <span class="built_in">GST_ELEMENT_CLASS</span> (klass);</span><br><span class="line">    element_class-&gt;change_state = gst_my_filter_change_state;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> GstStateChangeReturn <span class="title">gst_my_filter_change_state</span> <span class="params">(GstElement *element, GstStateChange transition)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;</span><br><span class="line">    GstMyFilter *filter = <span class="built_in">GST_MY_FILTER</span> (element);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">switch</span> (transition) &#123;</span><br><span class="line">        <span class="keyword">case</span> GST_STATE_CHANGE_NULL_TO_READY:</span><br><span class="line">            <span class="keyword">if</span> (!<span class="built_in">gst_my_filter_allocate_memory</span> (filter))</span><br><span class="line">                <span class="keyword">return</span> GST_STATE_CHANGE_FAILURE;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ret = <span class="built_in">GST_ELEMENT_CLASS</span> (parent_class)-&gt;<span class="built_in">change_state</span> (element, transition);</span><br><span class="line">    <span class="keyword">if</span> (ret == GST_STATE_CHANGE_FAILURE)</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">switch</span> (transition) &#123;</span><br><span class="line">        <span class="keyword">case</span> GST_STATE_CHANGE_READY_TO_NULL:</span><br><span class="line">            <span class="built_in">gst_my_filter_free_memory</span> (filter);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/09/15/Direct3D%E6%B8%B2%E6%9F%93/" rel="prev" title="Direct3D渲染">
+                  <i class="fa fa-angle-left"></i> Direct3D渲染
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

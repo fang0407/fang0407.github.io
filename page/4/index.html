@@ -120,13 +120,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-count">89</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
   </nav>
@@ -143,6 +143,315 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/11/15/SDP%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/11/15/SDP%E8%AF%A6%E8%A7%A3/" class="post-title-link" itemprop="url">SDP详解</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-11-15 21:39:49" itemprop="dateCreated datePublished" datetime="2023-11-15T21:39:49+08:00">2023-11-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-16 18:45:18" itemprop="dateModified" datetime="2024-01-16T18:45:18+08:00">2024-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="SDP结构"><a href="#SDP结构" class="headerlink" title="SDP结构"></a>SDP结构</h1><p>SDP 描述分为两部分，分别是会话级别的描述（session level）和媒体级别的描述（media level），其具体的组成可参考 RFC 4566，带星号 (*) 的是可选的。常见的内容如下： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Session description（会话级别描述）</span><br><span class="line">         v=  (protocol version)</span><br><span class="line">         o=  (originator and session identifier)</span><br><span class="line">         s=  (session name)</span><br><span class="line">         c=* (connection information -- not required if included in all media)</span><br><span class="line">         One or more Time descriptions (&quot;t=&quot; and &quot;r=&quot; lines; see below)</span><br><span class="line">         a=* (zero or more session attribute lines)</span><br><span class="line">         Zero or more Media descriptions</span><br><span class="line"></span><br><span class="line">Time description （时间字段）</span><br><span class="line">         t=  (time the session is active)</span><br><span class="line"></span><br><span class="line">Media description（媒体级别描述）, if present</span><br><span class="line">         m=  (media name and transport address)</span><br><span class="line">         c=* (connection information -- optional if included at session level)</span><br><span class="line">         a=* (zero or more media attribute lines)</span><br></pre></td></tr></table></figure>
+
+<p>SDP Line 是顺序相关的，比如 <code>a=rtpmap:96</code> 后面的都是它相关的设置，直到下一行是 <code>a=rtpmap</code>或者其他属性。</p>
+<p>SDP Line 没有统一的 Schema 描述，也就是没有一个固定的规则能解析所有 Line，SDP Grammer 只是描述了 SDP 相关的属性，具体每个属性的表达需要根据属性定义。</p>
+<p>SDP 解析时，每个 SDP Line 都是以 key&#x3D;… 形式，解析出 key 是 a 后，可能有两种方式。 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a=&lt;attribute&gt;</span><br><span class="line">a=&lt;attribute&gt;:&lt;value&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>比如 a&#x3D;rtcp-mux，key 为 a，attribute 为 rtcp-mux，没有 value。 </li>
+<li>比如 a&#x3D;rtpmap:96 VP8&#x2F;90000，key 为 a，attribute 为 rtpmap，value&#x3D;96 VP8&#x2F;90000。</li>
+</ul>
+<h1 id="SDP关键属性"><a href="#SDP关键属性" class="headerlink" title="SDP关键属性"></a>SDP关键属性</h1><h2 id="会话级别字段"><a href="#会话级别字段" class="headerlink" title="会话级别字段"></a>会话级别字段</h2><p>会话级别的 SDP 描述字段包括：v、o、s、b、t。 </p>
+<h3 id="协议版本号-version"><a href="#协议版本号-version" class="headerlink" title="协议版本号(version)"></a>协议版本号(version)</h3><p>SDP 协议版本，值固定为 0。</p>
+<p><code>v=0</code>。</p>
+<h3 id="会话发起者-origin"><a href="#会话发起者-origin" class="headerlink" title="会话发起者(origin)"></a>会话发起者(origin)</h3><p>代表会话的发起者。</p>
+<p>格式：<code>o=&lt;username&gt;&lt;sess-id&gt;&lt;sess-version&gt;&lt;nettype&gt;&lt;addrtype&gt;&lt;unicast-address&gt; </code></p>
+<p>各字段含义如下： </p>
+<ul>
+<li><code>username</code>：发起者的用户名，不允许存在空格，如果应用不支持用户名，则为<code>-</code>。 </li>
+<li><code>sess-id</code>：会话 id，由应用自行定义，规范的建议是 NTP（Network Time Protocol）时间戳。 </li>
+<li><code>sess-version</code>：会话版本，用途由应用自行定义，只要会话数据发生变化时（比如编码），sess-version 随着递增就行。同样的，规范的建议是 NTP 时间戳。 </li>
+<li><code>nettype</code>：网络类型，比如 IN 表示 Internet。</li>
+<li><code>addrtype</code>：地址类型，比如 IP4、IV6。</li>
+<li><code>unicast-address</code>：域名，或者 IP 地址。</li>
+</ul>
+<p>示例：<code>o=- 7298280855354507719 2 IN IP4 127.0.0.1 </code></p>
+<h3 id="会话名-session-name"><a href="#会话名-session-name" class="headerlink" title="会话名(session name)"></a>会话名(session name)</h3><p>会话的名称，每个 SDP 中有且仅能有一个 s 描述，其值不能为空。如果实在没有有意义的会话名，可以赋一个<code>-</code>。</p>
+<p>格式：<code>s=&lt;session name&gt; </code></p>
+<h2 id="媒体级别描述"><a href="#媒体级别描述" class="headerlink" title="媒体级别描述"></a>媒体级别描述</h2><h3 id="m"><a href="#m" class="headerlink" title="m&#x3D;"></a>m&#x3D;</h3><p>会话级别描述完成后，后面就是零到多个媒体级别描述，属于标准 SDP 中媒体描述的内容，同时也是 SDP 中最核心的内容。</p>
+<p>格式：<code>m=&lt;media&gt;&lt;port&gt;&lt;proto&gt;&lt;fmt&gt;...</code></p>
+<p>各字段含义如下： </p>
+<ul>
+<li><p><code>media</code>：媒体类型。包括 video、audio、text、application、message 等。</p>
+</li>
+<li><p><code>port</code>：传输媒体流的端口。对于 webrtc 而言由于它不适用 SDP 中描述的网络信息，所以该端口号对它没任何意义。</p>
+</li>
+<li><p><code>proto</code>：传输协议，具体含义取决于 c&#x3D; 中定义的地址类型，比如 c&#x3D; 是 IP4，那么这里的传输协议运行在 IP4 之上。比如：</p>
+<ul>
+<li><code>UDP</code>：传输层协议是 UDP。</li>
+<li><code>RTP/AVP</code>：针对视频、音频的 RTP 协议，跑在 UDP 之上。</li>
+<li><code>RTP/SAVP</code>：针对视频、音频的 SRTP 协议，跑在 UDP 之上。</li>
+<li><code>RTP/AVPF</code>: 应用场景为视频&#x2F;音频的 RTP 协议，支持 RTCP-based Feedback。参考 RFC 4585。</li>
+<li><code>RTP/SAVPF</code>: 应用场景为视频&#x2F;音频的 SRTP 协议，支持 RTCP-based Feedback。参考 RFC 5124。</li>
+</ul>
+</li>
+<li><p><code>fmt</code>：媒体格式的描述，可能有多个。根据 proto 的不同，fmt 的含义也不同。比如 proto 为 RTP&#x2F;SAVP 时，fmt 表示 RTP payload 的类型。如果有多个，表示在这次会话中，多种 payload 类型可能会用到，且第一个为默认的 payload 类型。后面会跟着 rtpmap、rtcp-fb、fmtp 这些属性来做进一步的详细的描述。</p>
+</li>
+</ul>
+<p>对于 RTP&#x2F;SAVP，需要注意的是，payload type 又分两种类型：</p>
+<ul>
+<li>静态类型</li>
+<li>动态类型：在 a&#x3D;fmtp: 里进行定义</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 对于audio，111 是动态类型，表示opus/48000/2</span><br><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 126</span><br><span class="line">a=rtpmap:111 opus/48000/2</span><br><span class="line"></span><br><span class="line"># 对于video，122 是动态类型，表示H264/90000</span><br><span class="line">m=video</span><br><span class="line">9 UDP/TLS/RTP/SAVPF 122 102 100 101 124 120 123 119</span><br><span class="line">a=rtpmap:122 H264/90000</span><br></pre></td></tr></table></figure>
+
+<h3 id="音频媒体信息"><a href="#音频媒体信息" class="headerlink" title="音频媒体信息"></a>音频媒体信息</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">...</span><br><span class="line">a=mid:0</span><br><span class="line">...</span><br><span class="line">a=rtpmap:111 opus/48000/2</span><br><span class="line">a=rtcp-fb:111 transport-cc</span><br><span class="line">a=fmtp:111 minptime=10;useinbandfec=1</span><br><span class="line">a=rtpmap:103 ISAC/16000</span><br><span class="line">a=rtpmap:104 ISAC/32000</span><br><span class="line">a=rtpmap:9 G722/8000</span><br><span class="line">a=rtpmap:0 PCMU/8000</span><br><span class="line">a=rtpmap:8 PCMA/8000</span><br><span class="line">a=rtpmap:106 CN/32000</span><br><span class="line">a=rtpmap:105 CN/16000</span><br><span class="line">a=rtpmap:13 CN/8000</span><br><span class="line">a=rtpmap:110 telephone-event/48000</span><br><span class="line">a=rtpmap:112 telephone-event/32000</span><br><span class="line">a=rtpmap:113 telephone-event/16000</span><br><span class="line">a=rtpmap:126 telephone-event/8000</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>M line 的类型不是只有 audio 和 video，还有 application(bfcp)、text 等媒体类型。</li>
+<li>M line 的数字 9 代表该媒体类型的传输端口，在 RTC 场景中都是使用 ICE candidate 的地址信息进行数据传输，所以 M line 的 port 并没有用到。不过，在 SIP 的场景下，M line 的 port 就十分重要了，此时，port 代表 RTP 端口，而且必须是偶数。结合 SDP 会话级别描述中的 C line 中的 IP 地址，我们就可以知道 SIP 的这路媒体流的传输地址。</li>
+<li><strong>RTX</strong> 表示是重传，比如 video 的 97，就是 apt&#x3D;96 的重传。也就是说如果用的是 97 这个编码格式，它是在 96（VP8）基础上加了重传功能。</li>
+</ul>
+<h4 id="a-mid"><a href="#a-mid" class="headerlink" title="a&#x3D;mid"></a>a&#x3D;mid</h4><p>格式：<code>a=mid:&lt;id&gt;</code></p>
+<p>示例：<code>a=mid:0</code></p>
+<p><strong>a&#x3D;mid</strong> 属性可以认为是每个 M 描述的唯一 ID。比如 a&#x3D;mid:audio，那么 <code>audio</code> 这个字符串就是这个 M 描述的 ID。有的时候 mid 属性值也可以用数字表示，比如 a&#x3D;mid:0，那么 0 也是这个 M 描述的 ID。mid 值一般和 grouping 传输属性的 BUNDLE 策略结合来用，比如 a&#x3D;group:BUNDLE audio video，代表本次会话将对 mid 为 <code>audio</code> 和 <code>video</code> 的 M 描述进行复用传输。</p>
+<h4 id="a-rtpmap"><a href="#a-rtpmap" class="headerlink" title="a&#x3D;rtpmap"></a>a&#x3D;rtpmap</h4><p>格式：<code>a=rtpmap:&lt;payload type&gt; &lt;endcoding name&gt;/&lt;clock rate&gt;/[/&lt;encodingparameters&gt;]</code></p>
+<p>示例：<code>a=rtpmap:111 opus/48000/2</code></p>
+<p>各字段说明：</p>
+<ul>
+<li><code>payload type</code>：类型，111。</li>
+<li><code>endcoding name</code>：编解码器，opus。</li>
+<li><code>clock rate</code>：时钟频率即采样率，48000。</li>
+<li><code>encodingparameters</code>：音频通道数，2。</li>
+</ul>
+<h4 id="a-fmtp"><a href="#a-fmtp" class="headerlink" title="a&#x3D;fmtp"></a>a&#x3D;fmtp</h4><p>格式：<code>a=fmtp:&lt;format&gt; &lt;format specific parameters&gt;</code></p>
+<p>示例：<code>a=fmtp:111 minptime=10;useinbandfec=1</code></p>
+<p>各字段说明：</p>
+<ul>
+<li><code>format</code>：类型，111。</li>
+<li><code>format specific parameters</code>：对于<code>minptime=10;useinbandfec=1</code>，意思以 10 ms 长的音频为一帧并且数据是经 FEC 编码的。</li>
+</ul>
+<h3 id="视频媒体信息"><a href="#视频媒体信息" class="headerlink" title="视频媒体信息"></a>视频媒体信息</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36</span><br><span class="line">...</span><br><span class="line">a=mid:1</span><br><span class="line">...</span><br><span class="line">a=rtpmap:96 VP8/90000</span><br><span class="line">...</span><br><span class="line">a=rtpmap:97 rtx/90000</span><br><span class="line">a=fmtp:97 apt=96</span><br><span class="line">a=rtpmap:98 VP9/90000</span><br><span class="line">a=fmtp:98 profile-id=0</span><br><span class="line">...</span><br><span class="line">a=rtpmap:99 rtx/90000</span><br><span class="line">a=fmtp:99 apt=98</span><br><span class="line">a=rtpmap:100 VP9/90000</span><br><span class="line">...</span><br><span class="line">a=fmtp:100 profile-id=2</span><br><span class="line">a=rtpmap:101 rtx/90000</span><br><span class="line">a=fmtp:101 apt=100</span><br><span class="line">a=rtpmap:102 H264/90000</span><br><span class="line">...</span><br><span class="line">a=fmtp:102 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f</span><br><span class="line">a=rtpmap:121 rtx/90000</span><br><span class="line">a=fmtp:121 apt=102</span><br><span class="line">a=rtpmap:127 H264/90000</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h4 id="a-rtpmap-1"><a href="#a-rtpmap-1" class="headerlink" title="a&#x3D;rtpmap"></a>a&#x3D;rtpmap</h4><p><code>a=rtpmap:96 VP8/90000</code>；payload 值为 96 表示媒体数据使用的编码器是 VP8，其时钟频率为 90000。又因为其排在 m&#x3D; 列表的第一位所以它是视频的默认编码器。</p>
+<p><code>a=rtpmap:97 rtx/90000</code>；payload 值为 97，rtx 表示不再是编码器而是丢包重传，其要结合第 8 行代码 <code>a=fmtp:97 apt=96</code>一起看。apt 的值为 96 表示 96 与 97 是关联在一起的。所以整体含义是：当 webrtc 使用媒体类型是 96 时如果出现丢包需要重传，重传数据包类型为 97。</p>
+<p><code>a=rtpmap:114 red/90000</code>；red 是一种在 webrtc 中使用的 FEC（引入前向纠错）算法，用于防止丢包；red 编码流程，默认情况下 webrtc 会将 VP8&#x2F;H264 等编码器编码后的数据再交由 red 模块编码，生成带一些冗余信息的数据包，这样当传输中某个包丢了，就可以通过其他包将其恢复回来，而不用重传丢失的包。</p>
+<h4 id="a-fmtp-1"><a href="#a-fmtp-1" class="headerlink" title="a&#x3D;fmtp"></a>a&#x3D;fmtp</h4><p><code>a=fmtp:102 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f</code></p>
+<ul>
+<li><code>level-asymmetry-allowed=1</code>指明通信双方使用的 H264 Level 否要保持一致，0 必须一致，1 可以不一致。</li>
+<li><code>packetization-mode</code>指明经 H264 编码后的视频数据如何打包：0 单包、1 非交错包、2 交错包。三种打包模式中，模式 0 和模式 1 用于低延迟的实时通信领域。模式0的含义是每个包就是一帧视频数据。模式 1 是可以将视频帧拆分成多个顺序的 RTP 包发送，接收端收到数据包后再按顺序将其还原。</li>
+<li><code>profile-level-id</code>由三部分组成，即 profile_idc、profile_iop 以及 level_idc，每个组成占 8 位，因此可以推测出 profile_idc&#x3D;64、profile_iop&#x3D;00、level-idc&#x3D;1f。</li>
+</ul>
+<h3 id="a-ssrc"><a href="#a-ssrc" class="headerlink" title="a&#x3D;ssrc"></a>a&#x3D;ssrc</h3><p>SSRC 是媒体源的唯一标识，每一路媒体流都有一个唯一的 SSRC 标识它。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36 124 119 123 118 114 115 116</span><br><span class="line">...</span><br><span class="line">a=ssrc-group:FID 3004200836 146948263</span><br><span class="line">//视频流的SSRC</span><br><span class="line">a=ssrc:3004200836 cname:hO7txeyp3DC4HQ6j</span><br><span class="line">a=ssrc:3004200836 msid:- 30c268ef-b3d0-42d2-ba35-0c8cb207505f</span><br><span class="line">a=ssrc:3004200836 mslabel:-</span><br><span class="line">a=ssrc:3004200836 label:30c268ef-b3d0-42d2-ba35-0c8cb207505f</span><br><span class="line">//丢包重传的SSRC</span><br><span class="line">a=ssrc:146948263 cname:hO7txeyp3DC4HQ6j</span><br><span class="line">a=ssrc:146948263 msid:- 30c268ef-b3d0-42d2-ba35-0c8cb207505f</span><br><span class="line">a=ssrc:146948263 mslabel:-</span><br><span class="line">a=ssrc:146948263 label:30c268ef-b3d0-42d2-ba35-0c8cb207505f</span><br></pre></td></tr></table></figure>
+
+<p><code>a=ssrc-group:FID 3004200836 146948263</code>，描述了 SSRC（146948263）是 SSRC（3004200836）的重传流。也就说 3004200836 是真正代表视频的 SSRC，而 146948263 是视频流 3004200836 丢包时使用的 SSRC，也就是为什么在同一个视频描述中有两个 SSRC。</p>
+<p><code>cnmae</code>（canonical name）通常称为别名，可以用在很多地方，其中用的最多是在域名解析中，你想为某个域名起别名时就可以使用它。在两个 SSRC 中跟着同样的 SSRC 说明这两个 SSRC 属于同一个媒体流。</p>
+<h3 id="PlanB-与-UnifiedPlan"><a href="#PlanB-与-UnifiedPlan" class="headerlink" title="PlanB 与 UnifiedPlan"></a>PlanB 与 UnifiedPlan</h3><p>PlanB：只有两个媒体描述，即音频媒体描述（m&#x3D;audio…）和视频媒体描述（m&#x3D;video…）。如果要传输多路视频，则他们在视频媒体描述中需要通过 SSRC 来区分。</p>
+<p>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">m=audio...</span><br><span class="line">a=ssrc:11223344</span><br><span class="line">...</span><br><span class="line">m=video ...</span><br><span class="line">...</span><br><span class="line">a=ssrc:22223333 cname:video1</span><br><span class="line">...</span><br><span class="line">a=ssrc:33334444 cname:video2</span><br></pre></td></tr></table></figure>
+
+<p>UnifiedPlan 中可以有多个媒体描述，因此对于多路视频，将其拆成多个视频媒体描述即可。</p>
+<p>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//UnifiedPlan</span><br><span class="line">m=audio...</span><br><span class="line">a=ssrc:11223344</span><br><span class="line">...</span><br><span class="line">m=video..</span><br><span class="line">...</span><br><span class="line">a=ssrc:22223333 cname:video1</span><br><span class="line">...</span><br><span class="line">m=video..</span><br><span class="line">...</span><br><span class="line">a=ssrc:33334444 cname:video2</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="a-sendrecv"><a href="#a-sendrecv" class="headerlink" title="a&#x3D;sendrecv"></a>a&#x3D;sendrecv</h3><p>媒体流的方向有四种，分别是 sendonly、recvonly、sendrecv、inactive，它们既可以出现在会话级别描述中也可以出现在媒体描述中。</p>
+<ul>
+<li><code>sendonly</code> 表示只发送数据，比如客户端推流到 SFU，那么会在自己的 Offer(or Answer) 中携带 senonly 属性。</li>
+<li><code>revonly</code> 表示只接收数据，比如客户端向 SFU 订阅流，那么会在自己的 Offer(or Answer) 中携带 recvonly 属性。</li>
+<li><code>sendrecv</code> 表示可以双向传输，比如客户端加入到视频会议中，既要发布自己的流又要订阅别人的流，那么就需要在自己的 Offer(or Answer) 中携带 sendrecv 属性。</li>
+<li><code>inactive</code> 表示禁止发送数据，比如在基于 RTP 的视频会议中，主持人暂时禁掉用户 A 的语音，那么用户 A 的关于音频的媒体级别描述应该携带 inactive 属性，表示不能再发送音频数据。</li>
+</ul>
+<p>注意：senonly 和 recvonly 属性仅应用于媒体，不用于媒体控制相关的协议。比如在基于 RTP 的媒体会话中，即使是 recvonly 模式，也仍然要发送 RTCP 包，即使是 senonly 模式，也依然会接收并正常处理 RTCP 包。</p>
+<h3 id="a-extmap"><a href="#a-extmap" class="headerlink" title="a&#x3D;extmap"></a>a&#x3D;extmap</h3><p>RTP扩展头，格式：<code>a=extmap:&lt;value&gt;[&quot;/&quot;&lt;direction&gt;]  &lt;URI&gt;  &lt;extensionattributes&gt;</code></p>
+<p>extmap 时 extension map 的缩写，即 RTP Heade r扩展映射表。详情请参考 <a href="https://link.zhihu.com/?target=https://www.ietf.org/rfc/rfc8285.txt">RFC 8285</a></p>
+<h2 id="网络描述"><a href="#网络描述" class="headerlink" title="网络描述"></a>网络描述</h2><p>网络描述包含 c&#x3D; 和 a&#x3D;candidate 字段。</p>
+<h3 id="连接数据-connection-data"><a href="#连接数据-connection-data" class="headerlink" title="连接数据(connection data)"></a>连接数据(connection data)</h3><p>携带了会话的连接信息，其实就是 IP 地址。</p>
+<p>SDP 的会话级别描述可以包含该字段，每一个媒体级别的描述也可以包含该字段，如果会话级别和媒体级别都有 c line，那么以媒体级别的 c line 为准。因为 WebRTC 使用 ICE candidate 交换地址信息，所以不会用到 c line，不过这并不代表 c line 没有用，在 SIP 视频会议场景中，c line 就必不可少了，文末会再次介绍该字段。</p>
+<p>格式：<code>c=&lt;nettype&gt;&lt;addrtype&gt;&lt;connection-address&gt; </code></p>
+<p>每个 SDP 至少需要包含一个会话级别的 c&#x3D; 字段，或者在每个媒体描述后⾯各包含一个 c&#x3D; 字段。（媒体描述后的 c&#x3D; 会覆盖会话级别的c&#x3D;）</p>
+<ul>
+<li><code>nettype</code>：网络类型，比如 IN，表示 Internet。 </li>
+<li><code>addrtype</code>：地址类型，比如 IP4、IP6。</li>
+<li><code>connection-address</code>：如果是⼴播，则为⼴播地址组；如果是单播，则为单播地址。</li>
+</ul>
+<p>示例：<code>c=IN IP4 224.2.36.42/127</code></p>
+<p>不过 c&#x3D; 字段通常在 webrtc 中不适用。</p>
+<h3 id="a-candidate"><a href="#a-candidate" class="headerlink" title="a&#x3D;candidate"></a>a&#x3D;candidate</h3><p>格式：<code>a=candidate:&lt;foundation&gt; &lt;component-id&gt; &lt;transport&gt; &lt;priority&gt; &lt;conn-addr&gt; &lt;conn-port&gt; typ &lt;candidate-type&gt; [&lt;rel-addr&gt; &lt;rel-port&gt;]</code></p>
+<p>各字段说明：</p>
+<ul>
+<li><p><code>foundation</code>：一个字符串，用于唯一标识候选地址的基础。</p>
+</li>
+<li><p><code>component-id</code>：表示组件的 ID，通常是 1（对于RTP）或 2（对于RTCP）。 </p>
+</li>
+<li><p><code>transport</code>：传输协议。</p>
+</li>
+<li><p><code>priority</code>：表示优先级，用于确定首选候选地址，数值越大优先级越高。</p>
+</li>
+<li><p><code>conn-addr</code>：候选地址的 IP 地址。</p>
+</li>
+<li><p><code>conn-port</code>：候选地址的端口号。</p>
+</li>
+<li><p><code>typ</code>：候选地址的类型，通常是 “host”、”srflx”（服务器反射）或 “relay”（中继）。</p>
+</li>
+<li><p><code>candidate-type</code>：表示候选地址的具体类型，例如 “typ host” 或 “typ srflx”。</p>
+</li>
+<li><p><code>rel-addr</code>和<code>rel-port</code>：可选项，用于指定相关地址和端口，通常在对称型 NAT 场景下使用。</p>
+</li>
+</ul>
+<p>示例：</p>
+<p><code>a=candidate:1 1 UDP 2113937151 192.168.1.1 50000 typ host</code><br><code>a=candidate:2 1 UDP 1694498815 203.0.113.1 50000 typ srflx raddr 192.168.1.1 rport 50000</code></p>
+<p>这两个示例中，第一个是主机候选地址，第二个是服务器反射（STUN）候选地址。这些候选地址会在 ICE 过程中用于建立对等连接，尤其是在对抗 NAT 的情境下。</p>
+<p><strong>候选地址类型</strong>：</p>
+<ul>
+<li><code>host</code> 该 candidate 是一个真实的主机，参数中的地址和端口对应一个真实的主机地址。</li>
+<li><code>srflx</code>（server reflexive）该 candidate 是通过 Cone NAT （锥形 NAT）反射的类型，参数中的地址和端口是端发送 Binding 请求到 STUN&#x2F;TURN server 经过 NAT 时，NAT 上分配的地址和端口。</li>
+<li><code>prflx</code>（peer reflexive）该 candidate 是通过 Symmetric NAT（对称 NAT） 反射的类型，参数中的地址和端口是端发送 Binding 请求到 STUN&#x2F;TURN server 经过 NAT 时，NAT 上分配的地址和端口。</li>
+<li><code>relay</code> 该 candidate 是通过 TURN 服务中继的类型，参数中的地址和端口是 TURN 服务用于在两个对等点之间转发数据的地址和端口。</li>
+</ul>
+<p><code>a=end-of-candidates</code> 在 Trickle ICE 模式时，用于显示声明 candidate 信息的结束。</p>
+<h2 id="ICE策略"><a href="#ICE策略" class="headerlink" title="ICE策略"></a>ICE策略</h2><p>SDP 中和 ICE 相关的信息包括：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">a=ice-ufrag:kce9</span><br><span class="line">a=ice-pwd:M31WxfrwmrFvPws4+tPdbsCE</span><br><span class="line">a=ice-options:trickle</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 123 127 122 125 107 108 109 124</span><br><span class="line">a=ice-ufrag:kce9</span><br><span class="line">a=ice-pwd:M31WxfrwmrFvPws4+tPdbsCE</span><br><span class="line">a=ice-options:trickle</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>ice-ufrag</code> 和 <code>ice-pwd</code> 就是 ICE short-term 认证算法用到的用户名和密码。</li>
+<li><code>trickle</code> 说明 SDP 中没有包含 Candidate 信息，Candidate 是通过信令单独交换的，这样可以做到 Connectivity checks 和 Candidate harvesting 并行处理，提高会话建立的速度。</li>
+</ul>
+<h2 id="DTLS"><a href="#DTLS" class="headerlink" title="DTLS"></a>DTLS</h2><p>SDP 中和 DTLS 相关的信息包括：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126B0:A2:B3:AB:0B:A3:44:22:B1:C8:69:52:ED:04:E8:5A:A4:C3:7A:A6:55:F3:BA:76:62:26:4B:F7:9F:DD:F1:BD</span><br><span class="line">a=setup:actpass</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 123 127 122 125 107 108 109 124</span><br><span class="line">a=fingerprint:sha-256 B0:A2:B3:AB:0B:A3:44:22:B1:C8:69:52:ED:04:E8:5A:A4:C3:7A:A6:55:F3:BA:76:62:26:4B:F7:9F:DD:F1:BD</span><br><span class="line">a=setup:actpass</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>a=fingerprint</code>：用于验证加密证书的有效性。当通信双方通过 DTLS 协议交换证书时，如何保障证书在网络交换的过程中没有被篡改？<ul>
+<li>各端会给各自的证书生成一个指纹。</li>
+<li>将指纹放到 SDP 中通过信令交换给对方。</li>
+<li>DTLS 协议交换证书。</li>
+<li>将拿到的证书重新生成指纹。</li>
+<li>将生成的指纹与 SDP 中的指纹进行比较，如果两者一致，则说明证书在传输过程中没有被篡改可以使用，否则说明证书被篡改此时连接创建失败。</li>
+</ul>
+</li>
+<li><code>a=setup:actpass</code>：决定 DTLS 协议时通信双方的角色。具体如下：<ul>
+<li><code>active</code>：终端的角色为客户端。</li>
+<li><code>passive</code>：终端的角色为服务端。</li>
+<li><code>actpass</code>：终端既可以是客户端也可以是服务端。</li>
+</ul>
+</li>
+<li>最终的角色由另一端角色确定，一般第一个加入房间的终端默认为 actpass，后来加入的终端为 active。</li>
+</ul>
+<h2 id="Qos、Grouping传输描述"><a href="#Qos、Grouping传输描述" class="headerlink" title="Qos、Grouping传输描述"></a>Qos、Grouping传输描述</h2><h3 id="a-rtcp-mux"><a href="#a-rtcp-mux" class="headerlink" title="a&#x3D;rtcp-mux"></a>a&#x3D;rtcp-mux</h3><p>传输时，可以复用媒体通道，一种是音频和视频的复用，一种是 RTCP 和 RTP 的复用。RTCP 和 RTP 复用，表示 Sender 使用一个传输通道（单一端口）发送 RTP 和 RTCP：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">a=rtcp-mux</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36 124 119 123 118 114 115 116</span><br><span class="line">a=rtcp-mux</span><br></pre></td></tr></table></figure>
+
+<p>此时，Receiver 必须准备好在 RTP 端口上接收 RTCP 数据，并需要预留一些资源，比如 RTCP 带宽。</p>
+<p>rtcp-mux 是与 RTC 传输相关的重要的 SDP 属性，关于它的 SDP 协商的原则如下：</p>
+<ul>
+<li>如果 Offer 携带 rtcp-mux 属性，并且 Answer 方希望复用 RTP 和 RTCP 到单一端口，那么 Answer 必须也要携带该rtcp-mux 属性。 </li>
+<li>如果 Offer 没有携带 rtcp-mux 属性，那么 Answer 也一定不能携带 rtcp-mux 属性，而且 Answer 方禁止 RTP 和 RTCP 复用单一端口。 </li>
+<li>rtcp-mux 的协商和使用必须是双向的。</li>
+</ul>
+<h3 id="a-group-BUNDLE"><a href="#a-group-BUNDLE" class="headerlink" title="a&#x3D;group:BUNDLE"></a>a&#x3D;group:BUNDLE</h3><p>BUNDLE 又将多路媒体流复用到同一端口进行传输，如下代表本次会话将对 mid 为 0 和 1 的 M 描述进行复用传输。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a=group:BUNDLE 0 1</span><br><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">a=mid:0</span><br><span class="line"></span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36 124 119 123 118 114 115 116</span><br><span class="line">a=mid:1</span><br></pre></td></tr></table></figure>
+
+<h3 id="a-rtcp-fb"><a href="#a-rtcp-fb" class="headerlink" title="a&#x3D;rtcp-fb"></a>a&#x3D;rtcp-fb</h3><p>媒体描述中服务质量是由<code>a=rtcp-fb</code>描述的。rtcp-fb 有两层含义</p>
+<ul>
+<li>RTCP 消息中专门反馈信息的消息。</li>
+<li>设置 webrtc 支持哪些 rtcp feedback 消息。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">m=audio 9 UDP/TLS/RTP/SAVPF 111 103 104 9 0 8 106 105 13 110 112 113 126</span><br><span class="line">...</span><br><span class="line">a=rtcp-fb:111 transport-cc</span><br><span class="line">...</span><br><span class="line">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 35 36 124 119 123 118 114 115 116</span><br><span class="line">...</span><br><span class="line">a=rtcp-fb:96 goog-remb</span><br><span class="line">a=rtcp-fb:96 transport-cc</span><br><span class="line">a=rtcp-fb:96 ccm fir</span><br><span class="line">a=rtcp-fb:96 nack</span><br><span class="line">a=rtcp-fb:96 nack pli</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>a=rtcp-fb:111 transport-cc</code>：在使用 payload 类型为 111 的编解码器时，支持 transport-cc 类型的 rtcp feedback 报文，同时也说明 webrtc 在使用 opus 编解码器时开启了 transport-cc 拥塞控制算法。</p>
+</li>
+<li><p><code>a=rtcp-fb:96 goog-remb</code>和<code>a=rtcp-fb:96 transport-cc</code>：webrtc 使用 VP8 编解码器时，既支持 Goog-REMB 的 RTCP 报文，也支持 transport-cc 的 RTCP 报文。</p>
+</li>
+<li><p><code>a=rtcp-fb:96 ccm fir</code>：指明 webrtc 支持 RTCP 的 FIR（full intra refresh） 指令，即关键帧重传请求和 ccm（codec control message）指令即，使用 RTCP 反馈机制来实现编码控制。</p>
+</li>
+<li><p><code>a=rtcp-fb:96 nack</code>：webrtc 支持 nack 报文。</p>
+</li>
+<li><p><code>a=rtcp-fb:96 nack pli</code>：支持 nack 报文的同时将支持 PLI 报文（关键帧丢包重传）。</p>
+</li>
+</ul>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/L4BABJQKOCJYp_63gyEe4A">https://mp.weixin.qq.com/s/L4BABJQKOCJYp_63gyEe4A</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/hzb869168467/article/details/122147530">https://blog.csdn.net/hzb869168467/article/details/122147530</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/freeabc/article/details/106711632">https://blog.csdn.net/freeabc/article/details/106711632</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1821,253 +2130,6 @@
     F2--http port=8090-->F5[AppRTCWeb+房间服务]
     F3--ws port=8089-->F6[AppRTC Collider信令服务]</pre>
 
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/" class="post-title-link" itemprop="url">WebRTC一对一通话</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-10-14 20:03:33" itemprop="dateCreated datePublished" datetime="2023-10-14T20:03:33+08:00">2023-10-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:37:01" itemprop="dateModified" datetime="2023-12-30T22:37:01+08:00">2023-12-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="一对一通话"><a href="#一对一通话" class="headerlink" title="一对一通话"></a>一对一通话</h1><img src="/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/一对一通话.png" alt="一对一通话" style="zoom:70%;">
-
-<h2 id="信令协议设计"><a href="#信令协议设计" class="headerlink" title="信令协议设计"></a>信令协议设计</h2><ul>
-<li><code>join</code> 加入房间。</li>
-<li><code>resp­-join</code> 当join房间后发现房间已经存在另一个人时则返回另一个人的uid；如果只有自己则不返回。</li>
-<li><code>new­-peer</code> 服务器通知客户端有新人加入，收到new­-peer则发起连接请求。</li>
-<li><code>offer</code> 转发offer sdp。</li>
-<li><code>answer</code> 转发answer sdp。</li>
-<li><code>candidate</code> 转发candidate sdp。 </li>
-<li><code>leave</code> 离开房间，服务器收到leave信令则检查同一房间是否有其他人，如果有其他人则通知他有人离开。</li>
-<li><code>peer­-leave</code> 服务器通知客户端有人离开。</li>
-</ul>
-<h2 id="RTCPeerConnection"><a href="#RTCPeerConnection" class="headerlink" title="RTCPeerConnection"></a>RTCPeerConnection</h2><p><code>RTCPeerConnection</code> 接口代表一个由本地计算机到远端的 WebRTC 连接。该接口提供了创建，保持，监控，关闭连接的方法的实现。</p>
-<p>参考链接：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/RTCPeerConnection">https://developer.mozilla.org/zh-CN/docs/Web/API/RTCPeerConnection</a></p>
-<p><strong>RTCPeerConnection</strong></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pc = <span class="keyword">new</span> <span class="title class_">RTCPeerConnection</span>([configuration]);</span><br></pre></td></tr></table></figure>
-
-<p>configuration可选</p>
-<ul>
-<li><p><code>bundlePolicy</code>：一般用<code>max­bundle</code>。</p>
-<ul>
-<li><code>banlanced</code>：音频与视频轨使用各自的传输通道。</li>
-<li><code>max­compat</code>：每个轨使用自己的传输通道。</li>
-<li><code>max­bundle</code>：都绑定到同一个传输通道。</li>
-</ul>
-</li>
-<li><p><code>iceTransportPolicy</code>：指定ICE的传输策略，一般用<code>all</code>。</p>
-<ul>
-<li><code>relay</code>：只使用中继候选者。</li>
-<li><code>all</code>：可以使用任何类型的候选者。</li>
-</ul>
-</li>
-<li><p><code>iceServers</code>：其由RTCIceServer组成，每个RTCIceServer都是一个ICE代理的服务器。</p>
-<ul>
-<li><code>credential </code>：凭据，只有TURN服务使用。</li>
-<li><code>credentialType</code>：凭据类型，可以password或oauth。</li>
-<li><code>urls </code>：用于连接服中的ur数组。</li>
-<li><code>username</code>：用户名，只有TURN服务使用。</li>
-</ul>
-</li>
-<li><p><code>rtcpMuxPolicy</code>：rtcp的复用策略，该选项在收集ICE候选者时使用，一般用<code>require</code>。</p>
-<ul>
-<li><code>negotiate</code>：收集RTCP与RTP复用的ICE候选者，如果RTCP能复用就与RTP复用，如果不能复用，就将他们单独使用。</li>
-<li><code>require</code>：只能收集RTCP与RTP复用的ICE候选者，如果RTCP不能复用，则失败。</li>
-</ul>
-</li>
-</ul>
-<p><strong>事件处理回调</strong></p>
-<ul>
-<li><code>onicecandidate</code>：收到候选者时触发的事件。</li>
-<li><code>ontrack</code>：获取远端流。</li>
-<li><code>onconnectionstatechange</code>：PeerConnection的连接状态。</li>
-<li><code>oniceconnectionstatechange</code>：ICE连接事件。</li>
-</ul>
-<h2 id="媒体协商"><a href="#媒体协商" class="headerlink" title="媒体协商"></a>媒体协商</h2><img src="/2023/10/14/WebRTC%E4%B8%80%E5%AF%B9%E4%B8%80%E9%80%9A%E8%AF%9D/媒体协商.png" alt="媒体协商" style="zoom:70%;">
-
-<p><strong>createOffer</strong></p>
-<p>生成一个 offer，它是一个带有特定的配置信息寻找远端匹配机器（peer）的请求。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">aPromise = myPeerConnection.<span class="title function_">createOffer</span>([options]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//[options] 参数：</span></span><br><span class="line"><span class="keyword">var</span> options = &#123;</span><br><span class="line">    <span class="attr">offerToReceiveAudio</span>: <span class="literal">true</span>, <span class="comment">// 告诉另一端，你是否想接收音频，默认true </span></span><br><span class="line">    <span class="attr">offerToReceiveVideo</span>: <span class="literal">true</span>, <span class="comment">// 告诉另一端，你是否想接收视频，默认true </span></span><br><span class="line">    <span class="attr">iceRestart</span>: <span class="literal">false</span>, <span class="comment">// 是否在活跃状态重启ICE网络协商 </span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><strong>createAnswer</strong></p>
-<p>在协调一条连接中的两端 offer&#x2F;answers 时，根据从远端发来的 offer 生成一个 answer。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aPromise = <span class="title class_">RTCPeerConnection</span>.<span class="title function_">createAnswer</span>([options]); <span class="comment">//目前createAnswer的options是 无效的。</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>setLocalDescription</strong></p>
-<p>改变与连接相关的本地描述。这个描述定义了连接的属性，例如：连接的编码方式。连接会受到它的改变的影响，而且连接必须能同时支持新的以及旧的描述。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aPromise = <span class="title class_">RTCPeerConnection</span>.<span class="title function_">setLocalDescription</span>(sessionDescription);</span><br></pre></td></tr></table></figure>
-
-<p><strong>setRemoteDescription</strong></p>
-<p>改变与连接相关的远端描述。这个描述定义了连接的属性，例如：连接的编码方式。连接会受到它的改变的影响，而且连接必须能同时支持新的以及旧的描述。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aPromise = <span class="title class_">RTCPeerConnection</span>.<span class="title function_">setRemoteDescription</span>(sessionDescription);</span><br></pre></td></tr></table></figure>
-
-<h2 id="添加媒体流"><a href="#添加媒体流" class="headerlink" title="添加媒体流"></a>添加媒体流</h2><p><strong>addTrack</strong></p>
-<p>将一个新的媒体音轨添加到一组音轨中，这些音轨将被传输给另一个对等点。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">rtpSender = rtcPeerConnection.<span class="title function_">addTrack</span>(track, stream...);</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">参数：</span></span><br><span class="line"><span class="comment">track：一个MediaStreamTrack对象，表示要添加到对等连接的媒体轨道。</span></span><br><span class="line"><span class="comment">stream...：可选一个或多个本地的MediaStream对象，该轨迹应添加到其中。</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="网络协商"><a href="#网络协商" class="headerlink" title="网络协商"></a>网络协商</h2><p>添加一个 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Glossary/ICE">ICE</a> 代理。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aPromise = pc.<span class="title function_">addIceCandidate</span>(candidate);</span><br></pre></td></tr></table></figure>
-
-<p>candidate有Web端（和Android不同）相关属性：</p>
-<table>
-<thead>
-<tr>
-<th>属性</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>candidate</td>
-<td>候选者描述信息</td>
-</tr>
-<tr>
-<td>sdpMid</td>
-<td>与候选者相关的媒体流的识别标签</td>
-</tr>
-<tr>
-<td>sdpMLineIndex</td>
-<td>在SDP中 m&#x3D;的索引值</td>
-</tr>
-<tr>
-<td>usernameFragment</td>
-<td>包括了远端的唯一标识</td>
-</tr>
-</tbody></table>
-<h1 id="Coturn服务"><a href="#Coturn服务" class="headerlink" title="Coturn服务"></a>Coturn服务</h1><p>coturn穿透和转发服务器，集成了stun+turn协议。 </p>
-<p><strong>编译安装</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/coturn/coturn</span><br><span class="line">cd coturn</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-
-<p><strong>是否安装成功</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">turnserver ‐L 0.0.0.0 ‐a ‐u test:123456 ‐v ‐f ‐r nort.gov</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看相应的端口号3478是否存在进程</span></span><br><span class="line">sudo lsof ‐i:3478</span><br></pre></td></tr></table></figure>
-
-<p><strong>测试地址</strong></p>
-<p>测试网址：<a target="_blank" rel="noopener" href="https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/">https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/</a></p>
-<h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><h2 id="局域网测试"><a href="#局域网测试" class="headerlink" title="局域网测试"></a>局域网测试</h2><p><strong>启动conturn</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">turnserver ‐L 0.0.0.0 ‐a ‐u test:123456 ‐v ‐f ‐r nort.gov</span><br></pre></td></tr></table></figure>
-
-<p><strong>配置RTCPeerConnection参数</strong></p>
-<p><code>RTCPeerConnection</code>时传入ICE server的参数，以便当在公网环境下可以进行正常通话。</p>
-<p>设置configuration，先设置为relay中继模式，只有relay中继模式可用的时候，才能部署到公网去（部署到公网后也先测试relay）。 </p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> defaultConfiguration = &#123;</span><br><span class="line"><span class="attr">bundlePolicy</span>: <span class="string">&quot;max-bundle&quot;</span>,</span><br><span class="line"><span class="attr">rtcpMuxPolicy</span>: <span class="string">&quot;require&quot;</span>,</span><br><span class="line"><span class="attr">iceTransportPolicy</span>: <span class="string">&quot;relay&quot;</span>, <span class="comment">//relay 或者 all，测试用relay</span></span><br><span class="line"><span class="comment">// 修改ice数组测试效果，需要进行封装</span></span><br><span class="line"><span class="attr">iceServers</span>: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">urls</span>: [</span><br><span class="line">      <span class="string">&quot;turn:192.168.2.101:3478?transport=udp&quot;</span>,</span><br><span class="line">      <span class="string">&quot;turn:192.168.2.101:3478?transport=tcp&quot;</span>, <span class="comment">// 可以插入多个进行备选</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">username</span>: <span class="string">&quot;test&quot;</span>,</span><br><span class="line">    <span class="attr">credential</span>: <span class="string">&quot;123456&quot;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">urls</span>: [<span class="string">&quot;stun:192.168.2.101:3478&quot;</span>],</span><br><span class="line">  &#125;,</span><br><span class="line">],</span><br><span class="line">&#125;;</span><br><span class="line">pc = <span class="keyword">new</span> <span class="title class_">RTCPeerConnection</span>(defaultConfiguration</span><br></pre></td></tr></table></figure>
-
-<p><strong>局域网测试</strong></p>
-<p>启动通话后，如果使用relay模式断开conturn后会发现Web是无法通信的，但是使用all模式断开conturn后依然可以通信。</p>
-<h2 id="公网部署"><a href="#公网部署" class="headerlink" title="公网部署"></a>公网部署</h2><p>注意公网防火墙问题，比如 coturn涉及到的3478端口是否开放。在局域网上搭建，部署公网只需要替换公网IP即可。</p>
-<p><strong>nginx安装</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">wget http://nginx.org/download/nginx‐1.15.8.tar.gz</span><br><span class="line">tar xvzf nginx‐1.15.8.tar.gz</span><br><span class="line">cd nginx‐1.15.8/</span><br><span class="line"></span><br><span class="line">./configure ‐‐with‐http_ssl_module</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br><span class="line"></span><br><span class="line">启动：sudo /usr/local/nginx/sbin/nginx </span><br><span class="line">停止：sudo /usr/local/nginx/sbin/nginx -s stop</span><br><span class="line">重新加载配置文件：sudo /usr/local/nginx/sbin/nginx -s reload</span><br></pre></td></tr></table></figure>
-
-<p><strong>产生证书</strong> </p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir ‐p ~/cert</span><br><span class="line">cd ~/cert</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">CA私钥</span></span><br><span class="line">openssl genrsa -out key.pem 2048</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">自签名证书</span></span><br><span class="line">openssl req -new -x509 -key key.pem -out cert.pem -days 1095</span><br></pre></td></tr></table></figure>
-
-<p><strong>配置web服务器</strong></p>
-<p>添加<code>/usr/local/nginx/conf/conf.d/webrtc-https.conf</code></p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">443</span> ssl;</span><br><span class="line">    <span class="comment"># 配置自己的证书</span></span><br><span class="line">    <span class="attribute">ssl_certificate</span> /root/cert/cert.pem;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span> /root/cert/key.pem;</span><br><span class="line">    <span class="attribute">charset</span> utf‐<span class="number">8</span>;</span><br><span class="line">    <span class="comment"># ip地址或者域名</span></span><br><span class="line">    <span class="attribute">server_name</span> <span class="number">192.168.2.101</span>;</span><br><span class="line">    <span class="section">location</span> / &#123;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access‐Control‐Allow‐Origin&#x27;</span> <span class="string">&#x27;*&#x27;</span>;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access‐Control‐Allow‐Credentials&#x27;</span> <span class="string">&#x27;true&#x27;</span>;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access‐Control‐Allow‐Methods&#x27;</span> <span class="string">&#x27;*&#x27;</span>;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access‐Control‐Allow‐Headers&#x27;</span> <span class="string">&#x27;Origin, X‐Requested‐With, Content‐Type, Accept&#x27;</span>;</span><br><span class="line">        <span class="comment"># web页面所在目录</span></span><br><span class="line">        <span class="attribute">root</span> /root/webrtc/client;</span><br><span class="line">        <span class="attribute">index</span> index.php index.html index.htm;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>编辑<code>nginx.conf</code>文件，在末尾<code>&#125;</code>之前添加包含文件。</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">    <span class="attribute">include</span> /usr/local/nginx/conf/conf.d/<span class="regexp">*.conf</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果遇到权限问题，编辑<code>nginx.conf</code>文件，加入。</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">user</span> root owner;</span><br></pre></td></tr></table></figure>
-
-<p>页面打开<a target="_blank" rel="noopener" href="https://192.168.2.101测试./">https://192.168.2.101测试。</a></p>
-<p><strong>配置websocket代理</strong></p>
-<p>此时Web不能直接访问信令服务器，https不能访问ws，本身是安全的访问，不能降级做不安全的访问。</p>
-<p>使用Nginx服务器代理访问信令服务器。</p>
-<p>完整配置文件：<code>/usr/local/nginx/conf/conf.d/webrtc-websocket-proxy.conf</code></p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">map</span> <span class="variable">$http_upgrade</span> <span class="variable">$connection_upgrade</span> &#123;</span><br><span class="line">    <span class="attribute">default</span> upgrade;</span><br><span class="line">    &#x27;&#x27; close;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">upstream</span> websocket &#123;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">192.168.2.101:8099</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8098</span> ssl;</span><br><span class="line">    <span class="comment">#ssl on;</span></span><br><span class="line">    <span class="attribute">ssl_certificate</span> /root/cert/cert.pem;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span> /root/cert/key.pem;</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">server_name</span> <span class="number">192.168.2.101</span>;</span><br><span class="line">    <span class="section">location</span> /ws &#123;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://websocket;</span><br><span class="line">        <span class="attribute">proxy_http_version</span> <span class="number">1</span>.<span class="number">1</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Upgrade <span class="variable">$http_upgrade</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Connection <span class="variable">$connection_upgrade</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>websocket超时断开</strong></p>
-<p>在通话时，出现60秒后客户端自动断开的问题，是因为经过nginx代理时，如果websocket长时间没有收发消息则该websocket将会被断开。我们这里可以修改收发消息的时间间隔。</p>
-<ul>
-<li><strong>proxy_connect_timeout：</strong>设置代理服务器与后端服务器建立连接的超时时间。</li>
-<li><strong>proxy_read_timeout：</strong>设置代理服务器从后端服务器读取数据的超时时间。</li>
-<li><strong>proxy_send_timeout：</strong>设置代理服务器向后端服务器发送数据的超时时间。</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">map</span> <span class="variable">$http_upgrade</span> <span class="variable">$connection_upgrade</span> &#123;</span><br><span class="line">    <span class="attribute">default</span> upgrade;</span><br><span class="line">    &#x27;&#x27; close;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">upstream</span> websocket &#123;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">192.168.2.101:8099</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">8098</span> ssl;</span><br><span class="line">    <span class="comment">#ssl on;</span></span><br><span class="line">    <span class="attribute">ssl_certificate</span> /root/cert/cert.pem;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span> /root/cert/key.pem;</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">server_name</span> <span class="number">192.168.2.101</span>;</span><br><span class="line">    <span class="section">location</span> /ws &#123;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://websocket;</span><br><span class="line">        <span class="attribute">proxy_http_version</span> <span class="number">1</span>.<span class="number">1</span>;</span><br><span class="line">        <span class="attribute">proxy_connect_timeout</span> <span class="number">4s</span>;</span><br><span class="line">        <span class="attribute">proxy_read_timeout</span> <span class="number">6000s</span>;</span><br><span class="line">        <span class="attribute">proxy_send_timeout</span> <span class="number">6000s</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Upgrade <span class="variable">$http_upgrade</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span> Connection <span class="variable">$connection_upgrade</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><pre class="mermaid">graph LR
-    F1[客户端]--https port=443-->F2[Web服务]
-    F2--wss port=8098 path=/ws-->F3[nginx代理信令服务]
-    F3--http port=8099-->F4[信令服务]
-    F1--ICE port=3478-->F5[Coturn服务]</pre>
 
       
     </div>
