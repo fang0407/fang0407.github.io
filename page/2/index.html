@@ -909,7 +909,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-09-21 09:22:43" itemprop="dateModified" datetime="2024-09-21T09:22:43+08:00">2024-09-21</time>
+      <time title="Modified: 2024-09-21 09:39:44" itemprop="dateModified" datetime="2024-09-21T09:39:44+08:00">2024-09-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -936,6 +936,8 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 执行</span><br><span class="line">docker pull ubuntu:20.04</span><br><span class="line"></span><br><span class="line"># 报错</span><br><span class="line">Error response from daemon: missing signature key</span><br><span class="line"></span><br><span class="line"># 解决，重装docker</span><br><span class="line">systemctl stop docker</span><br><span class="line">apt-get remove docker docker-engine docker.io containerd runc</span><br><span class="line">apt-get update</span><br><span class="line">apt-get install docker.io</span><br><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
 
 <h1 id="deb包下载"><a href="#deb包下载" class="headerlink" title="deb包下载"></a>deb包下载</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-rdepends 包名 | grep -v &quot;^ &quot; | sed &#x27;s/debconf-2.0/debconf/g&#x27; | xargs -i  apt-get download &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Git报错"><a href="#Git报错" class="headerlink" title="Git报错"></a>Git报错</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 执行 git push origin main</span><br><span class="line"></span><br><span class="line"># 报错</span><br><span class="line">Total 413 (delta 171), reused 0 (delta 0), pack-reused 0</span><br><span class="line">error: RPC failed; HTTP 400 curl 22 The requested URL returned error: 400</span><br><span class="line">send-pack: unexpected disconnect while reading sideband packet</span><br><span class="line">fatal: the remote end hung up unexpectedly</span><br><span class="line">Everything up-to-date</span><br><span class="line"></span><br><span class="line"># 解决</span><br><span class="line">When pushing a large amount of data (initial push of a big repository, change with very big file(s)) may require a higher http.postBuffer setting on your git client (not the server). Increase the Git buffer size to the largest individual file size of your repo:</span><br><span class="line">git config --global http.postBuffer 524288000</span><br></pre></td></tr></table></figure>
 
 
       
@@ -5129,6 +5131,24 @@
     </span>
     <span class="author" itemprop="copyrightHolder">Fang</span>
   </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>
 
@@ -5160,6 +5180,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 
