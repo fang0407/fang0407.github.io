@@ -120,7 +120,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-count">90</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -143,6 +143,131 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/10/01/%E7%BC%96%E8%AF%91%E7%BA%AA%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/01/%E7%BC%96%E8%AF%91%E7%BA%AA%E5%BD%95/" class="post-title-link" itemprop="url">编译纪录</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-10-01 12:05:58 / Modified: 12:07:08" itemprop="dateCreated datePublished" datetime="2024-10-01T12:05:58+08:00">2024-10-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%85%B6%E4%BB%96/" itemprop="url" rel="index"><span itemprop="name">其他</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="x264"><a href="#x264" class="headerlink" title="x264"></a>x264</h1><p><strong>通用流程，也可以编译其它的库</strong></p>
+<ul>
+<li><p>msys2 是一种在 windows 平台模拟 Linux 运行环境的技术，你可以在该环境运行 Linux 命令来编译 windows 平台的库</p>
+</li>
+<li><p>下载 msys2，下载地址: <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/">https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/</a></p>
+</li>
+<li><p>下载完毕之后，正常安装即可</p>
+</li>
+<li><p>同步软件包数据，<code>pacman -Sy</code></p>
+<ul>
+<li>如果同步软件包数据比较慢，可使用清华的镜像，具体配置方法可参考:</li>
+<li><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/msys2/">https://mirrors.tuna.tsinghua.edu.cn/help/msys2/</a></li>
+</ul>
+</li>
+<li><p>安装 MinGW-x64和MinGW-x86 工具链</p>
+<ul>
+<li><code>pacman -S mingw-w64-i686-toolchain</code></li>
+<li><code>pacman -S mingw-w64-x86_64-toolchain</code></li>
+<li>也可以单独安装 MinGW，然后拷贝到 msys2 下的 mingw64 和 mingw32 目录</li>
+</ul>
+</li>
+<li><p>安装必备的工具</p>
+<ul>
+<li><code>pacman -S nasm</code> # 汇编工具</li>
+<li><code>pacman -S yasm</code> # 汇编工具</li>
+<li><code>pacman -S make</code></li>
+<li><code>pacman -S cmake</code></li>
+<li><code>pacman -S diffutils</code> # 比较工具，ffmpeg configure 生成 makefile 时用到</li>
+<li><code>pacman -S pkg-config</code> # 库配置工具，方便引用依赖库</li>
+</ul>
+</li>
+<li><p>打开 <code>C:\msys64\msys2_shell.cmd</code>，按照下图进行编辑 （可以保证继承父窗口的环境变量）</p>
+<ul>
+<li>启动 x64 Native Tools Command Prompt for VS2019</li>
+<li>进入 msys2 安装目录，执行 <code>msys2_shell.cmd -mingw64</code></li>
+<li>测试输入 <code>cl</code> 命令，是否继承了 MSVC 的编译环境</li>
+</ul>
+</li>
+</ul>
+<img src="/2024/10/01/%E7%BC%96%E8%AF%91%E7%BA%AA%E5%BD%95/msys2继承.png" alt="msys2继承" style="zoom:50%;">
+
+<p><strong>编译x264库</strong></p>
+<ul>
+<li>获取源代码，通过命令获取：<code>git clone https://code.videolan.org/videolan/x264.git</code></li>
+<li>编译 Debug 版本：<code>CC=cl ./configure --prefix=/d/third_party/x264_lib --enable-shared --enable-static --enable-debug &amp;&amp; make &amp;&amp; make install</code></li>
+<li>编译 Release 版本：<code>CC=cl ./configure --prefix=/d/third_party/x264_lib --enable-shared --enable-static &amp;&amp; make &amp;&amp; make install</code></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -585,7 +710,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-08-31 16:07:45" itemprop="dateModified" datetime="2024-08-31T16:07:45+08:00">2024-08-31</time>
+      <time title="Modified: 2024-09-29 14:17:51" itemprop="dateModified" datetime="2024-09-29T14:17:51+08:00">2024-09-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -607,28 +732,17 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p><strong>mac m1 平台编译</strong></p>
-<ul>
-<li>编译环境准备</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mkdir WebRTC</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取depot_tools</span></span><br><span class="line">git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git depot_tools</span><br><span class="line">vim ~/.zshrc</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加如下</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">depot_tools目录添加到系统PATH目录</span></span><br><span class="line">export PATH=$PATH:/Users/mac/WorkSpace/WebRTC/depot_tools</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">代理</span></span><br><span class="line">export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使生效</span></span><br><span class="line">source ~/.zshrc</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">需要下载和更新一些工具，需要一定的时间</span></span><br><span class="line">gclient</span><br></pre></td></tr></table></figure>
+          <h1 id="编译环境"><a href="#编译环境" class="headerlink" title="编译环境"></a>编译环境</h1><h2 id="mac"><a href="#mac" class="headerlink" title="mac"></a>mac</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">mkdir WebRTC</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">git代理，配置成对应的代理</span></span><br><span class="line">git config --global http.proxy http://127.0.0.1:7890</span><br><span class="line">git config --global https.proxy http://127.0.0.1:7890</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取depot_tools</span></span><br><span class="line">git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git depot_tools</span><br><span class="line">vim ~/.zshrc</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加如下</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">depot_tools目录添加到系统PATH目录</span></span><br><span class="line">export PATH=$PATH:/Users/mac/WorkSpace/WebRTC/depot_tools</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使生效</span></span><br><span class="line">source ~/.zshrc</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">代理，配置成对应的代理</span></span><br><span class="line">export http_proxy=http://127.0.0.1:7890 </span><br><span class="line">export https_proxy=http://127.0.0.1:7890</span><br><span class="line">export all_proxy=socks5://127.0.0.1:7890</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">需要下载和更新一些工具，需要一定的时间</span></span><br><span class="line">gclient</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>获取 WebRTC 源码</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取WebRTC源码</span></span><br><span class="line">cd WebRTC</span><br><span class="line">mkdir webrtc</span><br><span class="line">cd webrtc</span><br><span class="line">fetch --nohooks webrtc</span><br><span class="line">gclient sync # 此步骤，可能会因为网络等各种原因多次失败，重复执行即可</span><br></pre></td></tr></table></figure>
+<h2 id="win"><a href="#win" class="headerlink" title="win"></a>win</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">需要安装 vs2022 以及 win10sdk</span><br><span class="line">win10sdk下载地址：https://developer.microsoft.com/zh-cn/windows/downloads/sdk-archive/</span><br><span class="line">打开 x64 Native Tools Command Prompt for VS 2022 工具</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">git代理，配置成对应的代理</span></span><br><span class="line">git config --global http.proxy http://127.0.0.1:7890</span><br><span class="line">git config --global https.proxy http://127.0.0.1:7890</span><br><span class="line"></span><br><span class="line">mkdir WebRTC</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取depot_tools</span></span><br><span class="line">git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git depot_tools</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加环境变量</span></span><br><span class="line">depot_tools目录添加到系统PATH目录</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">首次执行 gclient <span class="built_in">sync</span> 将更新 depot_tools</span></span><br><span class="line">添加环境变量DEPOT_TOOLS_UPDATE=1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">这个用于告诉 depot_tools 使用本地的 vs 版本，否则 depot_tools 使用 webrtc 内部的版本)</span></span><br><span class="line">添加系统变量DEPOT_TOOLS_WIN_TOOLCHAIN=0</span><br><span class="line"></span><br><span class="line">添加环境变量后，重新打开命令行工具</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">代理，配置成对应的代理</span></span><br><span class="line">set http_proxy=http://127.0.0.1:7890</span><br><span class="line">set https_proxy=http://127.0.0.1:7890</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">需要下载和更新一些工具，需要一定的时间</span></span><br><span class="line">gclient</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>切换分支</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看所有的WebRTC分支:https://webrtc.googlesource.com/src/+/refs/heads/main/docs/release-notes.md</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">列出所有的分支</span></span><br><span class="line">git branch -r</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">切换到指定的分支(以M128为例子)</span></span><br><span class="line">git checkout -b M128 refs/remotes/branch-heads/6613 </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">更新依赖库</span></span><br><span class="line">gclient sync</span><br></pre></td></tr></table></figure>
+<h1 id="获取源码"><a href="#获取源码" class="headerlink" title="获取源码"></a>获取源码</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取WebRTC源码</span></span><br><span class="line">cd WebRTC</span><br><span class="line">mkdir webrtc</span><br><span class="line">cd webrtc</span><br><span class="line">fetch --nohooks webrtc</span><br><span class="line">gclient sync # 此步骤，可能会因为网络等各种原因多次失败，重复执行即可</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li>编译</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"># 构建</span><br><span class="line">cd webrtc/src</span><br><span class="line">gn gen out/Default</span><br><span class="line"></span><br><span class="line">vim out/Default/args.gn</span><br><span class="line"># Set build arguments here. See `gn help buildargs`.</span><br><span class="line"></span><br><span class="line"># 编译平台</span><br><span class="line">target_os=&quot;mac&quot;</span><br><span class="line"># 编译成arm64位版本</span><br><span class="line">target_cpu = &quot;arm64&quot;</span><br><span class="line"># 编译成debug版本</span><br><span class="line">is_debug = true</span><br><span class="line"># 编译时启用运行时类型信息功能，如果时false，使用libwebrtc.a产生连接错误如:typeinfo for webrtc::VideoTrackSource</span><br><span class="line">use_rtti=true</span><br><span class="line"># 导出符号</span><br><span class="line">rtc_enable_symbol_export=true</span><br><span class="line"></span><br><span class="line"># 不编译单元测试</span><br><span class="line">rtc_include_tests = false</span><br><span class="line"># 不将warning当成errros</span><br><span class="line">treat_warnings_as_errors = false</span><br><span class="line"># C++库默认使用了webrtc内部的C++库，与外部C++库abi不兼容</span><br><span class="line"># 由于符号不同可能会链接失败，侥幸编译通过，也会在运行时由于内存布局不一致，引发崩溃</span><br><span class="line">use_custom_libcxx=false</span><br><span class="line"></span><br><span class="line"># 不使用clang编译器，如果使用clang编译，集成到一些UI框架，可能无法使用</span><br><span class="line"># is_clang = false</span><br><span class="line"></span><br><span class="line"># 使用内置的h264，默认false</span><br><span class="line"># 关闭掉clang之后，如果启用内置的h264编解码，则无法编译通过</span><br><span class="line"># rtc_use_h264 = true</span><br><span class="line"></span><br><span class="line"># 编译</span><br><span class="line">ninja -C out/Default</span><br><span class="line"></span><br><span class="line"># 清理</span><br><span class="line">gn clean out/Default</span><br></pre></td></tr></table></figure>
+<h1 id="切换分支"><a href="#切换分支" class="headerlink" title="切换分支"></a>切换分支</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看所有的WebRTC分支:https://webrtc.googlesource.com/src/+/refs/heads/main/docs/release-notes.md</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">列出所有的分支</span></span><br><span class="line">git branch -r</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">切换到指定的分支(以M128为例子)</span></span><br><span class="line">git checkout -b M128 refs/remotes/branch-heads/6613 </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">更新依赖库</span></span><br><span class="line">gclient sync</span><br></pre></td></tr></table></figure>
 
-<ul>
+<h1 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"># 构建</span><br><span class="line">cd webrtc/src</span><br><span class="line">gn gen out/Default</span><br><span class="line"></span><br><span class="line">vim out/Default/args.gn</span><br><span class="line"># Set build arguments here. See `gn help buildargs`.</span><br><span class="line"></span><br><span class="line"># 编译平台</span><br><span class="line">target_os=&quot;mac&quot;</span><br><span class="line"># target_os=&quot;win&quot;</span><br><span class="line"># 编译成arm64位版本</span><br><span class="line">target_cpu = &quot;arm64&quot;</span><br><span class="line"># target_cpu = &quot;amd64&quot;</span><br><span class="line"># 编译成debug版本</span><br><span class="line">is_debug = true</span><br><span class="line"># 编译时启用运行时类型信息功能，如果时false，使用libwebrtc.a产生连接错误如:typeinfo for webrtc::VideoTrackSource</span><br><span class="line">use_rtti=true</span><br><span class="line"># 导出符号</span><br><span class="line">rtc_enable_symbol_export=true</span><br><span class="line"></span><br><span class="line"># 不编译单元测试</span><br><span class="line">rtc_include_tests = false</span><br><span class="line"># 不将warning当成errros</span><br><span class="line">treat_warnings_as_errors = false</span><br><span class="line"># C++库默认使用了webrtc内部的C++库，与外部C++库abi不兼容</span><br><span class="line"># 由于符号不同可能会链接失败，侥幸编译通过，也会在运行时由于内存布局不一致，引发崩溃</span><br><span class="line">use_custom_libcxx=false</span><br><span class="line"></span><br><span class="line"># 不使用clang编译器，如果使用clang编译，集成到一些UI框架，可能无法使用</span><br><span class="line"># is_clang = false</span><br><span class="line"></span><br><span class="line"># 使用内置的h264，默认false</span><br><span class="line"># 关闭掉clang之后，如果启用内置的h264编解码，则无法编译通过</span><br><span class="line"># rtc_use_h264 = true</span><br><span class="line"></span><br><span class="line"># 编译</span><br><span class="line">ninja -C out/Default</span><br><span class="line"></span><br><span class="line"># 清理</span><br><span class="line">gn clean out/Default</span><br></pre></td></tr></table></figure>
+
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><ul>
 <li>补充，M128 版本使用如下报错</li>
 </ul>
 <p>使用 <code>webrtc::CreateBuiltinVideoEncoderFactory()</code> 和 <code>webrtc::CreateBuiltinVideoDecoderFactory()</code> 报错 <code>Undefined symbols for architecture arm64:webrtc::CreateBuiltinVideoDecoderFactory</code> 未找到该符号，需要手动添加编译。</p>
@@ -1271,539 +1385,6 @@
 </ul>
 </li>
 <li><code>RemovePacketsUntilKeyFrame()</code>：清理重传列表，直到遇到关键帧。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/04/27/RTC%E6%9C%8D%E5%8A%A1%E7%AB%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/04/27/RTC%E6%9C%8D%E5%8A%A1%E7%AB%AF/" class="post-title-link" itemprop="url">RTC服务端</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2024-04-27 18:34:04" itemprop="dateCreated datePublished" datetime="2024-04-27T18:34:04+08:00">2024-04-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-09-12 19:13:19" itemprop="dateModified" datetime="2024-09-12T19:13:19+08:00">2024-09-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="RTC处理框架"><a href="#RTC处理框架" class="headerlink" title="RTC处理框架"></a>RTC处理框架</h1><p><strong>1v1模式</strong></p>
-<ul>
-<li>RTP 和 RTCP 包可以通过服务端透传转发</li>
-<li>如果把服务端看成一个黑盒，相当于两者是进行 P2P 通信</li>
-</ul>
-<p><strong>1v多模式</strong></p>
-<pre class="mermaid">graph LR
-    subgraph 推流端
-    PeerConnectionA
-    end
-    
-    subgraph 拉流端
-    PeerConnectionB
-    PeerConnectionC
-    end
-    
-    subgraph 服务端
-    PCA1
-    PCB1
-    PCC1
-    end
-    
-    PeerConnectionA---PCA1
-    PCA1---PCB1
-    PCA1---PCC1
-    PCB1---PeerConnectionB
-    PCC1---PeerConnectionC</pre>
-
-<ul>
-<li>由于不同的拉流端网络情况不同、加入拉流的时机不同，所以 RTCP 包不能简单的在推流端和拉流端之间进行透传。</li>
-<li>客户端是推流端，此时服务器模拟的则是拉流端<ul>
-<li>服务端需要处理 SR 包</li>
-<li>服务端需要生成 RR 包</li>
-<li>服务端需要根据丢包情况，发送 NACK 包</li>
-<li>服务端需要按照一定的机制，发送 PLI 包</li>
-<li>如果需要在接收端估计 RTT，还需要发送 XR 包</li>
-<li>配合 GCC 拥塞控制，还需要响应 Transport Feedback 包</li>
-</ul>
-</li>
-<li>客户端是拉流端，此时服务端模拟的则是推流端<ul>
-<li>服务端需要发送 SR 包</li>
-<li>服务端需要处理 RR 包</li>
-<li>服务端需要响应 NACK 包</li>
-<li>服务端需要响应 XR 包</li>
-</ul>
-</li>
-</ul>
-<h1 id="多路转发架构"><a href="#多路转发架构" class="headerlink" title="多路转发架构"></a>多路转发架构</h1><p><strong>RtpRtcpModuleObserver</strong>：RTP、RTCP 数据包观察者，由 <code>PeerConnection</code> 重写实现。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RtpRtcpModuleObserver</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">RtpRtcpModuleObserver</span>() &#123;&#125;</span><br><span class="line">    <span class="comment">// 收到的RTP、RTCP数据包</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">OnRtpPacket</span><span class="params">(webrtc::MediaType media_type,</span></span></span><br><span class="line"><span class="params"><span class="function">                             <span class="type">const</span> webrtc::RtpPacketReceived &amp;packet)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 本地生成的RTCP数据包</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">OnLocalRtcpPacket</span><span class="params">(webrtc::MediaType media_type,</span></span></span><br><span class="line"><span class="params"><span class="function">                                   <span class="type">const</span> <span class="type">uint8_t</span> *data, <span class="type">size_t</span> len)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 生成完整的一帧</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">OnFrame</span><span class="params">(std::unique_ptr&lt;RtpFrameObject&gt; frame)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 收到客户端推流的SR包，获取时间戳信息</span></span><br><span class="line">    <span class="comment">// 用于设置给客户端拉流的SR包</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">OnSrInfo</span><span class="params">(webrtc::MediaType media_type, <span class="type">uint32_t</span> rtp_timestamp,</span></span></span><br><span class="line"><span class="params"><span class="function">                          webrtc::NtpTime ntp)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 客户端拉流反馈的NACK，通知上层丢失的包序列号</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">OnNackReceived</span><span class="params">(webrtc::MediaType media_type,</span></span></span><br><span class="line"><span class="params"><span class="function">                                <span class="type">const</span> std::vector&lt;<span class="type">uint16_t</span>&gt; &amp;nack_list)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 接受端计算RTT</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">OnRttUpdate</span><span class="params">(<span class="type">int64_t</span> rtt_ms)</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><strong>RtpRtcpImpl</strong>：RTP 和 RTCP 包的总入口类。</p>
-<ul>
-<li><code>RTCPSender rtcp_sender_</code>：RTCP 创建及发送处理类。</li>
-<li><code>RTCPReceiver rtcp_receiver_</code>：RTCP 接受处理类。</li>
-<li><code>RtpSender rtp_sender_</code>：RTP 包发送类，服务端作为推流端。</li>
-<li><code>TimerWatcher* rtcp_report_timer_</code>：定时发送 RTCP 报告。</li>
-<li><code>TimerWatcher *request_pli_timer_</code>：定时发送 PLI 包。</li>
-<li><code>SetRTCPStatus()</code>：启动定时器，并调用 <code>RTCPSender::SetRTCPStatus()</code> 设置 RTCP 数据包发送模式。</li>
-<li><code>SetSendingStatus()</code>：调用 <code>RTCPSender::SetSendingStatus()</code>。</li>
-<li><code>TimeToSendRTCP()</code>：调用  <code>RTCPSender::SendRTCP()</code> 定时发送 RTCP 报告。</li>
-<li><code>IncomingRtcpPacket()</code>：调用  <code>RTCPReceive::IncomingRtcpPacket()</code>。</li>
-<li><code>GetFeedbackState()</code>：获取 SR 包时间戳等如下相关信息。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">FeedbackState</span> &#123;</span><br><span class="line">  <span class="comment">// 记录最近一次收到SR包，接受端的NTP时间</span></span><br><span class="line">  <span class="type">uint32_t</span> last_rr_ntp_secs = <span class="number">0</span>;</span><br><span class="line">  <span class="type">uint32_t</span> last_rr_ntp_frac = <span class="number">0</span>;</span><br><span class="line">  <span class="comment">// 从最近一次SR包提取的NTP时间（发送端的NTP时间） 压缩后的32位</span></span><br><span class="line">  <span class="type">uint32_t</span> remote_sr = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// RTP包发送个数</span></span><br><span class="line">  <span class="type">uint32_t</span> packet_sent = <span class="number">0</span>;</span><br><span class="line">  <span class="comment">// RTP包发送字节数</span></span><br><span class="line">  <span class="type">size_t</span> media_bytes_sent = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>SendNack()</code>：调用  <code>RTCPSender::SendRTCP()</code> 重传丢失的序列号。</li>
-<li><code>SendRTCP()</code>：根据 RTCP 发送类型，发送报告。</li>
-<li><code>UpdateRtpStat()</code>：调用 <code>RtpSender::UpdateRtpStat()</code>。</li>
-<li><code>SetSrInfo()</code>：调用 <code>RTCPSender::SetSrInfo()</code>。</li>
-</ul>
-<p><strong>RTCPSender</strong>：RTCP 创建及发送处理类。</p>
-<ul>
-<li><code>std::map&lt;uint32_t, BuilderFunc&gt; builders_</code>：RTCP 类型对应的构建函数指针。</li>
-<li><code>ReceiveStat *receive_stat_</code>：RTP 数据统计类，用于构建 RR 包。</li>
-<li><code>SendRTCP()</code>：构建 RTCP 数据包，调用  <code>PacketSender::Send()</code> 发送 RTCP 数据包，使用 <code>RtpRtcpModuleObserver::OnLocalRtcpPacket()</code> 通知 <code>PeerConnection</code> 发送 RTCP 包。</li>
-<li><code>SetRtcpStatus()</code>：设置 RTCP 数据包发送模式。</li>
-<li><code>SetSendingStatus()</code>：设置是否发送，用于指示 RTCP 报告发送 RR 包还是 SR 包。</li>
-<li><code>SetSrInfo()</code>：设置最新 SR 包 rtp_timestamp 和 ntp 时间，用于转发给客户端拉流端。</li>
-<li><code>ComputeCompoundRTCPPacket()</code>：生成相应的 RTCP 数据包。<ul>
-<li>存放当前要发送 RTCP 数据包的类型</li>
-<li>准备待发送的报告，策略：<ul>
-<li>明确设置需要发送 SR 和 RR 包，则发送 Report</li>
-<li>如果没有明确设置发送 SR 包和 RR 包<ul>
-<li>如果 RTCP 模式是 kReducedSize 模式，并且明确设置要发送 kRtcpReport，发送 Report</li>
-<li>如果 RTCP 模式是 kCompound 模式，必须发送 Report</li>
-</ul>
-</li>
-<li>如果设置的是 kRtcpReport 可能是 SR包 或者 RR 包；如果是发送方，则发送 SR 包，如果是接收方，则发送 RR 包</li>
-</ul>
-</li>
-<li>最后通过 <code>builders</code> 构建 RTCP 数据包缓存到 <code>PacketSender</code> 内部数组中</li>
-</ul>
-</li>
-<li><code>BuildRR()</code>：构建 RR 包。<ul>
-<li>通过 <code>ReceiveStat</code> 获取统计接收信息，以及进一步设置 LastSr 和 DelaySinceLastSr 构建 Report Block。</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 计算DelaySinceLastSr</span></span><br><span class="line"><span class="comment">// 当前发送RR包的时间，接收端压缩后的32位NTP时间</span></span><br><span class="line"><span class="type">uint32_t</span> now = webrtc::<span class="built_in">CompactNtp</span>(clock_-&gt;<span class="built_in">CurrentNtpTime</span>());</span><br><span class="line"><span class="comment">// 接受到SR包的时间，接收端压缩后的32位NTP时间</span></span><br><span class="line"><span class="type">uint32_t</span> receive_time = feedback_state.last_rr_ntp_secs &amp; <span class="number">0x0000FFFF</span>;  <span class="comment">// 秒数的低16位</span></span><br><span class="line">receive_time &lt;&lt;= <span class="number">16</span>;  <span class="comment">// 秒数的低16位作为压缩后的高16位</span></span><br><span class="line">receive_time |= ((feedback_state.last_rr_ntp_frac &amp; <span class="number">0xFFFF0000</span>) &gt;&gt; <span class="number">16</span>);  <span class="comment">// 小数的高16位作为压缩后的低16位</span></span><br><span class="line"><span class="type">uint32_t</span> delay_since_last_sr = now - receive_time;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> &amp;report_block : result) &#123;</span><br><span class="line">  report_block.<span class="built_in">SetLastSr</span>(feedback_state.remote_sr);</span><br><span class="line">  report_block.<span class="built_in">SetDelayLastSr</span>(delay_since_last_sr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>BuildNack()</code>：构建 NACK 包。<ul>
-<li>通过  <code>NackRequester::OnReceivedPacket</code> 统计丢包信息，进行构建 NACK 包。</li>
-</ul>
-</li>
-<li><code>BuildPli()</code>：构建 PLI 包。<ul>
-<li>PLI（Picture Loss Indication），当发生大量丢包或者其他原因，导致视频帧无法正常解码时，接收端可以发送一个 PLI 包，请求发送端立即解码一个新的关键帧。<ul>
-<li>如果是 1v1 的场景，当接受端无法正常解码时，接收端可以立即发送一个 PLI，请求发送端解码一个新的 I 帧发送过来，接收端可以立即解码播放了。</li>
-<li>如果是 1v多的场景，因为每个人的网络情况不同或者进入直播间的时间也是不同的，如果大量的接收端都发送 PLI 请求，由于发送端只有一个，会导致发送端编码器不堪重负。这种场景下，就不太适合由接收端来发送 PLI 请求。通常，在 1v多的场景下，一般采用固定周期的 I 帧发送策略。<ul>
-<li>发送端编码器可以按照固定周期，编码一个 I 帧，具体周期设置多大，可以根据实际场景设置</li>
-<li>对于标准的 WebRTC，比如浏览器推流，通常不是按照固定周期产生 I 帧，而是由编码器根据实际需要，来决定是不是产生一个 I 帧，当画面变化不大的时候，可能很长时间才会产生一个 I 帧，这样会导致，当拉流端进入的时候，由于长时间无法收到 I 帧，而不能立即进行解码播放。此时，可以根据 PLI 的特点，在服务端启动一个定时器，来定时发送 PLI 请求，从而触发发送端按照固定周期产生一个 I 帧</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>比较灵活的做法，在信令请求里面设置一个新的参数，来告诉服务器是否需要定时发送 PLI<ul>
-<li>如果是标准的 WebRTC，比如浏览器，可以设置参数为 true</li>
-<li>如果是自定义客户端，编码器可以设置为按照固定周期产生 I 帧，可以设置参数为 false</li>
-</ul>
-</li>
-<li><code>BuildSR()</code>：构建 SR 包。<ul>
-<li>通过 <code>RtpSender::GetDataCounters()</code> 获取统计的 RTP 包发送信息，进行构建 SR 包</li>
-<li>当推流端发送 SR 包到服务端，服务端从 SR 包中解析出 ntp 和 rtp_timestamp 用于设置 SR 包相应字段</li>
-</ul>
-</li>
-<li><code>BuildXR()</code>：构建 XR 包。<ul>
-<li>服务端作为接收端，定时生成 XR 包</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><strong>PacketSender</strong>：RTCP 包写入缓存。</p>
-<ul>
-<li><code>AppendPacket()</code>：缓存 RTCP 数据包。</li>
-<li><code>Send()</code>：回调上层，RTCP 数据包写入完毕。</li>
-</ul>
-<p><strong>RTCPReceiver</strong>：RTCP 接受处理类。</p>
-<ul>
-<li><code>IncomingRtcpPacket()</code>：处理接收的 RTCP 包，比如 SR 包的时间戳信息，用于发送 RR 包中的字段。</li>
-<li><code>ParseCompoundPacket()</code>：解析不同类型的 RTCP 数据。</li>
-<li><code>HandleSr()</code>：解析 SR 包。<ul>
-<li>时间戳用于服务作为拉流端，生成 RR 包</li>
-<li>时间戳同样用于服务作为推流端，生成 SR 包</li>
-</ul>
-</li>
-<li><code>HandleNack()</code>：解析 NACK 包。<ul>
-<li>本地发送的 SSRC 和 NACK 反馈的 SSRC 相同</li>
-<li>回调通知观察者  <code>RtpRtcpModuleObserver::OnNackReceived()</code></li>
-<li>从缓存的 RTP 包中查找需要重传的序列号，重新发送给客户端拉流</li>
-</ul>
-</li>
-<li><code>HandleXr()</code>：解析 XR 包。<ul>
-<li>接受端计算 RTT 时间，使用  <code>RtpRtcpModuleObserver::OnRttUpdate()</code> 通知上层</li>
-</ul>
-</li>
-</ul>
-<h1 id="客户端推流"><a href="#客户端推流" class="headerlink" title="客户端推流"></a>客户端推流</h1><p>客户端推流则服务端是作为拉流端处理。</p>
-<ul>
-<li>服务端需要处理 SR 包</li>
-<li>服务端需要生成 RR 包</li>
-<li>服务端需要根据丢包情况，发送 NACK 包</li>
-<li>服务端需要按照一定的机制，发送 PLI 包</li>
-<li>如果需要在接收端估计 RTT，还需要发送 XR 包</li>
-</ul>
-<h2 id="视频流接收"><a href="#视频流接收" class="headerlink" title="视频流接收"></a>视频流接收</h2><p><strong>VideoReceiveStream</strong>：处理视频流接收类。</p>
-<p><code>PeerConnection</code> 中根据推流端的 SSRC 信息，来创建 <code>VideoReceiveStream</code> 实例。并且解析接收的 RTP 数据包，通过 SSRC 处理不同类型的流，例如视频流使用接口  <code>VideoReceiveStream::OnRtpPacket()</code>  处理。</p>
-<ul>
-<li><code>VideoReceiveStreamConfig config_</code>：视频流配置信息。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VideoReceiveStreamConfig</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  EventLoop *el = <span class="literal">nullptr</span>;</span><br><span class="line">  webrtc::Clock *clock = <span class="literal">nullptr</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">Rtp</span> &#123;</span><br><span class="line">    <span class="type">uint32_t</span> local_ssrc = <span class="number">0</span>;  <span class="comment">// 视频默认为1</span></span><br><span class="line">    <span class="type">uint32_t</span> remote_ssrc = <span class="number">0</span>;</span><br><span class="line">    <span class="type">uint32_t</span> rtx_ssrc = <span class="number">0</span>;</span><br><span class="line">    std::map&lt;<span class="type">int</span>, <span class="type">int</span>&gt; rtx_associated_payload_types;</span><br><span class="line">  &#125; rtp;</span><br><span class="line"></span><br><span class="line">  RtpRtcpModuleObserver *rtp_rtcp_module_observer = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>ReceiveStat rtp_receive_stat_</code>：RTP 数据统计类。</li>
-<li><code>RtpVideoStreamReceiver rtp_video_stream_receiver_</code>：处理视频 RTP 数据包。</li>
-<li><code>RtxReceiveStream rtx_receive_stream_</code>：RTX 重传接收类。</li>
-<li><code>OnRtpPacket()</code>：对于重传包和非重传包分别使用 <code>RtpVideoStreamReceiver</code> 和 <code>RtxReceiveStream</code> 处理。</li>
-<li><code>DeliverRtcp()</code>：调用  <code>RtpVideoStreamReceiver::DeliverRtcp()</code>。</li>
-</ul>
-<p><strong>RtpVideoStreamReceiver</strong>：处理视频流 RTP 数据接收类。</p>
-<ul>
-<li><p><code>ReceiveStat* rtp_receive_stat_</code>：RTP 数据统计类。</p>
-</li>
-<li><p><code>RtpRtcpImpl* rtp_rtcp_</code>：RTP 和 RTCP 包的总入口类。</p>
-</li>
-<li><p><code>webrtc::VideoRtpDepacketizer* video_rtp_depacketizer_</code>：RTP 反序列化类。</p>
-</li>
-<li><p><code>webrtc::video_coding::PacketBuffer* packet_buffer_</code>：RTP 包缓存，用于获取一个完整的包序列，帧。</p>
-</li>
-<li><p><code>NackRequester nack_module_</code>：NACK 检测需要重传的序列号。</p>
-</li>
-<li><p><code>OnRtpPacket()</code>：接受 RTP 数据包。</p>
-<ul>
-<li><code>RtpRtcpModuleObserver::OnRtpPacket()</code> 通知上层接收 RTP、RTX 数据包，可以用于转发给拉流端</li>
-<li><code>ReceivePacket()</code> 处理接受的 RTP 包</li>
-<li><code>ReceiveStat::OnRtpPacket()</code> 统计非重传包，RR 包需要相关反馈的信息</li>
-</ul>
-</li>
-<li><p><code>DeliverRtcp()</code>：调用  <code>RtpRtcpImpl::IncomingRtcpPacket()</code>。</p>
-</li>
-<li><p><code>OnReceivedPayloadData()</code>：接收 RTP 包，NACK 模块处理、以及获得完整的帧。</p>
-</li>
-<li><p><code>OnInsertedPacket()</code>：获取一个完整的帧 <code>RtpFrameObject</code>，回调给  <code>RtpRtcpModuleObserver::OnFrame()</code>。</p>
-<ul>
-<li>帧完整性检查<ul>
-<li>帧完整性，如果一帧图像是分成多个 RTP 包进行传输，只有多个 RTP 包全部收到，这个帧才能完整，丢失任何一个 RTP 包，该帧就不完整。</li>
-<li>参考关系的完整性，I 帧可以独立解码， P 帧需要参考前面的 P 帧 或者 I 帧，才可以解码，如果前面的 I 帧或者 P 帧丢失，后面的 P 帧就无法解码。</li>
-</ul>
-</li>
-<li>检测算法<ul>
-<li>设计一个 vector，用于存放收到的 packet，存放的位置，用 <code>packet-&gt;seq_num % vector.size()</code> 计算得出，另外 packet 里面会有一个 continous 字段，标记了截止到该序列号为止，前面所有的序列号是否连续。</li>
-</ul>
-</li>
-<li>什么时候需要检查帧是否完整了？<ul>
-<li>收到帧的第一个包时</li>
-<li>或者收到某个包时，它前面的包都连续了</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><code>OnNackSend()</code>： <code>NackRequester</code> 需要重传的序列号回调接口，使用 <code>RtpRtcpImpl::SendNack()</code> 进行重传。</p>
-</li>
-</ul>
-<p><strong>RtxReceiveStream</strong>：RTX 重传接收类。</p>
-<ul>
-<li><code>OnRtpPacket()</code>：接收重传的 RTX 包，并将恢复的 RTP 包重新调用 <code>RtpVideoStreamReceiver::OnRtpPacket()</code>。</li>
-</ul>
-<h2 id="音频流接收"><a href="#音频流接收" class="headerlink" title="音频流接收"></a>音频流接收</h2><p><strong>AudioReceiveStream</strong>：处理音频流接收类。</p>
-<p><code>PeerConnection</code> 中根据推流端的 SSRC 信息，来创建 <code>AudioReceiveStream</code> 实例。并且解析接收的 RTP 数据包，通过 SSRC 处理不同类型的流，例如音频流使用接口  <code>AudioReceiveStream::OnRtpPacket()</code>  处理。</p>
-<ul>
-<li><code>AudioReceiveStreamConfig config_</code>：音频流配置信息。</li>
-<li><code>ReceiveStat* rtp_receive_stat_</code>：RTP 数据统计。</li>
-<li><code>ChannelReceive channel_receive_</code>：音频接收处理。</li>
-<li><code>OnRtpPacket()</code>：调用 <code>ChannelReceive::OnRtpPacket()</code>。</li>
-<li><code>DeliverRtcp()</code>：调用 <code>ChannelReceive::DeliverRtcp()</code>。</li>
-</ul>
-<p><strong>ChannelReceive</strong>：音频接收处理。</p>
-<ul>
-<li><code>AudioReceiveStreamConfig config_</code>：音频流配置信息。</li>
-<li><code>ReceiveStat *rtp_receive_stat_</code>：RTP 数据统计。</li>
-<li><code>RtpRtcpImpl rtp_rtcp_</code>：实际处理 RTP 和 RTCP 的类。</li>
-<li><code>OnRtpPacket()</code>：统计 RTP 包信息；回调  <code>RtpRtcpModuleObserver::OnRtpPacket()</code> 通知接收到数据。</li>
-<li><code>DeliverRtcp()</code>：调用 <code>RtpRtcpImpl::IncomingRtcpPacket()</code>。</li>
-</ul>
-<h2 id="数据统计"><a href="#数据统计" class="headerlink" title="数据统计"></a>数据统计</h2><p><strong>ReceiveStat</strong>：RTP 数据统计类。</p>
-<ul>
-<li><code>webrtc::flat_map&lt;uint32_t, std::unique_ptr&lt;StreamStat&gt;&gt; stats_</code>：不同流的统计信息。</li>
-<li><code>OnRtpPacket()</code>：接受的 RTP 数据包。</li>
-<li><code>RtcpReportBlocks()</code>：生成 RTCP Report 信息。</li>
-</ul>
-<p><strong>StreamStat</strong>：流统计信息。</p>
-<ol>
-<li>计算视频累计丢包信息。</li>
-</ol>
-<ul>
-<li><p>先看一个例子，比如一组 RTP 包的到达顺序为 1, 2, 3, 4, 20 …，发生这种情况的可能原因有哪些？</p>
-<ul>
-<li>丢包，序号为 5 ~ 19 的包全部丢失</li>
-</ul>
-<ul>
-<li><p>乱序，序号为 5 ~ 19 的包没有丢失，只是序号为 20 的包先到了</p>
-</li>
-<li><p>序列号突变，可能是流重新启动了，序列号重新开始了</p>
-</li>
-</ul>
-</li>
-<li><p>乱序的包不能计为丢包</p>
-</li>
-<li><p>序列号突变需要特殊处理，否则可能导致累计丢包数会非常大</p>
-</li>
-<li><p>变量定义</p>
-<ul>
-<li>new_seq: 新收到的包 seq</li>
-</ul>
-<ul>
-<li><p>recv_max_seq: 已收到的最大的包 seq</p>
-</li>
-<li><p>threshold: 判断发生突变的阈值，可根据实际情况调整</p>
-</li>
-</ul>
-</li>
-<li><p>统计策略</p>
-<ul>
-<li><p>如果 <code>new_seq &gt; recv_max_seq &amp;&amp; （new_seq - recv_max_seq）&lt;= threshold</code></p>
-<ul>
-<li><p>如果 <code>new_seq - recv_max_seq == 1</code>，包连续，没有丢包</p>
-</li>
-<li><p>如果 <code>new_seq - recv_max_seq &gt; 1</code>，判定丢包（后面如果收到之前的序号会判定乱序）</p>
-</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li><p>如果 <code>new_seq &lt; recv_max_seq &amp;&amp; (recv_max_seq - new_seq) &lt;= threshold</code></p>
-<ul>
-<li>判定为乱序，不记为丢包，对于视频丢包重传通过 RTX 传输</li>
-</ul>
-</li>
-<li><p>如果 <code>|new_seq - recv_max_seq| &gt; threshold</code></p>
-<ul>
-<li>临时记录 new_seq，然后检查下一个 next_new_seq，如果 <code>next_new_seq = new_seq + 1</code>，判定流可能重启了，此时需重置计数状态</li>
-<li>例如 1 2 3, 4，100 101 …</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<ol start="2">
-<li>计算视频 jitter。</li>
-</ol>
-<ul>
-<li>什么是 jitter？<ul>
-<li>在实际的网络传输中，由于网络是动态变化的，每个 RTP 包从发送端到达接受端所经历的延迟是不同的，而 jitter 就是用来衡量这种差异，它反应了网络的抖动情况</li>
-</ul>
-</li>
-<li>计算方法<ul>
-<li>对于 RTP 包，S(i) 表示包发送的时间戳（单位为采样率），R(i) 表示到达接受端的时间戳（单位为采样率），对于两个 RTP 包 i 和 j，它们的网络传输的延迟差 D 则为：<code>D(i,j) = (Rj-Ri) - (Sj-Si) = (Rj-Sj) - (Ri-Si)</code></li>
-<li>抖动的计算公式：<code>J(i) = J(i-1) + (|D(i-1,i)| - J(i-1)) / 16</code></li>
-<li>计算某个 SSRC 的 jitter 是，应该按照上述公式，以 RTP 包的到达顺序连续计算 jitter 值。该算法是最优的一阶估计器，增益参数 1 &#x2F; 16 在保持合理收敛速度的情况下，同时给出很好的降噪率</li>
-</ul>
-</li>
-<li>前置条件<ul>
-<li>有序到达的 RTP 包至少有 2 个</li>
-</ul>
-</li>
-<li>考虑 ts 跳变的情况，设置 5s 的阈值，超过阈值，不更新 jitter</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">UpdateJitter</span><span class="params">(<span class="type">const</span> webrtc::RtpPacketReceived &amp;packet, <span class="type">int64_t</span> receive_time_ms)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// 两个RTP到达接收端时间差</span></span><br><span class="line">  <span class="type">int64_t</span> receive_diff_ms = receive_time_ms - last_received_time_ms_;</span><br><span class="line">  <span class="type">uint32_t</span> receive_diff_rtp = <span class="built_in">static_cast</span>&lt;<span class="type">uint32_t</span>&gt;(</span><br><span class="line">      receive_diff_ms * packet.<span class="built_in">payload_type_frequency</span>() / <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 两个RTP包发送端时间差</span></span><br><span class="line">  <span class="type">uint32_t</span> send_diff_rtp = packet.<span class="built_in">Timestamp</span>() - last_received_timestamp_;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//  D(i, j) = (Rj - Ri) - (Sj - Si) = (Rj - Sj) - (Ri - Si)</span></span><br><span class="line">  <span class="type">int32_t</span> time_diff_sample = receive_diff_rtp - send_diff_rtp;</span><br><span class="line">  time_diff_sample = std::<span class="built_in">abs</span>(time_diff_sample);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 考虑 ts 跳变的情况；5s, video: 90k；5 * 90k = 450k</span></span><br><span class="line">  <span class="keyword">if</span> (time_diff_sample &lt; <span class="number">450000</span>) &#123;</span><br><span class="line">    <span class="comment">// |D(i - 1, i)| - J(i - 1)</span></span><br><span class="line">    <span class="type">int32_t</span> jitter_q4_diff = (time_diff_sample &lt;&lt; <span class="number">4</span>) - jitter_q4_;</span><br><span class="line">    <span class="comment">// +8 是为了除以16向上取整</span></span><br><span class="line">    <span class="comment">// J(i) = J(i - 1) + (|D(i - 1, i)| - J(i - 1)) / 16</span></span><br><span class="line">    jitter_q4_ += ((jitter_q4_diff + <span class="number">8</span>) &gt;&gt; <span class="number">4</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>生成 Report Block 信息。</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">MaybeAppendReportBlockAndReset</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    std::vector&lt;webrtc::rtcp::ReportBlock&gt; &amp;result)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 没有收到RTP包</span></span><br><span class="line">  <span class="type">int64_t</span> now_ms = clock_-&gt;<span class="built_in">TimeInMilliseconds</span>();</span><br><span class="line">  <span class="keyword">if</span> (now_ms - last_received_timestamp_ &gt; kStreamStatTimeoutMs) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">ReceivedRtpPacket</span>())</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 生成report block</span></span><br><span class="line">  result.<span class="built_in">emplace_back</span>();</span><br><span class="line">  webrtc::rtcp::ReportBlock &amp;stats = result.<span class="built_in">back</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 设置反馈的ssrc</span></span><br><span class="line">  stats.<span class="built_in">SetMediaSsrc</span>(ssrc_);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 设置丢包指数</span></span><br><span class="line">  <span class="comment">// 计算期望收到的数据包个数（两个RR包之间的数据包个数）</span></span><br><span class="line">  <span class="type">int64_t</span> exp_since_last = received_seq_max_ - last_report_seq_max_;</span><br><span class="line">  <span class="comment">// 计算两个RR包之间的RTP丢包数</span></span><br><span class="line">  <span class="type">int32_t</span> loss_since_last = cumulative_loss_ - last_report_cumulative_loss_;</span><br><span class="line">  <span class="comment">// 计算丢包率</span></span><br><span class="line">  <span class="keyword">if</span> (exp_since_last &gt; <span class="number">0</span> &amp;&amp; loss_since_last &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    stats.<span class="built_in">SetFractionLost</span>(<span class="number">255</span> * loss_since_last / exp_since_last);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 设置累积丢包个数（3个字节，有符号整数）</span></span><br><span class="line">  <span class="type">int32_t</span> packets_lost = cumulative_loss_ + cumulative_loss_rtcp_offset_;</span><br><span class="line">  <span class="keyword">if</span> (packets_lost &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    packets_lost = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 下一轮统计补偿</span></span><br><span class="line">    cumulative_loss_rtcp_offset_ = -cumulative_loss_;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 超过24位有符号整数的范围，最高位是符号位</span></span><br><span class="line">  <span class="keyword">if</span> (packets_lost &gt; <span class="number">0x7FFFFF</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!cumulative_loss_is_capped_) &#123;</span><br><span class="line">      cumulative_loss_is_capped_ = <span class="literal">true</span>;</span><br><span class="line">      <span class="built_in">RTC_LOG</span>(LS_WARNING) &lt;&lt; <span class="string">&quot;cumulative packet loss reached max for ssrc: &quot;</span></span><br><span class="line">                          &lt;&lt; ssrc_;</span><br><span class="line">    &#125;</span><br><span class="line">    packets_lost = <span class="number">0x7FFFFF</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  stats.<span class="built_in">SetCumulativeLost</span>(packets_lost);</span><br><span class="line"></span><br><span class="line">  stats.<span class="built_in">SetExtHighestSeqNum</span>(received_seq_max_);</span><br><span class="line">  stats.<span class="built_in">SetJitter</span>(jitter_q4_ &gt;&gt; <span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 记录最大包序号和丢包数，用于下次计算丢包率</span></span><br><span class="line">  last_report_seq_max_ = received_seq_max_;</span><br><span class="line">  last_report_cumulative_loss_ = cumulative_loss_;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="4">
-<li>设置 LastSr 和 DelayLastSr。</li>
-</ol>
-<ul>
-<li>LastSr：从最近一次收到的 SR 包中提取的 NTP 时间。</li>
-<li>DelayLastSr：最近一次收到 SR 包的时间，距离当前发送 RR 包过去的时间。</li>
-<li><code>StreamStat</code> 中无法获取相关信息，<code>RTCPSender</code> 中进一步设置 LastSr 和 DelaySinceLastSr。</li>
-</ul>
-<h1 id="客户端拉流"><a href="#客户端拉流" class="headerlink" title="客户端拉流"></a>客户端拉流</h1><p>客户端拉流则服务端是作为推流端处理。</p>
-<ul>
-<li>服务端需要发送 SR 包</li>
-<li>服务端需要处理 RR 包</li>
-<li>服务端需要响应 NACK 包</li>
-<li>服务端需要响应 XR 包</li>
-</ul>
-<h2 id="视频流发送"><a href="#视频流发送" class="headerlink" title="视频流发送"></a>视频流发送</h2><p><strong>VideoSendStream</strong>：处理视频流发送类。</p>
-<ul>
-<li><code>VideoSendStreamConfig config_</code>：视频流配置信息。</li>
-<li><code>RtpRtcpImpl* rtp_rtcp_</code>：RTP 和 RTCP 包的总入口类。</li>
-<li><code>UpdateRtpStat()</code>：调用  <code>RtpRtcpImpl::UpdateRtpStat()</code>。</li>
-<li><code>SetSrInfo()</code>：调用  <code>RtpRtcpImpl::SetSrInfo()</code>。<ul>
-<li>SR 包中的时间戳<ul>
-<li>RTP 包里面携带时间戳 rtp_timestamp，但是这个时间戳是一个相对时间，并不是绝对时间</li>
-<li>在 WebRTC中，音频包和视频包在设置时间戳的时候，会各自加上一个随机的偏移量，当接收端收到音频包和视频包的时候，获取到的音频时间戳和视频时间戳是完全独立的，没有关系的</li>
-<li>另外音视频包在经过网络传输的时候，会发生丢包，所以接收端也不能简单的用音频和视频第一个包的到达时间，来对齐音频和视频</li>
-</ul>
-</li>
-<li>WebRTC 音视频同步<ul>
-<li>如果能获得音频和视频采集的绝对时间，音频对齐就比较简单了，但是音视频包里面没有包含绝对时间，怎么获取？</li>
-<li>音频或者视频会定时发送 SR 包，SR 包里面包含一对时间，rtp_timestamp（相对时间）和 ntp 时间（绝对时间），这两个时间是在同一时刻产生的，是一一对应的，是同一时刻的不同表示。另外 rtp_timestamp 和 ntp 是一个线性关系，可以用 y&#x3D;ax+b 来表示，两点确定一条直线，获取两组 SR 包就可以计算出 a 和 b，然后这个线性方程就确定了，此时，给定一个 RTP 包的时间戳，就可以计算出 ntp 时间。最后，音频和视频就可以用 ntp 绝对时间来进行对齐，从而实现音视频同步。</li>
-</ul>
-</li>
-<li>1v多模式服务端如何实现<ul>
-<li>当推流端发送 SR 包到服务端，服务端从 SR 包中解析出 ntp 和 rtp_timestamp</li>
-<li>服务端会遍历所有拉取该流的拉流端，然后将 SR 中解析的 ntp 和 rtp_timestamp 设置到对应的服务端模拟的发送端 SR 包中，取最新的一组数据</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>DeliverRtcp()</code>：调用 <code>RtpRtcpImpl::IncomingRtcpPacket()</code>。</li>
-<li><code>BuildRtxPacket()</code>：构建 RTX 重传数据包。<ul>
-<li>收到客户端拉流反馈的 NACK 后，从 <code>PushStream</code> 缓存的 RTP 数据包中获取需要重传的数据包，分发给 <code>PullStream</code> 拉流客户端使用 <code>PeerConnection</code> 构建 RTX 重传数据包</li>
-</ul>
-</li>
-</ul>
-<p><strong>RtpSender</strong>：RTP 包发送类。</p>
-<ul>
-<li><code>RtpRtcpConfig config_</code>：配置相关，时钟、SSRC、RTP 和 RTCP 观察者等。</li>
-<li><code>RtpRtcpImpl* rtp_rtcp_</code>：RTP 和 RTCP 包的总入口类。</li>
-<li><code>UpdateRtpStat()</code>：使用 <code>webrtc::StreamDataCounters</code> 统计 RTP 包信息。<ul>
-<li>1v多模式下，每次发送 RTP 包给客户端时都会调用进行统计</li>
-<li>服务作为推流端，提供 RTP 包统计信息，定时构建并发送 SR 包</li>
-</ul>
-</li>
-<li><code>SetSrInfo()</code>：调用  <code>RtpRtcpImpl::SetSrInfo()</code>。</li>
-</ul>
-<h2 id="音频流发送"><a href="#音频流发送" class="headerlink" title="音频流发送"></a>音频流发送</h2><p><strong>AudioSendStream</strong>：处理音频流发送类。</p>
-<ul>
-<li><code>VideoSendStreamConfig config_</code>：视频流配置信息。</li>
-<li><code>UpdateRtpStat()</code>：调用  <code>RtpRtcpImpl::UpdateRtpStat()</code>。</li>
-</ul>
-<h1 id="Qos调优"><a href="#Qos调优" class="headerlink" title="Qos调优"></a>Qos调优</h1><ul>
-<li>利用 XR 包计算出接收端的 RTT，可用于设置 NACK 模块定期触发两次重传的间隔时间。</li>
-<li>上行网络传输优化<ul>
-<li>问题：上行链路（推流到服务器）有丢包或者乱序，如果服务端控制不好，即直接转发给多个拉流端，引起大量重传，降低性能</li>
-<li>视频优化：<ul>
-<li>有丢包或者乱序的包，暂时不转发</li>
-<li>如果下一个 I 帧已经 OK，前面的 seq 仍然不连续，则全部丢弃</li>
-</ul>
-</li>
-<li>音频优化：<ul>
-<li>有丢包或者乱序的包，暂时不转发</li>
-<li>最多等待 <code>min(10 * rtt, 300ms)</code> 后重新转发</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h1 id="多线程分发架构"><a href="#多线程分发架构" class="headerlink" title="多线程分发架构"></a>多线程分发架构</h1><pre class="mermaid">graph TB
-    RtcServer-->RtcWorker0
-    RtcServer-->RtcWorkerN
-    RtcWorker0-->Crc32[Crc32 stream_name%worker_num]
-    RtcWorkerN-->Crc32
-    Crc32-->PushStream
-    Crc32-->PullStream</pre>
-
-<ul>
-<li>按照 stream_name 计算 crc32 的值，然后对 worker 个数进行取模来分配 worker 的策略，无论是推流还是拉流，将会分配到同一个 worker 线程进行处理</li>
-<li>问题：对于直播的场景，一路推流，往往会有大量拉流，如果这些拉流都分配到一个 worker 线程，这个 worker 线程就可能成为瓶颈，而其他的 worker 线程比较空闲，这样就无法发挥单台服务器的最大性能</li>
-<li>改进：每个拉流的 uid 不同，可以将不同的拉流分散到不同的 worker 线程进行处理，需要解决多线程之间的数据共享问题</li>
-</ul>
-<p><strong>RtcServer</strong>：RTC 服务，派发任务给 <code>RtcWorker</code> 处理。</p>
-<p><code>ProcessRtcMsg()</code>：分发消息给 <code>RtcWorker</code> 处理，对于直播模式并且pull 类型的消息，使用 uid 获取 worker，其他类型的消息使用 stream_name 获取 worker。</p>
-<p><strong>RtcStreamManager</strong>：管理 RTC 流的类。</p>
-<p><code>OnConnectionState()</code>：<code>PeerConnection</code> 状态回调接口。对于成功连接状态：</p>
-<ul>
-<li>推流端，会调用 <code>NotifyNewPushStream()</code></li>
-<li>拉流端，对于源流不在当前 worker 线程，会调用 <code>NotifyNewPullStream()</code></li>
-</ul>
-<p><code>DeliverNewPacket()</code>：分发数据包到对应注册的 worker，会调用 <code>NotifyNewPacket()</code>。</p>
-<p><code>NotifyNewPushStream()</code>：向其他的 worker 线程发送新流注册信息。</p>
-<p><code>NotifyRemovePushStream()</code>：向其他的 worker 线程发送清除流注册信息。</p>
-<p><code>NotifyNewPullStream()</code>：向源流所在的线程发起注册通知。</p>
-<p><code>NotifyRemovePullStream()</code>：向其他的 worker 线程发送清除流拉流信息。</p>
-<p><code>NotifyNewPacket()</code>：通知对应 worker，有数据进来。</p>
-<p><code>NotifyMsg()</code>：推送消息并且通知通信管道，触发 <code>ProcessNotify()</code> 进行处理。</p>
-<p><code>ProcessNotify()</code>：消费消息队列数据并且处理不同类型消息。</p>
-<ul>
-<li><code>ProcessNewPushStream()</code>：处理推流类型消息，保存推流信息，用于拉流查询</li>
-<li><code>ProcessRemovePushStream()</code>：清除保存的推流信息</li>
-<li><code>ProcessNewPullStream()</code>：保存源流对应注册的 worker id</li>
-<li><code>ProcessRemovePullStream()</code>：清除保存的拉流信息</li>
-<li><code>ProcessNewDeliverPacket()</code>：转发到数据包对应的 worker_id</li>
 </ul>
 
       
