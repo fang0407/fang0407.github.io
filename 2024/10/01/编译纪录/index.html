@@ -20,16 +20,16 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="x264通用流程，也可以编译其它的库  msys2 是一种在 windows 平台模拟 Linux 运行环境的技术，你可以在该环境运行 Linux 命令来编译 windows 平台的库  下载 msys2，下载地址: https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;msys2&#x2F;distrib&#x2F;x86_64&#x2F;  下载完毕之后，正常安装即可  同步软件包数据，pacman -">
+    <meta name="description" content="x264通用流程，也可以编译其它的库  msys2 是一种在 windows 平台模拟 Linux 运行环境的技术，你可以在该环境运行 Linux 命令来编译 windows 平台的库 下载 msys2，下载地址: https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;msys2&#x2F;distrib&#x2F;x86_64&#x2F;，例如 msys2-x86_64-20240113.exe 下载完毕">
 <meta property="og:type" content="article">
 <meta property="og:title" content="编译纪录">
 <meta property="og:url" content="https://fang0407.github.io/2024/10/01/%E7%BC%96%E8%AF%91%E7%BA%AA%E5%BD%95/index.html">
 <meta property="og:site_name" content="NOTE">
-<meta property="og:description" content="x264通用流程，也可以编译其它的库  msys2 是一种在 windows 平台模拟 Linux 运行环境的技术，你可以在该环境运行 Linux 命令来编译 windows 平台的库  下载 msys2，下载地址: https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;msys2&#x2F;distrib&#x2F;x86_64&#x2F;  下载完毕之后，正常安装即可  同步软件包数据，pacman -">
+<meta property="og:description" content="x264通用流程，也可以编译其它的库  msys2 是一种在 windows 平台模拟 Linux 运行环境的技术，你可以在该环境运行 Linux 命令来编译 windows 平台的库 下载 msys2，下载地址: https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;msys2&#x2F;distrib&#x2F;x86_64&#x2F;，例如 msys2-x86_64-20240113.exe 下载完毕">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fang0407.github.io/2024/10/01/%E7%BC%96%E8%AF%91%E7%BA%AA%E5%BD%95/msys2%E7%BB%A7%E6%89%BF.png">
 <meta property="article:published_time" content="2024-10-01T04:05:58.000Z">
-<meta property="article:modified_time" content="2024-10-01T04:07:08.448Z">
+<meta property="article:modified_time" content="2024-10-01T14:24:33.914Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fang0407.github.io/2024/10/01/%E7%BC%96%E8%AF%91%E7%BA%AA%E5%BD%95/msys2%E7%BB%A7%E6%89%BF.png">
@@ -190,7 +190,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2024-10-01 12:05:58 / Modified: 12:07:08" itemprop="dateCreated datePublished" datetime="2024-10-01T12:05:58+08:00">2024-10-01</time>
+      <time title="Created: 2024-10-01 12:05:58 / Modified: 22:24:33" itemprop="dateCreated datePublished" datetime="2024-10-01T12:05:58+08:00">2024-10-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -220,27 +220,21 @@
     
     <div class="post-body" itemprop="articleBody"><h1 id="x264"><a href="#x264" class="headerlink" title="x264"></a>x264</h1><p><strong>通用流程，也可以编译其它的库</strong></p>
 <ul>
-<li><p>msys2 是一种在 windows 平台模拟 Linux 运行环境的技术，你可以在该环境运行 Linux 命令来编译 windows 平台的库</p>
-</li>
-<li><p>下载 msys2，下载地址: <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/">https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/</a></p>
-</li>
-<li><p>下载完毕之后，正常安装即可</p>
-</li>
-<li><p>同步软件包数据，<code>pacman -Sy</code></p>
-<ul>
+<li>msys2 是一种在 windows 平台模拟 Linux 运行环境的技术，你可以在该环境运行 Linux 命令来编译 windows 平台的库</li>
+<li>下载 msys2，下载地址: <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/%EF%BC%8C%E4%BE%8B%E5%A6%82">https://mirrors.tuna.tsinghua.edu.cn/msys2/distrib/x86_64/，例如</a> msys2-x86_64-20240113.exe</li>
+<li>下载完毕之后，正常安装即可，打开 mingw64.exe</li>
+<li>同步软件包数据，<code>pacman -Sy</code><ul>
 <li>如果同步软件包数据比较慢，可使用清华的镜像，具体配置方法可参考:</li>
 <li><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/msys2/">https://mirrors.tuna.tsinghua.edu.cn/help/msys2/</a></li>
 </ul>
 </li>
-<li><p>安装 MinGW-x64和MinGW-x86 工具链</p>
-<ul>
+<li>安装 MinGW-x64 和 MinGW-x86 工具链<ul>
 <li><code>pacman -S mingw-w64-i686-toolchain</code></li>
 <li><code>pacman -S mingw-w64-x86_64-toolchain</code></li>
 <li>也可以单独安装 MinGW，然后拷贝到 msys2 下的 mingw64 和 mingw32 目录</li>
 </ul>
 </li>
-<li><p>安装必备的工具</p>
-<ul>
+<li>安装必备的工具<ul>
 <li><code>pacman -S nasm</code> # 汇编工具</li>
 <li><code>pacman -S yasm</code> # 汇编工具</li>
 <li><code>pacman -S make</code></li>
@@ -249,8 +243,7 @@
 <li><code>pacman -S pkg-config</code> # 库配置工具，方便引用依赖库</li>
 </ul>
 </li>
-<li><p>打开 <code>C:\msys64\msys2_shell.cmd</code>，按照下图进行编辑 （可以保证继承父窗口的环境变量）</p>
-<ul>
+<li>打开 <code>C:\msys64\msys2_shell.cmd</code>，按照下图进行编辑 （可以保证继承父窗口的环境变量）<ul>
 <li>启动 x64 Native Tools Command Prompt for VS2019</li>
 <li>进入 msys2 安装目录，执行 <code>msys2_shell.cmd -mingw64</code></li>
 <li>测试输入 <code>cl</code> 命令，是否继承了 MSVC 的编译环境</li>
