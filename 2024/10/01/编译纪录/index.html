@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://fang0407.github.io/2024/10/01/%E7%BC%96%E8%AF%91%E7%BA%AA%E5%BD%95/msys2%E7%BB%A7%E6%89%BF.png">
 <meta property="article:published_time" content="2024-10-01T04:05:58.000Z">
-<meta property="article:modified_time" content="2024-10-01T14:24:33.914Z">
+<meta property="article:modified_time" content="2024-11-29T22:27:50.026Z">
 <meta property="article:author" content="Fang">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fang0407.github.io/2024/10/01/%E7%BC%96%E8%AF%91%E7%BA%AA%E5%BD%95/msys2%E7%BB%A7%E6%89%BF.png">
@@ -114,7 +114,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#x264"><span class="nav-number">1.</span> <span class="nav-text">x264</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#x264"><span class="nav-number">1.</span> <span class="nav-text">x264</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#protobuf"><span class="nav-number">2.</span> <span class="nav-text">protobuf</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jsoncpp"><span class="nav-number">3.</span> <span class="nav-text">jsoncpp</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CV-CUDA"><span class="nav-number">4.</span> <span class="nav-text">CV-CUDA</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -127,13 +127,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
   </nav>
@@ -188,9 +188,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2024-10-01 12:05:58 / Modified: 22:24:33" itemprop="dateCreated datePublished" datetime="2024-10-01T12:05:58+08:00">2024-10-01</time>
+      <time title="Created: 2024-10-01 12:05:58" itemprop="dateCreated datePublished" datetime="2024-10-01T12:05:58+08:00">2024-10-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-30 06:27:50" itemprop="dateModified" datetime="2024-11-30T06:27:50+08:00">2024-11-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -258,6 +264,55 @@
 <li>编译 Debug 版本：<code>CC=cl ./configure --prefix=/d/third_party/x264_lib --enable-shared --enable-static --enable-debug &amp;&amp; make &amp;&amp; make install</code></li>
 <li>编译 Release 版本：<code>CC=cl ./configure --prefix=/d/third_party/x264_lib --enable-shared --enable-static &amp;&amp; make &amp;&amp; make install</code></li>
 </ul>
+<h1 id="protobuf"><a href="#protobuf" class="headerlink" title="protobuf"></a>protobuf</h1><ul>
+<li><p>编译运行环境：Win10</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/protocolbuffers/protobuf/releases/download/v3.8.0/protobuf-cpp-3.8.0.zip">protobuf 3.8.0</a> 版本下载并解压</p>
+</li>
+<li><p>安装 vs2019，打开 x64 Native Tools Command Prompt for VS 2019</p>
+<ul>
+<li><p><code>cd protobuf/cmake &amp;&amp; mkdir build</code></p>
+</li>
+<li><p><code>cmake ../</code> （默认使用 Visual Studio 16 2019 生成工程文件）</p>
+</li>
+<li><p>在 build目录下生成 protobuf.sln，使用 vs2019 打开，生成解决方案</p>
+</li>
+<li><p>如果是 Debug 版本在 build 目录下的 Debug 目录生成相应库文件</p>
+</li>
+<li><p>在工程项目右击属性—&gt;配置属性—&gt;C&#x2F;C++—&gt;代码生成—&gt;运行库中选择 MT&#x2F;MTd&#x2F;MD&#x2F;MDd</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="jsoncpp"><a href="#jsoncpp" class="headerlink" title="jsoncpp"></a>jsoncpp</h1><ul>
+<li><p>编译运行环境：Win10</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/open-source-parsers/jsoncpp/archive/refs/tags/1.9.5.zip">jsoncpp 1.9.5</a> 版本下载并解压</p>
+</li>
+<li><p>安装 vs2019，打开 x64 Native Tools Command Prompt for VS 2019</p>
+<ul>
+<li><p><code>cd jsoncpp-1.9.5 &amp;&amp; mkdir build</code></p>
+</li>
+<li><p><code>cmake ../</code> （默认使用 Visual Studio 16 2019 生成工程文件）</p>
+</li>
+<li><p>在 build目录下生成 jsoncpp.sln，使用 vs2019 打开，生成解决方案</p>
+</li>
+<li><p>在 build 目录下的 lib 目录生成相应库文件</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="CV-CUDA"><a href="#CV-CUDA" class="headerlink" title="CV-CUDA"></a>CV-CUDA</h1><ul>
+<li>编译运行环境：ubuntu:20.04、gcc 11、nvidia 3090</li>
+<li>安装 docker 以及 nvidia-docker</li>
+<li>CUDA 下载：<a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-downloads%EF%BC%8C%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps://blog.csdn.net/jhsignal/article/details/111401628">https://developer.nvidia.com/cuda-downloads，参考链接：https://blog.csdn.net/jhsignal/article/details/111401628</a></li>
+<li>cuDNN 下载：<a target="_blank" rel="noopener" href="https://developer.nvidia.com/rdp/cudnn-download">https://developer.nvidia.com/rdp/cudnn-download</a></li>
+<li>TensorRT 下载：<a target="_blank" rel="noopener" href="https://developer.nvidia.com/tensorrt">https://developer.nvidia.com/tensorrt</a></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># 进入容器</span><br><span class="line">nvidia-docker run -it -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=compute,utility 镜像ID bash</span><br><span class="line"></span><br><span class="line"># 获取及编译CV-CUDA</span><br><span class="line">git clone https://github.com/CVCUDA/CV-CUDA.git</span><br><span class="line"></span><br><span class="line">cd CV-CUDA/samples/common/build</span><br><span class="line">cmake ../</span><br><span class="line">make -j</span><br><span class="line"></span><br><span class="line">cd CV-CUDA/samples/classification/build</span><br><span class="line">cmake ../</span><br><span class="line">make -j</span><br><span class="line">./cvcuda_sample_classification -e model/image.engine -i model/plate.jpg -l model/lable.txt -b 1</span><br><span class="line"></span><br><span class="line"># 序列化TRT模型</span><br><span class="line">cd TensorRT-8.6.1.6/bin</span><br><span class="line">export LD_LIBRARY_PATH=/usr/local/cuda-12.2/lib64:/cudnn-linux-x86_64-8.9.6.50_cuda12-archive/lib:TensorRt-8.6.1.6/lib:$LD_LIBRARY_PATH</span><br><span class="line">./trtexec --onnx=image.onnx --minShapes=input:1x3x224x224 --optShapes=input:1x3x224x224 --maxShapes=input:1x3x224x224 --saveEngine=./image.engine</span><br></pre></td></tr></table></figure>
+
+
+
 
     </div>
 
@@ -276,6 +331,9 @@
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2024/11/10/CV-CUDA/" rel="next" title="CV-CUDA">
+                  CV-CUDA <i class="fa fa-angle-right"></i>
+                </a>
             </div>
           </div>
     </footer>

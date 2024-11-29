@@ -120,13 +120,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
   </nav>
@@ -143,6 +143,95 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/08/%E8%A7%86%E9%A2%91%E8%BF%87%E6%BB%A4%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/09/08/%E8%A7%86%E9%A2%91%E8%BF%87%E6%BB%A4%E5%99%A8/" class="post-title-link" itemprop="url">视频过滤器</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-08 08:16:11" itemprop="dateCreated datePublished" datetime="2023-09-08T08:16:11+08:00">2023-09-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:41:58" itemprop="dateModified" datetime="2023-12-30T22:41:58+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavcodec/avcodec.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavformat/avformat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavfilter/avfilter.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavfilter/buffersink.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavfilter/buffersrc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavutil/opt.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavutil/imgutils.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> in_width = <span class="number">768</span>;</span><br><span class="line">    <span class="type">int</span> in_height = <span class="number">320</span>;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* in_file = <span class="string">&quot;768x320.yuv&quot;</span>;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* out_file = <span class="string">&quot;out_768x320.yuv&quot;</span>;</span><br><span class="line"></span><br><span class="line">    FILE* ifd = fopen(in_file, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    FILE* ofd = fopen(out_file, <span class="string">&quot;wb&quot;</span>);</span><br><span class="line"></span><br><span class="line">    AVFilterGraph* filter_graph = avfilter_graph_alloc();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//source filter</span></span><br><span class="line">    <span class="type">char</span> args[<span class="number">512</span>];</span><br><span class="line">    <span class="built_in">sprintf</span>(args,</span><br><span class="line">            <span class="string">&quot;video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:pixel_aspect=%d/%d&quot;</span>,</span><br><span class="line">            in_width, in_height, AV_PIX_FMT_YUV420P,</span><br><span class="line">            <span class="number">1</span>, <span class="number">25</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="type">const</span> AVFilter* buffer_src = avfilter_get_by_name(<span class="string">&quot;buffer&quot;</span>);</span><br><span class="line">    AVFilterContext* buffer_src_ctx;</span><br><span class="line">    avfilter_graph_create_filter(&amp;buffer_src_ctx, buffer_src,</span><br><span class="line">                                 <span class="string">&quot;in&quot;</span>, args, <span class="literal">NULL</span>, filter_graph);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//sink filter</span></span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">AVPixelFormat</span> <span class="title">pix_fmts</span>[] =</span> &#123; AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE &#125;;</span><br><span class="line">    AVBufferSinkParams* buffer_sink_params = av_buffersink_params_alloc();</span><br><span class="line">    buffer_sink_params-&gt;pixel_fmts = pix_fmts;</span><br><span class="line"></span><br><span class="line">    <span class="type">const</span> AVFilter* buffer_sink = avfilter_get_by_name(<span class="string">&quot;buffersink&quot;</span>);</span><br><span class="line">    AVFilterContext* buffer_sink_ctx;</span><br><span class="line">    avfilter_graph_create_filter(&amp;buffer_sink_ctx, buffer_sink,</span><br><span class="line">                                 <span class="string">&quot;out&quot;</span>, <span class="literal">NULL</span>, buffer_sink_params, filter_graph);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//split filter</span></span><br><span class="line">    <span class="type">const</span> AVFilter* split_filter = avfilter_get_by_name(<span class="string">&quot;split&quot;</span>);</span><br><span class="line">    AVFilterContext* split_filter_ctx;</span><br><span class="line">    avfilter_graph_create_filter(&amp;split_filter_ctx, split_filter,</span><br><span class="line">                                 <span class="string">&quot;split&quot;</span>, <span class="string">&quot;outputs=2&quot;</span>, <span class="literal">NULL</span>, filter_graph);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//crop filter</span></span><br><span class="line">    <span class="type">const</span> AVFilter* crop_filter = avfilter_get_by_name(<span class="string">&quot;crop&quot;</span>);</span><br><span class="line">    AVFilterContext* crop_filter_ctx;</span><br><span class="line">    avfilter_graph_create_filter(&amp;crop_filter_ctx, crop_filter,</span><br><span class="line">                                 <span class="string">&quot;crop&quot;</span>, <span class="string">&quot;out_w=iw:out_h=ih/2:x=0:y=0&quot;</span>, <span class="literal">NULL</span>, filter_graph);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//vfilp filter</span></span><br><span class="line">    <span class="type">const</span> AVFilter* vfilp_filter = avfilter_get_by_name(<span class="string">&quot;vflip&quot;</span>);</span><br><span class="line">    AVFilterContext* vfilp_filter_ctx;</span><br><span class="line">    avfilter_graph_create_filter(&amp;vfilp_filter_ctx, vfilp_filter,</span><br><span class="line">                                 <span class="string">&quot;vflip&quot;</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, filter_graph);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//overlay filter</span></span><br><span class="line">    <span class="type">const</span> AVFilter* overlay_filter = avfilter_get_by_name(<span class="string">&quot;overlay&quot;</span>);</span><br><span class="line">    AVFilterContext* overlay_filter_ctx;</span><br><span class="line">    avfilter_graph_create_filter(&amp;overlay_filter_ctx, overlay_filter, <span class="string">&quot;overlay&quot;</span>,</span><br><span class="line">                                       <span class="string">&quot;x=0:y=H/2&quot;</span>, <span class="literal">NULL</span>, filter_graph);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//source --&gt; split</span></span><br><span class="line">    avfilter_link(buffer_src_ctx, <span class="number">0</span>, split_filter_ctx, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">//split0 --&gt; overlay</span></span><br><span class="line">    avfilter_link(split_filter_ctx, <span class="number">0</span>, overlay_filter_ctx, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">//split1 --&gt; crop</span></span><br><span class="line">    avfilter_link(split_filter_ctx, <span class="number">1</span>, crop_filter_ctx, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">//crop --&gt; vfilp</span></span><br><span class="line">    avfilter_link(crop_filter_ctx, <span class="number">0</span>, vfilp_filter_ctx, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">//vfilp --&gt; overlay</span></span><br><span class="line">    avfilter_link(vfilp_filter_ctx, <span class="number">0</span>, overlay_filter_ctx, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//overlay --&gt; sink</span></span><br><span class="line">    avfilter_link(overlay_filter_ctx, <span class="number">0</span>, buffer_sink_ctx, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    avfilter_graph_config(filter_graph, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> *graph_str = avfilter_graph_dump(filter_graph, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>, graph_str);</span><br><span class="line">    av_free(graph_str);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//alloc buffer</span></span><br><span class="line">    AVFrame* frame_in = av_frame_alloc();</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span>* frame_buffer_in = av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P, </span><br><span class="line">                                                                        in_width, in_height, <span class="number">1</span>));</span><br><span class="line">    av_image_fill_arrays(frame_in-&gt;data, frame_in-&gt;linesize, frame_buffer_in, </span><br><span class="line">                         AV_PIX_FMT_YUV420P, in_width, in_height, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    AVFrame* frame_out = av_frame_alloc();</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span>* frame_buffer_out = av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P, </span><br><span class="line">                                                                         in_width, in_height, <span class="number">1</span>));</span><br><span class="line">    av_image_fill_arrays(frame_out-&gt;data, frame_out-&gt;linesize, frame_buffer_out, </span><br><span class="line">                         AV_PIX_FMT_YUV420P, in_width, in_height, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    frame_in-&gt;width = in_width;</span><br><span class="line">    frame_in-&gt;height = in_height;</span><br><span class="line">    frame_in-&gt;format = AV_PIX_FMT_YUV420P;</span><br><span class="line">    <span class="type">uint32_t</span> frame_count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="type">int</span> ret = fread(frame_buffer_in, <span class="number">1</span>, in_width * in_height * <span class="number">3</span> / <span class="number">2</span>, ifd);</span><br><span class="line">        <span class="keyword">if</span> (ret &lt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//input Y,U,V</span></span><br><span class="line">        frame_in-&gt;data[<span class="number">0</span>] = frame_buffer_in;</span><br><span class="line">        frame_in-&gt;data[<span class="number">1</span>] = frame_buffer_in + in_width*in_height;</span><br><span class="line">        frame_in-&gt;data[<span class="number">2</span>] = frame_buffer_in + in_width*in_height * <span class="number">5</span> / <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">        av_buffersrc_add_frame(buffer_src_ctx, frame_in);</span><br><span class="line">        av_buffersink_get_frame(buffer_sink_ctx, frame_out);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//output Y,U,V</span></span><br><span class="line">        <span class="keyword">if</span> (frame_out-&gt;format == AV_PIX_FMT_YUV420P) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; frame_out-&gt;height; i++) &#123;</span><br><span class="line">                fwrite(frame_out-&gt;data[<span class="number">0</span>] + frame_out-&gt;linesize[<span class="number">0</span>] * i, <span class="number">1</span>, frame_out-&gt;width, ofd);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; frame_out-&gt;height / <span class="number">2</span>; i++) &#123;</span><br><span class="line">                fwrite(frame_out-&gt;data[<span class="number">1</span>] + frame_out-&gt;linesize[<span class="number">1</span>] * i, <span class="number">1</span>, frame_out-&gt;width / <span class="number">2</span>, ofd);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; frame_out-&gt;height / <span class="number">2</span>; i++) &#123;</span><br><span class="line">                fwrite(frame_out-&gt;data[<span class="number">2</span>] + frame_out-&gt;linesize[<span class="number">2</span>] * i, <span class="number">1</span>, frame_out-&gt;width / <span class="number">2</span>, ofd);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ++frame_count;</span><br><span class="line">        <span class="keyword">if</span>(frame_count % <span class="number">25</span> == <span class="number">0</span>)</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Process %d frame!\n&quot;</span>,frame_count);</span><br><span class="line">        av_frame_unref(frame_out);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fclose(ifd);</span><br><span class="line">    fclose(ofd);</span><br><span class="line"></span><br><span class="line">    av_frame_free(&amp;frame_in);</span><br><span class="line">    av_frame_free(&amp;frame_out);</span><br><span class="line">    <span class="comment">// 内部释放AVFilterContext</span></span><br><span class="line">    avfilter_graph_free(&amp;filter_graph);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">+----------+</span><br><span class="line">|    in    |default--[768x320 1:1 yuv420p]--split:default</span><br><span class="line">| (buffer) |</span><br><span class="line">+----------+</span><br><span class="line"></span><br><span class="line">                                               +--------------+</span><br><span class="line">overlay:default--[768x320 1:1 yuv420p]--default|     out      |</span><br><span class="line">                                               | (buffersink) |</span><br><span class="line">                                               +--------------+</span><br><span class="line"></span><br><span class="line">                                          +---------+</span><br><span class="line">in:default--[768x320 1:1 yuv420p]--default|  split  |output0--[768x320 1:1 yuv420p]--overlay:main</span><br><span class="line">                                          | (split) |output1--[768x320 1:1 yuv420p]--crop:default</span><br><span class="line">                                          +---------+</span><br><span class="line"></span><br><span class="line">                                             +--------+</span><br><span class="line">split:output1--[768x320 1:1 yuv420p]--default|  crop  |default--[768x160 1:1 yuv420p]--vflip:default</span><br><span class="line">                                             | (crop) |</span><br><span class="line">                                             +--------+</span><br><span class="line"></span><br><span class="line">                                            +---------+</span><br><span class="line">crop:default--[768x160 1:1 yuv420p]--default|  vflip  |default--[768x160 1:1 yuv420p]--auto_scale_0:default</span><br><span class="line">                                            | (vflip) |</span><br><span class="line">                                            +---------+</span><br><span class="line"></span><br><span class="line">                                                     +-----------+</span><br><span class="line">split:output0---------[768x320 1:1 yuv420p]------main|  overlay  |default--[768x320 1:1 yuv420p]--out:default</span><br><span class="line">auto_scale_0:default--[768x160 1:1 yuva420p]--overlay| (overlay) |</span><br><span class="line">                                                     +-----------+</span><br><span class="line"></span><br><span class="line">                                             +--------------+</span><br><span class="line">vflip:default--[768x160 1:1 yuv420p]--default| auto_scale_0 |default--[768x160 1:1 yuva420p]--overlay:overlay</span><br><span class="line">                                             |   (scale)    |</span><br><span class="line">                                             +--------------+</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1863,193 +1952,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/08/30/%E9%9F%B3%E8%A7%86%E9%A2%91%E8%A7%A3%E7%A0%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/08/30/%E9%9F%B3%E8%A7%86%E9%A2%91%E8%A7%A3%E7%A0%81/" class="post-title-link" itemprop="url">音视频解码</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-08-30 19:09:04" itemprop="dateCreated datePublished" datetime="2023-08-30T19:09:04+08:00">2023-08-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-15 13:43:55" itemprop="dateModified" datetime="2024-01-15T13:43:55+08:00">2024-01-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="音视频解码流程"><a href="#音视频解码流程" class="headerlink" title="音视频解码流程"></a>音视频解码流程</h1><p>FFmpeg API 中音频和视频解码的流程基本一致。</p>
-<p>音频解码过程：输入音频文件（AAC 文件），通过音频解码器，输出 PCM 数据。</p>
-<p>视频解码过程：输入视频文件（H264 文件），通过视频解码器，输出像素数据（YUV420 等）。</p>
-<h2 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h2><pre class="mermaid">graph TB
-    S(开始)-->A
-    A[查找指定解码器 avcodec_find_decoder]-->B[根据解码器ID初始化裸流解析器 av_parser_init]
-    B-->C[分配解码器上下文 avcodec_alloc_context3]
-    C-->D[打开解码器并关联解码器上下文 avcodec_open2]
-    D-->E[读取裸流 fread]
-    E-->F{是否读取结束}
-    F-->|否|G[解析一个数据包 av_parser_parse2]
-    G-->H[发送给解码器 avcodec_send_packet]
-    H-->I[接收解码后的帧 avcodec_receive_frame]
-    I-->J{EAGIN or EOF}
-    J-->|是|E
-    J-->|否|K[将YUV数据写入文件 fwrite]
-    F-->|是|L[刷新解码器获取缓存数据帧 flush decoder]
-    L-->M(结束)</pre>
-
-<h2 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h2><ul>
-<li>avcodec_find_decoder()：根据指定的 AVCodecID 查找解码器。 </li>
-<li>av_parser_init()：初始化 AVCodecParserContext。 </li>
-<li>avcodec_alloc_context3()：为 AVCodecContext 分配内存，进行初始化。</li>
-<li>avcodec_open2()：打开解码器。 </li>
-<li>av_parser_parse2()：解析获得一个 Packet。 </li>
-<li>avcodec_send_packet()：将 AVPacket 压缩数据送给解码器。</li>
-<li>avcodec_receive_frame()：获取到解码后的 AVFrame 数据。</li>
-<li>av_get_bytes_per_sample(): 获取每个 sample 中的字节数。</li>
-</ul>
-<h2 id="相关数据结构"><a href="#相关数据结构" class="headerlink" title="相关数据结构"></a>相关数据结构</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//aac解析器</span></span><br><span class="line">AVCodecParser ff_aac_parser = &#123;</span><br><span class="line">    .codec_ids = &#123; AV_CODEC_ID_AAC &#125;,</span><br><span class="line">    .priv_data_size = <span class="keyword">sizeof</span>(AACAC3ParseContext),</span><br><span class="line">    .parser_init = aac_parse_init,</span><br><span class="line">    .parser_parse = ff_aac_ac3_parse,</span><br><span class="line">    .parser_close = ff_parse_close,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//h264解析器</span></span><br><span class="line">AVCodecParser ff_h264_parser = &#123;</span><br><span class="line">    .codec_ids = &#123; AV_CODEC_ID_H264 &#125;, </span><br><span class="line">    .priv_data_size = <span class="keyword">sizeof</span>(H264ParseContext), </span><br><span class="line">    .parser_init = init, </span><br><span class="line">    .parser_parse = h264_parse, </span><br><span class="line">    .parser_close = h264_close, </span><br><span class="line">    .split = h264_split,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>AVCodecParser：用于解析输入的数据流并把它分成一帧一帧的压缩编码数据。</li>
-<li>不同编码类型的 parser 是和 CODE_ID 进行绑定的，因此可以通过 CODE_ID 查找到对应的码流 parser。</li>
-</ul>
-<h1 id="音视频解码函数"><a href="#音视频解码函数" class="headerlink" title="音视频解码函数"></a>音视频解码函数</h1><p>FFmpeg 提供了两组函数，分别用于编码和解码： </p>
-<ul>
-<li><p>编码：avcodec_send_packet()、avcodec_receive_frame()。</p>
-</li>
-<li><p>解码：avcodec_send_frame()、avcodec_receive_packet()。</p>
-</li>
-</ul>
-<h2 id="avcodec-send-packet"><a href="#avcodec-send-packet" class="headerlink" title="avcodec_send_packet"></a>avcodec_send_packet</h2><ul>
-<li>将裸流数据包送给解码器。</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">avcodec_send_packet</span><span class="params">(AVCodecContext *avctx, <span class="type">const</span> AVPacket *avpkt)</span>;</span><br></pre></td></tr></table></figure>
-
-<p><strong>参数</strong></p>
-<ul>
-<li>avctx：解码上下文。</li>
-<li>avpkt：<ul>
-<li>输入 AVPakcet，通常情况下，<strong>输入数据是一个单一的视频帧或者几个完整的音频帧</strong>。调用者保留包的原有属性，解码器不会修改包的内容。</li>
-<li>如果包含有多个帧，要求多次调用 avcodec_recvive_frame()，直到 avcodec_recvive_frame() 返回 AVERROR(EAGAIN) 或 AVERROR_EOF。</li>
-<li>输入参数可以为 NULL，或者 AVPacket 的 data 域设置为 NULL 或者 size 域设置为 0，表示将刷新所有的包，意味着数据流已经结束了。第一次发送刷新会总会成功，第二次发送刷新包是没有必要的，并且返回 AVERROR_EOF，如果解码器缓存了一些帧，返回一个刷新包，将会返回所有的解码包。</li>
-</ul>
-</li>
-</ul>
-<p><strong>返回值</strong></p>
-<ul>
-<li>0: 表示成功。</li>
-<li>AVERROR(EAGAIN)：当前状态不接受输入，用户必须先使用 avcodec_receive_frame() 读取数据帧。</li>
-<li>AVERROR_EOF：解码器已刷新，不能再向其发送新包。</li>
-<li>AVERROR(EINVAL)：没有打开解码器，或者这是一个编码器，或者要求刷新。</li>
-<li>AVERRO(ENOMEN)：无法将数据包添加到内部队列。</li>
-</ul>
-<p><strong>警告</strong></p>
-<ul>
-<li><p>输入的 avpkt-data 缓冲区必须大于 AV_INPUT_PADDING_SIZE，因为优化的字节流读取器必须一次读取 32 或者 64 比特的数据。 </p>
-</li>
-<li><p>不能跟之前的 API（例如 avcodec_decode_video2）混用，否则会返回不可预知的错误。</p>
-</li>
-<li><p>在将包发送给解码器的时候，AVCodecContext 必须已经通过 avcodec_open2 打开。</p>
-</li>
-</ul>
-<h2 id="avcodec-receive-frame"><a href="#avcodec-receive-frame" class="headerlink" title="avcodec_receive_frame"></a>avcodec_receive_frame</h2><ul>
-<li>从解码器返回已解码的输出数据。</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">avcodec_receive_frame</span><span class="params">(AVCodecContext *avctx, AVFrame *frame)</span>;</span><br></pre></td></tr></table></figure>
-
-<p><strong>参数</strong></p>
-<ul>
-<li><p>avctx：编解码器上下文。</p>
-</li>
-<li><p>frame：获取使用 reference-counted 机制的 audio 或者 video 帧（取决于解码器类型）。请注意，在执行其他操作之前，函数内部将始终先调用 av_frame_unref(frame)。</p>
-</li>
-</ul>
-<p><strong>返回值</strong></p>
-<ul>
-<li><p>0：成功，返回一个帧。</p>
-</li>
-<li><p>AVERROR(EAGAIN)：该状态下没有帧输出，需要使用 avcodec_send_packet 发送新的 packet 到解码器。</p>
-</li>
-<li><p>AVERROR_EOF：解码器已经被完全刷新，不再有输出帧。</p>
-</li>
-<li><p>AVERROR(EINVAL)：编解码器没打开。</p>
-</li>
-</ul>
-<h1 id="音视频解码示例"><a href="#音视频解码示例" class="headerlink" title="音视频解码示例"></a>音视频解码示例</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavformat/avformat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavcodec/avcodec.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libavutil/imgutils.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;libswscale/swscale.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> AUDIO</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> READ_BUFFER_SIZE 40960</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> READ_LEFT_SIZE 4096</span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">Decode</span><span class="params">(AVCodecContext* codec_ctx, AVPacket* pkt, AVFrame* frame, FILE* out_fd)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line">    ret = avcodec_send_packet(codec_ctx, pkt);</span><br><span class="line">    <span class="keyword">if</span> (ret == AVERROR(EAGAIN)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;current not recv packet, use avcodec_receive_frame to get frame.\n&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ret == AVERROR_EOF) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;codec is flush can not send packet.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (ret &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//avcodec_receive_frame 每次内部会先调用av_frame_unref</span></span><br><span class="line">        ret = avcodec_receive_frame(codec_ctx, frame);</span><br><span class="line">        <span class="keyword">if</span> (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;error decoding.\n&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//处理解码出来的每一帧</span></span><br><span class="line">        <span class="type">static</span> <span class="type">int</span> print_frame = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (print_frame == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">//打印AVFrame信息</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;ar-samplerate: %uHz\n&quot;</span>, frame-&gt;sample_rate);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;ac-channel: %u\n&quot;</span>, frame-&gt;channels);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;f-format: %u\n&quot;</span>, frame-&gt;format);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;nb_samples: %d\n&quot;</span>, frame-&gt;nb_samples);</span><br><span class="line"></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;width: %u\n&quot;</span>, frame-&gt;width);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;height: %u\n&quot;</span>, frame-&gt;height);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;format: %u\n&quot;</span>, frame-&gt;format);</span><br><span class="line"></span><br><span class="line">            print_frame = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> AUDIO</span></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">            P表示Planar（平面），其数据格式排列方式为 :</span></span><br><span class="line"><span class="comment">            LLLLLLRRRRRRLLLLLLRRRRRRLLLLLLRRRRRRL...（每个LLLLLLRRRRRR为一个音频帧）</span></span><br><span class="line"><span class="comment">            而不带P的数据格式（即交错排列）排列方式为：</span></span><br><span class="line"><span class="comment">            LRLRLRLRLRLRLRLRLRLRLRLRLRLRLRLRLRLRL...（每个LR为一个音频样本）</span></span><br><span class="line"><span class="comment">         播放范例：ffplay -ar 48000 -ac 2 -f f32le believe.pcm</span></span><br><span class="line"><span class="comment">          */</span></span><br><span class="line">        <span class="comment">//原始为Planar方式，以交错方式写入文件</span></span><br><span class="line">        <span class="class"><span class="keyword">enum</span> <span class="title">AVSampleFormat</span> <span class="title">sample_fmt</span> =</span> codec_ctx-&gt;sample_fmt;</span><br><span class="line">        <span class="type">int</span> sample_bytes = av_get_bytes_per_sample(sample_fmt);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; frame-&gt;nb_samples; ++i) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; frame-&gt;channels; ++j) &#123;</span><br><span class="line">                fwrite(frame-&gt;data[j] + i * sample_bytes, <span class="number">1</span>, sample_bytes, out_fd);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">        <span class="comment">// 一般H264默认为 AV_PIX_FMT_YUV420P, </span></span><br><span class="line">        <span class="comment">// frame-&gt;linesize[1]  对齐的问题</span></span><br><span class="line">        <span class="comment">// 正确写法  linesize[]代表每行的字节数量，所以每行的偏移是linesize[]</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; frame-&gt;height; ++i)</span><br><span class="line">            fwrite(frame-&gt;data[<span class="number">0</span>] + i * frame-&gt;linesize[<span class="number">0</span>], <span class="number">1</span>, frame-&gt;width, out_fd);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; frame-&gt;height/<span class="number">2</span>; ++i)</span><br><span class="line">            fwrite(frame-&gt;data[<span class="number">1</span>] + i * frame-&gt;linesize[<span class="number">1</span>], <span class="number">1</span>, frame-&gt;width/<span class="number">2</span>, out_fd);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; frame-&gt;height/<span class="number">2</span>; ++i)</span><br><span class="line">            fwrite(frame-&gt;data[<span class="number">2</span>] + i * frame-&gt;linesize[<span class="number">2</span>], <span class="number">1</span>, frame-&gt;width/<span class="number">2</span>, out_fd);</span><br><span class="line">        <span class="comment">// 错误写法</span></span><br><span class="line">        <span class="comment">// 写入y分量</span></span><br><span class="line">        <span class="comment">// fwrite(frame-&gt;data[0], 1, frame-&gt;width * frame-&gt;height,  outfile);//Y</span></span><br><span class="line">        <span class="comment">// 写入u分量</span></span><br><span class="line">        <span class="comment">// fwrite(frame-&gt;data[1], 1, (frame-&gt;width) *(frame-&gt;height)/4,outfile);//U:宽高均是Y的一半</span></span><br><span class="line">        <span class="comment">// 写入v分量</span></span><br><span class="line">        <span class="comment">// fwrite(frame-&gt;data[2], 1, (frame-&gt;width) *(frame-&gt;height)/4,outfile);//V：宽高均是Y的一半</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//audio: AV_CODEC_ID_AAC</span></span><br><span class="line">    <span class="comment">//audio: AV_CODEC_ID_H264</span></span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">AVCodecID</span> <span class="title">codec_id</span> =</span> AV_CODEC_ID_AAC;</span><br><span class="line"></span><br><span class="line">    <span class="type">const</span> AVCodec* codec = avcodec_find_decoder(codec_id);</span><br><span class="line">    AVCodecContext* codec_ctx = avcodec_alloc_context3(codec);</span><br><span class="line">    AVCodecParserContext* parser = av_parser_init(codec_id);</span><br><span class="line"></span><br><span class="line">    avcodec_open2(codec_ctx, codec, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//文件</span></span><br><span class="line">    FILE* in_fd = fopen(<span class="string">&quot;test.aac&quot;</span>, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    FILE* out_fd = fopen(<span class="string">&quot;test.pcm&quot;</span>, <span class="string">&quot;wb&quot;</span>);</span><br><span class="line"></span><br><span class="line">    AVPacket* pkt = av_packet_alloc();</span><br><span class="line">    AVFrame* frame = av_frame_alloc();</span><br><span class="line">    <span class="type">uint8_t</span> buf[READ_BUFFER_SIZE] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="type">uint8_t</span>* data_ptr = buf;</span><br><span class="line">    <span class="type">size_t</span> total_size = fread(buf, <span class="number">1</span>, READ_BUFFER_SIZE, in_fd);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (total_size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//送进去裸流解析出AVPacket</span></span><br><span class="line">        <span class="type">int</span> parsed_bytes = av_parser_parse2(parser, codec_ctx, &amp;pkt-&gt;data, &amp;pkt-&gt;size,</span><br><span class="line">                                            data_ptr, total_size, AV_NOPTS_VALUE, AV_NOPTS_VALUE, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (parsed_bytes &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;parse AVPacket failed.\n&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (parsed_bytes &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            data_ptr += parsed_bytes;</span><br><span class="line">            total_size -= parsed_bytes;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//解码</span></span><br><span class="line">            <span class="keyword">if</span> (pkt-&gt;size &gt; <span class="number">0</span>)</span><br><span class="line">                Decode(codec_ctx, pkt, frame, out_fd);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//继续读取数据</span></span><br><span class="line">        <span class="keyword">if</span> (total_size &lt; READ_LEFT_SIZE) &#123;</span><br><span class="line">            memmove(buf, data_ptr, total_size);</span><br><span class="line">            <span class="type">size_t</span> nread = fread(buf + total_size, <span class="number">1</span>, READ_BUFFER_SIZE - total_size, in_fd);</span><br><span class="line">            total_size += nread;</span><br><span class="line">            data_ptr = buf;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//刷新解码器</span></span><br><span class="line">    pkt-&gt;data = <span class="literal">NULL</span>;</span><br><span class="line">    pkt-&gt;size = <span class="number">0</span>;</span><br><span class="line">    Decode(codec_ctx, pkt, frame, out_fd);</span><br><span class="line"></span><br><span class="line">    fclose(in_fd);</span><br><span class="line">    fclose(out_fd);</span><br><span class="line"></span><br><span class="line">    avcodec_free_context(&amp;codec_ctx);</span><br><span class="line">    av_parser_close(parser);</span><br><span class="line">    av_frame_free(&amp;frame);</span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://www.ffmpeg.org/doxygen/4.1/group__lavc__encdec.html#details">https://www.ffmpeg.org/doxygen/4.1/group__lavc__encdec.html#details</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/9/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/9/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>

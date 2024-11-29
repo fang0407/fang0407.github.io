@@ -120,13 +120,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
   </nav>
@@ -143,6 +143,228 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/05/05/NACK%E4%B8%A2%E5%8C%85%E9%87%8D%E4%BC%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/05/05/NACK%E4%B8%A2%E5%8C%85%E9%87%8D%E4%BC%A0/" class="post-title-link" itemprop="url">NACK丢包重传</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-05-05 16:40:06" itemprop="dateCreated datePublished" datetime="2024-05-05T16:40:06+08:00">2024-05-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-05-10 21:29:07" itemprop="dateModified" datetime="2024-05-10T21:29:07+08:00">2024-05-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="NACK概述"><a href="#NACK概述" class="headerlink" title="NACK概述"></a>NACK概述</h1><ul>
+<li>为什么需要 NACK？<ul>
+<li>通常实时音视频系统的传输协议都是基于 UDP 的，UDP 协议是不可靠的，当网络链路出现异常的时候， 可能会出现乱序、丢包，从而影响音视频的通信质量。</li>
+<li>在 WebRTC 中，NACK 是抵抗网络丢包非常重要的手段，在 TCP 协议中，当接收端收到数据包时，会发送一个 ACK 给发送端，告诉已经收到了数据包。然而在 WebRTC 中，接收端会告诉发送端没有收到的数据包，所以称之为 NACK（negative acknowledge）。</li>
+</ul>
+</li>
+</ul>
+<p>问题</p>
+<ul>
+<li>什么时候触发 NACK？</li>
+<li>重传包可能还会丢失，两次重传之间的间隔如何合理的控制？</li>
+<li>如果重传一直不成功，该如何处理？</li>
+<li>乱序和丢包是不同的，针对乱序有没有优化处理手段？</li>
+</ul>
+<h1 id="NACK核心思想"><a href="#NACK核心思想" class="headerlink" title="NACK核心思想"></a>NACK核心思想</h1><ul>
+<li>触发条件<ul>
+<li>检测丢包发生时，会立即触发一次</li>
+<li>针对乱序优化<ul>
+<li>等待一段时间再触发</li>
+<li>统计方法估计乱序的个数 n，等待 n 个包再触发</li>
+</ul>
+</li>
+<li>定期触发<ul>
+<li>两次重传的间隔设定，应超过一个 RTT</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>重传限制，当网络质量非常差时，一直重传可能也不成功，不能无限重传下去<ul>
+<li>一个包最多重传 10 次</li>
+<li>不重传时间过久的包，与最新的包 seq 相差 10000 以上的包不再重传</li>
+<li>同时重传总的包个数不超过 1000个</li>
+</ul>
+</li>
+<li>清理优化<ul>
+<li>考虑利用关键帧来清除未重传成功的包</li>
+<li>当收到完整连续的帧时，也可以清理</li>
+</ul>
+</li>
+<li>请求关键帧机制<ul>
+<li>当大量重传无法成功时，可以放弃重传，直接请求 I 帧</li>
+</ul>
+</li>
+</ul>
+<h1 id="NACK丢包检测"><a href="#NACK丢包检测" class="headerlink" title="NACK丢包检测"></a>NACK丢包检测</h1><p><strong>包序列号比较</strong></p>
+<ul>
+<li>在比较包序列号的先后时，不能简单的比较数值的大小，因为包序列号的类型是 uint16_t，最大只能表示 65535，如果视频流持续时间比较长，包序列号就很容易超过这个限制而从 0 开始循环，此时序列号为 0 的包就比序列号为 65535 的包要新了。</li>
+<li>WebRTC 里面提供了一个 <code>webrtc::AheadOf(a, b)</code> 的方法来解决这个问题，该方法可以处理这种情况。基本思想是通过比较序列号的距离，来判断序列号是否发生了循环。通常情况下，序列号是连续递增的，两个先后包序列号之间的差值不会相差太大，即使存在丢包情况，只要我们设置一个足够大的安全距离，比如最大值的一半，就可以规避这个问题。最终我们可以比较可靠的判断是否发生了包序列号的循环。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;rtc_base/numerics/sequence_number_util.h&gt;</span></span></span><br><span class="line">webrtc::<span class="built_in">AheadOf</span>(<span class="number">8</span>, <span class="number">2</span>) == <span class="number">1</span></span><br><span class="line">webrtc::<span class="built_in">AheadOf</span>(<span class="number">65510</span>, <span class="number">2</span>) == <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>触发条件</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">NackFilterOptions</span> &#123;</span><br><span class="line">    kSeqNumOnly,  <span class="comment">// 丢包时触发</span></span><br><span class="line">    kTimeOnly,    <span class="comment">// 时间触发</span></span><br><span class="line">    kSeqAndTime</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>清理时间较久仍未重传成功的序列号</strong></p>
+<ul>
+<li><p>由于网络的原因，有些包可能就一直无法重传成功，久而久之，重传列表会有两个问题</p>
+<ul>
+<li>重传列表的长度越来越大</li>
+<li>重传列表中还存在时间很久的序列号，已经没有重传的意义了</li>
+</ul>
+</li>
+<li><p>清理策略</p>
+<ul>
+<li>对于时间比较久仍未重传成功的序列号，从重传列表中移除，与当前最新收到的序列号相差 <code>kMaxPacketAge=10000</code> 的序列号认为是时间比较久的序列号</li>
+<li>尽最大努力清理，但还是超过限制，放弃重传，直接请求关键帧</li>
+</ul>
+</li>
+</ul>
+<p><strong>利用关键帧控制重传列表的长度</strong></p>
+<ul>
+<li>避免重传列表长度过大，当长度超过设定的限制 <code>kMaxNackPackets=1000</code>，执行清理动作</li>
+<li>利用关键帧列表清理</li>
+</ul>
+<p><strong>针对乱序优化重传策略</strong></p>
+<ul>
+<li>乱序<ul>
+<li>当遇到 105 时，按照当前的丢包检测策略，会认为 102、103、104 丢包了，立即触发重传。而实际上可能只是一个乱序，102、103、104 紧接着很快就来了，这种情况可以优化</li>
+</ul>
+</li>
+<li>优化策略<ul>
+<li>当判断需要重传时，等待一小段时间（可配置），再触发重传</li>
+<li>通过数据统计，估计一个合理的需要等待的包个数，再触发重传</li>
+<li>弊端：可能会加大延迟</li>
+</ul>
+</li>
+<li>直方图统计<ul>
+<li>基本思想：在一个样本数内，统计某个范围内的取值分布，然后计算累计概率对应的取值。</li>
+<li>WebRTC 里面设定的样本数为 128，取值为 [0, 10）范围内的乱序个数</li>
+<li>例如：<ul>
+<li>逆累计分布函数（InverseCdf），给定一个概率，输出对应的取值</li>
+<li>比如给定概率 50%，按照上图的结果，乱序的个数为 2</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2024/05/05/NACK%E4%B8%A2%E5%8C%85%E9%87%8D%E4%BC%A0/直方图统计.png" alt="直方图统计" style="zoom:50%;">
+
+<h1 id="NACK示例"><a href="#NACK示例" class="headerlink" title="NACK示例"></a>NACK示例</h1><p><strong>NackRequester</strong></p>
+<ul>
+<li><code>uint16_t newest_seq_num_</code>：最新包的序列包。</li>
+<li><code>std::map&lt;uint16_t, NackInfo, webrtc::DescendingSeqNumComp&lt;uint16_t&gt;&gt; nack_list_</code>：重传列表。</li>
+<li><code>std::set&lt;uint16_t, webrtc::DescendingSeqNumComp&lt;uint16_t&gt;&gt; keyframe_list_</code>：关键帧（第一个包）列表。</li>
+<li><code>TimerWatcher *nack_timer_</code>：定时器，用于定时重传。</li>
+<li><code>int64_t send_nack_delay_ms_</code>：当判断需要重传时，等待一小段时间，再触发重传。</li>
+<li><code>Histogram reordering_histogram_</code>：重传直方图。</li>
+<li><code>OnReceivedPacket()</code>：接收 RTP 包序列号，触发重传。<ul>
+<li>记录第一次收到数据包</li>
+<li>不处理重复的数据包</li>
+<li>如果当前收到的序列号比已经收到的最新包序列号还要旧，有可能是乱序或者重传包<ul>
+<li>如果在重传列表 <code>nack_list_</code> 中需要删除掉，不再重传</li>
+<li>对于乱序包，调用 <code>UpdateReorderingStat()</code> 更新直方图  <code>reordering_histogram_</code></li>
+</ul>
+</li>
+<li>保存关键帧的第一个包序列号</li>
+<li>如果当前收到的序列号比已经收到的最新包序列号要新，调用 <code>AddPacketsToNack()</code></li>
+<li>更新当前最新的序列号</li>
+<li>调用 <code>GetNackBatch()</code> 获取需要重传的序列号，并且触发一次基于丢包时触发的 NACK 重传</li>
+</ul>
+</li>
+<li><code>AddPacketsToNack()</code>：清理时间较久仍未重传成功的序列号，并且保存需要重传的序列号到重传列表。</li>
+<li><code>NackTimeCob()</code>：定时重传回调，调用 <code>GetNackBatch()</code>。</li>
+<li><code>GetNackBatch()</code>：获取满足条件的需要重传的包序列号。<ul>
+<li>判断基于丢包触发 NACK 的条件是否满足<ul>
+<li>只会触发一次，之前触发过的不在触发</li>
+</ul>
+</li>
+<li>判断基于定时触发 NACK 的条件是否满足<ul>
+<li>需要保证上一次的重传有充分的时间，两次重传的时间间隔设置为 RTT 的时间</li>
+</ul>
+</li>
+<li>等待一段时间才重传</li>
+<li>该包重传的次数达到 10 次，不再重传</li>
+</ul>
+</li>
+<li><code>RemovePacketsUntilKeyFrame()</code>：清理重传列表，直到遇到关键帧。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1396,7 +1618,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-09-22 21:52:09" itemprop="dateModified" datetime="2024-09-22T21:52:09+08:00">2024-09-22</time>
+      <time title="Modified: 2024-10-19 21:42:21" itemprop="dateModified" datetime="2024-10-19T21:42:21+08:00">2024-10-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1429,6 +1651,7 @@
 <p>参考链接：</p>
 <p><a target="_blank" rel="noopener" href="https://blog.xizhibei.me/zh-cn/2020/02/10/how-to-clone-a-large-git-repo/">https://blog.xizhibei.me/zh-cn/2020/02/10/how-to-clone-a-large-git-repo/</a></p>
 <p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/78396934/error-1824-bytes-of-body-are-still-expected-while-cloning-repository-from-git">https://stackoverflow.com/questions/78396934/error-1824-bytes-of-body-are-still-expected-while-cloning-repository-from-git</a></p>
+<h1 id="HTTP-Router"><a href="#HTTP-Router" class="headerlink" title="HTTP Router"></a>HTTP Router</h1><p><a target="_blank" rel="noopener" href="https://indentit.com/posts/webapps/cpp-http-router/">https://indentit.com/posts/webapps/cpp-http-router/</a></p>
 
       
     </div>
@@ -3622,972 +3845,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/12/30/JavaScript%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/12/30/JavaScript%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">JavaScript基础</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-12-30 22:06:13" itemprop="dateCreated datePublished" datetime="2023-12-30T22:06:13+08:00">2023-12-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-16 18:50:19" itemprop="dateModified" datetime="2024-01-16T18:50:19+08:00">2024-01-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>MDN Web Docs：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/">https://developer.mozilla.org/zh-CN/</a></p>
-<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><blockquote>
-<p>掌握 JavaScript 的引入方式，初步认识 JavaScript 的作用</p>
-</blockquote>
-<h2 id="引入方式"><a href="#引入方式" class="headerlink" title="引入方式"></a>引入方式</h2><p>JavaScript 程序不能独立运行，它需要被嵌入 HTML 中，然后浏览器才能执行 JavaScript 代码。通过 <code>script</code> 标签将 JavaScript 代码引入到 HTML 中，有两种方式：</p>
-<h3 id="内部方式"><a href="#内部方式" class="headerlink" title="内部方式"></a>内部方式</h3><p>通过 <code>script</code> 标签包裹 JavaScript 代码</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>JavaScript 基础 - 引入方式<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 内联形式：通过 script 标签包裹 JavaScript 代码 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="title function_">alert</span>(<span class="string">&quot;hello JavaScript!&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="外部形式"><a href="#外部形式" class="headerlink" title="外部形式"></a>外部形式</h3><p>一般将 JavaScript 代码写在独立的以 .js 结尾的文件中，然后通过 <code>script</code> 标签的 <code>src</code> 属性引入</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// demo.js</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;hello JavaScript!&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>JavaScript 基础 - 引入方式<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 外部形式：通过 script 的 src 属性引入独立的 .js 文件 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;demo.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>如果 script 标签使用 src 属性引入了某 .js 文件，那么标签的代码会被忽略！！！如下代码所示：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>JavaScript 基础 - 引入方式<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 外部形式：通过 script 的 src 属性引入独立的 .js 文件 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;demo.js&quot;</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">       <span class="comment">// 此处的代码会被忽略掉！！！！</span></span></span><br><span class="line"><span class="language-javascript">      <span class="title function_">alert</span>(<span class="number">666</span>);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="注释和结束符"><a href="#注释和结束符" class="headerlink" title="注释和结束符"></a>注释和结束符</h2><p>通过注释可以屏蔽代码被执行或者添加备注信息，JavaScript 支持两种形式注释语法：</p>
-<h3 id="单行注释"><a href="#单行注释" class="headerlink" title="单行注释"></a>单行注释</h3><p>使用 <code>// </code> 注释单行代码</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>JavaScript 基础 - 注释<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 这种是单行注释的语法</span></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 一次只能注释一行</span></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 可以重复注释</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&quot;Hello JavaScript!&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="多行注释"><a href="#多行注释" class="headerlink" title="多行注释"></a>多行注释</h3><p>使用 <code>/* */</code> 注释多行代码</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>JavaScript 基础 - 注释<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">/* 这种的是多行注释的语法 */</span></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">/*</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">    	更常见的多行注释是这种写法</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">    	在些可以任意换行</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">    	多少行都可以</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">      */</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&quot;Hello JavaScript!&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>注：编辑器中单行注释的快捷键为 <code>ctrl + /</code></strong></p>
-<h3 id="结束符"><a href="#结束符" class="headerlink" title="结束符"></a>结束符</h3><p>在 JavaScript 中 <code>;</code> 代表一段代码的结束，多数情况下可以省略 <code>;</code> 使用回车（enter）替代。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>JavaScript 基础 - 结束符<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line">      alert(1);</span><br><span class="line">      alert(2);</span><br><span class="line">      alert(1)</span><br><span class="line">      alert(2)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>实际开发中有许多人主张书写 JavaScript 代码时省略结束符 <code>;</code></p>
-<h2 id="输入和输出"><a href="#输入和输出" class="headerlink" title="输入和输出"></a>输入和输出</h2><p>输出和输入也可理解为人和计算机的交互，用户通过键盘、鼠标等向计算机输入信息，计算机处理后再展示结果给用户，这便是一次输入和输出的过程。</p>
-<p>举例说明：如按键盘上的方向键，向上&#x2F;下键可以滚动页面，按向上&#x2F;下键这个动作叫作输入，页面发生了滚动了这便叫输出。</p>
-<h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><p>JavaScript 可以接收用户的输入，然后再将输入的结果输出：</p>
-<p><code>alert()</code>、<code>document.wirte()</code></p>
-<p>以数字为例，向 <code>alert()</code> 或 <code>document.write()</code>输入任意数字，他都会以弹窗形式展示（输出）给用户。</p>
-<h3 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h3><p>向 <code>prompt()</code> 输入任意内容会以弹窗形式出现在浏览器中，一般提示用户输入一些内容。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>JavaScript 基础 - 输入输出<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  </span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"> </span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 1. 输入的任意数字，都会以弹窗形式展示</span></span></span><br><span class="line"><span class="language-javascript">    <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;要输出的内容&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">alert</span>(<span class="string">&#x27;要输出的内容&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 2. 以弹窗形式提示用户输入姓名，注意这里的文字使用英文的引号</span></span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">prompt</span>(<span class="string">&#x27;请输入您的姓名:&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">  </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="变量和常量"><a href="#变量和常量" class="headerlink" title="变量和常量"></a>变量和常量</h1><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><blockquote>
-<p>理解变量是计算机存储数据的“容器”，掌握变量的声明方式</p>
-</blockquote>
-<p>变量是计算机中用来存储数据的“容器”，它可以让计算机变得有记忆，通俗的理解变量就是使用【某个符号】来代表【某个具体的数值】（数据）。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// x 符号代表了 5 这个数值</span></span></span><br><span class="line"><span class="language-javascript">  x = <span class="number">5</span></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// y 符号代表了 6 这个数值</span></span></span><br><span class="line"><span class="language-javascript">  y = <span class="number">6</span></span></span><br><span class="line"><span class="language-javascript">    </span></span><br><span class="line"><span class="language-javascript">  <span class="comment">//举例： 在 JavaScript 中使用变量可以将某个数据（数值）记录下来！</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 将用户输入的内容保存在 num 这个变量（容器）中</span></span></span><br><span class="line"><span class="language-javascript">  num = <span class="title function_">prompt</span>(<span class="string">&#x27;请输入一数字!&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="comment">// 通过 num 变量（容器）将用户输入的内容输出出来</span></span></span><br><span class="line"><span class="language-javascript">  <span class="title function_">alert</span>(num)</span></span><br><span class="line"><span class="language-javascript">  <span class="variable language_">document</span>.<span class="title function_">write</span>(num)</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="变量声明"><a href="#变量声明" class="headerlink" title="变量声明"></a>变量声明</h3><p>声明（定义）变量有两部分构成：声明关键字、变量名（标识）</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>JavaScript 基础 - 声明和赋值<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// let 变量名</span></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 声明(定义)变量有两部分构成：声明关键字、变量名（标识）</span></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// let 即关键字，所谓关键字是系统提供的专门用来声明（定义）变量的词语</span></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// age 即变量的名称，也叫标识符</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">let</span> age;</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>关键字是 JavaScript 中内置的一些英文词汇（单词或缩写），它们代表某些特定的含义，如 <code>let</code> 的含义是声明变量的，看到 <code>let</code>  后就可想到这行代码的意思是在声明变量，如 <code>let age;</code> </p>
-<p><code>let</code> 和 <code>var</code> 都是 JavaScript 中的声明变量的关键字，推荐使用 <code>let</code> 声明变量！！！</p>
-<h3 id="变量赋值"><a href="#变量赋值" class="headerlink" title="变量赋值"></a>变量赋值</h3><p>声明（定义）变量相当于创造了一个空的“容器”，通过赋值向这个容器中添加数据。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>JavaScript 基础 - 声明和赋值<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 声明(定义)变量有两部分构成：声明关键字、变量名（标识）</span></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// let 即关键字，所谓关键字是系统提供的专门用来声明（定义）变量的词语</span></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// age 即变量的名称，也叫标识符</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">let</span> age;</span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 赋值，将 18 这个数据存入了 age 这个“容器”中</span></span></span><br><span class="line"><span class="language-javascript">      age = <span class="number">18</span>;</span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 这样 age 的值就成了 18</span></span></span><br><span class="line"><span class="language-javascript">      <span class="variable language_">document</span>.<span class="title function_">write</span>(age);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 也可以声明和赋值同时进行</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">let</span> str = <span class="string">&quot;hello world!&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">      <span class="title function_">alert</span>(str);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h3><p>JavaScript 使用专门的关键字 <code>let</code> 和 <code>var</code> 来声明（定义）变量，在使用时需要注意一些细节：</p>
-<p>以下是使用 <code>let</code> 时的注意事项：</p>
-<ol>
-<li>允许声明和赋值同时进行</li>
-<li>不允许重复声明</li>
-<li>允许同时声明多个变量并赋值</li>
-<li>JavaScript 中内置的一些关键字不能被当做变量名</li>
-</ol>
-<p>以下是使用 <code>var</code> 时的注意事项：</p>
-<ol start="2">
-<li>允许声明和赋值同时进行</li>
-<li>允许重复声明</li>
-<li>允许同时声明多个变量并赋值</li>
-</ol>
-<p>大部分情况使用 <code>let</code> 和 <code>var</code> 区别不大，但是 <code>let</code> 相较 <code>var</code> 更严谨，因此推荐使用 <code>let</code>，后期会更进一步介绍二者间的区别。</p>
-<h3 id="命名规则"><a href="#命名规则" class="headerlink" title="命名规则"></a>命名规则</h3><p>关于变量的名称（标识符）有一系列的规则需要遵守：</p>
-<ol>
-<li>只能是字母、数字、下划线、$，且不能能数字开头</li>
-<li>字母区分大小写，如 Age 和 age 是不同的变量</li>
-<li>JavaScript 内部已占用于单词（关键字或保留字）不允许使用</li>
-<li>尽量保证变量具有一定的语义，见字知义</li>
-</ol>
-<p>注：所谓关键字是指 JavaScript 内部使用的词语，如 <code>let</code> 和<code>var</code>，保留字是指 JavaScript 内部目前没有使用的词语，但是将来可能会使用词语。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>JavaScript 基础 - 变量名命名规则<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">let</span> age = <span class="number">18</span>; <span class="comment">// 正确</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">let</span> age1 = <span class="number">18</span>; <span class="comment">// 正确</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">let</span> _age = <span class="number">18</span>; <span class="comment">// 正确</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// let 1age = 18; // 错误，不可以数字开头</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">let</span> $age = <span class="number">18</span>; <span class="comment">// 正确</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">let</span> <span class="title class_">Age</span> = <span class="number">24</span>; <span class="comment">// 正确，它与小写的 age 是不同的变量</span></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// let let = 18; // 错误，let 是关键字</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">let</span> int = <span class="number">123</span>; <span class="comment">// 不推荐，int 是保留字</span></span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h2><p>概念：使用 const 声明的变量称为“常量”。</p>
-<p>使用场景：当某个变量永远不会改变的时候，就可以使用 const 来声明，而不是let。</p>
-<p>命名规范：和变量一致</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="variable constant_">PI</span> = <span class="number">3.14</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>注意： 常量不允许重新赋值,声明的时候必须赋值（初始化）</p>
-</blockquote>
-<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><blockquote>
-<p>计算机世界中的万事成物都是数据。</p>
-</blockquote>
-<p>计算机程序可以处理大量的数据，为了方便数据的管理，将数据分成了不同的类型：</p>
-<p><strong>基本数据类型</strong>：</p>
-<ol>
-<li>number 数字型</li>
-<li>string 字符串型</li>
-<li>boolean 布尔型</li>
-<li>undefined 未定义型</li>
-<li>null 空类型</li>
-</ol>
-<p><strong>引用数据类型</strong>：</p>
-<ol>
-<li>Array 数组</li>
-<li>object 对象</li>
-</ol>
-<h2 id="检测数据类型"><a href="#检测数据类型" class="headerlink" title="检测数据类型"></a>检测数据类型</h2><p>通过 typeof 关键字检测数据类型。</p>
-<ol>
-<li>作为运算符：<code>typeof x</code>（常用写法）</li>
-<li>函数形式：<code>typeof(x)</code></li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 检测 1 是什么类型数据，结果为 number</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="keyword">typeof</span> <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-
-<h2 id="数值类型"><a href="#数值类型" class="headerlink" title="数值类型"></a>数值类型</h2><p>即我们数学中学习到的数字，可以是整数、小数、正数、负数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> score = <span class="number">100</span>; <span class="comment">// 正整数</span></span><br><span class="line"><span class="keyword">let</span> price = <span class="number">12.345</span>; <span class="comment">// 小数</span></span><br><span class="line"><span class="keyword">let</span> temperature = -<span class="number">40</span>; <span class="comment">// 负数</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="keyword">typeof</span> score); <span class="comment">// 结果为 number</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="keyword">typeof</span> price); <span class="comment">// 结果为 number</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="keyword">typeof</span> temperature); <span class="comment">// 结果为 number</span></span><br></pre></td></tr></table></figure>
-
-<p>JavaScript 中的数值类型与数学中的数字是一样的，分为正数、负数、小数等。</p>
-<p>注：JS 是弱数据类型，变量只有赋值之后，才能确认类型。</p>
-<p>补充：<strong>NaN 代表一个计算错误</strong>。它是一个不正确或者一个未定义的数学操作所得到的结果。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;字符串&#x27;</span> - <span class="number">2</span>) <span class="comment">//NaN</span></span><br></pre></td></tr></table></figure>
-
-<p>NaN 是粘性的，如何对 NaN 的操作都会返回 NaN。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">NaN</span> + <span class="number">2</span>) <span class="comment">//NaN</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h2><p>通过单引号（’’）、双引号（””）或反引号（&#96;）包裹的数据都叫字符串，单引号和双引号没有本质上的区别，<strong>推荐使用单引号</strong>。</p>
-<p>注意事项：</p>
-<ol>
-<li>无论单引号或是双引号<strong>必须成对使用</strong></li>
-<li>单引号&#x2F;双引号<strong>可以互相嵌套</strong>，但是不以自已嵌套自已</li>
-<li>必要时可以使用转义符 <code>\</code>，输出单引号或双引号</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> user_name = <span class="string">&quot;小明&quot;</span>; <span class="comment">// 使用单引号</span></span><br><span class="line"><span class="keyword">let</span> gender = <span class="string">&quot;男&quot;</span>; <span class="comment">// 使用双引号</span></span><br><span class="line"><span class="keyword">let</span> str = <span class="string">`123`</span>; <span class="comment">// 看上去是数字，但是用引号包裹了就成了字符串了</span></span><br><span class="line"><span class="keyword">let</span> str1 = <span class="string">&quot;&quot;</span>; <span class="comment">// 这种情况叫空字符串</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="keyword">typeof</span> user_name); <span class="comment">// 结果为 string</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="keyword">typeof</span> gender); <span class="comment">// 结果为 string</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="keyword">typeof</span> str); <span class="comment">// 结果为 string</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>字符串拼接</strong></p>
-<p>场景：+ 运算符可以实现字符串的拼接。</p>
-<p>口诀：数字相加，字符相连。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="string">&#x27;小明&#x27;</span></span><br><span class="line"><span class="keyword">let</span> age = <span class="string">&#x27;18&#x27;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;我的名字叫&#x27;</span> + name)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(name + <span class="string">&#x27;的年龄是&#x27;</span> + age)</span><br></pre></td></tr></table></figure>
-
-<p><strong>模板字符串</strong></p>
-<p>场景：拼接字符串和变量。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="string">&#x27;小明&#x27;</span></span><br><span class="line"><span class="keyword">let</span> age = <span class="string">&#x27;18&#x27;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`我的名字叫<span class="subst">$&#123;name&#125;</span>`</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`<span class="subst">$&#123;name&#125;</span>的年龄是<span class="subst">$&#123;<span class="number">18</span>&#125;</span>`</span>)</span><br></pre></td></tr></table></figure>
-
-<h2 id="布尔类型"><a href="#布尔类型" class="headerlink" title="布尔类型"></a>布尔类型</h2><p>表示肯定或否定时在计算机中对应的是布尔类型数据，它有两个固定的值 <code>true</code> 和 <code>false</code>，表示肯定的数据用 <code>true</code>，表示否定的数据用 <code>false</code>。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> isCool = <span class="literal">true</span>; </span><br><span class="line">isCool = <span class="literal">false</span>; </span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="keyword">typeof</span> isCool); <span class="comment">// 结果为 boolean</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="undefined"><a href="#undefined" class="headerlink" title="undefined"></a>undefined</h2><p>未定义是比较特殊的类型，只有一个值 undefined，只声明变量，<strong>不赋值的情况下，变量的默认值为 undefined</strong>，一般很少【直接】为某个变量赋值为 undefined。</p>
-<p>使用场景：</p>
-<p>开发中经常声明一个变量，等待传送的数据，如果不知道这个数据是否传递过来，可以检查变量是不是 undefined，来判断用户是否有数据传递过来。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 只声明了变量，并末赋值</span></span><br><span class="line"><span class="keyword">let</span> tmp;</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="keyword">typeof</span> tmp) <span class="comment">// 结果为 undefined</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="null"><a href="#null" class="headerlink" title="null"></a>null</h2><p>JavaScript  中的 null 仅仅代表”无”、”空”或”值未知”的特殊值。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = <span class="literal">null</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj)  <span class="comment">//null</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>null 和 undefined 区别</strong>：</p>
-<ol>
-<li>undefined 表示没有赋值</li>
-<li>null 表示赋值了，但是内容为空</li>
-</ol>
-<h1 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h1><blockquote>
-<p>理解弱类型语言的特征，掌握显式类型转换的方法</p>
-</blockquote>
-<p>在 JavaScript 中数据被分成了不同的类型，如数值、字符串、布尔值、undefined，在实际编程的过程中，不同数据类型之间存在着转换的关系。</p>
-<h2 id="隐式转换"><a href="#隐式转换" class="headerlink" title="隐式转换"></a>隐式转换</h2><p>某些运算符被执行时，系统内部自动将数据类型进行转换，这种转换称为隐式转换。</p>
-<p>规则：</p>
-<ol>
-<li><code>+</code> 号两边只要有一个字符串，都会把另一个转成字符串</li>
-<li>除了 <code>+</code> 以外的算数运算符比如<code>- * /</code> 等都会把数据转成数字类型</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> num = <span class="number">13</span>; <span class="comment">// 数值</span></span><br><span class="line"><span class="keyword">let</span> num2 = <span class="string">&quot;2&quot;</span>; <span class="comment">// 字符串</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果为 132</span></span><br><span class="line"><span class="comment">// 原因是将数值 num 转换成了字符串，相当于 &#x27;13&#x27;</span></span><br><span class="line"><span class="comment">// 然后 + 将两个字符串拼接到了一起</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(num + num2);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果为 11</span></span><br><span class="line"><span class="comment">// 原因是将字符串 num2 转换成了数值，相当于 2</span></span><br><span class="line"><span class="comment">// 然后数值 13 减去 数值 2</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(num - num2);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = <span class="title function_">prompt</span>(<span class="string">&quot;请输入一个数字&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> b = <span class="title function_">prompt</span>(<span class="string">&quot;请再输入一个数字&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="title function_">alert</span>(a + b);</span><br></pre></td></tr></table></figure>
-
-<p>注：数据类型的隐式转换是 JavaScript 的特征。</p>
-<p>小技巧：</p>
-<ol>
-<li><code>+</code> 作为正号解析可以转换为数字类型</li>
-<li>任何数据和字符串相加结果都是字符串</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(+<span class="string">&#x27;123&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>隐式转换补充： </p>
-<ol>
-<li><p>有字符串的加法 <code>&#39;&#39; + 1</code> ，结果是 <code>1</code> </p>
-</li>
-<li><p>减法 <code>-</code>（像大多数数学运算一样）只能用于数字，它会使空字符串 <code>&#39;&#39;</code> 转换为 0</p>
-</li>
-<li><p>null 经过数字转换之后会变为 0</p>
-</li>
-<li><p>undefined 经过数字转换之后会变为 NaN</p>
-</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;&#x27;</span> - <span class="number">1</span>)  <span class="comment">//-1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;小明&#x27;</span> - <span class="number">1</span>)  <span class="comment">//NaN</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="literal">null</span> + <span class="number">1</span>)  <span class="comment">//1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="literal">undefined</span> + <span class="number">1</span>)  <span class="comment">//NaN</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">NaN</span> + <span class="number">1</span>)  <span class="comment">//NaN</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="显式转换"><a href="#显式转换" class="headerlink" title="显式转换"></a>显式转换</h2><p>编写程序时过度依靠系统内部的隐式转换是不严禁的，因为隐式转换规律并不清晰，大多是靠经验总结的规律。为了避免因隐式转换带来的问题，通常根逻辑需要对数据进行显示转换。</p>
-<h3 id="Number"><a href="#Number" class="headerlink" title="Number"></a>Number</h3><ol>
-<li>通过 <code>Number</code> 显示转换成数值类型</li>
-<li>当转换失败时结果为 NaN（Not a Number）即不是一个数字</li>
-<li><strong>NaN 也是 number 类型的数据</strong></li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> t = <span class="string">&quot;12&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> f = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 显式将字符串 12 转换成数值 12</span></span><br><span class="line">t = <span class="title class_">Number</span>(t);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 检测转换后的类型</span></span><br><span class="line"><span class="comment">// console.log(typeof t);</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(t + f); <span class="comment">// 结果为 20</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 并不是所有的值都可以被转成数值类型</span></span><br><span class="line"><span class="keyword">let</span> str = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line"><span class="comment">// 将 hello 转成数值是不现实的，当无法转换成</span></span><br><span class="line"><span class="comment">// 数值时，得到的结果为 NaN （Not a Number）</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>(str));</span><br></pre></td></tr></table></figure>
-
-<h3 id="parseInt"><a href="#parseInt" class="headerlink" title="parseInt"></a>parseInt</h3><p>只保留整数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="built_in">parseInt</span>(<span class="string">&#x27;12px&#x27;</span>)) <span class="comment">//12</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="built_in">parseInt</span>(<span class="string">&#x27;abc12px&#x27;</span>)) <span class="comment">//NaN</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="parseFloat"><a href="#parseFloat" class="headerlink" title="parseFloat"></a>parseFloat</h3><p>可以保留小数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="built_in">parseInt</span>(<span class="string">&#x27;12.1px&#x27;</span>)) <span class="comment">//12.1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="built_in">parseInt</span>(<span class="string">&#x27;abc12.1px&#x27;</span>)) <span class="comment">//NaN</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h1><h2 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h2><p>数字是用来计算的，比如：乘法 * 、除法 &#x2F; 、加法 + 、减法 - 等等，所以经常和算术运算符一起。</p>
-<p>算术运算符：也叫数学运算符，主要包括加、减、乘、除、取余（求模）等。</p>
-<table>
-<thead>
-<tr>
-<th>运算符</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>+</td>
-<td>求和</td>
-</tr>
-<tr>
-<td>-</td>
-<td>求差</td>
-</tr>
-<tr>
-<td>*</td>
-<td>求积</td>
-</tr>
-<tr>
-<td>&#x2F;</td>
-<td>求商</td>
-</tr>
-<tr>
-<td>%</td>
-<td>取模（取余数），开发中经常用于作为某个数字是否被整除</td>
-</tr>
-</tbody></table>
-<p>注意：在计算失败时，显示的结果是 NaN （not a number）。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 算术运算符</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span> + <span class="number">2</span> * <span class="number">3</span> / <span class="number">2</span>) <span class="comment">//  4 </span></span><br><span class="line"><span class="keyword">let</span> num = <span class="number">10</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(num + <span class="number">10</span>)  <span class="comment">// 20</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(num + num)  <span class="comment">// 20</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 取模(取余数)  使用场景：  用来判断某个数是否能够被整除</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">4</span> % <span class="number">2</span>) <span class="comment">//  0  </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">6</span> % <span class="number">3</span>) <span class="comment">//  0</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">5</span> % <span class="number">3</span>) <span class="comment">//  2</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">3</span> % <span class="number">5</span>) <span class="comment">//  3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 注意事项 : 如果我们计算失败，则返回的结果是 NaN (not a number)</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;小明&#x27;</span> - <span class="number">2</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;小明&#x27;</span> * <span class="number">2</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;小明&#x27;</span> + <span class="number">2</span>)  </span><br></pre></td></tr></table></figure>
-
-<h2 id="赋值运算符"><a href="#赋值运算符" class="headerlink" title="赋值运算符"></a>赋值运算符</h2><p>赋值运算符：对变量进行赋值的运算符。</p>
-<p><code>=</code>  将等号右边的值赋予给左边，要求左边必须是一个容器。</p>
-<table>
-<thead>
-<tr>
-<th>运算符</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>+&#x3D;</td>
-<td>加法赋值</td>
-</tr>
-<tr>
-<td>-+</td>
-<td>减法赋值</td>
-</tr>
-<tr>
-<td>*&#x3D;</td>
-<td>乘法赋值</td>
-</tr>
-<tr>
-<td>&#x2F;&#x3D;</td>
-<td>除法赋值</td>
-</tr>
-<tr>
-<td>%&#x3D;</td>
-<td>取余赋值</td>
-</tr>
-</tbody></table>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> num = <span class="number">1</span></span><br><span class="line"><span class="comment">// num = num + 1</span></span><br><span class="line"><span class="comment">// 采取赋值运算符</span></span><br><span class="line"><span class="comment">// num += 1</span></span><br><span class="line">num += <span class="number">3</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(num)</span><br></pre></td></tr></table></figure>
-
-<h2 id="自增-自减运算符"><a href="#自增-自减运算符" class="headerlink" title="自增&#x2F;自减运算符"></a>自增&#x2F;自减运算符</h2><table>
-<thead>
-<tr>
-<th>符号</th>
-<th>作用</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>++</td>
-<td>自增</td>
-<td>变量自身的值加1，例如: x++</td>
-</tr>
-<tr>
-<td>–</td>
-<td>自减</td>
-<td>变量自身的值减1，例如: x–</td>
-</tr>
-</tbody></table>
-<ol>
-<li><code>++</code> 在前和 <code>++</code> 在后在单独使用时二者并没有差别</li>
-<li>如果自增或自减参与运算就有区别：前置自增（先自加再使用）；后置自增（先使用后自加）</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// let num = 10</span></span><br><span class="line"><span class="comment">// num = num + 1</span></span><br><span class="line"><span class="comment">// num += 1</span></span><br><span class="line"><span class="comment">// // 1. 前置自增</span></span><br><span class="line"><span class="comment">// let i = 1</span></span><br><span class="line"><span class="comment">// ++i</span></span><br><span class="line"><span class="comment">// console.log(i)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// let i = 1</span></span><br><span class="line"><span class="comment">// console.log(++i + 1)</span></span><br><span class="line"><span class="comment">// 2. 后置自增</span></span><br><span class="line"><span class="comment">// let i = 1</span></span><br><span class="line"><span class="comment">// i++</span></span><br><span class="line"><span class="comment">// console.log(i)</span></span><br><span class="line"><span class="comment">// let i = 1</span></span><br><span class="line"><span class="comment">// console.log(i++ + 1)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 了解 </span></span><br><span class="line"><span class="keyword">let</span> i = <span class="number">1</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(i++ + ++i + i)</span><br></pre></td></tr></table></figure>
-
-<h2 id="比较运算符"><a href="#比较运算符" class="headerlink" title="比较运算符"></a>比较运算符</h2><p>使用场景：</p>
-<ol>
-<li>比较两个数据大小、是否相等，根据比较结果返回一个布尔值（true &#x2F; false）</li>
-<li>比较两个字符串，是比较字符对应的 ASCII 码</li>
-</ol>
-<p>注意：</p>
-<ol>
-<li>NaN 不等于任何值，包括它本身</li>
-<li>尽量不要比较小数，因为小数有精度问题</li>
-<li>不同类型之间比较会发生隐式转换成 number 类型再比较</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>运算符</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>&gt;</td>
-<td>左边是否大于右边</td>
-</tr>
-<tr>
-<td>&lt;</td>
-<td>左边是否小于右边</td>
-</tr>
-<tr>
-<td>&gt;&#x3D;</td>
-<td>左边是否大于或等于右边</td>
-</tr>
-<tr>
-<td>&lt;&#x3D;</td>
-<td>左边是否小于或等于右边</td>
-</tr>
-<tr>
-<td>&#x3D;&#x3D;&#x3D;</td>
-<td>左右两边是否<code>类型</code>和<code>值</code>都相等（重点）</td>
-</tr>
-<tr>
-<td>&#x3D;&#x3D;</td>
-<td>左右两边<code>值</code>是否相等</td>
-</tr>
-<tr>
-<td>!&#x3D;</td>
-<td>左右值不相等</td>
-</tr>
-<tr>
-<td>!&#x3D;&#x3D;</td>
-<td>左右两边是否不全等</td>
-</tr>
-</tbody></table>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">3</span> &gt; <span class="number">5</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">3</span> &gt;= <span class="number">3</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">2</span> == <span class="number">2</span>)</span><br><span class="line"><span class="comment">// 比较运算符有隐式转换 把&#x27;2&#x27; 转换为 2  双等号 只判断值</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">2</span> == <span class="string">&#x27;2&#x27;</span>)  <span class="comment">// true</span></span><br><span class="line"><span class="comment">// console.log(undefined === null)</span></span><br><span class="line"><span class="comment">// === 全等 判断 值 和 数据类型都一样才行</span></span><br><span class="line"><span class="comment">// 以后判断是否相等 请用 ===  </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">2</span> === <span class="string">&#x27;2&#x27;</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">NaN</span> === <span class="title class_">NaN</span>) <span class="comment">// NaN 不等于任何人，包括他自己</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">2</span> !== <span class="string">&#x27;2&#x27;</span>)  <span class="comment">// true  </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">2</span> != <span class="string">&#x27;2&#x27;</span>) <span class="comment">// false </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;---------字符串比较---------&#x27;</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;a&#x27;</span> &lt; <span class="string">&#x27;b&#x27;</span>) <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;aa&#x27;</span> &lt; <span class="string">&#x27;ab&#x27;</span>) <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;aa&#x27;</span> &lt; <span class="string">&#x27;aac&#x27;</span>) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h2><p>使用场景：可以把多个值放到一起运算，运算结果都是最后<strong>被执行的表达式值</strong>，<strong>而不是一个布尔值</strong>。</p>
-<table>
-<thead>
-<tr>
-<th>符号</th>
-<th>名称</th>
-<th>日常读法</th>
-<th>特点</th>
-<th>口诀</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>&amp;&amp;</td>
-<td>逻辑与</td>
-<td>并且</td>
-<td>符号两边有一个假的结果为假</td>
-<td>一假则假</td>
-</tr>
-<tr>
-<td>||</td>
-<td>逻辑或</td>
-<td>或者</td>
-<td>符号两边有一个真的结果为真</td>
-<td>一真则真</td>
-</tr>
-<tr>
-<td>!</td>
-<td>逻辑非</td>
-<td>取反</td>
-<td>true 变 false  false 变 true</td>
-<td>真变假，假变真</td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>A</th>
-<th>B</th>
-<th>A &amp;&amp; B</th>
-<th>A || B</th>
-<th>!A</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>false</td>
-<td>false</td>
-<td>false</td>
-<td>false</td>
-<td>true</td>
-</tr>
-<tr>
-<td>false</td>
-<td>true</td>
-<td>false</td>
-<td>true</td>
-<td>true</td>
-</tr>
-<tr>
-<td>true</td>
-<td>false</td>
-<td>false</td>
-<td>true</td>
-<td>false</td>
-</tr>
-<tr>
-<td>true</td>
-<td>true</td>
-<td>true</td>
-<td>true</td>
-<td>false</td>
-</tr>
-</tbody></table>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 逻辑与 一假则假</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="literal">true</span> &amp;&amp; <span class="literal">true</span>)  <span class="comment">//ture</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="literal">false</span> &amp;&amp; <span class="literal">true</span>)  <span class="comment">//false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">3</span> &lt; <span class="number">5</span> &amp;&amp; <span class="number">3</span> &gt; <span class="number">2</span>)  <span class="comment">//true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">3</span> &lt; <span class="number">5</span> &amp;&amp; <span class="number">3</span> &lt; <span class="number">2</span>)  <span class="comment">//false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 逻辑或 一真则真</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="literal">true</span> || <span class="literal">true</span>)  <span class="comment">//true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="literal">false</span> || <span class="literal">true</span>)  <span class="comment">//true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="literal">false</span> || <span class="literal">false</span>)  <span class="comment">//false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 逻辑非  取反</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(!<span class="literal">true</span>)  <span class="comment">//false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(!<span class="literal">false</span>)  <span class="comment">//true</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>逻辑中断</strong></p>
-<p>短路：只存在于 <code>&amp;&amp;</code> 和 <code>||</code> 中，当满足一定条件会让右边代码不执行。</p>
-<table>
-<thead>
-<tr>
-<th>符号</th>
-<th>短路条件</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>&amp;&amp;</td>
-<td>左边为 false 就短路</td>
-</tr>
-<tr>
-<td>||</td>
-<td>左边为 true 就短路</td>
-</tr>
-</tbody></table>
-<p>原因：通过左边能得到整个式子的结果，因此没必要再判断右边。</p>
-<p>运算结果：无论 <code>&amp;&amp;</code> 还是 <code>||</code> ，运算结果都是最后被执行的表达式值，一般用在变量赋值。</p>
-<p><strong>转换为Boolean型</strong></p>
-<p><code>&#39;&#39;</code>、<code>0</code>、<code>undefined</code>、<code>null</code>、<code>false</code>、<code>NaN</code> 转换为布尔值后都是 false, 其余则为 true。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="literal">false</span> &amp;&amp; <span class="number">20</span>);  <span class="comment">//false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">5</span> &lt; <span class="number">3</span> &amp;&amp; <span class="number">20</span>);  <span class="comment">//false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(undefinded &amp;&amp; <span class="number">20</span>);  <span class="comment">//undefined</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="literal">null</span> &amp;&amp; <span class="number">20</span>);  <span class="comment">//null</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0</span> &amp;&amp; <span class="number">20</span>);  <span class="comment">//0</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">10</span> &amp;&amp; <span class="number">20</span>);  <span class="comment">//20</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="literal">false</span> || <span class="number">20</span>);  <span class="comment">//20</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">5</span> &lt; <span class="number">3</span> || <span class="number">20</span>);  <span class="comment">//20</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(undefinded || <span class="number">20</span>);  <span class="comment">//20</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="literal">null</span> || <span class="number">20</span>);  <span class="comment">//20</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0</span> || <span class="number">20</span>);  <span class="comment">//20</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">10</span> || <span class="number">20</span>);  <span class="comment">//10</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h2><blockquote>
-<p>逻辑运算符优先级： ！&gt; &amp;&amp; &gt;  ||  </p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>优先级</th>
-<th>运算符</th>
-<th>顺序</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1</td>
-<td>小括号</td>
-<td>()</td>
-</tr>
-<tr>
-<td>2</td>
-<td>一元运算符</td>
-<td>++ – !</td>
-</tr>
-<tr>
-<td>3</td>
-<td>算数运算符</td>
-<td>先 * &#x2F; % 后 + -</td>
-</tr>
-<tr>
-<td>4</td>
-<td>关系运算符</td>
-<td>&gt; &gt;&#x3D; &lt; &lt;&#x3D;</td>
-</tr>
-<tr>
-<td>5</td>
-<td>相等运算符</td>
-<td>&#x3D;&#x3D; !&#x3D; &#x3D;&#x3D;&#x3D; !&#x3D;&#x3D;</td>
-</tr>
-<tr>
-<td>6</td>
-<td>逻辑运算符</td>
-<td>先 &amp;&amp; 后 ||</td>
-</tr>
-<tr>
-<td>7</td>
-<td>赋值运算符</td>
-<td>&#x3D;</td>
-</tr>
-<tr>
-<td>8</td>
-<td>逗号运算符</td>
-<td>,</td>
-</tr>
-</tbody></table>
-<h1 id="语句"><a href="#语句" class="headerlink" title="语句"></a>语句</h1><h2 id="表达式和语句"><a href="#表达式和语句" class="headerlink" title="表达式和语句"></a>表达式和语句</h2><p>表达式：可以<strong>被求值</strong>的代码，并将其计算出一个结果。</p>
-<p>语句：一段<strong>可以执行</strong>的代码，是一个行为，例如分支语句和循环语句。</p>
-<h2 id="分支语句"><a href="#分支语句" class="headerlink" title="分支语句"></a>分支语句</h2><p>分支语句可以根据条件判定真假，来选择性的执行想要的代码。</p>
-<p>分支语句包含：</p>
-<ol>
-<li>if 分支语句（重点）</li>
-<li>三元运算符</li>
-<li>switch 语句</li>
-</ol>
-<h3 id="if分支语句"><a href="#if分支语句" class="headerlink" title="if分支语句"></a>if分支语句</h3><p>语法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (条件表达式) &#123;</span><br><span class="line">  <span class="comment">// 满足条件要执行的语句</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>小括号内的条件结果是布尔值，为 true 时，进入大括号里执行代码；为 false，则不执行大括号里面代码。</p>
-<p>小括号内的结果若不是布尔类型时，会发生类型转换为布尔值，类似 Boolean()。</p>
-<p>如果大括号只有一个语句，大括号可以省略，但是，不提倡这么做。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 单分支语句</span></span><br><span class="line"><span class="keyword">if</span> (<span class="literal">false</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;执行语句&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="number">3</span> &gt; <span class="number">5</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;执行语句&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="number">2</span> === <span class="string">&#x27;2&#x27;</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;执行语句&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 1. 除了0 所有的数字都为真</span></span><br><span class="line"><span class="keyword">if</span> (<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;执行语句&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 2.除了 &#x27;&#x27; 所有的字符串都为真 true</span></span><br><span class="line"><span class="keyword">if</span> (<span class="string">&#x27;小明&#x27;</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;执行语句&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="if双分支语句"><a href="#if双分支语句" class="headerlink" title="if双分支语句"></a>if双分支语句</h3><p>如果有两个条件的时候，可以使用 if else 双分支语句。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (条件表达式)&#123;</span><br><span class="line">  <span class="comment">// 满足条件要执行的语句</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// 不满足条件要执行的语句</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>例如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 用户输入</span></span><br><span class="line"><span class="keyword">let</span> uname = <span class="title function_">prompt</span>(<span class="string">&#x27;请输入用户名:&#x27;</span>)</span><br><span class="line"><span class="keyword">let</span> pwd = <span class="title function_">prompt</span>(<span class="string">&#x27;请输入密码:&#x27;</span>)</span><br><span class="line"><span class="comment">// 2. 判断输出</span></span><br><span class="line"><span class="keyword">if</span> (uname === <span class="string">&#x27;小明&#x27;</span> &amp;&amp; pwd === <span class="string">&#x27;123456&#x27;</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&#x27;恭喜登录成功&#x27;</span>)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&#x27;用户名或者密码错误&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="if多分支语句"><a href="#if多分支语句" class="headerlink" title="if多分支语句"></a>if多分支语句</h3><p>使用场景： 适合于有多个条件的时候。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 用户输入</span></span><br><span class="line"><span class="keyword">let</span> score = +<span class="title function_">prompt</span>(<span class="string">&#x27;请输入成绩：&#x27;</span>)</span><br><span class="line"><span class="comment">// 2. 判断输出</span></span><br><span class="line"><span class="keyword">if</span> (score &gt;= <span class="number">90</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&#x27;成绩优秀&#x27;</span>)</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (score &gt;= <span class="number">70</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&#x27;成绩良好&#x27;</span>)</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (score &gt;= <span class="number">60</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&#x27;成绩及格&#x27;</span>)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&#x27;成绩不及格&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="三元运算符"><a href="#三元运算符" class="headerlink" title="三元运算符"></a>三元运算符</h3><p><strong>使用场景</strong>： 一些简单的双分支，可以使用三元运算符（三元表达式），写起来比 if  else 双分支更简单。</p>
-<p><strong>符号</strong>：? 与 : 配合使用</p>
-<p>语法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">条件 ? 满足条件执行的代码 ：不满足条件执行的代码</span><br></pre></td></tr></table></figure>
-
-<p>例如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 5 &gt; 3 ? &#x27;真的&#x27; : &#x27;假的&#x27;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">5</span> &lt; <span class="number">3</span> ? <span class="string">&#x27;真的&#x27;</span> : <span class="string">&#x27;假的&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 补0操作</span></span><br><span class="line"><span class="comment">// 1. 用户输入 </span></span><br><span class="line"><span class="keyword">let</span> num = <span class="title function_">prompt</span>(<span class="string">&#x27;请您输入一个数字:&#x27;</span>)</span><br><span class="line"><span class="comment">// 2. 判断输出</span></span><br><span class="line">num = num &gt;= <span class="number">10</span> ? num : <span class="number">0</span> + num</span><br><span class="line"><span class="title function_">alert</span>(num)</span><br></pre></td></tr></table></figure>
-
-<h3 id="switch语句"><a href="#switch语句" class="headerlink" title="switch语句"></a>switch语句</h3><p>使用场景：适合于有多个条件的时候，也属于分支语句，大部分情况下和 if 多分支语句功能相同。</p>
-<p>注意：</p>
-<ol>
-<li>switch case 语句一般用于等值（<code>===</code>）判断</li>
-<li>switch case 一般需要配合 break 关键字使用，没有 break 会造成 case 穿透</li>
-</ol>
-<p>语法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> (表达式) &#123;</span><br><span class="line">  <span class="keyword">case</span> 值<span class="number">1</span>:</span><br><span class="line">    代码<span class="number">1</span></span><br><span class="line">    <span class="keyword">break</span></span><br><span class="line">  <span class="keyword">case</span> 值<span class="number">2</span>:</span><br><span class="line">    代码<span class="number">2</span></span><br><span class="line">    <span class="keyword">break</span></span><br><span class="line">   ...</span><br><span class="line">  <span class="attr">default</span>:</span><br><span class="line">    代码n</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>例如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> (<span class="number">2</span>) &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;您选择的是1&#x27;</span>)</span><br><span class="line">    <span class="keyword">break</span>  <span class="comment">// 退出switch</span></span><br><span class="line">  <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;您选择的是2&#x27;</span>)</span><br><span class="line">    <span class="keyword">break</span>  <span class="comment">// 退出switch</span></span><br><span class="line">  <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;您选择的是3&#x27;</span>)</span><br><span class="line">    <span class="keyword">break</span>  <span class="comment">// 退出switch</span></span><br><span class="line">  <span class="attr">default</span>:</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;没有符合条件的&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>补充：断点调试</p>
-<p>作用：学习时可以帮助更好的理解代码运行，工作时可以更快找到 bug。</p>
-<p>浏览器打开调试界面</p>
-<ol>
-<li>按 F12 打开开发者工具</li>
-<li>点到源代码一栏 （ sources ）</li>
-<li>选择代码文件</li>
-</ol>
-<p><strong>断点：</strong>在某句代码上加的标记就叫断点，当程序执行到这句有标记的代码时会暂停下来。</p>
-<h2 id="循环语句"><a href="#循环语句" class="headerlink" title="循环语句"></a>循环语句</h2><p>使用场景：重复执行指定的一段代码。</p>
-<p>学习路径：</p>
-<ol>
-<li>while循环</li>
-<li>for 循环（重点）</li>
-</ol>
-<h3 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h3><p>在…. 期间， 所以 while 循环就是在满足条件期间，重复执行某些代码。</p>
-<p>循环三要素：</p>
-<ol>
-<li>初始值 （经常用变量）</li>
-<li>终止条件</li>
-<li>变量的变化量</li>
-</ol>
-<p>语法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (条件表达式) &#123;</span><br><span class="line">   <span class="comment">// 循环体    </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>例如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 需求: 利用循环重复打印3次 &#x27;我的名字叫小明&#x27;</span></span><br><span class="line"><span class="keyword">let</span> i = <span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> (i &lt;= <span class="number">3</span>) &#123;</span><br><span class="line">  <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;我的名字叫小明~&lt;br&gt;&#x27;</span>)</span><br><span class="line">  i++</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>break</code>  中止整个循环，一般用于结果已经得到, 后续的循环不需要的时候可以使用（提高效率） 。</p>
-<p><code>continue</code> 中止本次循环，一般用于排除或者跳过某一个选项的时候。</p>
-<p><code>break</code> 示例：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> i = <span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> (i &lt;= <span class="number">5</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">    <span class="keyword">if</span> (i === <span class="number">3</span>) &#123;</span><br><span class="line">        <span class="keyword">break</span>  <span class="comment">// 退出循环</span></span><br><span class="line">    &#125;</span><br><span class="line">    i++</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>continue</code> 示例：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> i = <span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> (i &lt;= <span class="number">5</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (i === <span class="number">3</span>) &#123;</span><br><span class="line">    i++</span><br><span class="line">    <span class="keyword">continue</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  i++</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>无限循环：</p>
-<ol>
-<li><code>while(true)</code> 来构造“无限”循环，需要使用 <code>break</code> 退出循环。（常用）</li>
-<li><code>for(;;)</code> 也可以来构造“无限”循环，同样需要使用 <code>break</code> 退出循环。</li>
-</ol>
-<h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p><code>for</code> 是 JavaScript 提供的另一种循环控制的话句，它和 <code>while</code> 只是语法上存在差异。</p>
-<p>语法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(起始值; 终止条件; 变化量) &#123;</span><br><span class="line">    <span class="comment">// 要重复执行的代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>例如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 示例：在网页中输入标题标签</span></span><br><span class="line"><span class="comment">// 起始值为 1</span></span><br><span class="line"><span class="comment">// 变化量 i++</span></span><br><span class="line"><span class="comment">// 终止条件 i &lt;= 6</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">6</span>; i++) &#123;</span><br><span class="line">    <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">`&lt;h<span class="subst">$&#123;i&#125;</span>&gt;循环控制，即重复执行&lt;h<span class="subst">$&#123;i&#125;</span>&gt;`</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>变化量和死循环，<code>for</code> 循环和 <code>while</code> 一样，如果不合理设置增量和终止条件，便会产生死循环。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. continue </span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (i === <span class="number">3</span>) &#123;</span><br><span class="line">        <span class="keyword">continue</span>  <span class="comment">// 结束本次循环，继续下一次循环</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 2. break</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (i === <span class="number">3</span>) &#123;</span><br><span class="line">        <span class="keyword">break</span>  <span class="comment">// 退出结束整个循环</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="循环嵌套"><a href="#循环嵌套" class="headerlink" title="循环嵌套"></a>循环嵌套</h3><p>外层循环循环一次，里层循环循环全部。</p>
-<p>语法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(外部声明记录循环次数起始值; 循环条件; 变化量) &#123;</span><br><span class="line">    <span class="keyword">for</span>(内部声明记录循环次数起始值; 循环条件; 变化量) &#123;</span><br><span class="line">        <span class="comment">// 要重复执行的代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="倒三角"><a href="#倒三角" class="headerlink" title="倒三角"></a>倒三角</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 外层打印几行</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">    <span class="comment">// 里层打印几个星星</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">1</span>; j &lt;= i; j++) &#123;</span><br><span class="line">        <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;★&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;&lt;br&gt;&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="九九乘法表"><a href="#九九乘法表" class="headerlink" title="九九乘法表"></a>九九乘法表</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">      <span class="selector-tag">span</span> &#123;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">display</span>: inline-block;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">width</span>: <span class="number">80px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">padding</span>: <span class="number">5px</span> <span class="number">10px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">margin</span>: <span class="number">2px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#000</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">background-color</span>: <span class="built_in">rgb</span>(<span class="number">183</span>, <span class="number">183</span>, <span class="number">236</span>, <span class="number">0.5</span>);</span></span><br><span class="line"><span class="language-css">        <span class="attribute">border-radius</span>: <span class="number">5px</span>;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">text-align</span>: center;</span></span><br><span class="line"><span class="language-css">        <span class="attribute">color</span>: black;</span></span><br><span class="line"><span class="language-css">      &#125;</span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">      <span class="comment">// 外层打印几行</span></span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">9</span>; i++) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 里层打印几个星星</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">1</span>; j &lt;= i; j++) &#123;</span></span><br><span class="line"><span class="language-javascript">          <span class="comment">// 只需要吧 ★ 换成  1 x 1 = 1</span></span></span><br><span class="line"><span class="language-javascript">          <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">`</span></span></span><br><span class="line"><span class="string"><span class="language-javascript">      		&lt;span&gt;<span class="subst">$&#123;j&#125;</span> x <span class="subst">$&#123;i&#125;</span> = <span class="subst">$&#123;j * i&#125;</span>&lt;/span&gt;</span></span></span><br><span class="line"><span class="string"><span class="language-javascript">           `</span>);</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&quot;&lt;br&gt;&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      &#125;</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h1><blockquote>
-<p>知道什么是数组及其应用的场景，掌握数组声明及访问的语法。</p>
-</blockquote>
-<h2 id="数组介绍"><a href="#数组介绍" class="headerlink" title="数组介绍"></a>数组介绍</h2><p><strong>数组：</strong>（Array）是一种可以按顺序保存数据的数据类型。</p>
-<p><strong>使用场景：</strong>如果有多个数据可以用数组保存起来，然后放到一个变量中，管理非常方便。</p>
-<h3 id="定义数组和数组单元"><a href="#定义数组和数组单元" class="headerlink" title="定义数组和数组单元"></a>定义数组和数组单元</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 语法，使用 [] 来定义一个空数组</span></span><br><span class="line"><span class="comment">// 定义一个空数组，然后赋值给变量 classes</span></span><br><span class="line"><span class="comment">// let classes = [];</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 定义非空数组</span></span><br><span class="line"><span class="keyword">let</span> classes = [<span class="string">&#x27;小明&#x27;</span>, <span class="string">&#x27;小刚&#x27;</span>, <span class="string">&#x27;小红&#x27;</span>, <span class="string">&#x27;小丽&#x27;</span>, <span class="string">&#x27;小米&#x27;</span>]</span><br></pre></td></tr></table></figure>
-
-<p>通过 <code>[]</code> 定义数组，数据中可以存放真正的数据，如小明、小刚、小红等这些都是数组中的数据，我们这些数据称为数组单元，数组单元之间使用英文逗号分隔。</p>
-<h3 id="访问数组和数组索引"><a href="#访问数组和数组索引" class="headerlink" title="访问数组和数组索引"></a>访问数组和数组索引</h3><p>使用数组存放数据并不是最终目的，关键是能够随时的访问到数组中的数据（单元）。其实 JavaScript 为数组中的每一个数据单元都编了号，通过数据单元在数组中的编号便可以轻松访问到数组中的数据单元了。</p>
-<p>我们将数据单元在数组中的编号称为索引值，也有人称其为下标。</p>
-<p>索引值实际是按着数据单元在数组中的位置依次排列的，注意是从<code> 0</code> 开始的。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> classes = [<span class="string">&#x27;小明&#x27;</span>, <span class="string">&#x27;小刚&#x27;</span>, <span class="string">&#x27;小红&#x27;</span>, <span class="string">&#x27;小丽&#x27;</span>, <span class="string">&#x27;小米&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 访问数组，语法格式为：变量名[索引值]</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(classes[<span class="number">0</span>]) <span class="comment">// 结果为：小明</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(classes[<span class="number">1</span>]) <span class="comment">// 结果为：小刚</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(classes[<span class="number">4</span>]) <span class="comment">// 结果为：小米</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 通过索引值还可以为数组单重新赋值</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">write</span>(classes[<span class="number">3</span>]) <span class="comment">// 结果为：小丽</span></span><br><span class="line"><span class="comment">// 重新为索引值为 3 的单元赋值</span></span><br><span class="line">classes[<span class="number">3</span>] = <span class="string">&#x27;小小丽&#x27;</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">wirte</span>(classes[<span class="number">3</span>]); <span class="comment">// 结果为： 小小丽</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="数据单元值类型"><a href="#数据单元值类型" class="headerlink" title="数据单元值类型"></a>数据单元值类型</h3><p>数组做为数据的集合，它的单元值可以是<strong>任意</strong>数据类型。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a) 数组单元值的类型为字符类型</span></span><br><span class="line"><span class="keyword">let</span> list = [<span class="string">&#x27;HTML&#x27;</span>, <span class="string">&#x27;CSS&#x27;</span>, <span class="string">&#x27;JavaScript&#x27;</span>]</span><br><span class="line"><span class="comment">// b) 数组单元值的类型为数值类型</span></span><br><span class="line"><span class="keyword">let</span> scores = [<span class="number">78</span>, <span class="number">84</span>, <span class="number">70</span>, <span class="number">62</span>, <span class="number">75</span>]</span><br><span class="line"><span class="comment">// c) 混合多种类型</span></span><br><span class="line"><span class="keyword">let</span> mixin = [<span class="literal">true</span>, <span class="number">1</span>, <span class="literal">false</span>, <span class="string">&#x27;hello&#x27;</span>]</span><br></pre></td></tr></table></figure>
-
-<h3 id="数组长度属性"><a href="#数组长度属性" class="headerlink" title="数组长度属性"></a>数组长度属性</h3><p>重申一次，数组在 JavaScript 中并不是新的数据类型，它属于对象类型。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义一个数组</span></span><br><span class="line"><span class="keyword">let</span> arr = [<span class="string">&#x27;html&#x27;</span>, <span class="string">&#x27;css&#x27;</span>, <span class="string">&#x27;javascript&#x27;</span>]</span><br><span class="line"><span class="comment">// 数组对应着一个 length 属性，它的含义是获取数组的长度</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr.<span class="property">length</span>) <span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="操作数组"><a href="#操作数组" class="headerlink" title="操作数组"></a>操作数组</h2><p>数组做为对象数据类型，不但有 <code>length</code> 属性可以使用，还提供了许多方法：</p>
-<ol>
-<li><code>push</code> 动态向数组的尾部添加一个或多个单元</li>
-<li><code>unshit</code> 动态向数组头部添加一个或多个单元</li>
-<li><code>pop</code> 删除最后一个单元</li>
-<li><code>shift</code> 删除第一个单元</li>
-<li><code>splice</code> 动态删除任意单元</li>
-</ol>
-<p>使用以上4个方法时，都是直接在原数组上进行操作，即成功调任何一个方法，原数组都跟着发生相应的改变。并且在添加或删除单元时 <code>length</code> 并不会发生错乱。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义一个数组</span></span><br><span class="line"><span class="keyword">let</span> arr = [<span class="string">&#x27;html&#x27;</span>, <span class="string">&#x27;css&#x27;</span>, <span class="string">&#x27;javascript&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. push 动态向数组的尾部添加一个单元</span></span><br><span class="line">arr.<span class="title function_">push</span>(<span class="string">&#x27;Nodejs&#x27;</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr)</span><br><span class="line">arr.<span class="title function_">push</span>(<span class="string">&#x27;Vue&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. unshit 动态向数组头部添加一个单元</span></span><br><span class="line">arr.<span class="title function_">unshift</span>(<span class="string">&#x27;VS Code&#x27;</span>)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. splice 动态删除任意单元</span></span><br><span class="line">arr.<span class="title function_">splice</span>(<span class="number">2</span>, <span class="number">1</span>) <span class="comment">// 从索引值为2的位置开始删除1个单元</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 4. pop 删除最后一个单元</span></span><br><span class="line">arr.<span class="title function_">pop</span>()</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 5. shift 删除第一个单元</span></span><br><span class="line">arr.<span class="title function_">shift</span>()</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr)</span><br></pre></td></tr></table></figure>
-
-<p>数组补充：</p>
-<p><code>forEach</code> 方法：主要用于遍历数组。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;green&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>];</span><br><span class="line">arr.<span class="title function_">forEach</span>(<span class="keyword">function</span>(<span class="params">ele, index</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(ele);  <span class="comment">// 数组元素</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(index);  <span class="comment">//  数组索引号</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p><code>map</code> 方法：通过遍历数组，并且返回新的数组。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;green&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>];</span><br><span class="line"><span class="keyword">const</span> newArr = arr.<span class="title function_">map</span>(<span class="keyword">function</span>(<span class="params">ele, index</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(ele);  <span class="comment">// 数组元素</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(index);  <span class="comment">//  数组索引号</span></span><br><span class="line">    <span class="keyword">return</span> ele + <span class="string">&#x27;颜色&#x27;</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(newArr)  <span class="comment">// [&#x27;red颜色&#x27;, &#x27;green颜色&#x27;, &#x27;blue颜色&#x27;]</span></span><br></pre></td></tr></table></figure>
-
-<p><code>filter</code> 方法：通过遍历数组，并且返回过滤后的新数组。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;green&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>];</span><br><span class="line"><span class="keyword">const</span> newArr = arr.<span class="title function_">filter</span>(<span class="keyword">function</span>(<span class="params">ele, index</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(ele);  <span class="comment">// 数组元素</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(index);  <span class="comment">//  数组索引号</span></span><br><span class="line">    <span class="keyword">return</span> item === <span class="string">&#x27;red&#x27;</span>;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(newArr)  <span class="comment">// [&#x27;red&#x27;]</span></span><br></pre></td></tr></table></figure>
-
-<p><code>join</code> 方法：可以把数组中的所有元素转换成一个字符串。数组元素是通过参数里面指定的分隔符进行分隔的。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;green&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>];</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr.<span class="title function_">join</span>(<span class="string">&#x27; &#x27;</span>))  <span class="comment">// red green blue</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><blockquote>
-<p>理解函数的封装特性，掌握函数的语法规则</p>
-</blockquote>
-<h2 id="函数介绍"><a href="#函数介绍" class="headerlink" title="函数介绍"></a>函数介绍</h2><p>函数可以把具有相同或相似逻辑的代码“包裹”起来，通过函数调用执行这些被“包裹”的代码逻辑，这么做的优势是有利于<strong>精简代码方便复用</strong>。</p>
-<p><strong>声明</strong></p>
-<p>声明（定义）一个完整函数包括关键字、函数名、形式参数、函数体、返回值5个部分。</p>
-<p><strong>调用</strong></p>
-<p>声明（定义）的函数必须调用才会真正被执行，使用 <code>()</code> 调用函数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明（定义）了最简单的函数，既没有形式参数，也没有返回值</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sayHi</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;嗨~&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 函数调用，这些函数体内的代码逻辑会被执行</span></span><br><span class="line"><span class="comment">// 函数名()</span></span><br><span class="line"></span><br><span class="line"><span class="title function_">sayHi</span>()</span><br><span class="line"><span class="comment">// 可以重复被调用，多少次都可以</span></span><br><span class="line"><span class="title function_">sayHi</span>()</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>注：函数名的命名规则与变量是一致的，并且尽量保证函数名的语义。</p>
-</blockquote>
-<h2 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h2><p>通过向函数传递参数，可以让函数更加灵活多变，参数可以理解成是一个变量。</p>
-<p>示例：声明（定义）一个功能为打招呼的函数</p>
-<ul>
-<li>传入数据列表</li>
-<li>声明这个函数需要传入几个数据</li>
-<li>多个数据用逗号隔开</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">sayHi</span>(<span class="params">name</span>) &#123;</span><br><span class="line">  <span class="comment">// 参数 name 可以被理解成是一个变量</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(name)</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;嗨~&#x27;</span> + name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用 sayHi 函数，括号中多了 &#x27;小明&#x27;</span></span><br><span class="line"><span class="comment">// 这时相当于为参数 name 赋值了</span></span><br><span class="line"><span class="title function_">sayHi</span>(<span class="string">&#x27;小明&#x27;</span>)<span class="comment">// 结果为 小明</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 再次调用 sayHi 函数，括号中多了 &#x27;小红&#x27;</span></span><br><span class="line"><span class="comment">// 这时相当于为参数 name 赋值了</span></span><br><span class="line"><span class="title function_">sayHi</span>(<span class="string">&#x27;小红&#x27;</span>) <span class="comment">// 结果为 小红</span></span><br></pre></td></tr></table></figure>
-
-<p>总结：</p>
-<ol>
-<li>声明（定义）函数时的形参没有数量限制，当有多个形参时使用 <code>,</code> 分隔</li>
-<li>调用函数传递的实参要与形参的顺序一致</li>
-</ol>
-<p><strong>形参和实参</strong></p>
-<p>形参：声明函数时写在函数名右边小括号里的叫形参（形式上的参数）。</p>
-<p>实参：调用函数时写在函数名右边小括号里的叫实参（实际上的参数）。</p>
-<p>形参可以理解为是在这个函数内声明的变量（比如 num1 &#x3D; 10）实参可以理解为是给这个变量赋值。</p>
-<p>开发中尽量保持形参和实参个数一致，如果实参少于形参，则没有提供实参的值默认是 undefined；如果实参多于形参，则多余的部分实参忽略。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明（定义）一个计算任意两数字和的函数</span></span><br><span class="line"><span class="comment">// 形参 x 和 y 分别表示任意两个数字，它们是两个变量</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">count</span>(<span class="params">x, y</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(x + y);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 调用函数，传入两个具体的数字做为实参</span></span><br><span class="line"><span class="comment">// 此时 10 赋值给了形参 x</span></span><br><span class="line"><span class="comment">// 此时 5  赋值给了形参 y</span></span><br><span class="line"><span class="title function_">count</span>(<span class="number">10</span>, <span class="number">5</span>); <span class="comment">// 结果为 15</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>参数默认值</strong></p>
-<p>形参可以看作变量，如果一个变量不给值，默认是 <code>undefined</code>。</p>
-<p>可以改进在用户不输入实参的情况下，<strong>给形参默认值</strong>。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//提供默认形参</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">count</span>(<span class="params">x = <span class="number">0</span>, y = <span class="number">0</span></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(x + y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">count</span>();</span><br></pre></td></tr></table></figure>
-
-<h2 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h2><p>函数的本质是封装（包裹），函数体内的逻辑执行完毕后，函数外部如何获得函数内部的执行结果呢？要想获得函数内部逻辑的执行结果，需要通过 <code>return</code> 这个关键字，将内部执行结果传递到函数外部，这个被传递到外部的结果就是返回值。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义求和函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">count</span>(<span class="params">a, b</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> s = a + b</span><br><span class="line">  <span class="comment">// s 即为 a + b 的结果</span></span><br><span class="line">  <span class="comment">// 通过 return 将 s 传递到外部</span></span><br><span class="line">  <span class="keyword">return</span> s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用函数，如果一个函数有返回值</span></span><br><span class="line"><span class="comment">// 那么可将这个返回值赋值给外部的任意变量</span></span><br><span class="line"><span class="keyword">let</span> total = <span class="title function_">count</span>(<span class="number">5</span>, <span class="number">12</span>)</span><br></pre></td></tr></table></figure>
-
-<p>总结：</p>
-<ol>
-<li>在函数体中使用 return 关键字能将内部的执行结果交给函数外部使用</li>
-<li>函数内部只能出现 1 次 return，并且 return 下一行代码不会再被执行</li>
-<li>return 会立即结束当前函数</li>
-<li>函数可以没有 return，这种情况默认返回值为 undefined</li>
-</ol>
-<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><p>通常来说，一段程序代码中所用到的名字并不总是有效和可用的，而限定这个名字的<strong>可用性的代码范围</strong>就是这个名字的作用域。</p>
-<p>作用域的使用提高了程序逻辑的局部性，增强了程序的可靠性，减少了名字冲突。</p>
-<p><strong>全局作用域</strong></p>
-<p>作用于所有代码执行的环境（整个 script 标签内部）或者一个独立的 js 文件。</p>
-<p>处于全局作用域内的变量，称为全局变量。</p>
-<p><strong>局部作用域</strong></p>
-<p>作用于函数内的代码环境，就是局部作用域。 因为跟函数有关系，所以也称为函数作用域。</p>
-<p>处于局部作用域内的变量称为局部变量。</p>
-<blockquote>
-<p>如果函数内部，变量没有声明，直接赋值，也当全局变量看，但是强烈不推荐。</p>
-<p>但是有一种情况，函数内部的形参可以看做是局部变量。</p>
-</blockquote>
-<h2 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h2><p>匿名函数：没有名字的函数，无法直接使用。</p>
-<p>函数表达式：将匿名函数赋值给一个变量，并且通过变量名称进行调用。</p>
-<p>示例：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明</span></span><br><span class="line"><span class="keyword">let</span> fn = <span class="keyword">function</span>(<span class="params"></span>) &#123; </span><br><span class="line">   <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;函数表达式&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 调用</span></span><br><span class="line"><span class="title function_">fn</span>()</span><br></pre></td></tr></table></figure>
-
-<p><strong>立即执行函数</strong></p>
-<p>场景：避免全局变量之间污染。</p>
-<p>示例：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方式一</span></span><br><span class="line">(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">     <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;立即执行函数&#x27;</span>)</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="comment">//方式二</span></span><br><span class="line">(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">     <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;立即执行函数&#x27;</span>)</span><br><span class="line">&#125;());</span><br></pre></td></tr></table></figure>
-
-<p>注：立即执行函数也可以加函数名。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">function</span> <span class="title function_">print</span>(<span class="params"></span>) &#123;</span><br><span class="line">     <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;立即执行函数&#x27;</span>)</span><br><span class="line">&#125;());</span><br></pre></td></tr></table></figure>
-
-<h1 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h1><blockquote>
-<p>对象是 JavaScript 数据类型的一种，之前已经学习了数值类型、字符串类型、布尔类型、undefined。对象数据类型可以被理解成是一种数据集合。它由属性和方法两部分构成。</p>
-</blockquote>
-<h2 id="对象介绍"><a href="#对象介绍" class="headerlink" title="对象介绍"></a>对象介绍</h2><p>声明一个对象类型的变量与之前声明一个数值或字符串类型的变量没有本质上的区别。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明字符串类型变量</span></span><br><span class="line"><span class="keyword">let</span> str = <span class="string">&#x27;hello world!&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明数值类型变量</span></span><br><span class="line"><span class="keyword">let</span> num = <span class="number">199</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明对象类型变量，使用一对花括号</span></span><br><span class="line"><span class="comment">// user 便是一个对象了，目前它是一个空对象</span></span><br><span class="line"><span class="keyword">let</span> user = &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>对象有属性和方法组成。</p>
-<ol>
-<li>属性：信息或叫特征（名词）。</li>
-<li>方法：功能或叫行为（动词）。</li>
-</ol>
-<h2 id="对象属性"><a href="#对象属性" class="headerlink" title="对象属性"></a>对象属性</h2><h3 id="对象属性定义"><a href="#对象属性定义" class="headerlink" title="对象属性定义"></a>对象属性定义</h3><p>数据描述性的信息称为属性，如人的姓名、身高、年龄、性别等，一般是名词性的。</p>
-<ol>
-<li>属性都是成对出现的，包括属性名和值，它们之间使用英文 <code>:</code> 分隔</li>
-<li>多个属性之间使用英文 <code>,</code> 分隔</li>
-<li>属性就是依附在对象上的变量</li>
-<li>属性名可以使用 <code>&quot;&quot;</code> 或 <code>&#39;&#39;</code>，<strong>一般情况下省略</strong>，除非名称遇到特殊符号如空格、中横线等</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过对象描述一个人的数据信息</span></span><br><span class="line"><span class="comment">// person 是一个对象，它包含了一个属性 name</span></span><br><span class="line"><span class="comment">// 属性都是成对出现的，属性名和值，它们之间使用英文:分隔</span></span><br><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;小明&#x27;</span>, <span class="comment">// 描述人的姓名</span></span><br><span class="line">  <span class="attr">age</span>: <span class="number">18</span>, <span class="comment">// 描述人的年龄</span></span><br><span class="line">  <span class="attr">stature</span>: <span class="number">185</span>, <span class="comment">// 描述人的身高</span></span><br><span class="line">  <span class="attr">gender</span>: <span class="string">&#x27;男&#x27;</span>, <span class="comment">// 描述人的性别</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="对象属性操作"><a href="#对象属性操作" class="headerlink" title="对象属性操作"></a>对象属性操作</h3><p><strong>查询</strong></p>
-<p>声明对象，并添加了若干属性后，可以使用 <code>.</code> 或 <code>[]</code> 获得对象中属性对应的值，我称之为属性访问。</p>
-<p>语法：<code>对象名.属性</code></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">    <span class="attr">uname</span>: <span class="string">&#x27;小明&#x27;</span>,</span><br><span class="line">    <span class="attr">gender</span>: <span class="string">&#x27;男&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 访问人的名字</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(person.<span class="property">uname</span>) <span class="comment">//小明</span></span><br><span class="line"><span class="comment">// 访问人性别</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(person.<span class="property">gender</span>) <span class="comment">//男</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(person[<span class="string">&#x27;gender&#x27;</span>]) <span class="comment">//男</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>增加</strong></p>
-<p>语法：<code>对象名.新属性 = 新值</code></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">    <span class="attr">uname</span>: <span class="string">&#x27;小明&#x27;</span>,</span><br><span class="line">    <span class="attr">gender</span>: <span class="string">&#x27;男&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//增加age属性</span></span><br><span class="line">person.<span class="property">age</span> = <span class="number">18</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>修改</strong></p>
-<p>语法：<code>对象名.属性 = 新值</code></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明一个空的对象（没有任何属性）</span></span><br><span class="line"><span class="keyword">let</span> person = &#123;&#125;</span><br><span class="line"><span class="comment">// 动态追加属性</span></span><br><span class="line">person.<span class="property">uname</span> = <span class="string">&#x27;小明&#x27;</span></span><br><span class="line">person[<span class="string">&#x27;age&#x27;</span>] = <span class="number">18</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>删除</strong></p>
-<p>语法：<code>delete 对象名.属性</code></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">    <span class="attr">uname</span>: <span class="string">&#x27;小明&#x27;</span>,</span><br><span class="line">    <span class="attr">gender</span>: <span class="string">&#x27;男&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//删除gender属性</span></span><br><span class="line"><span class="keyword">delete</span> person.<span class="property">gender</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(person)</span><br></pre></td></tr></table></figure>
-
-<h2 id="对象方法"><a href="#对象方法" class="headerlink" title="对象方法"></a>对象方法</h2><h3 id="对象方法定义"><a href="#对象方法定义" class="headerlink" title="对象方法定义"></a>对象方法定义</h3><p>数据行为性的信息称为方法，如跑步、唱歌等，一般是动词性的，其本质是函数。</p>
-<ol>
-<li>方法是由方法名和函数两部分构成，它们之间使用<code>:</code>分隔</li>
-<li>多个属性之间使用英文 <code>,</code> 分隔</li>
-<li>方法是依附在对象中的函数</li>
-<li>方法名可以使用 <code>&quot;&quot;</code> 或 <code>&#39;&#39;</code>，一般情况下省略，除非名称遇到特殊符号如空格、中横线等</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 方法是依附在对象上的函数</span></span><br><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;小红&#x27;</span>,</span><br><span class="line">  <span class="attr">age</span>: <span class="number">18</span>,</span><br><span class="line">    </span><br><span class="line">  <span class="comment">// 方法是由方法名和函数两部分构成，它们之间使用 : 分隔</span></span><br><span class="line">  <span class="attr">sayHi</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hi&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用对象中sayHi方法，并且增删改查类似对象属性操作</span></span><br><span class="line">person.<span class="title function_">sayHi</span>()</span><br></pre></td></tr></table></figure>
-
-<h3 id="遍历对象"><a href="#遍历对象" class="headerlink" title="遍历对象"></a>遍历对象</h3><p>对象里面是无序的键值对，没有规律，不像数组里有规律的下标。</p>
-<p>数组遍历示例：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> colors = [<span class="string">&#x27;pink&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>, <span class="string">&#x27;red&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">in</span> colors) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i);    <span class="comment">//输出数组下标，是字符串类型</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(colors[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>for in</code>  不提倡遍历数组因为 <code>i</code> 是 字符串。</p>
-<p>对象遍历示例：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">    <span class="attr">uname</span>: <span class="string">&#x27;小明&#x27;</span>,</span><br><span class="line">    <span class="attr">age</span>: <span class="number">18</span>,</span><br><span class="line">    <span class="attr">gender</span>: <span class="string">&#x27;男&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> key <span class="keyword">in</span> person) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(key)  <span class="comment">//输出属性名 是字符串类型</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(person.<span class="property">key</span>)  <span class="comment">//错误 person.&#x27;uname&#x27;</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(person[key])  <span class="comment">//正确输出值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="null对象"><a href="#null对象" class="headerlink" title="null对象"></a>null对象</h3><p><code>null</code> 也是 JavaScript 中数据类型的一种，通常只用它来表示不存在的对象。使用 typeof 检测类型它的类型时，结果为 <code>object</code>。</p>
-<h2 id="内置对象"><a href="#内置对象" class="headerlink" title="内置对象"></a>内置对象</h2><h3 id="数学对象"><a href="#数学对象" class="headerlink" title="数学对象"></a>数学对象</h3><p><code>Math</code> 是 JavaScript 中内置的对象，称为数学对象，这个对象下即包含了属性，也包含了许多的方法。</p>
-<p><strong>属性和方法</strong></p>
-<table>
-<thead>
-<tr>
-<th>方法&#x2F;属性</th>
-<th>作用</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>PI</td>
-<td>获取圆周率</td>
-<td></td>
-</tr>
-<tr>
-<td>random()</td>
-<td>生成 0 到 1 间的随机数</td>
-<td>包含 0 不包含 1</td>
-</tr>
-<tr>
-<td>ceil()</td>
-<td>数字向上取整</td>
-<td>舍弃小数部分，整数部分加1</td>
-</tr>
-<tr>
-<td>floor()</td>
-<td>数字向下取整</td>
-<td>舍弃小数部分，整数部分不变</td>
-</tr>
-<tr>
-<td>round()</td>
-<td>四舍五入取整</td>
-<td></td>
-</tr>
-<tr>
-<td>max()</td>
-<td>在一组数中找出最大值</td>
-<td></td>
-</tr>
-<tr>
-<td>min()</td>
-<td>在一组数中找出最小值</td>
-<td></td>
-</tr>
-<tr>
-<td>pow()</td>
-<td>幂方法</td>
-<td></td>
-</tr>
-<tr>
-<td>sqrt()</td>
-<td>平方根</td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="日期对象"><a href="#日期对象" class="headerlink" title="日期对象"></a>日期对象</h3><p>JavaScript 中内置了获取系统时间的对象 <code>Date</code>，使用 <code>Date</code> 时与之前学习的内置对象 <code>console</code> 和 <code>Math</code> 不同，它需要借助 <code>new</code> 关键字才能使用。</p>
-<p><strong>实例化</strong></p>
-<p>一般使用 <code>new</code> 关键字，这个操作称为实例化。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 实例化</span></span><br><span class="line"><span class="keyword">const</span> curDate = <span class="keyword">new</span> <span class="title class_">Date</span>(); <span class="comment">// 系统当前时间</span></span><br><span class="line"><span class="keyword">const</span> date = <span class="keyword">new</span> <span class="title class_">Date</span>(<span class="string">&#x27;2020-05-01&#x27;</span>) <span class="comment">// 指定时间</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>方法</strong></p>
-<p>日期对象返回的数据有时候不能使用，需要转换成开发中常用的格式。</p>
-<table>
-<thead>
-<tr>
-<th>方法</th>
-<th>作用</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>getFullYear()</td>
-<td>获取年份</td>
-<td>获取四位年份</td>
-</tr>
-<tr>
-<td>getMonth()</td>
-<td>获取月份</td>
-<td>取值为 0 ~ 11</td>
-</tr>
-<tr>
-<td>getDate()</td>
-<td>获取月份中的每一天</td>
-<td>不同月份取值也不相同</td>
-</tr>
-<tr>
-<td>getDay()</td>
-<td>获取星期</td>
-<td>取值为 0 ~ 6</td>
-</tr>
-<tr>
-<td>getHours()</td>
-<td>获取小时</td>
-<td>取值为 0 ~ 23</td>
-</tr>
-<tr>
-<td>getMinutes()</td>
-<td>获取分钟</td>
-<td>取值为 0 ~ 59</td>
-</tr>
-<tr>
-<td>getSeconds()</td>
-<td>获取秒</td>
-<td>取值为 0 ~ 59</td>
-</tr>
-</tbody></table>
-<p><strong>时间戳</strong></p>
-<p>时间戳是指1970年01月01日00时00分00秒起至现在的总秒数或毫秒数，它是一种特殊的计量时间的方式。</p>
-<p>注：JavaScript 中时间戳是以毫秒计的。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> date = <span class="keyword">new</span> <span class="title class_">Date</span>()</span><br><span class="line"><span class="comment">// 获取时间戳</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(date.<span class="title function_">getTime</span>())</span><br><span class="line"><span class="comment">// 还有一种获取时间戳的方法</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(+<span class="keyword">new</span> <span class="title class_">Date</span>())</span><br><span class="line"><span class="comment">// 还有一种获取时间戳的方法，该方法只能获取当前时间戳</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Date</span>.<span class="title function_">now</span>())</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>

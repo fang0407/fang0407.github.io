@@ -120,13 +120,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
   </nav>
@@ -143,6 +143,94 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/11/10/CV-CUDA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/11/10/CV-CUDA/" class="post-title-link" itemprop="url">CV-CUDA</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-11-10 07:43:04" itemprop="dateCreated datePublished" datetime="2024-11-10T07:43:04+08:00">2024-11-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-30 06:16:32" itemprop="dateModified" datetime="2024-11-30T06:16:32+08:00">2024-11-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CUDA/" itemprop="url" rel="index"><span itemprop="name">CUDA</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="CV-CUDA编译"><a href="#CV-CUDA编译" class="headerlink" title="CV-CUDA编译"></a>CV-CUDA编译</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"># 编译运行环境：docker ubuntu:20.04、gcc 11、nvidia 3090</span><br><span class="line"># 安装docker以及nvidia-docker，</span><br><span class="line"></span><br><span class="line">nvidia-docker run -it -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=compute,utility 镜像ID bash</span><br><span class="line"></span><br><span class="line">git clone https://github.com/CVCUDA/CV-CUDA.git</span><br><span class="line"></span><br><span class="line">cd CV-CUDA/samples/common/build</span><br><span class="line">cmake ../</span><br><span class="line">make -j</span><br><span class="line"></span><br><span class="line">cd CV-CUDA/samples/classification/build</span><br><span class="line">cmake ../</span><br><span class="line">make -j</span><br><span class="line">./cvcuda_sample_classification -e model/image.engine -i model/plate.jpg -l model/lable.txt -b 1</span><br><span class="line"></span><br><span class="line"># 序列化TRT模型</span><br><span class="line">cd TensorRT-8.6.1.6/bin</span><br><span class="line">export LD_LIBRARY_PATH=/usr/local/cuda-12.2/lib64:/cudnn-linux-x86_64-8.9.6.50_cuda12-archive/lib:TensorRt-8.6.1.6/lib:$LD_LIBRARY_PATH</span><br><span class="line"></span><br><span class="line">./trtexec --onnx=image.onnx --minShapes=input:1x3x224x224 --optShapes=input:1x3x224x224 --maxShapes=input:1x3x224x224 --saveEngine=./image.engine</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -180,9 +268,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2024-10-01 12:05:58 / Modified: 22:24:33" itemprop="dateCreated datePublished" datetime="2024-10-01T12:05:58+08:00">2024-10-01</time>
+      <time title="Created: 2024-10-01 12:05:58" itemprop="dateCreated datePublished" datetime="2024-10-01T12:05:58+08:00">2024-10-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-30 06:27:50" itemprop="dateModified" datetime="2024-11-30T06:27:50+08:00">2024-11-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -244,6 +338,55 @@
 <li>编译 Debug 版本：<code>CC=cl ./configure --prefix=/d/third_party/x264_lib --enable-shared --enable-static --enable-debug &amp;&amp; make &amp;&amp; make install</code></li>
 <li>编译 Release 版本：<code>CC=cl ./configure --prefix=/d/third_party/x264_lib --enable-shared --enable-static &amp;&amp; make &amp;&amp; make install</code></li>
 </ul>
+<h1 id="protobuf"><a href="#protobuf" class="headerlink" title="protobuf"></a>protobuf</h1><ul>
+<li><p>编译运行环境：Win10</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/protocolbuffers/protobuf/releases/download/v3.8.0/protobuf-cpp-3.8.0.zip">protobuf 3.8.0</a> 版本下载并解压</p>
+</li>
+<li><p>安装 vs2019，打开 x64 Native Tools Command Prompt for VS 2019</p>
+<ul>
+<li><p><code>cd protobuf/cmake &amp;&amp; mkdir build</code></p>
+</li>
+<li><p><code>cmake ../</code> （默认使用 Visual Studio 16 2019 生成工程文件）</p>
+</li>
+<li><p>在 build目录下生成 protobuf.sln，使用 vs2019 打开，生成解决方案</p>
+</li>
+<li><p>如果是 Debug 版本在 build 目录下的 Debug 目录生成相应库文件</p>
+</li>
+<li><p>在工程项目右击属性—&gt;配置属性—&gt;C&#x2F;C++—&gt;代码生成—&gt;运行库中选择 MT&#x2F;MTd&#x2F;MD&#x2F;MDd</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="jsoncpp"><a href="#jsoncpp" class="headerlink" title="jsoncpp"></a>jsoncpp</h1><ul>
+<li><p>编译运行环境：Win10</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/open-source-parsers/jsoncpp/archive/refs/tags/1.9.5.zip">jsoncpp 1.9.5</a> 版本下载并解压</p>
+</li>
+<li><p>安装 vs2019，打开 x64 Native Tools Command Prompt for VS 2019</p>
+<ul>
+<li><p><code>cd jsoncpp-1.9.5 &amp;&amp; mkdir build</code></p>
+</li>
+<li><p><code>cmake ../</code> （默认使用 Visual Studio 16 2019 生成工程文件）</p>
+</li>
+<li><p>在 build目录下生成 jsoncpp.sln，使用 vs2019 打开，生成解决方案</p>
+</li>
+<li><p>在 build 目录下的 lib 目录生成相应库文件</p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="CV-CUDA"><a href="#CV-CUDA" class="headerlink" title="CV-CUDA"></a>CV-CUDA</h1><ul>
+<li>编译运行环境：ubuntu:20.04、gcc 11、nvidia 3090</li>
+<li>安装 docker 以及 nvidia-docker</li>
+<li>CUDA 下载：<a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-downloads%EF%BC%8C%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5%EF%BC%9Ahttps://blog.csdn.net/jhsignal/article/details/111401628">https://developer.nvidia.com/cuda-downloads，参考链接：https://blog.csdn.net/jhsignal/article/details/111401628</a></li>
+<li>cuDNN 下载：<a target="_blank" rel="noopener" href="https://developer.nvidia.com/rdp/cudnn-download">https://developer.nvidia.com/rdp/cudnn-download</a></li>
+<li>TensorRT 下载：<a target="_blank" rel="noopener" href="https://developer.nvidia.com/tensorrt">https://developer.nvidia.com/tensorrt</a></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># 进入容器</span><br><span class="line">nvidia-docker run -it -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=compute,utility 镜像ID bash</span><br><span class="line"></span><br><span class="line"># 获取及编译CV-CUDA</span><br><span class="line">git clone https://github.com/CVCUDA/CV-CUDA.git</span><br><span class="line"></span><br><span class="line">cd CV-CUDA/samples/common/build</span><br><span class="line">cmake ../</span><br><span class="line">make -j</span><br><span class="line"></span><br><span class="line">cd CV-CUDA/samples/classification/build</span><br><span class="line">cmake ../</span><br><span class="line">make -j</span><br><span class="line">./cvcuda_sample_classification -e model/image.engine -i model/plate.jpg -l model/lable.txt -b 1</span><br><span class="line"></span><br><span class="line"># 序列化TRT模型</span><br><span class="line">cd TensorRT-8.6.1.6/bin</span><br><span class="line">export LD_LIBRARY_PATH=/usr/local/cuda-12.2/lib64:/cudnn-linux-x86_64-8.9.6.50_cuda12-archive/lib:TensorRt-8.6.1.6/lib:$LD_LIBRARY_PATH</span><br><span class="line">./trtexec --onnx=image.onnx --minShapes=input:1x3x224x224 --optShapes=input:1x3x224x224 --maxShapes=input:1x3x224x224 --saveEngine=./image.engine</span><br></pre></td></tr></table></figure>
+
+
+
 
       
     </div>
@@ -1175,230 +1318,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2024/05/05/NACK%E4%B8%A2%E5%8C%85%E9%87%8D%E4%BC%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/05/05/NACK%E4%B8%A2%E5%8C%85%E9%87%8D%E4%BC%A0/" class="post-title-link" itemprop="url">NACK丢包重传</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2024-05-05 16:40:06" itemprop="dateCreated datePublished" datetime="2024-05-05T16:40:06+08:00">2024-05-05</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-05-10 21:29:07" itemprop="dateModified" datetime="2024-05-10T21:29:07+08:00">2024-05-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/WebRTC/" itemprop="url" rel="index"><span itemprop="name">WebRTC</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="NACK概述"><a href="#NACK概述" class="headerlink" title="NACK概述"></a>NACK概述</h1><ul>
-<li>为什么需要 NACK？<ul>
-<li>通常实时音视频系统的传输协议都是基于 UDP 的，UDP 协议是不可靠的，当网络链路出现异常的时候， 可能会出现乱序、丢包，从而影响音视频的通信质量。</li>
-<li>在 WebRTC 中，NACK 是抵抗网络丢包非常重要的手段，在 TCP 协议中，当接收端收到数据包时，会发送一个 ACK 给发送端，告诉已经收到了数据包。然而在 WebRTC 中，接收端会告诉发送端没有收到的数据包，所以称之为 NACK（negative acknowledge）。</li>
-</ul>
-</li>
-</ul>
-<p>问题</p>
-<ul>
-<li>什么时候触发 NACK？</li>
-<li>重传包可能还会丢失，两次重传之间的间隔如何合理的控制？</li>
-<li>如果重传一直不成功，该如何处理？</li>
-<li>乱序和丢包是不同的，针对乱序有没有优化处理手段？</li>
-</ul>
-<h1 id="NACK核心思想"><a href="#NACK核心思想" class="headerlink" title="NACK核心思想"></a>NACK核心思想</h1><ul>
-<li>触发条件<ul>
-<li>检测丢包发生时，会立即触发一次</li>
-<li>针对乱序优化<ul>
-<li>等待一段时间再触发</li>
-<li>统计方法估计乱序的个数 n，等待 n 个包再触发</li>
-</ul>
-</li>
-<li>定期触发<ul>
-<li>两次重传的间隔设定，应超过一个 RTT</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>重传限制，当网络质量非常差时，一直重传可能也不成功，不能无限重传下去<ul>
-<li>一个包最多重传 10 次</li>
-<li>不重传时间过久的包，与最新的包 seq 相差 10000 以上的包不再重传</li>
-<li>同时重传总的包个数不超过 1000个</li>
-</ul>
-</li>
-<li>清理优化<ul>
-<li>考虑利用关键帧来清除未重传成功的包</li>
-<li>当收到完整连续的帧时，也可以清理</li>
-</ul>
-</li>
-<li>请求关键帧机制<ul>
-<li>当大量重传无法成功时，可以放弃重传，直接请求 I 帧</li>
-</ul>
-</li>
-</ul>
-<h1 id="NACK丢包检测"><a href="#NACK丢包检测" class="headerlink" title="NACK丢包检测"></a>NACK丢包检测</h1><p><strong>包序列号比较</strong></p>
-<ul>
-<li>在比较包序列号的先后时，不能简单的比较数值的大小，因为包序列号的类型是 uint16_t，最大只能表示 65535，如果视频流持续时间比较长，包序列号就很容易超过这个限制而从 0 开始循环，此时序列号为 0 的包就比序列号为 65535 的包要新了。</li>
-<li>WebRTC 里面提供了一个 <code>webrtc::AheadOf(a, b)</code> 的方法来解决这个问题，该方法可以处理这种情况。基本思想是通过比较序列号的距离，来判断序列号是否发生了循环。通常情况下，序列号是连续递增的，两个先后包序列号之间的差值不会相差太大，即使存在丢包情况，只要我们设置一个足够大的安全距离，比如最大值的一半，就可以规避这个问题。最终我们可以比较可靠的判断是否发生了包序列号的循环。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;rtc_base/numerics/sequence_number_util.h&gt;</span></span></span><br><span class="line">webrtc::<span class="built_in">AheadOf</span>(<span class="number">8</span>, <span class="number">2</span>) == <span class="number">1</span></span><br><span class="line">webrtc::<span class="built_in">AheadOf</span>(<span class="number">65510</span>, <span class="number">2</span>) == <span class="number">0</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>触发条件</strong></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">NackFilterOptions</span> &#123;</span><br><span class="line">    kSeqNumOnly,  <span class="comment">// 丢包时触发</span></span><br><span class="line">    kTimeOnly,    <span class="comment">// 时间触发</span></span><br><span class="line">    kSeqAndTime</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><strong>清理时间较久仍未重传成功的序列号</strong></p>
-<ul>
-<li><p>由于网络的原因，有些包可能就一直无法重传成功，久而久之，重传列表会有两个问题</p>
-<ul>
-<li>重传列表的长度越来越大</li>
-<li>重传列表中还存在时间很久的序列号，已经没有重传的意义了</li>
-</ul>
-</li>
-<li><p>清理策略</p>
-<ul>
-<li>对于时间比较久仍未重传成功的序列号，从重传列表中移除，与当前最新收到的序列号相差 <code>kMaxPacketAge=10000</code> 的序列号认为是时间比较久的序列号</li>
-<li>尽最大努力清理，但还是超过限制，放弃重传，直接请求关键帧</li>
-</ul>
-</li>
-</ul>
-<p><strong>利用关键帧控制重传列表的长度</strong></p>
-<ul>
-<li>避免重传列表长度过大，当长度超过设定的限制 <code>kMaxNackPackets=1000</code>，执行清理动作</li>
-<li>利用关键帧列表清理</li>
-</ul>
-<p><strong>针对乱序优化重传策略</strong></p>
-<ul>
-<li>乱序<ul>
-<li>当遇到 105 时，按照当前的丢包检测策略，会认为 102、103、104 丢包了，立即触发重传。而实际上可能只是一个乱序，102、103、104 紧接着很快就来了，这种情况可以优化</li>
-</ul>
-</li>
-<li>优化策略<ul>
-<li>当判断需要重传时，等待一小段时间（可配置），再触发重传</li>
-<li>通过数据统计，估计一个合理的需要等待的包个数，再触发重传</li>
-<li>弊端：可能会加大延迟</li>
-</ul>
-</li>
-<li>直方图统计<ul>
-<li>基本思想：在一个样本数内，统计某个范围内的取值分布，然后计算累计概率对应的取值。</li>
-<li>WebRTC 里面设定的样本数为 128，取值为 [0, 10）范围内的乱序个数</li>
-<li>例如：<ul>
-<li>逆累计分布函数（InverseCdf），给定一个概率，输出对应的取值</li>
-<li>比如给定概率 50%，按照上图的结果，乱序的个数为 2</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<img src="/2024/05/05/NACK%E4%B8%A2%E5%8C%85%E9%87%8D%E4%BC%A0/直方图统计.png" alt="直方图统计" style="zoom:50%;">
-
-<h1 id="NACK示例"><a href="#NACK示例" class="headerlink" title="NACK示例"></a>NACK示例</h1><p><strong>NackRequester</strong></p>
-<ul>
-<li><code>uint16_t newest_seq_num_</code>：最新包的序列包。</li>
-<li><code>std::map&lt;uint16_t, NackInfo, webrtc::DescendingSeqNumComp&lt;uint16_t&gt;&gt; nack_list_</code>：重传列表。</li>
-<li><code>std::set&lt;uint16_t, webrtc::DescendingSeqNumComp&lt;uint16_t&gt;&gt; keyframe_list_</code>：关键帧（第一个包）列表。</li>
-<li><code>TimerWatcher *nack_timer_</code>：定时器，用于定时重传。</li>
-<li><code>int64_t send_nack_delay_ms_</code>：当判断需要重传时，等待一小段时间，再触发重传。</li>
-<li><code>Histogram reordering_histogram_</code>：重传直方图。</li>
-<li><code>OnReceivedPacket()</code>：接收 RTP 包序列号，触发重传。<ul>
-<li>记录第一次收到数据包</li>
-<li>不处理重复的数据包</li>
-<li>如果当前收到的序列号比已经收到的最新包序列号还要旧，有可能是乱序或者重传包<ul>
-<li>如果在重传列表 <code>nack_list_</code> 中需要删除掉，不再重传</li>
-<li>对于乱序包，调用 <code>UpdateReorderingStat()</code> 更新直方图  <code>reordering_histogram_</code></li>
-</ul>
-</li>
-<li>保存关键帧的第一个包序列号</li>
-<li>如果当前收到的序列号比已经收到的最新包序列号要新，调用 <code>AddPacketsToNack()</code></li>
-<li>更新当前最新的序列号</li>
-<li>调用 <code>GetNackBatch()</code> 获取需要重传的序列号，并且触发一次基于丢包时触发的 NACK 重传</li>
-</ul>
-</li>
-<li><code>AddPacketsToNack()</code>：清理时间较久仍未重传成功的序列号，并且保存需要重传的序列号到重传列表。</li>
-<li><code>NackTimeCob()</code>：定时重传回调，调用 <code>GetNackBatch()</code>。</li>
-<li><code>GetNackBatch()</code>：获取满足条件的需要重传的包序列号。<ul>
-<li>判断基于丢包触发 NACK 的条件是否满足<ul>
-<li>只会触发一次，之前触发过的不在触发</li>
-</ul>
-</li>
-<li>判断基于定时触发 NACK 的条件是否满足<ul>
-<li>需要保证上一次的重传有充分的时间，两次重传的时间间隔设置为 RTT 的时间</li>
-</ul>
-</li>
-<li>等待一段时间才重传</li>
-<li>该包重传的次数达到 10 次，不再重传</li>
-</ul>
-</li>
-<li><code>RemovePacketsUntilKeyFrame()</code>：清理重传列表，直到遇到关键帧。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
