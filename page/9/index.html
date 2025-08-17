@@ -120,13 +120,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">92</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
   </nav>
@@ -143,6 +143,691 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/" class="post-title-link" itemprop="url">MP4封装格式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-01 19:11:29" itemprop="dateCreated datePublished" datetime="2023-09-01T19:11:29+08:00">2023-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-07-19 09:12:47" itemprop="dateModified" datetime="2024-07-19T09:12:47+08:00">2024-07-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%BC%96%E7%A0%81%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">编码封装格式</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="MP4简介"><a href="#MP4简介" class="headerlink" title="MP4简介"></a>MP4简介</h1><p>mp4 文件格式全称为 MPEG-4 Part 14。它是⼀种多媒体格式容器，广泛用于包装视频和音频数据流、海报、字幕和元数据等。MP4 文件采用一种分层的容器结构，包含多个 box 层次结构，每个箱子用于存储特定类型的数据或元信息。</p>
+<h1 id="MP4结构"><a href="#MP4结构" class="headerlink" title="MP4结构"></a>MP4结构</h1><p>一个 mp4 文件可以看作有两个大类：</p>
+<ul>
+<li>记录媒体信息相关的部分。</li>
+<li>媒体负载部分。</li>
+</ul>
+<p>典型结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|  ftyp  |  moov |  mdat  |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ftyp（file type box），文件头，记录一些兼容性信息。</li>
+<li>moov（movie box），记录媒体信息。</li>
+<li>mdat（media data），媒体负载。</li>
+</ul>
+<p>注意，MP4数据索引和真正的数据分开区域存储，moov存放数据索引，mdat存放真正数据。</p>
+<h1 id="ftyp"><a href="#ftyp" class="headerlink" title="ftyp"></a>ftyp</h1><p>ftyp（File Type Box）一般出现在文件的开头，用来指示该 mp4 文件使用的标准规范：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>major_brand</td>
+<td>4 bytes</td>
+<td>主版本</td>
+</tr>
+<tr>
+<td>minor_version</td>
+<td>4 bytes</td>
+<td>次版本</td>
+</tr>
+<tr>
+<td>compatible_brands[]</td>
+<td>4 bytes</td>
+<td>指定兼容的版本，注意此字段是一个 list，即可以包含多个 4 bytes 版本号</td>
+</tr>
+</tbody></table>
+<h1 id="moov"><a href="#moov" class="headerlink" title="moov"></a>moov</h1><p>moov（Movie Box）一个 container box，一个文件只有一个，其包含的所有 box 用于描述媒体信息。 moov 的位置可以紧随着 ftyp 出现，也可以出现在文件末尾。由于是一个 container box，所以除了 box header，其 box body 就是其它的 box。 示例如下：</p>
+<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/moov结构.png" alt="moov结构" style="zoom:50%;">
+
+<p>其中包含：</p>
+<ul>
+<li>mvhd（moov header），用于简单描述一些所有媒体共享的信息。</li>
+</ul>
+<ul>
+<li>trak，即 track，轨道，用于描述音频流或视频流信息，可以有多个音视频轨道。</li>
+<li>udta（userdata），用户自定义数据。</li>
+</ul>
+<h2 id="mvhd"><a href="#mvhd" class="headerlink" title="mvhd"></a>mvhd</h2><p>mvhd（Movie Header Box），记录整个媒体文件的描述信息，如创建时间、修改时间、时间度量标尺、可播放时长等。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>version</td>
+<td>8 bit</td>
+<td>取 0 或 1，一般取 0</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>24 bit</td>
+<td></td>
+</tr>
+<tr>
+<td>creation_time</td>
+<td>64&#x2F;32 bit</td>
+<td>创建时间，当 version&#x3D;0 时取 32bit</td>
+</tr>
+<tr>
+<td>modification_time</td>
+<td>64&#x2F;32 bit</td>
+<td>修改时间，当 version&#x3D;0 时取 32bit</td>
+</tr>
+<tr>
+<td>timescale</td>
+<td>32 bit</td>
+<td>时间基</td>
+</tr>
+<tr>
+<td>duration</td>
+<td>64&#x2F;32 bit</td>
+<td>文件时长，当 version&#x3D;0 时取 32bit</td>
+</tr>
+<tr>
+<td>rate</td>
+<td>32 bit</td>
+<td>播放速率，默认取 0x00010000，即 1.0</td>
+</tr>
+<tr>
+<td>volume</td>
+<td>16 bit</td>
+<td>音量，默认取 0x0100，即 1.0</td>
+</tr>
+<tr>
+<td>reserved</td>
+<td>16 bit</td>
+<td>0</td>
+</tr>
+<tr>
+<td>reserved</td>
+<td>2 x 32 bit</td>
+<td>0</td>
+</tr>
+<tr>
+<td>matrix</td>
+<td>9 x 32 bit</td>
+<td>可忽略</td>
+</tr>
+<tr>
+<td>pre_defined</td>
+<td>6 x 32 bit</td>
+<td>0</td>
+</tr>
+<tr>
+<td>next_track_ID</td>
+<td>32 bit</td>
+<td>下一个紧邻的 track box id</td>
+</tr>
+</tbody></table>
+<h2 id="track"><a href="#track" class="headerlink" title="track"></a>track</h2><p>trak box 是一个 container box，其子 box 包含了该 track 的媒体信息。一个 mp4 文件可以包含多个 track，track之间是独立的，trak box 用于描述每一路媒体流。</p>
+<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/trak结构.png" alt="trak结构" style="zoom:50%;">
+
+<p>其中包含：</p>
+<ul>
+<li>tkhd（track header box），用于简单描述该路媒体流的信息。</li>
+<li>edts()。</li>
+<li>mdia（media box），用于详细描述该路媒体流的信息。</li>
+</ul>
+<h3 id="tkhd"><a href="#tkhd" class="headerlink" title="tkhd"></a>tkhd</h3><p>tkhd（Track Header Box），用于描述媒体轨道的属性和信息，用于指导播放器正确解码和呈现轨道的媒体数据。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>version</td>
+<td>8 bit</td>
+<td>取 0 或 1，一般取 0</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>24 bit</td>
+<td></td>
+</tr>
+<tr>
+<td>creation_time</td>
+<td>64&#x2F;32 bit</td>
+<td>创建时间，当 version&#x3D;0 时取 32bit</td>
+</tr>
+<tr>
+<td>modification_time</td>
+<td>64&#x2F;32 bit</td>
+<td>修改时间，当 version&#x3D;0 时取 32bit</td>
+</tr>
+<tr>
+<td>track_ID</td>
+<td>32 bit</td>
+<td>本 track id</td>
+</tr>
+<tr>
+<td>reserved</td>
+<td>32 bit</td>
+<td>0</td>
+</tr>
+<tr>
+<td>duration</td>
+<td>64&#x2F;32 bit</td>
+<td>本 track 时长，当 version&#x3D;0 时取 32bit</td>
+</tr>
+<tr>
+<td>reserved</td>
+<td>2 x 32 bit</td>
+<td>0</td>
+</tr>
+<tr>
+<td>layer</td>
+<td>16 bit</td>
+<td></td>
+</tr>
+<tr>
+<td>alternate_group</td>
+<td>16 bit</td>
+<td></td>
+</tr>
+<tr>
+<td>volume</td>
+<td>16 bit</td>
+<td>音量，如果是 audio track，则为 0x0100，即 1.0，否则取 0</td>
+</tr>
+<tr>
+<td>reserved</td>
+<td>16 bit</td>
+<td>0</td>
+</tr>
+<tr>
+<td>matrix</td>
+<td>9 x 32 bit</td>
+<td>可忽略</td>
+</tr>
+<tr>
+<td>width</td>
+<td>32 bit</td>
+<td>宽，[16.16] 格式，不必与sample的像素尺寸一致，用于播放时的展示宽高</td>
+</tr>
+<tr>
+<td>height</td>
+<td>32 bit</td>
+<td>高，[16.16] 格式 ，不必与sample的像素尺寸一致，用于播放时的展示宽高</td>
+</tr>
+</tbody></table>
+<h3 id="mdia"><a href="#mdia" class="headerlink" title="mdia"></a>mdia</h3><p>mdia（Media Box） 用于描述媒体数据的详细信息和属性。用于指导播放器解码和呈现媒体数据。</p>
+<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/mdia结构.png" alt="mdia结构" style="zoom:50%;">
+
+<p>其中包含：</p>
+<ul>
+<li>mdhd（Media Header Box），用于简单描述该路媒体流的信息。</li>
+<li>hdlr（Handler Reference Box），主要定义了轨道类型。</li>
+<li>stbl（Media Information Box），用于描述该路媒体流的解码相关信息和音视频位置等信息。</li>
+</ul>
+<h4 id="mdhd"><a href="#mdhd" class="headerlink" title="mdhd"></a>mdhd</h4><p>mdhd（Media Header Box），包含了有关媒体轨道的时间和时钟相关信息，用于指导播放器如何解释和呈现媒体数据的时间信息。 </p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>version</td>
+<td>8 bit</td>
+<td>取 0 或 1，一般取 0</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>24 bit</td>
+<td></td>
+</tr>
+<tr>
+<td>creation_time</td>
+<td>64&#x2F;32 bit</td>
+<td>创建时间，当 version&#x3D;0 时取 32bit</td>
+</tr>
+<tr>
+<td>modification_time</td>
+<td>64&#x2F;32 bit</td>
+<td>修改时间，当 version&#x3D;0 时取 32bit</td>
+</tr>
+<tr>
+<td>timescale</td>
+<td>32 bit</td>
+<td>时间基，同 mvhd 中 timescale</td>
+</tr>
+<tr>
+<td>duration</td>
+<td>64&#x2F;32 bit</td>
+<td>本 track 时长，当 version&#x3D;0 时取 32bit</td>
+</tr>
+<tr>
+<td>pad</td>
+<td>1 bit</td>
+<td>0</td>
+</tr>
+<tr>
+<td>language</td>
+<td>3 x 5 bit</td>
+<td>最高位为0，后面15位为3个字符(见ISO 639-2&#x2F;T标准中定义)</td>
+</tr>
+<tr>
+<td>pre_defined</td>
+<td>16 bit</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h4 id="hdlr"><a href="#hdlr" class="headerlink" title="hdlr"></a>hdlr</h4><p>hdlr（Handler Reference Box），用于确定轨道的类型和如何处理轨道中的媒体数据。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>version</td>
+<td>8 bit</td>
+<td>取 0 或 1，一般取 0</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>24 bit</td>
+<td></td>
+</tr>
+<tr>
+<td>pre_defined</td>
+<td>32 bit</td>
+<td>0</td>
+</tr>
+<tr>
+<td>handler_type</td>
+<td>32 bit</td>
+<td>取值为 <br>vide：Video track<br>soun：Audio track<br>hint：Hint track<br>meta：Timed Metadata track<br>auxv：Auxiliary Video track</td>
+</tr>
+<tr>
+<td>reserved</td>
+<td>3 x 32 bit</td>
+<td>0</td>
+</tr>
+<tr>
+<td>name</td>
+<td>不定长度</td>
+<td>自定义名称，以 \0 结尾</td>
+</tr>
+</tbody></table>
+<h4 id="minf"><a href="#minf" class="headerlink" title="minf"></a>minf</h4><p>minf（Media Information Box），包含了有关媒体数据的详细信息，指导播放器解码和呈现媒体数据。需要注意的是，minf里面的⼦容器，音频和视频轨是有区别的，比如视频轨：vmhd， 音频轨则为：smhd。</p>
+<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/minf.png" alt="minf" style="zoom:50%;">
+
+<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/minf结构.png" alt="minf结构" style="zoom:50%;">
+
+<p>其中包含：</p>
+<ul>
+<li><p>vmhd（Video Media Header），描述视频媒体的属性。</p>
+</li>
+<li><p>smhd（Sound Media Header），描述音频媒体的属性。</p>
+</li>
+<li><p>dinf（Data Information Box），存储媒体数据信息的部分。</p>
+</li>
+<li><p>stbl（Sample Table Box），包含了与媒体数据的样本和时间戳相关的信息。</p>
+</li>
+</ul>
+<h5 id="vmhd"><a href="#vmhd" class="headerlink" title="vmhd"></a>vmhd</h5><p>vmhd（Video Media Header），为MP4文件中的视频轨道提供一些控制和信息，以帮助解码器和播放器正确显示视频内容。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>graphics mode</td>
+<td>16 bit</td>
+<td>指定了如何处理视频中的图形，取值：<br>0：复制（Copy） - 表示图形将与前一个样本相同<br>1：混合（Blend） - 表示图形将与前一个样本混合<br>其他值：保留（Reserved） - 保留供将来使用</td>
+</tr>
+<tr>
+<td>opcolor</td>
+<td>48 bit</td>
+<td>用于指定不透明颜色</td>
+</tr>
+</tbody></table>
+<h5 id="smhd"><a href="#smhd" class="headerlink" title="smhd"></a>smhd</h5><p>SMHD（Sound Media Header），为MP4文件中的音频轨道提供一些控制和信息，以帮助解码器和播放器正确播放音频内容。平衡字段允许用户调整左右声道的音量平衡，以适应不同的听觉需求。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>balance</td>
+<td>16 bit</td>
+<td>指定音频的平衡，取值：<br>0表示中性平衡<br>负数值表示更偏向左声道<br>正数值表示更偏向右声道</td>
+</tr>
+<tr>
+<td>reserved</td>
+<td>16 bit</td>
+<td>保留字段</td>
+</tr>
+</tbody></table>
+<h5 id="stbl"><a href="#stbl" class="headerlink" title="stbl"></a>stbl</h5><p>stbl（Sample Table Box）是MP4（MPEG-4 Part 14）容器格式中的一个重要箱子，用于存储有关媒体数据的样本（samples）和时间戳（timestamps）等信息。stbl通常包含在媒体轨道描述中，用于指导播放器解码和呈现媒体数据。</p>
+<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/stbl结构.png" alt="stbl结构" style="zoom:50%;">
+
+<h6 id="stsd"><a href="#stsd" class="headerlink" title="stsd"></a>stsd</h6><p>stsd （Sample Description Box），用于描述每个媒体样本的格式和编码类型。它包括有关媒体轨道使用的编解码器的详细信息，以便解码器能够正确解码数据。</p>
+<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/stsd视频结构-3572269.png" alt="stsd视频结构" style="zoom:50%;">
+
+<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/stsd音频结构.png" alt="stsd音频结构" style="zoom:50%;">
+
+<h6 id="stts"><a href="#stts" class="headerlink" title="stts"></a>stts</h6><p>stts（Time-to-Sample Box），包含有关样本时间戳的信息。它定义了媒体样本之间的时间同步信息，以确保媒体内容按正确的时间顺序呈现。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>version</td>
+<td>8 bit</td>
+<td>取 0 或 1，一般取 0</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>24 bit</td>
+<td></td>
+</tr>
+<tr>
+<td>sample_count</td>
+<td>32 bit</td>
+<td>播放时长为 sample_delta 的连续 sample 个数</td>
+</tr>
+<tr>
+<td>sample_delta</td>
+<td>32 bit</td>
+<td>单个 sample 的播放时长，单位为 timescale</td>
+</tr>
+</tbody></table>
+<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/Time-to-Sample映射表.png" alt="Time-to-Sample映射表" style="zoom:50%;">
+
+<p>持续时间相同的连续sample可以放到⼀个entry里达到节省空间的目的。 sample的实际数量需要将每个entry的sample count进行累加才是真正的sample个数</p>
+<h6 id="stsc"><a href="#stsc" class="headerlink" title="stsc"></a>stsc</h6><p>stsc（Sample-to-Chunk Box），定义了样本与数据块之间的映射。它告诉播放器如何将媒体样本分布到不同的数据块中，以便有效地访问和解码。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>version</td>
+<td>8 bit</td>
+<td>取 0 或 1，一般取 0</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>24 bit</td>
+<td></td>
+</tr>
+<tr>
+<td>first_chunk</td>
+<td>32 bit</td>
+<td>一组 chunk 的第一个 chunk 的序号，chunk 的编号从 1 开始</td>
+</tr>
+<tr>
+<td>samples_per_chunk</td>
+<td>32 bit</td>
+<td>每个 chunk 有多少个 sample</td>
+</tr>
+<tr>
+<td>sample_description_index</td>
+<td>32 bit</td>
+<td>stsd box 中 sample desc 信息的索引</td>
+</tr>
+</tbody></table>
+<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/sample-chunk映射表.png" alt="sample-chunk映射表" style="zoom:50%;">
+
+<ul>
+<li><p>First chunk：使用该表项的第⼀个chunk序号。</p>
+</li>
+<li><p>Samples per chunk：使用该表项的chunk中包含有几个sample。</p>
+</li>
+<li><p>Sample description ID：使用该表项的chunk参考的stsd表项序号。</p>
+</li>
+</ul>
+<h6 id="stsz"><a href="#stsz" class="headerlink" title="stsz"></a>stsz</h6><p>stsz（Sample Size Box），指示每个媒体样本的大小。它用于确定在解码和播放过程中需要多少数据。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>version</td>
+<td>8 bit</td>
+<td>取 0 或 1，一般取 0</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>24 bit</td>
+<td></td>
+</tr>
+<tr>
+<td>sample_size</td>
+<td>32 bit</td>
+<td>指定默认的 sample 字节大小，如果所有 sample 的大小不一样，这个字段为 0</td>
+</tr>
+<tr>
+<td>sample_count</td>
+<td>32 bit</td>
+<td>track 中 sample 的数量</td>
+</tr>
+<tr>
+<td>sample_sizes</td>
+<td>32bit</td>
+<td>每个媒体样本的大小</td>
+</tr>
+</tbody></table>
+<h6 id="stco"><a href="#stco" class="headerlink" title="stco"></a>stco</h6><p>stco（Chunk Offset Box）或 co64（64-bit Chunk Offset Box），包含了每个数据块的偏移量信息，以便播放器能够查找并访问数据块中的样本数据。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>version</td>
+<td>8 bit</td>
+<td>取 0 或 1，一般取 0</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>24 bit</td>
+<td></td>
+</tr>
+<tr>
+<td>chunk_offsets</td>
+<td>32 bit</td>
+<td>chunk 在文件中的位置</td>
+</tr>
+</tbody></table>
+<h6 id="stss"><a href="#stss" class="headerlink" title="stss"></a>stss</h6><p>stss（Sync Sample Box）， 包含同步样本的索引，通常用于随机访问视频轨道中的关键帧。它指示哪些样本是关键帧，这对于快速定位和随机访问视频非常重要。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>version</td>
+<td>8 bit</td>
+<td>取 0 或 1，一般取 0</td>
+</tr>
+<tr>
+<td>flags</td>
+<td>24 bit</td>
+<td></td>
+</tr>
+<tr>
+<td>sample_number</td>
+<td>32 bit</td>
+<td>对于关键帧的sample计数，从 1 开始</td>
+</tr>
+</tbody></table>
+<p><strong>MP4中轨道、数据块和样本的关系</strong></p>
+<p>在MP4（MPEG-4 Part 14）容器格式中，媒体轨道（track）、数据块（chunk）和样本（sample）之间存在以下关系：</p>
+<pre class="mermaid">graph LR
+    A[MP4]-->B[track1]
+    A-->C[track2]
+    B-->D[chunk1]
+    B-->E[chunk2]
+    D-->F[sample1]
+    D-->G[sample2]</pre>
+
+<ul>
+<li><p>媒体轨道（Track）：</p>
+<ul>
+<li><p>一个MP4文件可以包含一个或多个媒体轨道，每个轨道通常对应一个媒体类型，例如，视频轨道、音频轨道、字幕轨道等。</p>
+</li>
+<li><p>每个媒体轨道都有一个唯一的轨道标识符（Track ID），用于标识该轨道。</p>
+</li>
+<li><p>每个轨道包含有关其媒体数据的描述信息，如时间属性、媒体类型、解码信息等，这些信息通常存储在tkhd和mdia箱中。</p>
+</li>
+</ul>
+</li>
+<li><p>数据块（Chunk）：</p>
+<ul>
+<li><p>数据块是媒体数据的最小存储单元，通常对应于文件中的一小部分数据。</p>
+</li>
+<li><p>媒体数据被切分成若干个数据块，这些数据块可能包含一组连续的媒体样本（samples）。</p>
+</li>
+<li><p>数据块通常存储在文件中，每个数据块都有一个偏移量，以便播放器能够查找和读取它们。</p>
+</li>
+<li><p>数据块之间的划分和索引信息通常存储在stsc中，它指示哪些数据块包含哪些样本。</p>
+</li>
+</ul>
+</li>
+<li><p>样本（Sample）：</p>
+<ul>
+<li><p>样本是媒体数据的最小解码单元，例如，视频帧、音频采样点等。</p>
+</li>
+<li><p>样本是可以直接呈现的媒体数据单元，播放器解码后将其呈现给用户。</p>
+</li>
+<li><p>样本通常存储在数据块中，一个数据块可以包含一个或多个样本。</p>
+</li>
+<li><p>样本通常具有时间戳（timestamp），以确定何时呈现它们。时间戳信息通常存储在stts中。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>关于这些关系，<strong>一个媒体轨道可以包含多个数据块，每个数据块包含多个样本</strong>。这些关系有助于播放器在正确的时间顺序下读取、解码和呈现媒体数据。</p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://gpac.github.io/mp4box.js/test/filereader.html">https://gpac.github.io/mp4box.js/test/filereader.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/moonwalk/p/16244932.html#_label6">https://www.cnblogs.com/moonwalk/p/16244932.html#_label6</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1491,170 +2176,6 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/08/24/FFmpeg%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/08/24/FFmpeg%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" class="post-title-link" itemprop="url">FFmpeg内存模型</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-08-24 21:45:15" itemprop="dateCreated datePublished" datetime="2023-08-24T21:45:15+08:00">2023-08-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-01-16 18:36:58" itemprop="dateModified" datetime="2024-01-16T18:36:58+08:00">2024-01-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="AVPacket内存模型"><a href="#AVPacket内存模型" class="headerlink" title="AVPacket内存模型"></a>AVPacket内存模型</h1><p>AVPacket 可看作一个容器，它本身并不包含压缩的流媒体数据，而是通过 data 指针引用数据的缓存空间。所以将 Packet 作为参数传递的时候，就要根据具体的需求，进而决定对 data 引用的这部分数据缓存空间进行何种处理了。当从一个 Packet 去创建另一个 Packet 的时候，有两种情况：</p>
-<ul>
-<li><p>两个 Packet 的 buf 引用的是同一数据缓存空间，这时候要注意数据缓存空间的释放问题。</p>
-</li>
-<li><p>两个 Packet 的 buf 引用不同的数据缓存空间，每个 Packet 都有数据缓存空间的 copy。</p>
-</li>
-</ul>
-<p>对于第一种情况，引入引用计数的概念：</p>
-<ul>
-<li><p>对于多个 AVPacket 共享同一个缓存空间，FFmpeg 使用的引用计数的机制（reference-count）。</p>
-<ul>
-<li>初始化引用计数为 0，只有真正分配 AVBuffer 的时候，引用计数初始化为 1。</li>
-<li>当有新的 Packet 引用共享的缓存空间时，就将引用计数 +1。</li>
-<li>当释放了引用共享空间的 Packet，就将引用计数 -1；引用计数为 0 时，就释放掉引用的缓存空间 AVBuffer。</li>
-</ul>
-</li>
-<li><p>AVFrame 也是采用同样的机制。</p>
-</li>
-</ul>
-<pre class="mermaid">classDiagram
-class AVBuffer {
-    +uint8_t* data
-    +int size
-    +atomic_uint refcount
-}
-class AVBufferRef {
-    +AVBuffer* buffer
-    +uint8_t* data
-    +int size
-}
-
-class AVPacket {
-    +AVBufferRef* buf
-}
-
-class AVFrame {
-    +AVBufferRef* buf[AV_NUM_DATA_POINTERS]
-}
-
-AVBufferRef *-- AVBuffer
-AVPacket *-- AVBufferRef
-AVFrame *-- AVBufferRef</pre>
-
-<h1 id="AVPacket函数"><a href="#AVPacket函数" class="headerlink" title="AVPacket函数"></a>AVPacket函数</h1><h2 id="AVPacket相关函数"><a href="#AVPacket相关函数" class="headerlink" title="AVPacket相关函数"></a>AVPacket相关函数</h2><ul>
-<li><p>AVPacket *av_packet_alloc(void)：分配 AVPacket 这个时候和 buffer 没有关系。</p>
-</li>
-<li><p>void av_packet_free(AVPacket **pkt)：释放 AVPacket 和 av_packet_alloc 对应。</p>
-</li>
-<li><p>void av_init_packet(AVPacket *pkt)：初始化 AVPacket 只是单纯初始化 pkt 字段。</p>
-</li>
-<li><p>int av_new_packet(AVPacket *pkt, int size)：给 AVPacket 的 buf 分配内存，引用计数初始化为 1。</p>
-</li>
-<li><p>int av_packet_ref(AVPacket *dst, const AVPacket *src)：将 src 复制到 dst 中，并增加引用计数。</p>
-</li>
-<li><p>void av_packet_unref(AVPacket *pkt)：减少引用计数。</p>
-</li>
-<li><p>void av_packet_move_ref(AVPacket *dst, AVPacket *src)：转移引用计数。</p>
-</li>
-<li><p>AVPacket *av_packet_clone(const AVPacket *src)：等于 av_packet_alloc() + av_packet_ref()。</p>
-</li>
-</ul>
-<h2 id="AVFrame相关函数"><a href="#AVFrame相关函数" class="headerlink" title="AVFrame相关函数"></a>AVFrame相关函数</h2><ul>
-<li><p>AVFrame *av_frame_alloc(void)：分配 AVFrame。</p>
-</li>
-<li><p>void av_frame_free(AVFrame **frame)：释放 AVFrame。</p>
-</li>
-<li><p>int av_frame_ref(AVFrame *dst, const AVFrame *src)：增加引用计数。</p>
-</li>
-<li><p>void av_frame_unref(AVFrame *frame)：减少引用计数。</p>
-</li>
-<li><p>void av_frame_move_ref(AVFrame *dst, AVFrame *src)：转移引用计数。</p>
-</li>
-<li><p>int av_frame_get_buffer(AVFrame *frame, int align)：根据 AVFrame 分配内存。</p>
-</li>
-<li><p>AVFrame *av_frame_clone(const AVFrame *src)：等于 av_frame_alloc() + av_frame_ref()。</p>
-</li>
-</ul>
-<h2 id="函数示例"><a href="#函数示例" class="headerlink" title="函数示例"></a>函数示例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//av_packet_alloc()和av_packet_free()配对使用</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test1</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//可以不掉用av_packet_unref(), av_packet_free()内部会自动调用</span></span><br><span class="line">    av_packet_unref(pkt);</span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//误用av_init_packet，导致内存泄露</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test2</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//这里init会把pkt-&gt;buf置空，导致内存泄露</span></span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//av_packet_move_ref()后，可以调用av_init_packet()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test3</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    pkt2 = av_packet_alloc();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//av_packet_move_ref()内部会调用av_init_packet</span></span><br><span class="line">    av_packet_move_ref(pkt2, pkt);</span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line">    </span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//av_packet_clone()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test4</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//av_packet_clone() = av_packet_alloc() + av_packet_ref()</span></span><br><span class="line">    pkt2 = av_packet_clone(pkt);</span><br><span class="line">    <span class="comment">//init将pkt-&gt;buf置空，导致av_packet_free()无法释放buf内存</span></span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line">    </span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//av_packet_ref()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test5</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    <span class="comment">//打印reference_counted，必须保证传入的是有效指针</span></span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test5, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    pkt2 = av_packet_alloc();</span><br><span class="line">    av_packet_move_ref(pkt2, pkt);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//多次连续调用ref会导致无法释放</span></span><br><span class="line">    av_packet_ref(pkt, pkt2);</span><br><span class="line">    av_packet_ref(pkt, pkt2);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt2-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt2-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    av_packet_unref(pkt);</span><br><span class="line">    <span class="comment">//第二次后掉用unref无效，因为pkt-&gt;buf已经置空</span></span><br><span class="line">    av_packet_unref(pkt);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;pkt-&gt;buf没有被置空\n&quot;</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;pkt-&gt;buf有被置空\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt2-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>, </span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt2-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line">    av_packet_unref(pkt2);</span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//赋值+init操作类似av_packet_move_ref()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test6</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test6, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    pkt2 = av_packet_alloc();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//赋值+init操作类似av_packet_move_ref()</span></span><br><span class="line">    *pkt2 = *pkt;</span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line"></span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">av_frame_test1</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVFrame* frame = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    frame = av_frame_alloc();</span><br><span class="line">    frame-&gt;nb_samples = <span class="number">1024</span>;</span><br><span class="line">    frame-&gt;format = AV_SAMPLE_FMT_S16;	<span class="comment">//AV_SAMPLE_FMT_S16 AV_SAMPLE_FMT_S16P</span></span><br><span class="line">    frame-&gt;channel_layout = AVA_CH_LAYOUT_MONO;</span><br><span class="line">    ret = av_frame_get_buffer(frame, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) size(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, frame-&gt;buf[<span class="number">0</span>]-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//AV_SAMPLE_FMT_S16P格式，buf[0]左声道数据，buf[1]右声道数据 </span></span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">1</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) size(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, frame-&gt;buf[<span class="number">1</span>]-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ret_count(frame-&gt;buf[<span class="number">0</span>]));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ret = av_frame_make_writable(frame);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ret_count(frame-&gt;buf[<span class="number">0</span>]));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    av_frame_unref(frame);</span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ret_count(frame-&gt;buf[<span class="number">0</span>]));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    av_frame_free(&amp;frame);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/08/24/FFmpeg%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1879,6 +2400,170 @@ AVFrame *-- AVBufferRef</pre>
 </ul>
 </li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/08/24/FFmpeg%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/08/24/FFmpeg%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" class="post-title-link" itemprop="url">FFmpeg内存模型</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-08-24 21:45:15" itemprop="dateCreated datePublished" datetime="2023-08-24T21:45:15+08:00">2023-08-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-16 18:36:58" itemprop="dateModified" datetime="2024-01-16T18:36:58+08:00">2024-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="AVPacket内存模型"><a href="#AVPacket内存模型" class="headerlink" title="AVPacket内存模型"></a>AVPacket内存模型</h1><p>AVPacket 可看作一个容器，它本身并不包含压缩的流媒体数据，而是通过 data 指针引用数据的缓存空间。所以将 Packet 作为参数传递的时候，就要根据具体的需求，进而决定对 data 引用的这部分数据缓存空间进行何种处理了。当从一个 Packet 去创建另一个 Packet 的时候，有两种情况：</p>
+<ul>
+<li><p>两个 Packet 的 buf 引用的是同一数据缓存空间，这时候要注意数据缓存空间的释放问题。</p>
+</li>
+<li><p>两个 Packet 的 buf 引用不同的数据缓存空间，每个 Packet 都有数据缓存空间的 copy。</p>
+</li>
+</ul>
+<p>对于第一种情况，引入引用计数的概念：</p>
+<ul>
+<li><p>对于多个 AVPacket 共享同一个缓存空间，FFmpeg 使用的引用计数的机制（reference-count）。</p>
+<ul>
+<li>初始化引用计数为 0，只有真正分配 AVBuffer 的时候，引用计数初始化为 1。</li>
+<li>当有新的 Packet 引用共享的缓存空间时，就将引用计数 +1。</li>
+<li>当释放了引用共享空间的 Packet，就将引用计数 -1；引用计数为 0 时，就释放掉引用的缓存空间 AVBuffer。</li>
+</ul>
+</li>
+<li><p>AVFrame 也是采用同样的机制。</p>
+</li>
+</ul>
+<pre class="mermaid">classDiagram
+class AVBuffer {
+    +uint8_t* data
+    +int size
+    +atomic_uint refcount
+}
+class AVBufferRef {
+    +AVBuffer* buffer
+    +uint8_t* data
+    +int size
+}
+
+class AVPacket {
+    +AVBufferRef* buf
+}
+
+class AVFrame {
+    +AVBufferRef* buf[AV_NUM_DATA_POINTERS]
+}
+
+AVBufferRef *-- AVBuffer
+AVPacket *-- AVBufferRef
+AVFrame *-- AVBufferRef</pre>
+
+<h1 id="AVPacket函数"><a href="#AVPacket函数" class="headerlink" title="AVPacket函数"></a>AVPacket函数</h1><h2 id="AVPacket相关函数"><a href="#AVPacket相关函数" class="headerlink" title="AVPacket相关函数"></a>AVPacket相关函数</h2><ul>
+<li><p>AVPacket *av_packet_alloc(void)：分配 AVPacket 这个时候和 buffer 没有关系。</p>
+</li>
+<li><p>void av_packet_free(AVPacket **pkt)：释放 AVPacket 和 av_packet_alloc 对应。</p>
+</li>
+<li><p>void av_init_packet(AVPacket *pkt)：初始化 AVPacket 只是单纯初始化 pkt 字段。</p>
+</li>
+<li><p>int av_new_packet(AVPacket *pkt, int size)：给 AVPacket 的 buf 分配内存，引用计数初始化为 1。</p>
+</li>
+<li><p>int av_packet_ref(AVPacket *dst, const AVPacket *src)：将 src 复制到 dst 中，并增加引用计数。</p>
+</li>
+<li><p>void av_packet_unref(AVPacket *pkt)：减少引用计数。</p>
+</li>
+<li><p>void av_packet_move_ref(AVPacket *dst, AVPacket *src)：转移引用计数。</p>
+</li>
+<li><p>AVPacket *av_packet_clone(const AVPacket *src)：等于 av_packet_alloc() + av_packet_ref()。</p>
+</li>
+</ul>
+<h2 id="AVFrame相关函数"><a href="#AVFrame相关函数" class="headerlink" title="AVFrame相关函数"></a>AVFrame相关函数</h2><ul>
+<li><p>AVFrame *av_frame_alloc(void)：分配 AVFrame。</p>
+</li>
+<li><p>void av_frame_free(AVFrame **frame)：释放 AVFrame。</p>
+</li>
+<li><p>int av_frame_ref(AVFrame *dst, const AVFrame *src)：增加引用计数。</p>
+</li>
+<li><p>void av_frame_unref(AVFrame *frame)：减少引用计数。</p>
+</li>
+<li><p>void av_frame_move_ref(AVFrame *dst, AVFrame *src)：转移引用计数。</p>
+</li>
+<li><p>int av_frame_get_buffer(AVFrame *frame, int align)：根据 AVFrame 分配内存。</p>
+</li>
+<li><p>AVFrame *av_frame_clone(const AVFrame *src)：等于 av_frame_alloc() + av_frame_ref()。</p>
+</li>
+</ul>
+<h2 id="函数示例"><a href="#函数示例" class="headerlink" title="函数示例"></a>函数示例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//av_packet_alloc()和av_packet_free()配对使用</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test1</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//可以不掉用av_packet_unref(), av_packet_free()内部会自动调用</span></span><br><span class="line">    av_packet_unref(pkt);</span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//误用av_init_packet，导致内存泄露</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test2</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//这里init会把pkt-&gt;buf置空，导致内存泄露</span></span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//av_packet_move_ref()后，可以调用av_init_packet()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test3</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    pkt2 = av_packet_alloc();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//av_packet_move_ref()内部会调用av_init_packet</span></span><br><span class="line">    av_packet_move_ref(pkt2, pkt);</span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line">    </span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//av_packet_clone()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test4</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test1, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//av_packet_clone() = av_packet_alloc() + av_packet_ref()</span></span><br><span class="line">    pkt2 = av_packet_clone(pkt);</span><br><span class="line">    <span class="comment">//init将pkt-&gt;buf置空，导致av_packet_free()无法释放buf内存</span></span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line">    </span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//av_packet_ref()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test5</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    <span class="comment">//打印reference_counted，必须保证传入的是有效指针</span></span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test5, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    pkt2 = av_packet_alloc();</span><br><span class="line">    av_packet_move_ref(pkt2, pkt);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//多次连续调用ref会导致无法释放</span></span><br><span class="line">    av_packet_ref(pkt, pkt2);</span><br><span class="line">    av_packet_ref(pkt, pkt2);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt2-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt2-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    av_packet_unref(pkt);</span><br><span class="line">    <span class="comment">//第二次后掉用unref无效，因为pkt-&gt;buf已经置空</span></span><br><span class="line">    av_packet_unref(pkt);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;buf)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;pkt-&gt;buf没有被置空\n&quot;</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;pkt-&gt;buf有被置空\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt2-&gt;buf) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(pkt) = %d\n&quot;</span>, </span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ref_count(pkt2-&gt;buf));</span><br><span class="line">    &#125;</span><br><span class="line">    av_packet_unref(pkt2);</span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//赋值+init操作类似av_packet_move_ref()</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">av_packet_test6</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVPacket* pkt = <span class="literal">NULL</span>;</span><br><span class="line">    AVPacket* pkt2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    pkt = av_packet_alloc();</span><br><span class="line">    ret = av_new_packet(pkt, <span class="number">1024</span>);</span><br><span class="line">    memccpy(pkt-&gt;data, (<span class="type">void</span>*)&amp;av_packet_test6, <span class="number">1</span>, <span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line">    pkt2 = av_packet_alloc();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//赋值+init操作类似av_packet_move_ref()</span></span><br><span class="line">    *pkt2 = *pkt;</span><br><span class="line">    av_init_packet(pkt);</span><br><span class="line"></span><br><span class="line">    av_packet_free(&amp;pkt);</span><br><span class="line">    av_packet_free(&amp;pkt2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">av_frame_test1</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    AVFrame* frame = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    frame = av_frame_alloc();</span><br><span class="line">    frame-&gt;nb_samples = <span class="number">1024</span>;</span><br><span class="line">    frame-&gt;format = AV_SAMPLE_FMT_S16;	<span class="comment">//AV_SAMPLE_FMT_S16 AV_SAMPLE_FMT_S16P</span></span><br><span class="line">    frame-&gt;channel_layout = AVA_CH_LAYOUT_MONO;</span><br><span class="line">    ret = av_frame_get_buffer(frame, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) size(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, frame-&gt;buf[<span class="number">0</span>]-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//AV_SAMPLE_FMT_S16P格式，buf[0]左声道数据，buf[1]右声道数据 </span></span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">1</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) size(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, frame-&gt;buf[<span class="number">1</span>]-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ret_count(frame-&gt;buf[<span class="number">0</span>]));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ret = av_frame_make_writable(frame);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ret_count(frame-&gt;buf[<span class="number">0</span>]));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    av_frame_unref(frame);</span><br><span class="line">    <span class="keyword">if</span> (frame-&gt;buf &amp;&amp; frame-&gt;buf[<span class="number">0</span>]) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s(%d) ref_count(frame) = %d\n&quot;</span>,</span><br><span class="line">               __FUNCTION__, __LINE__, av_buffer_get_ret_count(frame-&gt;buf[<span class="number">0</span>]));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    av_frame_free(&amp;frame);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -2213,897 +2898,6 @@ AVFrame *-- AVBufferRef</pre>
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/08/20/FFmpeg%E5%91%BD%E4%BB%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/08/20/FFmpeg%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">FFmpeg命令</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-08-20 22:06:30" itemprop="dateCreated datePublished" datetime="2023-08-20T22:06:30+08:00">2023-08-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:40:51" itemprop="dateModified" datetime="2023-12-30T22:40:51+08:00">2023-12-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/FFmpeg/" itemprop="url" rel="index"><span itemprop="name">FFmpeg</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="FFmpeg帮助文档"><a href="#FFmpeg帮助文档" class="headerlink" title="FFmpeg帮助文档"></a>FFmpeg帮助文档</h1><p><strong>ffmpeg&#x2F;ffplay&#x2F;ffprobe区别</strong></p>
-<ul>
-<li>ffmpeg：Hyper fast Audio and Video encoder（超快音视频编码器）</li>
-<li>ffplay：Simple media player（简单媒体播放器）</li>
-<li>ffprobe：Simple multimedia streams analyzer（简单多媒体流分析器）</li>
-</ul>
-<p><strong>ffmpeg命令查看帮助文档</strong></p>
-<ul>
-<li>基本信息：ffmpeg -h </li>
-<li>高级信息：ffmpeg -h long</li>
-<li>所有信息：ffmpeg -h full</li>
-</ul>
-<p><strong>ffplay命令查看帮助文档</strong></p>
-<ul>
-<li>所有信息：ffplay -h</li>
-</ul>
-<p><strong>ffprobe命令查看帮助文档</strong></p>
-<ul>
-<li>所有信息：ffprobe -h</li>
-</ul>
-<h1 id="FFplay命令"><a href="#FFplay命令" class="headerlink" title="FFplay命令"></a>FFplay命令</h1><h2 id="FFplay播放控制"><a href="#FFplay播放控制" class="headerlink" title="FFplay播放控制"></a>FFplay播放控制</h2><table>
-<thead>
-<tr>
-<th>选项</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>q,ESC</td>
-<td>退出播放</td>
-</tr>
-<tr>
-<td>f,鼠标左键双击</td>
-<td>全屏切换</td>
-</tr>
-<tr>
-<td>p,SPC</td>
-<td>暂停</td>
-</tr>
-<tr>
-<td>m</td>
-<td>静音切换</td>
-</tr>
-<tr>
-<td>0,9</td>
-<td>0减小音量，9增大音量</td>
-</tr>
-<tr>
-<td>a</td>
-<td>循环切换音频流</td>
-</tr>
-<tr>
-<td>v</td>
-<td>循环切换视频流</td>
-</tr>
-<tr>
-<td>t</td>
-<td>循环切换字幕流</td>
-</tr>
-<tr>
-<td>c</td>
-<td>循环切换节目</td>
-</tr>
-<tr>
-<td>w</td>
-<td>循环切换过滤器或显示模式</td>
-</tr>
-<tr>
-<td>s</td>
-<td>逐帧播放</td>
-</tr>
-<tr>
-<td>left&#x2F;right</td>
-<td>向后&#x2F;向前拖动10秒</td>
-</tr>
-<tr>
-<td>down&#x2F;up</td>
-<td>向后&#x2F;向前拖动1分钟</td>
-</tr>
-<tr>
-<td>鼠标右键单击</td>
-<td>拖动与显示宽度对应百分比的文件进行播放</td>
-</tr>
-</tbody></table>
-<h2 id="FFplay命令选项"><a href="#FFplay命令选项" class="headerlink" title="FFplay命令选项"></a>FFplay命令选项</h2><ul>
-<li>-x width 强制显示宽度。</li>
-<li>-y height 强制显示高度。</li>
-<li>-video_size size 帧尺寸 设置显示帧存储（WxH格），仅适用于类似原始YUV等没有包含帧大小（WxH）的视频。<ul>
-<li>ffplay -pixel_format yuv420p <strong>-video_size 320x240</strong> -framerate 5 yuv420p_320x240.yuv</li>
-</ul>
-</li>
-<li>-pixel_format format 格式设置像素格式。</li>
-<li>-fs 以全屏模式启动。</li>
-<li>-an 禁用音频（不播放声音）。</li>
-<li>-vn 禁用视频（不播放视频）。</li>
-<li>-sn 禁用字幕（不显示字幕）。</li>
-<li>-ss pos 根据设置的秒进行定位拖动，注意时间单位。比如：<ul>
-<li>‘55’ 55 seconds</li>
-<li>‘12:03:45’ ,12 hours, 03 minutes and 45 seconds</li>
-<li>‘23.189’ 23.189 second</li>
-</ul>
-</li>
-<li>-t duration 设置播放视频&#x2F;音频长度，时间单位如 -ss选项。</li>
-<li>-bytes 按字节进行定位拖动（0&#x3D;off，1&#x3D;on，**-1&#x3D;auto**）。</li>
-<li>-seek_interval interval 自定义左&#x2F;右键定位拖动间隔（以秒为单位），默认值为10秒。</li>
-<li>-nodisp 关闭图形化显示窗口，视频将不显示。</li>
-<li>-noborder 无边框窗口。</li>
-<li>-volume vol 设置起始音量。音量范围[0 ~100]。</li>
-<li>-f fmt 强制使用设置的格式进行解析，比如：<ul>
-<li>-f s16le</li>
-</ul>
-</li>
-<li>-window_title title 设置窗口标题（默认为输入文件名）。</li>
-<li>-loop number 设置播放循环次数。</li>
-<li>-showmode mode 设置显示模式，可用的模式值：<ul>
-<li>0 显示视频</li>
-<li>1 显示音频波形</li>
-<li>2 显示音频频谱</li>
-<li>缺省为0，如果视频不存在则自动选择2</li>
-</ul>
-</li>
-<li>-vf filtergraph 设置视频滤镜。</li>
-<li>-af filtergraph 设置音频滤镜。</li>
-<li>-stats 打印多个回放统计信息，包括显示流持续时间，编解码器参数，流中的当前位置，以及音频&#x2F;视频同步差值。<strong>默认情况下处于启用状态</strong>，要显式禁用它则需要指定-nostats。</li>
-<li>-fast 非标准化规范的多媒体兼容优化。</li>
-<li>-genpts 生成pts。</li>
-<li>-sync type 同步类型 将主时钟设置为audio（type&#x3D;audio），video（type&#x3D;video）或external（type&#x3D;ext），<strong>默认是audio为主时钟</strong>。</li>
-<li>-ast audio_stream_specifier 指定音频流索引，比如-ast 3，播放流索引为3的音频流。</li>
-<li>-vst video_stream_specifier指定视频流索引，比如-vst 4，播放流索引为4的视频流。</li>
-<li>-sst subtitle_stream_specifier 指定字幕流索引，比如-sst 5，播放流索引为5的字幕流。</li>
-<li>-autoexit 视频播放完毕后退出。</li>
-<li>-exitonkeydown 键盘按下任何键退出播放。</li>
-<li>-exitonmousedown 鼠标按下任何键退出播放。</li>
-<li>-codec:media_specifier codec_name 强制使用设置的多媒体解码器，media_specifier可用值为a（音频）， v（视频）和s字幕。比如-codec:v h264_qsv 强制视频采用h264_qsv解码。</li>
-<li>-acodec codec_name 强制使用设置的音频解码器进行音频解码。</li>
-<li>-vcodec codec_name 强制使用设置的视频解码器进行视频解码。</li>
-<li>-scodec codec_name 强制使用设置的字幕解码器进行字幕解码。</li>
-<li>-autorotate <strong>根据文件元数据自动旋转视频</strong>。值为0或1 ，默认为1。 </li>
-<li>-framedrop 如果视频不同步则丢弃视频帧。当主时钟非视频时钟时默认开启。若需禁用则使用 -noframedrop。</li>
-<li>-infbuf 不限制输入缓冲区大小。尽可能快地从输入中读取尽可能多的数据。播放实时流时默认启用，如果未及时读取数据，则可能会丢弃数据。此选项将不限制缓冲区的大小。若需禁用则使用-noinfbuf。</li>
-</ul>
-<h2 id="FFplay命令播放媒体"><a href="#FFplay命令播放媒体" class="headerlink" title="FFplay命令播放媒体"></a>FFplay命令播放媒体</h2><p><strong>播放本地文件</strong></p>
-<ul>
-<li>ffplay -window_title “test time” -ss 2 -t 10 -autoexit test.mp4</li>
-<li>ffplay buweishui.mp3</li>
-</ul>
-<p><strong>播放网络流</strong></p>
-<ul>
-<li>ffplay -window_title “rtmp stream” rtmp:&#x2F;&#x2F;202.69.69.180:443&#x2F;webcast&#x2F;bshdlive-pc</li>
-</ul>
-<p><strong>强制解码器</strong></p>
-<ul>
-<li>mpeg4解码器：ffplay -vcodec mpeg4 test.mp4</li>
-<li>h264解码器：ffplay -vcodec h264 test.mp4</li>
-</ul>
-<p><strong>禁用音频或视频</strong></p>
-<ul>
-<li>禁用音频：ffplay test.mp4 -an</li>
-<li>禁用视频：ffplay test.mp4 -vn</li>
-</ul>
-<p><strong>播放YUV数据</strong></p>
-<ul>
-<li>ffplay <strong>-pixel_format</strong> <strong>yuv420p</strong> <strong>-video_size</strong> 320x240 <strong>-framerate</strong> 5 yuv420p_320x240.yuv</li>
-</ul>
-<p><strong>播放RGB数据</strong></p>
-<ul>
-<li>ffplay -pixel_format rgb24 -video_size 320x240 -i rgb24_320x240.rgb</li>
-<li>ffplay -pixel_format rgb24 -video_size 320x240 -framerate 5 -i rgb24_320x240.rgb</li>
-</ul>
-<p><strong>播放PCM数据</strong></p>
-<ul>
-<li>ffplay <strong>-ar</strong> 48000 <strong>-ac</strong> 2 <strong>-f</strong> f32le 48000_2_f32le.pcm</li>
-</ul>
-<h2 id="FFplay简单过滤器"><a href="#FFplay简单过滤器" class="headerlink" title="FFplay简单过滤器"></a>FFplay简单过滤器</h2><p><strong>视频旋转</strong></p>
-<ul>
-<li>ffplay -i test.mp4 -vf transpose&#x3D;1</li>
-</ul>
-<p><strong>视频反转</strong></p>
-<ul>
-<li>ffplay test.mp4 -vf hflip</li>
-<li>ffplay test.mp4 -vf vflip</li>
-</ul>
-<p><strong>视频旋转和反转</strong></p>
-<ul>
-<li>ffplay test.mp4 -vf hflip,transpose&#x3D;1</li>
-</ul>
-<p><strong>音频变速播放</strong></p>
-<ul>
-<li>ffplay -i test.mp4 -af atempo&#x3D;2</li>
-</ul>
-<p><strong>视频变速播放</strong></p>
-<ul>
-<li>ffplay -i test.mp4 -vf setpts&#x3D;PTS&#x2F;2</li>
-</ul>
-<p><strong>音视频同时变速</strong></p>
-<ul>
-<li>ffplay -i test.mp4 -vf setpts&#x3D;PTS&#x2F;2 -af atempo&#x3D;2</li>
-</ul>
-<h1 id="FFmpeg命令"><a href="#FFmpeg命令" class="headerlink" title="FFmpeg命令"></a>FFmpeg命令</h1><h2 id="FFmpeg命令分类查询"><a href="#FFmpeg命令分类查询" class="headerlink" title="FFmpeg命令分类查询"></a>FFmpeg命令分类查询</h2><table>
-<thead>
-<tr>
-<th>命令参数</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>-version</td>
-<td>显示版本</td>
-</tr>
-<tr>
-<td>-buildconf</td>
-<td>显示编译配置</td>
-</tr>
-<tr>
-<td>-formats</td>
-<td>显示可用格式（muxers+demuxers）</td>
-</tr>
-<tr>
-<td>-muxers</td>
-<td>显示可用复用器</td>
-</tr>
-<tr>
-<td>-demuxers</td>
-<td>显示可用解复用器</td>
-</tr>
-<tr>
-<td>-codecs</td>
-<td>显示可用编解码器（decoders+encoders）</td>
-</tr>
-<tr>
-<td>-decoders</td>
-<td>显示可用解码器</td>
-</tr>
-<tr>
-<td>-encoders</td>
-<td>显示可用编码器</td>
-</tr>
-<tr>
-<td>-bsfs</td>
-<td>显示可用比特流filter</td>
-</tr>
-<tr>
-<td>-protocols</td>
-<td>显示可用协议</td>
-</tr>
-<tr>
-<td>-filters</td>
-<td>显示可用过滤器</td>
-</tr>
-<tr>
-<td>-pix_fmts</td>
-<td>显示可用像素格式</td>
-</tr>
-<tr>
-<td>-layouts</td>
-<td>显示标准声音名称</td>
-</tr>
-<tr>
-<td>-sample_fmts</td>
-<td>显示可用音频采样格式</td>
-</tr>
-<tr>
-<td>-colors</td>
-<td>显示可用颜色名称</td>
-</tr>
-</tbody></table>
-<p><strong>查看具体分类所支持的参数</strong></p>
-<ul>
-<li>语法：ffmepg -h type&#x3D;name</li>
-<li>例子：<ul>
-<li>ffmpeg -h muxer&#x3D;flv</li>
-<li>ffmpeg -h filter&#x3D;atempo （atempo调整音频播放速率）</li>
-<li>ffmpeg -h encoder&#x3D;libx264</li>
-</ul>
-</li>
-</ul>
-<h2 id="FFmpeg命令参数说明"><a href="#FFmpeg命令参数说明" class="headerlink" title="FFmpeg命令参数说明"></a>FFmpeg命令参数说明</h2><p><strong>主要参数</strong></p>
-<ul>
-<li>-i 设定输入流</li>
-<li>-f 设定输出格式(format)</li>
-<li>-ss 开始时间</li>
-<li>-t 时间长度</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -codec copy -ss 1:00:00 -t 20 -f mp4 out.mp4</span><br></pre></td></tr></table></figure>
-
-<p><strong>音频参数</strong></p>
-<ul>
-<li>-aframes 设置要输出的音频帧数</li>
-<li>-b:a 音频码率</li>
-<li>-ar 设定采样率</li>
-<li>-ac 设定声音的Channel数 </li>
-<li>-acodec 设定声音编解码器，如果用copy表示原始编解码数据必须被拷贝。</li>
-<li>-an 不处理音频</li>
-<li>-af 音频过滤器</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -encoders | grep mp3</span><br><span class="line">ffmpeg -i test.mp4 -aframes 200 -b:a 192k -ar 48000 -ac 2 -acodec aac out.aac</span><br><span class="line">ffmpeg -i test.mp4 -aframes 200 -b:a 192k -ar 48000 -ac 2 -acodec mp3 out.mp3</span><br></pre></td></tr></table></figure>
-
-<p><strong>视频参数</strong></p>
-<ul>
-<li>-vframes 设置要输出的视频帧数</li>
-<li>-b 设定视频码率</li>
-<li>-b:v 视频码率</li>
-<li>-r 设定帧速率</li>
-<li>-s 设定画面的宽与高</li>
-<li>-vn 不处理视频</li>
-<li>-aspect aspect 设置横纵比 4:3  16:9 或 1.3333 1.7777</li>
-<li>-vcodec 设定视频编解码器，如果用copy表示原始编解码数据必须被拷贝。</li>
-<li>-vf 视频过滤器</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -encoders | grep 264</span><br><span class="line">ffmpeg -i test.mp4 -vframes 300 -b:v 300k -r 30 -s 640x480 -aspect 4:3 -vcodec h264_videotoolbox out.h264</span><br></pre></td></tr></table></figure>
-
-<h2 id="FFmpeg命令提取音视频数据"><a href="#FFmpeg命令提取音视频数据" class="headerlink" title="FFmpeg命令提取音视频数据"></a>FFmpeg命令提取音视频数据</h2><p><strong>保留封装格式</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -acodec copy -vn audio.mp4</span><br><span class="line">ffmpeg -i test.mp4 -vcodec copy -an video.mp4</span><br></pre></td></tr></table></figure>
-
-<p><strong>提取视频</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 保留编码格式</span><br><span class="line">ffmpeg -i test.mp4 -acodec copy -an test.h264</span><br></pre></td></tr></table></figure>
-
-<p><strong>提取音频</strong></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 保留编码格式</span><br><span class="line">ffmpeg -i test.mp4 -vcodec copy -an test.aac</span><br></pre></td></tr></table></figure>
-
-<h2 id="FFmpeg命令提取像素格式"><a href="#FFmpeg命令提取像素格式" class="headerlink" title="FFmpeg命令提取像素格式"></a>FFmpeg命令提取像素格式</h2><p><strong>提取YUV</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 提取3秒数据，分辨率和源视频一样</span><br><span class="line">ffmpeg -i test.mp4 -t 3 -pix_fmt yuv420p yuv420p_orig.yuv</span><br><span class="line"># 提取3秒数据，分辨率转320x240</span><br><span class="line">ffmpeg -i test.mp4 -t 3 -s 320x240 -pix_fmt yuv420p yuv420p_320x240.yuv</span><br></pre></td></tr></table></figure>
-
-<p><strong>提取RGB</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 提取3秒数据，分辨率转320x240</span><br><span class="line">ffmpeg -i test.mp4 -t 3 -s 320x240 -pix_fmt rgb240 rgb24_320x240.rgb</span><br></pre></td></tr></table></figure>
-
-<p><strong>RGB和YUV之间的转换</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -s 320x240 -pix_fmt 420p -i yuv420p_320x240.yuv -pix_fmt rgb24 rgb24_320x240_2.rgb</span><br></pre></td></tr></table></figure>
-
-<p><strong>提取PCM数据</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># PCM封装格式</span><br><span class="line">ffmpeg -muxers | grep PCM</span><br><span class="line">ffmpeg -i test.mp4 -ar 48000 -ac 2 -f s16le 48000_2_s16le.pcm #后缀无关</span><br><span class="line"></span><br><span class="line"># 采样格式</span><br><span class="line">ffmpeg -sample_fmts</span><br><span class="line">ffmpeg -i test.mp4 -ar 48000 -ac 2 -sample_fmt s16 out_s16.wav</span><br><span class="line"></span><br><span class="line"># 解码格式</span><br><span class="line">ffmpeg -encoders | grep PCM</span><br><span class="line">ffmpeg -i test.mp4 -ar 48000 -ac 2 -codec:a pcm_s16le out_s16.wav</span><br></pre></td></tr></table></figure>
-
-<h2 id="FFmpeg命令转封装"><a href="#FFmpeg命令转封装" class="headerlink" title="FFmpeg命令转封装"></a>FFmpeg命令转封装</h2><p><strong>保持编码格式</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -acodec copy -vcodec copy test_copy.ts</span><br><span class="line">ffmpeg -i test.mp4 -codec copy test_copy.ts</span><br></pre></td></tr></table></figure>
-
-<p><strong>改变编码格式</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -vcodec h264_videotoolbox -acodec aac out_h264_aac.mkv</span><br></pre></td></tr></table></figure>
-
-<p><strong>改变帧率</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -r 15 -codec copy out_r15.mp4 #错误命令,改变帧率过程中有转码不能使用-codec copy</span><br><span class="line">ffmpeg -i test.mp4 -r 15 out_r15.mp4   </span><br></pre></td></tr></table></figure>
-
-<p><strong>修改视频码率</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -b 400k out_400k.mkv</span><br><span class="line">ffmpeg -i test.mp4 -b:v 400k out_400k.mkv</span><br></pre></td></tr></table></figure>
-
-<p><strong>修改音频码率</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -b:a 192k out_192k.mp4 #如果不想重新编码video，需要加上-vcodec copy</span><br></pre></td></tr></table></figure>
-
-<p><strong>修改音视频码率</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -b:v 300k -b:a 192k out_300_192k.mp4</span><br></pre></td></tr></table></figure>
-
-<p><strong>修改视频分辨率</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -s 480x720 out_480x720.mp4</span><br></pre></td></tr></table></figure>
-
-<p><strong>修改音频采样率</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -ar 41000 out_41000.mp4</span><br></pre></td></tr></table></figure>
-
-<h2 id="FFmpeg命令裁剪和合并视频"><a href="#FFmpeg命令裁剪和合并视频" class="headerlink" title="FFmpeg命令裁剪和合并视频"></a>FFmpeg命令裁剪和合并视频</h2><p><strong>裁剪视频</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># mp4格式</span><br><span class="line">ffmpeg -i test1.mp4 -t 5 -codec copy out1.mp4</span><br><span class="line">ffmpeg -i test2.mp4 -t 5 -codec copy out2.mp4</span><br><span class="line"></span><br><span class="line"># ts格式</span><br><span class="line">ffmpeg -i test1.mp4 -t 5 -codec copy -vbsf h264_mp4toannexb out1.ts</span><br><span class="line">ffmpeg -i test2.mp4 -t 5 -codec copy -vbsf h264_mp4toannexb out2.ts</span><br><span class="line"></span><br><span class="line"># flv格式</span><br><span class="line">ffmpeg -i test1.mp4 -t 5 -codec copy out1.flv</span><br><span class="line">ffmpeg -i test2.mp4 -t 5 -codec copy out2.flv</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>分离某些封装格式（例如MP4&#x2F;FLV&#x2F;MKV等）中的H.264的时候，需要首先写入SPS和PPS，否则会导致分离出来的数据没有SPS、PPS而无法播放。H.264码流的SPS和PPS信息存储在AVCodecContext结构体的extradata中。需要使用ffmpeg中名称为“<strong>h264_mp4toannexb</strong>”的bitstream filter处理。</li>
-</ul>
-<p><strong>拼接视频</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># mp4格式</span><br><span class="line">ffmpeg -i &#x27;concat:out1.mp4|out2.mp4&#x27; -codec copy out_merge1.mp4</span><br><span class="line">ffmpeg -f concat -i mp4list.txt -codec copy out_merge2.mp4</span><br><span class="line"></span><br><span class="line"># ts格式</span><br><span class="line">ffmpeg -i &#x27;concat:out1.ts|out2.ts&#x27; -codec copy out_merge1.ts</span><br><span class="line">ffmpeg -f concat -i tslist.txt -codec copy out_merge2.ts</span><br><span class="line"></span><br><span class="line"># flv格式</span><br><span class="line">ffmpeg -i &#x27;concat:out1.flv|out2.flv&#x27; -codec copy out_merge1.flv</span><br><span class="line">ffmpeg -f concat -i flvlist.txt -codec copy out_merge2.flv</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>注：</p>
-<ul>
-<li><p>方法1只适用部分封装格式，比如TS。</p>
-</li>
-<li><p>方法2中文件列表内容格式：</p>
-</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">file &#x27;out1.mp4&#x27;</span><br><span class="line">file &#x27;out2.mp4&#x27;</span><br></pre></td></tr></table></figure>
-
-<p><strong>测试不同编码拼接</strong></p>
-<ul>
-<li>修改<strong>音频编码</strong></li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i out1.ts -vcodec copy -acodec aac test_acodec.ts</span><br><span class="line">ffmpeg -i &#x27;concat:test_acodec.ts|out2.ts&#x27; -codec copy test_acodec_merge.ts</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>修改<strong>音频采样率</strong></li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i out1.ts -vcodec copy -ar 24000 test_ar.ts</span><br><span class="line">ffmpeg -i &#x27;concat:test_ar.ts|out2.ts&#x27; -codec copy test_ar_merge.ts</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>修改<strong>视频编码</strong></li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i out1.ts -acodec copy -vcodec hevc_videotoolbox test_vcodec.ts</span><br><span class="line">ffmpeg -i &#x27;concat:test_vcodec.ts|out2.ts&#x27; -codec copy test_vcodec_merge.ts</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>修改<strong>视频分辨率</strong></li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i out1.ts -codec copy -s 800x472 test_size.ts</span><br><span class="line">ffmpeg -i &#x27;concat:test_size.ts|out2.ts&#x27; -codec copy test_size_merge.ts</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>注：<ul>
-<li>视频分辨率可以不同，但是编码格式需要统一。</li>
-<li>音频编码格式需要统一，音频参数(采样率&#x2F;声道等)也需要统一。</li>
-</ul>
-</li>
-</ul>
-<h2 id="FFmpeg命令图片和视频互转"><a href="#FFmpeg命令图片和视频互转" class="headerlink" title="FFmpeg命令图片和视频互转"></a>FFmpeg命令图片和视频互转</h2><p><strong>截取一张图片</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -y -f image2 -ss 0:00:02 -vframes 1 -s 640x320 test.jpg</span><br><span class="line">ffmpeg -i test.mp4 -f image2 -ss 0:00:02 -vframes 1 -s 640x320 test.bmp</span><br><span class="line"># -y 强制覆盖</span><br><span class="line"># -vframes 如果大于1输出需要加%03d 03为位数 </span><br></pre></td></tr></table></figure>
-
-<p><strong>视频转每帧图片</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -t 5 -s 640x320 -r 15 frame%03d.jpg</span><br></pre></td></tr></table></figure>
-
-<p><strong>图片转视频</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f image2 -i frame%03d.jpg -r 25 video.mp4</span><br></pre></td></tr></table></figure>
-
-<p><strong>视频转GIF图片</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i test.mp4 -t 5 -r 25 test.gif</span><br></pre></td></tr></table></figure>
-
-<p><strong>GIF图片转视频</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f gif -i test.gif git_video.mp4</span><br></pre></td></tr></table></figure>
-
-<h2 id="FFmpeg命令视频录制"><a href="#FFmpeg命令视频录制" class="headerlink" title="FFmpeg命令视频录制"></a>FFmpeg命令视频录制</h2><p><strong>查看可用的音视频设备名称</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f avfoundation -list_devices true -i &quot;&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>这个命令会列出可用的音视频设备信息，包括设备名称、设备类型等。输出会显示类似下面的内容：</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[AVFoundation input device @ 0x7fa37660d8c0] AVFoundation video devices:</span><br><span class="line">[AVFoundation input device @ 0x7fa37660d8c0] [0] FaceTime HD Camera (Built-in)</span><br><span class="line">[AVFoundation input device @ 0x7fa37660d8c0] [1] Capture screen 0</span><br><span class="line">[AVFoundation input device @ 0x7fa37660d8c0] AVFoundation audio devices:</span><br><span class="line">[AVFoundation input device @ 0x7fa37660d8c0] [0] MacBook Pro Microphone</span><br></pre></td></tr></table></figure>
-
-<p><strong>录制音视频</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f avfoundation -r 30 -i &quot;0:0&quot; -c:a aac -c:v h264_videotoolbox -s 1280x720 output.mkv</span><br></pre></td></tr></table></figure>
-
-<p>参考：<a target="_blank" rel="noopener" href="https://www.lmlphp.com/user/259/article/item/24620/">ffmpeg采集设备</a></p>
-<h2 id="FFmpeg命令直播"><a href="#FFmpeg命令直播" class="headerlink" title="FFmpeg命令直播"></a>FFmpeg命令直播</h2><p><strong>拉流</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ffplay rtmp://server/live/streamName </span><br><span class="line">ffmpeg -i rtmp://server/live/streamName -c copy dump.flv</span><br><span class="line"># 对于不是rtmp的协议 -c copy要谨慎使用</span><br></pre></td></tr></table></figure>
-
-<p><strong>推流</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -re -i out.mp4 -c copy -f flv rtmp://server/live/streamName</span><br><span class="line"># -re: 表示按时间戳读取文件</span><br></pre></td></tr></table></figure>
-
-<p>参考：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/16741e363a77">nginx搭建rtmp流媒体服务器(Ubuntu 16.04)</a></p>
-<h2 id="FFmpeg过滤器-裁剪"><a href="#FFmpeg过滤器-裁剪" class="headerlink" title="FFmpeg过滤器-裁剪"></a>FFmpeg过滤器-裁剪</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 裁剪图片</span><br><span class="line">ffmpeg -i test.jpg -vf crop=iw/3:ih:0:0 out.jpg</span><br><span class="line">ffplay -i test.jpg -vf crop=iw/3:ih:0:0</span><br><span class="line"></span><br><span class="line"># 裁剪视频</span><br><span class="line">ffmpeg -i test.mp4 -vf crop=iw/3:ih:0:0 out.mp4</span><br><span class="line">ffplay -i test.mp4 -vf crop=iw/3:ih:0:0</span><br></pre></td></tr></table></figure>
-
-<p><strong>裁剪</strong></p>
-<ul>
-<li>描述：将输入视频帧的宽度和高度从x和y值表示的位置裁剪到指定的宽度和高度x和y是输出的左上角坐标，协调系统的中心是输入视频帧的左上角。如果使用了可选的keep_aspect参数，将会改变输出SAR(样本宽比)以补偿新的DAR(显示长宽比)。</li>
-<li>语法：<code>crop=ow[:oh[:x[:y[:keep_aspect]]]]</code></li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>变量</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>x,   y</strong></td>
-<td>对x的计算值(从左上角水平方向的像素个数)和y(垂直像素的数量)，对每个帧进行评估，x的默认值为(iw - ow)&#x2F;2, y的默认值为(ih - oh)&#x2F;2</td>
-</tr>
-<tr>
-<td><strong>in_w, iw</strong></td>
-<td>输入的宽度</td>
-</tr>
-<tr>
-<td><strong>in_h, ih</strong></td>
-<td>输入的高度</td>
-</tr>
-<tr>
-<td><strong>out_w, ow</strong></td>
-<td>输出(裁剪)宽度，默认值&#x3D; iw</td>
-</tr>
-<tr>
-<td><strong>out_h, oh</strong></td>
-<td>输出(裁剪)高度，默认值&#x3D; ih</td>
-</tr>
-<tr>
-<td><strong>a</strong></td>
-<td>纵横比，与iw&#x2F;ih相同</td>
-</tr>
-<tr>
-<td><strong>sar</strong></td>
-<td>输入样本比例</td>
-</tr>
-<tr>
-<td><strong>dar</strong></td>
-<td>输入显示宽比，等于表达式a*sar</td>
-</tr>
-<tr>
-<td><strong>hsub, vsub</strong></td>
-<td>水平和垂直的色度子样本值，对于像素格式yuv422p, hsub的值为2,vsub为1</td>
-</tr>
-<tr>
-<td><strong>n</strong></td>
-<td>输入帧的数目，从0开始</td>
-</tr>
-<tr>
-<td><strong>pos</strong></td>
-<td>位置在输入框的文件中，如果不知道NAN</td>
-</tr>
-<tr>
-<td><strong>t</strong></td>
-<td>时间戳以秒表示，如果输入时间戳未知</td>
-</tr>
-</tbody></table>
-<p><strong>举例</strong></p>
-<ul>
-<li>裁剪100x100的区域，起点为(12,34)</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">crop=100:100:12:34</span><br><span class="line"></span><br><span class="line">相同效果:</span><br><span class="line">crop=w=100:h=100:x=12:y=34</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>裁剪中心区域，大小为100x100</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crop=100:100</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>裁剪中心区域，大小为输入视频的2&#x2F;3</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crop=2/3*in_w:2/3*in_h</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>裁剪中心区域的正方形，高度为输入视频的高</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crop=in_h:in_h</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>裁剪偏移左上角100像素</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crop=in_w-100:in_h-100:100:100</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>裁剪掉左右10像素，上下20像素</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crop=in_w-2*10:in_h-2*20</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>裁剪右下角区域</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crop=in_w/2:in_h/2:in_w/2:in_h/2</span><br></pre></td></tr></table></figure>
-
-<h2 id="FFmpeg过滤器-文字水印"><a href="#FFmpeg过滤器-文字水印" class="headerlink" title="FFmpeg过滤器-文字水印"></a>FFmpeg过滤器-文字水印</h2><p><strong>文字水印</strong></p>
-<p>​	在视频中增加文字水印需要准备的条件比较多，需要有文字字库处理的相关文件，在编译FFmpeg时需要支持FreeType、FontConfig、iconv，系统中需要有相关的字库，在FFmpeg中增加纯字母水印可以使用<strong>drawtext</strong>滤镜进行支持，下面就来看一下<strong>drawtext</strong>的滤镜参数，具体见表。</p>
-<table>
-<thead>
-<tr>
-<th><strong>参数</strong></th>
-<th><strong>类型</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>text</td>
-<td>字符串</td>
-<td>文字</td>
-</tr>
-<tr>
-<td>textfile</td>
-<td>字符串</td>
-<td>文字文件</td>
-</tr>
-<tr>
-<td>box</td>
-<td>布尔</td>
-<td>文字区域背景框(缺省false)</td>
-</tr>
-<tr>
-<td>boxcolor</td>
-<td>色彩</td>
-<td>展示字体区域块的颜色</td>
-</tr>
-<tr>
-<td>font</td>
-<td>字符串</td>
-<td>字体名称（默认为Sans字体）</td>
-</tr>
-<tr>
-<td>fontsize</td>
-<td>整数</td>
-<td>显示字体的大小</td>
-</tr>
-<tr>
-<td>x</td>
-<td>字符串</td>
-<td>横坐标，缺省为0</td>
-</tr>
-<tr>
-<td>y</td>
-<td>字符串</td>
-<td>纵坐标，缺省为0</td>
-</tr>
-<tr>
-<td>alpha</td>
-<td>浮点数</td>
-<td>透明度(默认为1)，值从0~1</td>
-</tr>
-</tbody></table>
-<p><strong>内置变量</strong></p>
-<table>
-<thead>
-<tr>
-<th><strong>变量</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>t</td>
-<td>以秒表示的时间戳，如果输入的时间是未知的则是NAN</td>
-</tr>
-<tr>
-<td>n</td>
-<td>输入帧的顺序编号，从0开始</td>
-</tr>
-<tr>
-<td>pos</td>
-<td>输入帧的位置，如果未知的则是NAN</td>
-</tr>
-<tr>
-<td>w</td>
-<td>输入视频帧的宽度</td>
-</tr>
-<tr>
-<td>h</td>
-<td>输入视频帧的高度</td>
-</tr>
-</tbody></table>
-<p><strong>举例</strong></p>
-<ul>
-<li>显示水印</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 将文字的水印加在视频的左上角</span><br><span class="line">ffplay -i input.mp4 -vf &quot;drawtext=fontsize=100:fontfile=FreeSerif.ttf:text=&#x27;hello world&#x27;:x=20:y=20&quot;</span><br><span class="line"></span><br><span class="line"># 将字体的颜色设置为绿色</span><br><span class="line">ffplay -i input.mp4 -vf &quot;drawtext=fontsize=100:fontfile=FreeSerif.ttf:text=&#x27;hello world&#x27;:fontcolor=green&quot;</span><br><span class="line"></span><br><span class="line"># 如果想调整文字水印显示的位置，调整x与y参数的数值即可</span><br><span class="line">ffplay -i input.mp4 -vf &quot;drawtext=fontsize=100:fontfile=FreeSerif.ttf:text=&#x27;hello world&#x27;:fontcolor=green:x=400:y=200&quot;</span><br><span class="line"></span><br><span class="line"># 修改透明度</span><br><span class="line">ffplay -i input.mp4 -vf &quot;drawtext=fontsize=100:fontfile=FreeSerif.ttf:text=&#x27;hello world&#x27;:fontcolor=green:x=400:y=200:alpha=0.5&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>背景框</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffplay -i input.mp4 -vf &quot;drawtext=fontsize=100:fontfile=FreeSerif.ttf:text=&#x27;hello world&#x27;:fontcolor=green:box=1:boxcolor=yellow&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>本地时间作为水印内容</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ffplay  -i input.mp4 -vf &quot;drawtext=fontsize=60:fontfile=FreeSerif.ttf:text=&#x27;%&#123;localtime\:%Y\-%m\-%d %H-%M-%S&#125;&#x27;:fontcolor=green:box=1:boxcolor=yellow&quot;</span><br><span class="line"></span><br><span class="line"># 在使用ffmpeg转码存储到文件时需要加上-re，否则时间不对</span><br><span class="line">ffmpeg -re -i input.mp4 -vf &quot;drawtext=fontsize=60:fontfile=FreeSerif.ttf:text=&#x27;%&#123;localtime\:%Y\-%m\-%d %H-%M-%S&#125;&#x27;:fontcolor=green:box=1:boxcolor=yellow&quot; out.mp4</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>定时显示水印</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 每3秒钟显示一次文字水印</span><br><span class="line">ffplay -i input.mp4 -vf &quot;drawtext=fontsize=60:fontfile=FreeSerif.ttf:text=&#x27;test&#x27;:fontcolor=green:box=1:boxcolor=yellow:enable=lt(mod(t\,3)\,1)&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>表达式相关</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lt(x, y)  Return 1 if x is lesser than y, 0 otherwise.</span><br><span class="line">mod(x, y) Compute the remainder of division of x by y.</span><br></pre></td></tr></table></figure>
-
-<p>参考：<a target="_blank" rel="noopener" href="http://www.ffmpeg.org/ffmpeg-utils.html">1.ffmpeg官网</a>	<a target="_blank" rel="noopener" href="http://www.ffmpeg.org/ffmpeg-utils.html#toc-Expression-Evaluation">2. 3 Expression Evaluation</a></p>
-<ul>
-<li>跑马灯效果</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ffplay -i input.mp4 -vf &quot;drawtext=fontsize=100:fontfile=FreeSerif.ttf:text=&#x27;helloworld&#x27;:x=mod(100*t\,w):y=abs(sin(t))*h*0.7&quot;</span><br><span class="line"></span><br><span class="line"># 修改字体透明度，修改字体颜色</span><br><span class="line">ffplay -i input.mp4 -vf &quot;drawtext=fontsize=40:fontfile=FreeSerif.ttf:text=&#x27;liaoqingfu&#x27;:x=mod(50*t\,w):y=abs(sin(t))*h*0.7:alpha=0.5:fontcolor=white:enable=lt(mod(t\,3)\,1)&quot;</span><br></pre></td></tr></table></figure>
-
-<h2 id="FFmpeg过滤器-图片水印"><a href="#FFmpeg过滤器-图片水印" class="headerlink" title="FFmpeg过滤器-图片水印"></a>FFmpeg过滤器-图片水印</h2><p><strong>图片水印</strong></p>
-<p>​	在FFmpeg中加入图片水印有两种方式，一种是通过movie指定水印文件路径，另外一种方式是通过filter读取输入文件的流并指定为水印，这里重点介绍如何读取movie图片文件作为水印。</p>
-<p>​	FFmpeg除了可以向视频添加文字水印之外，还可以向视频添加图片水印、视频跑马灯等，本节将重点介绍如何为视频添加图片水印；为视频添加图片水印可以使用movie滤镜，下面就来熟悉一下<strong>movie</strong>滤镜的参数，如表所示。</p>
-<table>
-<thead>
-<tr>
-<th><strong>参数</strong></th>
-<th><strong>类型</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>filename</td>
-<td>字符串</td>
-<td>输入的文件名，可以是文件，协议，设备</td>
-</tr>
-<tr>
-<td>format_name, f</td>
-<td>字符串</td>
-<td>输入的封装格式</td>
-</tr>
-<tr>
-<td>stream_index,   si</td>
-<td>整数</td>
-<td>输入的流索引编号</td>
-</tr>
-<tr>
-<td>seek_point,   sp</td>
-<td>浮点数</td>
-<td>Seek输入流的时间位置</td>
-</tr>
-<tr>
-<td>streams,   s</td>
-<td>字符串</td>
-<td>输入的多个流的流信息</td>
-</tr>
-<tr>
-<td>loop</td>
-<td>整数</td>
-<td>循环次数</td>
-</tr>
-<tr>
-<td>discontinuity</td>
-<td>时间差值</td>
-<td>支持跳动的时间戳差值</td>
-</tr>
-</tbody></table>
-<p><strong>内置变量</strong></p>
-<table>
-<thead>
-<tr>
-<th><strong>参数</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>main_w 或 W</td>
-<td>视频单帧图像宽度</td>
-</tr>
-<tr>
-<td>main_h 或 H</td>
-<td>视频单帧图像高度</td>
-</tr>
-<tr>
-<td>overlay_w</td>
-<td>水印图片的宽度</td>
-</tr>
-<tr>
-<td>overlay_h</td>
-<td>水印图片的高度</td>
-</tr>
-</tbody></table>
-<p><strong>overlay过滤器</strong></p>
-<ul>
-<li><p>描述：前景窗口(第二输入)覆盖在背景窗口(第一输入)的指定位置。</p>
-</li>
-<li><p>语法：<code>overlay[=x:y[[:rgb=&#123;0, 1&#125;]]</code></p>
-<ul>
-<li>参数 x 和 y 是可选的，默认为 0。</li>
-<li>参数 rgb 参数也是可选的，其值为 0 或 1，默认为 0。</li>
-</ul>
-</li>
-</ul>
-<p><strong>举例</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.mp4 -vf &quot;movie=logo.png[watermark];[in][watermark]overlay=x=10:y=10[out]&quot; output.mp4</span><br><span class="line"></span><br><span class="line"># 原始视频文件路径：input.mp4</span><br><span class="line"># 水印图片路径：logo.png</span><br><span class="line"># 水印位置：(x,y)=(10,10)&lt;=(left,top)距离左侧、顶部各10像素</span><br><span class="line"># 输出文件路径：output.mp4</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>显示位置</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ffplay -i input.mp4 -vf &quot;movie=logo.png[watermark];[in][watermark]overlay=10:10[out]&quot;</span><br><span class="line"> </span><br><span class="line">ffplay -i input.mp4 -vf &quot;movie=logo.png[watermark];[in][watermark]overlay=main_w-overlay_w-10:10[out]&quot;</span><br><span class="line"> </span><br><span class="line">ffplay -i input.mp4 -vf &quot;movie=logo.png[watermark];[in][watermark]overlay=10:main_h-overlay_h-10[out]&quot;</span><br><span class="line"> </span><br><span class="line">ffplay -i input.mp4 -vf &quot;movie=logo.png[watermark];[in][watermark]overlay=main_w-overlay_w-10:main_h-overlay_h-10[out]&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>跑马灯效果</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffplay -i input.mp4 -vf &quot;movie=logo.png[watermark];[in][watermark]overlay=x=mod(50*t\,main_w):y=abs(sin(t))*h*0.7[out]&quot;</span><br></pre></td></tr></table></figure>
-
-<h2 id="FFmpeg生成画中画"><a href="#FFmpeg生成画中画" class="headerlink" title="FFmpeg生成画中画"></a>FFmpeg生成画中画</h2><p><strong>画中画</strong></p>
-<p>​	在使用FFmpeg处理流媒体文件时，有时需要使用画中画的效果。在FFmpeg中，可以通过overlay将多个视频流、多个多媒体采集设备、多个视频文件合并到一个界面中，生成画中画的效果。在前面的滤镜使用中，以至于以后的滤镜使用中，与视频操作相关的处理，大多数都会与overlay滤镜配合使用，尤其是用在图层处理与合并场景中，下面就来了解一下overlay的参数，具体见表。</p>
-<table>
-<thead>
-<tr>
-<th><strong>参数</strong></th>
-<th><strong>类型</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>x</td>
-<td>字符串</td>
-<td>X坐标</td>
-</tr>
-<tr>
-<td>y</td>
-<td>字符串</td>
-<td>Y坐标</td>
-</tr>
-<tr>
-<td>eof_action</td>
-<td>整数</td>
-<td>遇到eof表示时的处理方式，默认为重复Ø repeat(值为0)：重复前一帧Ø endcall(值为1)：停止所有的流Ø pass(值为2)：保留主图层</td>
-</tr>
-<tr>
-<td>shortest</td>
-<td>布尔</td>
-<td>终止最短的视频时全部终止（默认false）</td>
-</tr>
-<tr>
-<td>format</td>
-<td>整数</td>
-<td>设置output的像素格式，默认为yuv420。 yuv420 (值为0)；yuv422 (值为1)；yuv444 (值为2)；rgb (值为3)</td>
-</tr>
-</tbody></table>
-<p><strong>举例</strong></p>
-<ul>
-<li>显示画中画效果</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ffplay -i input.mp4 -vf &quot;movie=sub_320x240.mp4[sub];[in][sub]overlay=x=20:y=20[out]&quot;</span><br><span class="line"> </span><br><span class="line">ffplay -i input.mp4 -vf &quot;movie=sub_320x240.mp4[sub];[in][sub]overlay=x=20:y=20:eof_action=1[out]&quot;</span><br><span class="line"> </span><br><span class="line">ffplay -i input.mp4 -vf &quot;movie=sub_320x240.mp4[sub];[in][sub]overlay=x=20:y=20:shortest =1[out]&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>缩放子画面</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffplay -i input.mp4 -vf &quot;movie=sub_320x240.mp4,scale=640x480[sub];[in][sub]overlay=x=20:y=20[out]&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>跑马灯</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffplay -i input.mp4 -vf &quot;movie=sub_320x240.mp4[test];[in][test]overlay= x=mod(50*t\,main_w):y=abs(sin(t))*main_h*0.7[out]&quot;</span><br></pre></td></tr></table></figure>
-
-<h2 id="FFmpeg视频多宫格处理"><a href="#FFmpeg视频多宫格处理" class="headerlink" title="FFmpeg视频多宫格处理"></a>FFmpeg视频多宫格处理</h2><p><strong>视频多宫格</strong></p>
-<p>​	视频除了画中画显示，还有一种场景为以多宫格的方式呈现出来，除了可以输入视频文件，还可以输入视频流、采集设备等。从前文中可以看出进行视频图像处理时，overlay滤镜为关键画布，可以通过FFmpeg建立一个画布，也可以使用默认的画布。如果想以多宫格的方式展现，则可以自己建立一个足够大的画布，下面就来看一下多宫格展示的例子。</p>
-<p><strong>举例</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i 1.mp4 -i 2.mp4 -i 3.mp4 -i 4.mp4 -filter_complex &quot;nullsrc=size=640x480[base];[0:v] setpts=PTS-STARTPTS,scale=320x240[upperleft];[1:v]setpts=PTS-STARTPTS,scale=320x240[upperright];[2:v]setpts=PTS-STARTPTS, scale=320x240[lowerleft];[3:v]setpts=PTS-STARTPTS,scale=320x240[lowerright];[base][upperleft]overlay=shortest=1[tmp1];[tmp1][upperright]overlay=shortest=1:x=320[tmp2];[tmp2][lowerleft]overlay=shortest=1:y=240[tmp3];[tmp3][lowerright]overlay=shortest=1:x=320:y=240&quot; out.mp4</span><br><span class="line"></span><br><span class="line"># 1.2.3.4.mp4为文件路径</span><br><span class="line"># out.MP4为输出文件路径</span><br><span class="line"># 通过nullsrc创建overlay画布，画布大小640:480</span><br><span class="line"># 使用[0:v][1:v][2:v][3:v]将输入的4个视频流去除，分别进行缩放处理</span><br><span class="line"># 然后基于nullsrc生成的画布进行视频平铺，命令中自定义upperleft,upperright,lowerleft,lowerright进行不同位置平铺</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/page/8/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/10/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -3116,7 +2910,7 @@ AVFrame *-- AVBufferRef</pre>
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2024</span>
+    <span itemprop="copyrightYear">2025</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>

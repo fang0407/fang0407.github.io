@@ -120,13 +120,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">92</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
   </nav>
@@ -143,6 +143,307 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/" class="post-title-link" itemprop="url">RTP之H264封包和解包</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-19 21:37:41" itemprop="dateCreated datePublished" datetime="2023-09-19T21:37:41+08:00">2023-09-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-01-16 18:44:41" itemprop="dateModified" datetime="2024-01-16T18:44:41+08:00">2024-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Protocol/" itemprop="url" rel="index"><span itemprop="name">Protocol</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="NALU格式"><a href="#NALU格式" class="headerlink" title="NALU格式"></a>NALU格式</h1><p>H.264 标准协议定义了两种不同的类型：一种是 VCL 即 Video Coding Layer ， 一种是 NAL 即 Network Abstraction Layer。其中前者就是编码器吐出来的原始编码数据，没有考虑传输和存储问题。后面这种就是为了展现 H.264 的网络亲和性，对 VCL 输出的 slice 片数据进行了封装为 NALUs(NAL Units)，然后再封装为 RTP 包进行传输，这些都是 H.264 的基础。</p>
+<p>NALU 的基本格式是：NALU Header + NALU Data，其中 NALU 的头由一个字节组成如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|0|1|2|3|4|5|6|7|</span><br><span class="line">+-+-+-+-+-+-+-+-+</span><br><span class="line">|F|NRI|  Type   |</span><br><span class="line">+---------------+</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F(1 bit)</td>
+<td>如果是坏帧，则置 1，其余 H.264 固定为 0。</td>
+</tr>
+<tr>
+<td>NRI(2 bit)</td>
+<td>用来指示该 NALU 的重要性等级。值越大，表示当前 NALU 越重要。具体大于 0 时取何值，没有具体规定。<br>例如：如果是 00，则表示此帧即使丢失了，也不影响解码；其他值则表示此帧如果丢失了，会影响解码，这个字段指明了该 NALU 的重要性，但是实际我们不太关心这个字段。</td>
+</tr>
+<tr>
+<td>Nalu_Type(5 bit)</td>
+<td>NAL Unit 的类型，这个值指明了 NALU 的类型，其中 NALU 的类型见下表。</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Nalu_Type</th>
+<th>NALU内容</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>未指定</td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>非 IDR 图像编码的 slice</td>
+<td>比如普通 I、P、B 帧</td>
+</tr>
+<tr>
+<td>2</td>
+<td>编码 slice 数据划分 A</td>
+<td>2 类型时，只传递片中最重要的信息，如片头，片中宏块的预测模式等；一般不会用到</td>
+</tr>
+<tr>
+<td>3</td>
+<td>编码 slice 数据划分 B</td>
+<td>3 类型是只传输残差；一般不会用到</td>
+</tr>
+<tr>
+<td>4</td>
+<td>编码 slice 数据划分 C</td>
+<td>4 时则只可以传输残差中的 AC 系数；一般不会用到</td>
+</tr>
+<tr>
+<td>5</td>
+<td>IDR 图像中的编码 slice</td>
+<td>IDR 帧，IDR 一定是 I 帧但是 I 帧不一定是 IDR 帧</td>
+</tr>
+<tr>
+<td>6</td>
+<td>SEI 补充增强信息单元</td>
+<td>可以存一些私有数据等</td>
+</tr>
+<tr>
+<td>7</td>
+<td>SPS 序列参数集</td>
+<td>编码的参数配置</td>
+</tr>
+<tr>
+<td>8</td>
+<td>PPS 图像参数集</td>
+<td>编码的参数配置</td>
+</tr>
+<tr>
+<td>9</td>
+<td>接入单元定界符</td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td>序列结束</td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td>码流结束</td>
+<td></td>
+</tr>
+<tr>
+<td>12</td>
+<td>填充数据</td>
+<td></td>
+</tr>
+<tr>
+<td>24</td>
+<td>STAP-A</td>
+<td>单一时间聚合包模式，意味着一个RTP包可以传输多个 NALU，但是这些 NALU 的编码时间要一样才能聚合到一个 RTP。</td>
+</tr>
+<tr>
+<td>25</td>
+<td>STAP-B</td>
+<td>单一时间聚合包模式，比 STAP-B 多一个 DON。</td>
+</tr>
+<tr>
+<td>26</td>
+<td>MTAP 16</td>
+<td>多个时间聚合包模式：意味着一个RTP包可以传输多个 NALU，但是这些 NALU 的编码时间有可能不一样。</td>
+</tr>
+<tr>
+<td>27</td>
+<td>MTAP 24</td>
+<td>多个时间的聚合包模式。</td>
+</tr>
+<tr>
+<td>28</td>
+<td>FU-A</td>
+<td>分包模式：当一个 RTP 容纳不下一个 NALU 时，就需要 FUs 这种格式。</td>
+</tr>
+<tr>
+<td>29</td>
+<td>FU-B</td>
+<td>分包模式。</td>
+</tr>
+<tr>
+<td>30-31</td>
+<td>未指定，保留</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>我们看到 1-11 就是 NALU 的单个包类型，但是一个 NALU 的大小是不一样的，如果是非视频数据的 SPS PPS 才十几个字节，对于 IDR 帧，则有可能几十 KB。 </p>
+<h1 id="RTP的H264打包"><a href="#RTP的H264打包" class="headerlink" title="RTP的H264打包"></a>RTP的H264打包</h1><p>把 NALU 打包到 RTP 方式就很多，分为： </p>
+<ul>
+<li>一个 RTP 包承载一个 NALU</li>
+<li>多个 NALU 合并到一个 RTP</li>
+<li>一个大的 NALU 切分成多个 RTP</li>
+</ul>
+<p>同时由于时间戳的问题，就有了 24-29 几种类型。 </p>
+<p>但是对于发送端组 RTP 包的一方来说，尽可能找简单的打包方式。对于接受端则需要适配各种发送端的打包方式，因为无法决定输入源的打包方式。比较简单的打包方式：</p>
+<ul>
+<li>我们对于 <strong>NALU 的长度&lt;&#x3D;1400</strong>（rtp payload size）的则采用的是<strong>单一 NALU 打包到单一的 RTP 包中</strong>。</li>
+<li>我们对于 <strong>NALU的长度&gt;1400</strong>的则采用了 <strong>FU-A 的方式</strong>进行了打包，这种就是把一个大的 NALU 进行了切分，最后接收方则进行了合并，把多个 RTP 包合并成一个完整的NALU即可。</li>
+</ul>
+<p><strong>为什么 NALU 的长度大于 1400 字节就要进行 FU-A 切片</strong>，是因为底层 MTU 大小值固定为 1500，从传输效率讲，这里用 1400 作为切分条件。</p>
+<p>如下图所示： </p>
+<img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/RTP协议.png" alt="RTP协议" style="zoom:50%;">
+
+<ul>
+<li>28、29、30 三个 RTP 分别传输的 SPS、PPS、SEI 这三种 NALU，其中一个 NALU 分到一个 RTP 包，这是单一打包方式。</li>
+<li>31、32 三个RTP包分别传输了 IDR 帧的 NALU 单元，由于比较大，发送方采用了 FU-A 的打包方式。</li>
+<li>上图还显示了 SPS、PPS、SEI 的 RTP 包固定头，Seq 初始值不为 0，为随机值，并且一个 RTP 包就顺序+1，这跟上面分析的一致。</li>
+<li>上面 SPS、PPS、SEI 本身不涉及时间戳，但是这里头填充为和自己后面的第一个 RTP 保持一致，同样 IDR 的 NALU 切分的不同 RTP 包时间戳也是一样的。</li>
+</ul>
+<h2 id="单一NALU打包"><a href="#单一NALU打包" class="headerlink" title="单一NALU打包"></a>单一NALU打包</h2><p>就是一个 RTP 包打包一个单独的 NALU 方式，其实最好理解，就是在RTP固定头后面<strong>直接填充 NALU 单元数据</strong>即可，即： </p>
+<p>RTP Header + NALU Header + NALU Data; （<strong>不包括startcode</strong>） </p>
+<img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/单一NALU打包.png" alt="单一NALU打包" style="zoom:50%;">
+
+<p>抓包可以看到第一个字节为 67 即 SPS，后面开始就是 NALU Data 部分。</p>
+<h2 id="FU-A打包"><a href="#FU-A打包" class="headerlink" title="FU-A打包"></a>FU-A打包</h2><p>FU-A（Fragmentation Unit - Type A）的荷载格式用于传输 H.264 视频编码的分片数据。在 RTP FU-A 中，NALU（Network Abstraction Layer Unit）帧被分成小片段并封装成 RTP 包。以下是 RTP FU-A 的格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">0                   1                   2                   3</span><br><span class="line">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">| FU indicator  |   FU header   |                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |</span><br><span class="line">|                                                               |</span><br><span class="line">|                         FU payload                            |</span><br><span class="line">|                                                               |</span><br><span class="line">|                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                               :...OPTIONAL RTP padding        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+
+<p>这种打包方式也不复杂，为了解释清楚，需要了解下面两个数据包头即 FU indicator 和 Fu header。</p>
+<h3 id="FU-indication"><a href="#FU-indication" class="headerlink" title="FU indication"></a>FU indication</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|0|1|2|3|4|5|6|7|</span><br><span class="line">+-+-+-+-+-+-+-+-+</span><br><span class="line">|F|NRI|  Type   |</span><br><span class="line">+---------------+</span><br></pre></td></tr></table></figure>
+
+<p>这里面的的 F 和 NRI 已经在 NALU 的 Header 解释清楚了，就是 NALU 头的前面三个 bit 位，<strong>后面的 TYPE 就是 NALU 的 FU-A 类型 28</strong>，这样在 RTP 固定头后面第一字节的后面 5 bit 提取出来就确认了该 RTP 包承载的不是一个完整的 NALU，是其一部分。</p>
+<p>那么问题来了，一个 NALU 切分成多个 RTP 包传输，那么到底从哪儿开始哪儿结束呢？可能有人说 RTP 包固定头不是有 mark 标记么，注意区分那个是以<strong>帧图像的结束标记</strong>，这里要确定是 NALU 结束的标记，其次 NALU 的类型呢？那么就需要 <strong>RTP 固定 12 字节后面的 Fu Header 来进行区分</strong>。</p>
+<h3 id="FU-header"><a href="#FU-header" class="headerlink" title="FU header"></a>FU header</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------------+</span><br><span class="line">|0|1|2|3|4|5|6|7|</span><br><span class="line">+-+-+-+-+-+-+-+-+</span><br><span class="line">|S|E|R|  Type   |</span><br><span class="line">+---------------+</span><br></pre></td></tr></table></figure>
+
+<p>字段解释：</p>
+<ul>
+<li><p>S: 1 bit，当设置成 1，开始位指示分片 NAL 单元的开始。当跟随的 FU 荷载不是分片 NAL 单元荷载的开始，开始位设为 0。</p>
+</li>
+<li><p>E: 1 bit，当设置成 1，结束位指示分片 NAL 单元的结束，即, 荷载的最后字节也是分片 NAL 单元的最后一个字节，当跟随的 FU 荷载不是分片 NAL 单元的最后分片，结束位设置为 0。也就是说一个 NALU 切片时，<strong>第一个切片的 SE 是 10，然后中间的切片是 00，最后一个切片时 01</strong>。 </p>
+</li>
+<li><p>R: 1 bit，保留位必须设置为 0，接收者必须忽略该位。</p>
+</li>
+<li><p>Type: 5 bits，此处的 Type 就是 NALU 头中的 Type，取 1-23 的那个值，表示 NAL 单元荷载类型定义。</p>
+</li>
+</ul>
+<p>为了验证这种打包方式，我们同样进行了写文件和抓包，对第一个 IDR 帧的 NLAU 采取的这种分片进行了研究。 </p>
+<h4 id="IDR帧的NALU第一个切片"><a href="#IDR帧的NALU第一个切片" class="headerlink" title="IDR帧的NALU第一个切片"></a>IDR帧的NALU第一个切片</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包第一个切片.png" alt="FU-A打包第一个切片" style="zoom:50%;">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">十六机制：0x7C </span><br><span class="line">二进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">十六进制：0x85</span><br><span class="line">二进制：1000 0101</span><br></pre></td></tr></table></figure>
+
+<p>这里的 SE 是 10，则说明该 RTP 包承载的 NALU 的第一个切片。</p>
+<p>FU indication 字节的前 3 bit 位和 Fu header 字节后 5 bit 位则为 0110 0101 即 0x65 这刚好符合 IDR 帧的 NALU Header 定义，后面的 b8 00 00 03 等二进制就是 NALU 的 DATA 字段。 </p>
+<h4 id="IDR帧的NALU第二个切片"><a href="#IDR帧的NALU第二个切片" class="headerlink" title="IDR帧的NALU第二个切片"></a>IDR帧的NALU第二个切片</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包中间切片.png" alt="FU-A打包中间切片" style="zoom:50%;">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">十六机制：0x7C</span><br><span class="line">二进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">十六进制：0x05</span><br><span class="line">二进制：0000 0101</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这里的 SE 是 00，则说明该 RTP 包承载的 NALU 的中间切片。</li>
+<li>按照同样方法提取，则 NALU Header 的二进制为 0110 0101 即 0x65，同样说明是 IDR 帧类型，类似这种的中间切片有很多，从 31-56 RTP 包都是中间切片，直到最后一个 NALU 的切片。</li>
+</ul>
+<h4 id="IDR帧的NALU最后一个切片"><a href="#IDR帧的NALU最后一个切片" class="headerlink" title="IDR帧的NALU最后一个切片"></a>IDR帧的NALU最后一个切片</h4><img src="/2023/09/19/RTP%E4%B9%8BH264%E5%B0%81%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8C%85/FU-A打包最后切片.png" alt="FU-A打包最后切片" style="zoom:50%;">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FU indication</span><br><span class="line">十六机制：0x7C</span><br><span class="line">二进制：0111 1100</span><br><span class="line"></span><br><span class="line">FU header</span><br><span class="line">十六进制：0x45</span><br><span class="line">二进制：0100 0101</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这里的 SE 是 01，则说明该 RTP 包承载的 NALU 的最后一个切片。</li>
+</ul>
+<h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">rtp_h264_pack_fu_a</span><span class="params">(<span class="keyword">struct</span> <span class="type">rtp_encode_h264_t</span> *packer, <span class="type">const</span> <span class="type">uint8_t</span>* nalu, <span class="type">int</span> bytes)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> r, n;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> *rtp;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// RFC6184 5.3. NAL Unit Header Usage: Table 2 (p15)</span></span><br><span class="line">    <span class="comment">// RFC6184 5.8. Fragmentation Units (FUs) (p29)</span></span><br><span class="line">    <span class="type">uint8_t</span> fu_indicator = (*nalu &amp; <span class="number">0xE0</span>) | <span class="number">28</span>; <span class="comment">// FU-A 固定的逻辑</span></span><br><span class="line">    <span class="type">uint8_t</span> fu_header = *nalu &amp; <span class="number">0x1F</span>;           </span><br><span class="line"></span><br><span class="line">    r = <span class="number">0</span>;</span><br><span class="line">    nalu += <span class="number">1</span>; <span class="comment">// skip NAL Unit Type byte</span></span><br><span class="line">    bytes -= <span class="number">1</span>;</span><br><span class="line">    assert(bytes &gt; <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// FU-A start, 设置为s置位1</span></span><br><span class="line">    <span class="keyword">for</span> (fu_header |= FU_START; <span class="number">0</span> == r &amp;&amp; bytes &gt; <span class="number">0</span>; ++packer-&gt;pkt.rtp.seq) &#123;</span><br><span class="line">        <span class="keyword">if</span> (bytes + RTP_FIXED_HEADER &lt;= packer-&gt;size - N_FU_HEADER) &#123;</span><br><span class="line">            assert(<span class="number">0</span> == (fu_header &amp; FU_START));</span><br><span class="line">            fu_header = FU_END | (fu_header &amp; <span class="number">0x1F</span>); <span class="comment">// FU-A end  整个nalu结束了</span></span><br><span class="line">            packer-&gt;pkt.payloadlen = bytes;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            packer-&gt;pkt.payloadlen = packer-&gt;size - RTP_FIXED_HEADER - N_FU_HEADER;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        packer-&gt;pkt.payload = nalu;</span><br><span class="line">        n = RTP_FIXED_HEADER + N_FU_HEADER + packer-&gt;pkt.payloadlen;</span><br><span class="line">        <span class="comment">//分配内存</span></span><br><span class="line">        rtp = (<span class="type">uint8_t</span>*)packer-&gt;handler.alloc(packer-&gt;cbparam, n);</span><br><span class="line">        <span class="keyword">if</span> (!rtp) <span class="keyword">return</span> -ENOMEM;</span><br><span class="line"></span><br><span class="line">        packer-&gt;pkt.rtp.m = (FU_END &amp; fu_header) ? <span class="number">1</span> : <span class="number">0</span>; <span class="comment">// set marker flag</span></span><br><span class="line">        n = rtp_packet_serialize_header(&amp;packer-&gt;pkt, rtp, n);</span><br><span class="line">        <span class="keyword">if</span> (n != RTP_FIXED_HEADER) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*fu_indicator + fu_header*/</span></span><br><span class="line">        rtp[n + <span class="number">0</span>] = fu_indicator;</span><br><span class="line">        rtp[n + <span class="number">1</span>] = fu_header;</span><br><span class="line">        <span class="built_in">memcpy</span>(rtp + n + N_FU_HEADER, packer-&gt;pkt.payload, packer-&gt;pkt.payloadlen);</span><br><span class="line">        </span><br><span class="line">        r = packer-&gt;handler.packet(packer-&gt;cbparam, </span><br><span class="line">                                   rtp, n + N_FU_HEADER + packer-&gt;pkt.payloadlen, </span><br><span class="line">                                   packer-&gt;pkt.rtp.timestamp, <span class="number">0</span>);</span><br><span class="line">        packer-&gt;handler.<span class="built_in">free</span>(packer-&gt;cbparam, rtp);</span><br><span class="line">        </span><br><span class="line">        bytes -= packer-&gt;pkt.payloadlen;</span><br><span class="line">        nalu += packer-&gt;pkt.payloadlen;</span><br><span class="line">        fu_header &amp;= <span class="number">0x1F</span>; <span class="comment">// clear flags</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Wireshark解析RTP包中H264"><a href="#Wireshark解析RTP包中H264" class="headerlink" title="Wireshark解析RTP包中H264"></a>Wireshark解析RTP包中H264</h1><ul>
+<li>选择 RTP 包</li>
+<li>鼠标右击选择解码为（Decode As）…</li>
+<li>在当前（currnet）属性列表中选择 RTP，并保存</li>
+<li>可以看到选中的包协议类型为 RTP，PT 为 96</li>
+<li>选择编辑（Edit）中的首选项（Preferences）</li>
+<li>左侧菜单列表选择 Protocols 中的 H264</li>
+<li>根据上面 PT 为 96，填写 H264 dynamic payload types 为 96，并保存</li>
+<li>可以看到协议类型变为 H264</li>
+</ul>
+<p>Wireshark H264 导出工具：<a target="_blank" rel="noopener" href="https://github.com/volvet/h264extractor">https://github.com/volvet/h264extractor</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2956,173 +3257,6 @@ SSRC3--RTP1-->混合器SSRC4
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/08/FFplay%E6%A1%86%E6%9E%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/09/08/FFplay%E6%A1%86%E6%9E%B6/" class="post-title-link" itemprop="url">FFplay框架</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-09-08 11:14:56" itemprop="dateCreated datePublished" datetime="2023-09-08T11:14:56+08:00">2023-09-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-12-30 22:40:27" itemprop="dateModified" datetime="2023-12-30T22:40:27+08:00">2023-12-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/FFplay/" itemprop="url" rel="index"><span itemprop="name">FFplay</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="FFplay流程图"><a href="#FFplay流程图" class="headerlink" title="FFplay流程图"></a>FFplay流程图</h1><pre class="mermaid">graph TB
-    S(开始播放)-->F1[初始化]
-    F1-->F2[数据读取]
-    F2-->|PacketQueue|F3[音频解码]
-    F2-->|PacketQueue|F4[视频解码]
-    F3-->|FrameQueue|F5[声音输出]
-    F4-->|FrameQueue|F6[视频输出]
-    F5-->F7[同步输出]
-    F6-->F7
-    F7-->E(结束播放)</pre>
-
-
-
-<h1 id="模块分析"><a href="#模块分析" class="headerlink" title="模块分析"></a>模块分析</h1><h2 id="播放器初始化"><a href="#播放器初始化" class="headerlink" title="播放器初始化"></a>播放器初始化</h2><ul>
-<li>初始化PacketQueue</li>
-<li>初始化FrameQueue</li>
-<li>初始化Clock</li>
-<li>创建数据读取线程</li>
-</ul>
-<h2 id="线程划分"><a href="#线程划分" class="headerlink" title="线程划分"></a>线程划分</h2><ul>
-<li><p>数据读取线程</p>
-<ul>
-<li>打开媒体⽂件</li>
-<li>打开对应码流的decoder以及初始化对应的audio、video、subtitle输出</li>
-<li>创建decoder线程，audio、video和subtitle的解码线程独⽴</li>
-<li>调⽤av_read_frame读取packet，并根据steam_index放⼊不同stream对应的packet队列</li>
-</ul>
-</li>
-<li><p>⾳频解码线程</p>
-</li>
-<li><p>视频解码线程</p>
-</li>
-<li><p>字幕解码线程</p>
-</li>
-<li><p>⾳频播放（或者回调函数）</p>
-</li>
-<li><p>视频播放（ffplay⽬前是在main主线程进⾏视频播放）</p>
-</li>
-<li><p>字幕播放（ffplay⽬前是在main主线程进⾏字幕播放）</p>
-</li>
-<li><p>控制响应（播放&#x2F;暂停&#x2F;快进&#x2F;快退等）（ffplay⽬前是在main主线程进⾏播放控制）</p>
-</li>
-</ul>
-<h2 id="队列设计"><a href="#队列设计" class="headerlink" title="队列设计"></a>队列设计</h2><h3 id="Packet队列设计"><a href="#Packet队列设计" class="headerlink" title="Packet队列设计"></a>Packet队列设计</h3><ul>
-<li>线程安全，⽀持互斥、等待、唤醒</li>
-<li>缓存数据⼤⼩</li>
-<li>缓存包数</li>
-<li>队列播放可持续时间</li>
-<li>进队列&#x2F;出队列等</li>
-</ul>
-<h3 id="Frame队列的设计"><a href="#Frame队列的设计" class="headerlink" title="Frame队列的设计"></a>Frame队列的设计</h3><ul>
-<li><p>线程安全，⽀持互斥、等待、唤醒</p>
-</li>
-<li><p>缓存帧数</p>
-</li>
-<li><p>⽀持读取数据⽽不出队列</p>
-</li>
-<li><p>进队列&#x2F;出队列等</p>
-</li>
-</ul>
-<h2 id="音视频处理"><a href="#音视频处理" class="headerlink" title="音视频处理"></a>音视频处理</h2><h3 id="⾳视频同步"><a href="#⾳视频同步" class="headerlink" title="⾳视频同步"></a>⾳视频同步</h3><ul>
-<li>⾳频同步</li>
-<li>视频同步</li>
-<li>外部时钟同步</li>
-</ul>
-<h3 id="⾳频处理"><a href="#⾳频处理" class="headerlink" title="⾳频处理"></a>⾳频处理</h3><ul>
-<li>⾳量调节</li>
-<li>静⾳</li>
-<li>重采样</li>
-</ul>
-<h3 id="视频处理"><a href="#视频处理" class="headerlink" title="视频处理"></a>视频处理</h3><ul>
-<li>图像格式转换YUV-&gt;RGB等 </li>
-<li>图像缩放1280 * 720-&gt;800 * 480等</li>
-</ul>
-<h2 id="播放器控制"><a href="#播放器控制" class="headerlink" title="播放器控制"></a>播放器控制</h2><ul>
-<li>播放</li>
-<li>暂停</li>
-<li>停⽌</li>
-<li>快进&#x2F;快退</li>
-<li>逐帧</li>
-<li>静⾳</li>
-</ul>
-<p>参考链接：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/juju-go/p/16489044.html">https://www.cnblogs.com/juju-go/p/16489044.html</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/8/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -3135,7 +3269,7 @@ SSRC3--RTP1-->混合器SSRC4
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2024</span>
+    <span itemprop="copyrightYear">2025</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>

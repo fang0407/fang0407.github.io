@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic%7CRoboto+Slab:300,300italic,400,400italic,700,700italic%7CPT+Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fang0407.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="基本命令123456789101112131415161718192021222324252627gdb -q a.outlist&#x2F;l 列出源代码的一部分list + 向上列出源代码的一部分list - 向下列出源代码的一部分set listsize 30  设置列出源代码的行数show listsize  查看列出源代码的行数run&#x2F;r 运行程序break&#x2F;b 添加断点break main 添加">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GDB">
+<meta property="og:url" content="https://fang0407.github.io/2025/08/17/GDB/index.html">
+<meta property="og:site_name" content="NOTE">
+<meta property="og:description" content="基本命令123456789101112131415161718192021222324252627gdb -q a.outlist&#x2F;l 列出源代码的一部分list + 向上列出源代码的一部分list - 向下列出源代码的一部分set listsize 30  设置列出源代码的行数show listsize  查看列出源代码的行数run&#x2F;r 运行程序break&#x2F;b 添加断点break main 添加">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-08-17T01:20:17.000Z">
+<meta property="article:modified_time" content="2025-08-17T10:35:52.429Z">
+<meta property="article:author" content="Fang">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fang0407.github.io/2025/08/17/GDB/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://fang0407.github.io/2025/08/17/GDB/","path":"2025/08/17/GDB/","title":"GDB"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>GDB | NOTE</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">NOTE</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">基本命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%AD%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">断点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%A5%E5%8F%82%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">入参设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B1%87%E7%BC%96%E5%8D%95%E6%AD%A5%E6%89%A7%E8%A1%8C"><span class="nav-number">4.</span> <span class="nav-text">汇编单步执行</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%82%E5%AF%9F%E7%82%B9"><span class="nav-number">5.</span> <span class="nav-text">观察点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A0%86%E6%A0%88%E4%BF%A1%E6%81%AF"><span class="nav-number">6.</span> <span class="nav-text">堆栈信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%93%E5%8D%B0"><span class="nav-number">7.</span> <span class="nav-text">打印</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Fang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2025/08/17/GDB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="GDB | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GDB
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-08-17 09:20:17 / Modified: 18:35:52" itemprop="dateCreated datePublished" datetime="2025-08-17T09:20:17+08:00">2025-08-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/GDB/" itemprop="url" rel="index"><span itemprop="name">GDB</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">gdb -q a.out</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">list/l 列出源代码的一部分</span><br><span class="line">list + 向上列出源代码的一部分</span><br><span class="line">list - 向下列出源代码的一部分</span><br><span class="line">set listsize 30  设置列出源代码的行数</span><br><span class="line">show listsize  查看列出源代码的行数</span><br><span class="line"></span><br><span class="line">run/r 运行程序</span><br><span class="line"></span><br><span class="line">break/b 添加断点</span><br><span class="line">break main 添加断点到main函数</span><br><span class="line">break 10 添加断点到第10行</span><br><span class="line">info breakpoints/i b 查看断点</span><br><span class="line">watch 监视一个变量的值何时被写</span><br><span class="line">info watchpoints 查看监视的变量</span><br><span class="line"></span><br><span class="line">continue/c 继续执行，直到断点或者程序结束</span><br><span class="line">next/n 单步执行（在停止之后）；跳过函数调用</span><br><span class="line">step/s 单步执行（在停止之后）；进入函数调用</span><br><span class="line"></span><br><span class="line">finish 继续执行，知道当前函数返回</span><br><span class="line">return 强制从当前函数返回</span><br><span class="line">quit 退出gdb</span><br><span class="line"></span><br><span class="line">shell/! 使用linux命令</span><br></pre></td></tr></table></figure>
+
+<h1 id="断点"><a href="#断点" class="headerlink" title="断点"></a>断点</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">break &lt;行号&gt;</span><br><span class="line">break &lt;文件名&gt;:&lt;行号&gt;</span><br><span class="line"></span><br><span class="line">break &lt;函数名&gt;</span><br><span class="line">break &lt;类名&gt;::&lt;函数名&gt;</span><br><span class="line">break &lt;文件名&gt;:&lt;函数名&gt;</span><br><span class="line">break &lt;文件名&gt;:&lt;类名&gt;::&lt;函数名&gt;</span><br><span class="line"></span><br><span class="line">break &lt;位置&gt; if &lt;条件表达式&gt;</span><br><span class="line"></span><br><span class="line">break *&lt;内存地址&gt;</span><br><span class="line"></span><br><span class="line">rb &lt;模糊函数名&gt; 模糊断点</span><br><span class="line"></span><br><span class="line">tbreak/tb &lt;位置&gt; 临时断点，语法和break相同</span><br><span class="line"></span><br><span class="line">delete &lt;断点编号&gt; 删除指定断点</span><br><span class="line"></span><br><span class="line">enable &lt;断点编号&gt; 启用断点</span><br><span class="line">enable once &lt;断点编号&gt; 启动一次后自动禁用</span><br><span class="line">disable &lt;断点编号&gt; 禁用断点</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="入参设置"><a href="#入参设置" class="headerlink" title="入参设置"></a>入参设置</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gdb --args ./可执行程序 arg1 arg2 &quot;arg with space&quot; 参数包含空格使用&quot;&quot;</span><br><span class="line">run arg1 arg2 &quot;arg with space&quot;</span><br><span class="line">set args arg1 arg2 &quot;arg with space&quot;</span><br><span class="line"></span><br><span class="line">show args</span><br></pre></td></tr></table></figure>
+
+<h1 id="汇编单步执行"><a href="#汇编单步执行" class="headerlink" title="汇编单步执行"></a>汇编单步执行</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nexti/ni 执行下一条汇编指令；跳过函数</span><br><span class="line">stepi 执行下一条汇编指令；进入函数</span><br></pre></td></tr></table></figure>
+
+<h1 id="观察点"><a href="#观察点" class="headerlink" title="观察点"></a>观察点</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">watch 监视一个变量的值何时被写</span><br><span class="line">rwatch 监视一个变量的值何时被读</span><br><span class="line">awatch 监视一个变量的值何时被读或者写</span><br></pre></td></tr></table></figure>
+
+<h1 id="堆栈信息"><a href="#堆栈信息" class="headerlink" title="堆栈信息"></a>堆栈信息</h1><p>栈帧是函数调用时在内存栈区分配的一块连续内存，用于存储函数执行期间的上下文信息（如局部变量、参数、返回地址等）。</p>
+<p>每个函数调用对应一个独立的栈帧。</p>
+<p>x86 的函数参数，使用寄存器 rdi、rsi、rdx、rcx、r8、r9 存储前六个参数，超过的存储在栈中，入栈顺序从右到左入栈。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">backtrace/bt 查看程序堆栈信息</span><br><span class="line">bt full 显示函数参数和局部变量值</span><br><span class="line">bt 3 只显示最近三层调用</span><br><span class="line"></span><br><span class="line">info frame 查看当前栈帧信息</span><br><span class="line"></span><br><span class="line"># 示例</span><br><span class="line">(gdb) i frame</span><br><span class="line">Stack level 0, frame at 0x7fffffffe350:</span><br><span class="line"> rip = 0x40050a in Test2 (test.c:4); saved rip = 0x40052a</span><br><span class="line"> called by frame at 0x7fffffffe360</span><br><span class="line"> source language c.</span><br><span class="line"> Arglist at 0x7fffffffe340, args:</span><br><span class="line"> Locals at 0x7fffffffe340, Previous frame&#x27;s sp is 0x7fffffffe350</span><br><span class="line"> Saved registers:</span><br><span class="line">  rbp at 0x7fffffffe340, rip at 0x7fffffffe348</span><br><span class="line">  </span><br><span class="line">rip 指令指针寄存器，代表当前代码的执行位置</span><br><span class="line">saved rip 当前栈帧调用位置的下一行代码的位置</span><br><span class="line"></span><br><span class="line">验证是否正确</span><br><span class="line">(gdb) info line 4</span><br><span class="line">Line 4 of &quot;test.c&quot; starts at address 0x40050a &lt;Test2+4&gt; and ends at 0x400519 &lt;Test2+19&gt;.</span><br><span class="line">看到地址起始地址 0x40050a</span><br><span class="line">(gdb) info line 12</span><br><span class="line">Line 12 of &quot;test.c&quot; starts at address 0x40052a &lt;Test1+14&gt; and ends at 0x40052b &lt;Test1+15&gt;.</span><br><span class="line">看到调用函数的下一行起始地址 0x40052a</span><br></pre></td></tr></table></figure>
+
+<h1 id="打印"><a href="#打印" class="headerlink" title="打印"></a>打印</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">print x 以十进制打印变量x的值</span><br><span class="line">print /x ptr 以十六进制打印指针ptr的值</span><br><span class="line">print /s str 以字符串形式打印字符数组str的值</span><br><span class="line"></span><br><span class="line">print namespace:var 打印命名空间中的变量</span><br><span class="line"></span><br><span class="line">print 2 * x  计算表达式</span><br><span class="line">print func(a,b) 调用函数</span><br><span class="line">print MyClass::staticMethod() 调用静态方法</span><br><span class="line"></span><br><span class="line">print *(int*)0x12345678 打印指定地址的int值</span><br><span class="line">print (char*)0x400000 将地址视为字符串打印</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/11/10/CV-CUDA/" rel="prev" title="CV-CUDA">
+                  <i class="fa fa-angle-left"></i> CV-CUDA
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Fang</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"neutral"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

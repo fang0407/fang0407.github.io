@@ -120,13 +120,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">92</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
   </nav>
@@ -143,6 +143,173 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/08/FFplay%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Fang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NOTE">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | NOTE">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/09/08/FFplay%E6%A1%86%E6%9E%B6/" class="post-title-link" itemprop="url">FFplay框架</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-09-08 11:14:56" itemprop="dateCreated datePublished" datetime="2023-09-08T11:14:56+08:00">2023-09-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-12-30 22:40:27" itemprop="dateModified" datetime="2023-12-30T22:40:27+08:00">2023-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FFplay/" itemprop="url" rel="index"><span itemprop="name">FFplay</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="FFplay流程图"><a href="#FFplay流程图" class="headerlink" title="FFplay流程图"></a>FFplay流程图</h1><pre class="mermaid">graph TB
+    S(开始播放)-->F1[初始化]
+    F1-->F2[数据读取]
+    F2-->|PacketQueue|F3[音频解码]
+    F2-->|PacketQueue|F4[视频解码]
+    F3-->|FrameQueue|F5[声音输出]
+    F4-->|FrameQueue|F6[视频输出]
+    F5-->F7[同步输出]
+    F6-->F7
+    F7-->E(结束播放)</pre>
+
+
+
+<h1 id="模块分析"><a href="#模块分析" class="headerlink" title="模块分析"></a>模块分析</h1><h2 id="播放器初始化"><a href="#播放器初始化" class="headerlink" title="播放器初始化"></a>播放器初始化</h2><ul>
+<li>初始化PacketQueue</li>
+<li>初始化FrameQueue</li>
+<li>初始化Clock</li>
+<li>创建数据读取线程</li>
+</ul>
+<h2 id="线程划分"><a href="#线程划分" class="headerlink" title="线程划分"></a>线程划分</h2><ul>
+<li><p>数据读取线程</p>
+<ul>
+<li>打开媒体⽂件</li>
+<li>打开对应码流的decoder以及初始化对应的audio、video、subtitle输出</li>
+<li>创建decoder线程，audio、video和subtitle的解码线程独⽴</li>
+<li>调⽤av_read_frame读取packet，并根据steam_index放⼊不同stream对应的packet队列</li>
+</ul>
+</li>
+<li><p>⾳频解码线程</p>
+</li>
+<li><p>视频解码线程</p>
+</li>
+<li><p>字幕解码线程</p>
+</li>
+<li><p>⾳频播放（或者回调函数）</p>
+</li>
+<li><p>视频播放（ffplay⽬前是在main主线程进⾏视频播放）</p>
+</li>
+<li><p>字幕播放（ffplay⽬前是在main主线程进⾏字幕播放）</p>
+</li>
+<li><p>控制响应（播放&#x2F;暂停&#x2F;快进&#x2F;快退等）（ffplay⽬前是在main主线程进⾏播放控制）</p>
+</li>
+</ul>
+<h2 id="队列设计"><a href="#队列设计" class="headerlink" title="队列设计"></a>队列设计</h2><h3 id="Packet队列设计"><a href="#Packet队列设计" class="headerlink" title="Packet队列设计"></a>Packet队列设计</h3><ul>
+<li>线程安全，⽀持互斥、等待、唤醒</li>
+<li>缓存数据⼤⼩</li>
+<li>缓存包数</li>
+<li>队列播放可持续时间</li>
+<li>进队列&#x2F;出队列等</li>
+</ul>
+<h3 id="Frame队列的设计"><a href="#Frame队列的设计" class="headerlink" title="Frame队列的设计"></a>Frame队列的设计</h3><ul>
+<li><p>线程安全，⽀持互斥、等待、唤醒</p>
+</li>
+<li><p>缓存帧数</p>
+</li>
+<li><p>⽀持读取数据⽽不出队列</p>
+</li>
+<li><p>进队列&#x2F;出队列等</p>
+</li>
+</ul>
+<h2 id="音视频处理"><a href="#音视频处理" class="headerlink" title="音视频处理"></a>音视频处理</h2><h3 id="⾳视频同步"><a href="#⾳视频同步" class="headerlink" title="⾳视频同步"></a>⾳视频同步</h3><ul>
+<li>⾳频同步</li>
+<li>视频同步</li>
+<li>外部时钟同步</li>
+</ul>
+<h3 id="⾳频处理"><a href="#⾳频处理" class="headerlink" title="⾳频处理"></a>⾳频处理</h3><ul>
+<li>⾳量调节</li>
+<li>静⾳</li>
+<li>重采样</li>
+</ul>
+<h3 id="视频处理"><a href="#视频处理" class="headerlink" title="视频处理"></a>视频处理</h3><ul>
+<li>图像格式转换YUV-&gt;RGB等 </li>
+<li>图像缩放1280 * 720-&gt;800 * 480等</li>
+</ul>
+<h2 id="播放器控制"><a href="#播放器控制" class="headerlink" title="播放器控制"></a>播放器控制</h2><ul>
+<li>播放</li>
+<li>暂停</li>
+<li>停⽌</li>
+<li>快进&#x2F;快退</li>
+<li>逐帧</li>
+<li>静⾳</li>
+</ul>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/juju-go/p/16489044.html">https://www.cnblogs.com/juju-go/p/16489044.html</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1267,691 +1434,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://fang0407.github.io/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Fang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NOTE">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | NOTE">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/" class="post-title-link" itemprop="url">MP4封装格式</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-09-01 19:11:29" itemprop="dateCreated datePublished" datetime="2023-09-01T19:11:29+08:00">2023-09-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-07-19 09:12:47" itemprop="dateModified" datetime="2024-07-19T09:12:47+08:00">2024-07-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%BC%96%E7%A0%81%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">编码封装格式</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="MP4简介"><a href="#MP4简介" class="headerlink" title="MP4简介"></a>MP4简介</h1><p>mp4 文件格式全称为 MPEG-4 Part 14。它是⼀种多媒体格式容器，广泛用于包装视频和音频数据流、海报、字幕和元数据等。MP4 文件采用一种分层的容器结构，包含多个 box 层次结构，每个箱子用于存储特定类型的数据或元信息。</p>
-<h1 id="MP4结构"><a href="#MP4结构" class="headerlink" title="MP4结构"></a>MP4结构</h1><p>一个 mp4 文件可以看作有两个大类：</p>
-<ul>
-<li>记录媒体信息相关的部分。</li>
-<li>媒体负载部分。</li>
-</ul>
-<p>典型结构如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|  ftyp  |  moov |  mdat  |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>ftyp（file type box），文件头，记录一些兼容性信息。</li>
-<li>moov（movie box），记录媒体信息。</li>
-<li>mdat（media data），媒体负载。</li>
-</ul>
-<p>注意，MP4数据索引和真正的数据分开区域存储，moov存放数据索引，mdat存放真正数据。</p>
-<h1 id="ftyp"><a href="#ftyp" class="headerlink" title="ftyp"></a>ftyp</h1><p>ftyp（File Type Box）一般出现在文件的开头，用来指示该 mp4 文件使用的标准规范：</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>major_brand</td>
-<td>4 bytes</td>
-<td>主版本</td>
-</tr>
-<tr>
-<td>minor_version</td>
-<td>4 bytes</td>
-<td>次版本</td>
-</tr>
-<tr>
-<td>compatible_brands[]</td>
-<td>4 bytes</td>
-<td>指定兼容的版本，注意此字段是一个 list，即可以包含多个 4 bytes 版本号</td>
-</tr>
-</tbody></table>
-<h1 id="moov"><a href="#moov" class="headerlink" title="moov"></a>moov</h1><p>moov（Movie Box）一个 container box，一个文件只有一个，其包含的所有 box 用于描述媒体信息。 moov 的位置可以紧随着 ftyp 出现，也可以出现在文件末尾。由于是一个 container box，所以除了 box header，其 box body 就是其它的 box。 示例如下：</p>
-<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/moov结构.png" alt="moov结构" style="zoom:50%;">
-
-<p>其中包含：</p>
-<ul>
-<li>mvhd（moov header），用于简单描述一些所有媒体共享的信息。</li>
-</ul>
-<ul>
-<li>trak，即 track，轨道，用于描述音频流或视频流信息，可以有多个音视频轨道。</li>
-<li>udta（userdata），用户自定义数据。</li>
-</ul>
-<h2 id="mvhd"><a href="#mvhd" class="headerlink" title="mvhd"></a>mvhd</h2><p>mvhd（Movie Header Box），记录整个媒体文件的描述信息，如创建时间、修改时间、时间度量标尺、可播放时长等。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>version</td>
-<td>8 bit</td>
-<td>取 0 或 1，一般取 0</td>
-</tr>
-<tr>
-<td>flags</td>
-<td>24 bit</td>
-<td></td>
-</tr>
-<tr>
-<td>creation_time</td>
-<td>64&#x2F;32 bit</td>
-<td>创建时间，当 version&#x3D;0 时取 32bit</td>
-</tr>
-<tr>
-<td>modification_time</td>
-<td>64&#x2F;32 bit</td>
-<td>修改时间，当 version&#x3D;0 时取 32bit</td>
-</tr>
-<tr>
-<td>timescale</td>
-<td>32 bit</td>
-<td>时间基</td>
-</tr>
-<tr>
-<td>duration</td>
-<td>64&#x2F;32 bit</td>
-<td>文件时长，当 version&#x3D;0 时取 32bit</td>
-</tr>
-<tr>
-<td>rate</td>
-<td>32 bit</td>
-<td>播放速率，默认取 0x00010000，即 1.0</td>
-</tr>
-<tr>
-<td>volume</td>
-<td>16 bit</td>
-<td>音量，默认取 0x0100，即 1.0</td>
-</tr>
-<tr>
-<td>reserved</td>
-<td>16 bit</td>
-<td>0</td>
-</tr>
-<tr>
-<td>reserved</td>
-<td>2 x 32 bit</td>
-<td>0</td>
-</tr>
-<tr>
-<td>matrix</td>
-<td>9 x 32 bit</td>
-<td>可忽略</td>
-</tr>
-<tr>
-<td>pre_defined</td>
-<td>6 x 32 bit</td>
-<td>0</td>
-</tr>
-<tr>
-<td>next_track_ID</td>
-<td>32 bit</td>
-<td>下一个紧邻的 track box id</td>
-</tr>
-</tbody></table>
-<h2 id="track"><a href="#track" class="headerlink" title="track"></a>track</h2><p>trak box 是一个 container box，其子 box 包含了该 track 的媒体信息。一个 mp4 文件可以包含多个 track，track之间是独立的，trak box 用于描述每一路媒体流。</p>
-<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/trak结构.png" alt="trak结构" style="zoom:50%;">
-
-<p>其中包含：</p>
-<ul>
-<li>tkhd（track header box），用于简单描述该路媒体流的信息。</li>
-<li>edts()。</li>
-<li>mdia（media box），用于详细描述该路媒体流的信息。</li>
-</ul>
-<h3 id="tkhd"><a href="#tkhd" class="headerlink" title="tkhd"></a>tkhd</h3><p>tkhd（Track Header Box），用于描述媒体轨道的属性和信息，用于指导播放器正确解码和呈现轨道的媒体数据。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>version</td>
-<td>8 bit</td>
-<td>取 0 或 1，一般取 0</td>
-</tr>
-<tr>
-<td>flags</td>
-<td>24 bit</td>
-<td></td>
-</tr>
-<tr>
-<td>creation_time</td>
-<td>64&#x2F;32 bit</td>
-<td>创建时间，当 version&#x3D;0 时取 32bit</td>
-</tr>
-<tr>
-<td>modification_time</td>
-<td>64&#x2F;32 bit</td>
-<td>修改时间，当 version&#x3D;0 时取 32bit</td>
-</tr>
-<tr>
-<td>track_ID</td>
-<td>32 bit</td>
-<td>本 track id</td>
-</tr>
-<tr>
-<td>reserved</td>
-<td>32 bit</td>
-<td>0</td>
-</tr>
-<tr>
-<td>duration</td>
-<td>64&#x2F;32 bit</td>
-<td>本 track 时长，当 version&#x3D;0 时取 32bit</td>
-</tr>
-<tr>
-<td>reserved</td>
-<td>2 x 32 bit</td>
-<td>0</td>
-</tr>
-<tr>
-<td>layer</td>
-<td>16 bit</td>
-<td></td>
-</tr>
-<tr>
-<td>alternate_group</td>
-<td>16 bit</td>
-<td></td>
-</tr>
-<tr>
-<td>volume</td>
-<td>16 bit</td>
-<td>音量，如果是 audio track，则为 0x0100，即 1.0，否则取 0</td>
-</tr>
-<tr>
-<td>reserved</td>
-<td>16 bit</td>
-<td>0</td>
-</tr>
-<tr>
-<td>matrix</td>
-<td>9 x 32 bit</td>
-<td>可忽略</td>
-</tr>
-<tr>
-<td>width</td>
-<td>32 bit</td>
-<td>宽，[16.16] 格式，不必与sample的像素尺寸一致，用于播放时的展示宽高</td>
-</tr>
-<tr>
-<td>height</td>
-<td>32 bit</td>
-<td>高，[16.16] 格式 ，不必与sample的像素尺寸一致，用于播放时的展示宽高</td>
-</tr>
-</tbody></table>
-<h3 id="mdia"><a href="#mdia" class="headerlink" title="mdia"></a>mdia</h3><p>mdia（Media Box） 用于描述媒体数据的详细信息和属性。用于指导播放器解码和呈现媒体数据。</p>
-<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/mdia结构.png" alt="mdia结构" style="zoom:50%;">
-
-<p>其中包含：</p>
-<ul>
-<li>mdhd（Media Header Box），用于简单描述该路媒体流的信息。</li>
-<li>hdlr（Handler Reference Box），主要定义了轨道类型。</li>
-<li>stbl（Media Information Box），用于描述该路媒体流的解码相关信息和音视频位置等信息。</li>
-</ul>
-<h4 id="mdhd"><a href="#mdhd" class="headerlink" title="mdhd"></a>mdhd</h4><p>mdhd（Media Header Box），包含了有关媒体轨道的时间和时钟相关信息，用于指导播放器如何解释和呈现媒体数据的时间信息。 </p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>version</td>
-<td>8 bit</td>
-<td>取 0 或 1，一般取 0</td>
-</tr>
-<tr>
-<td>flags</td>
-<td>24 bit</td>
-<td></td>
-</tr>
-<tr>
-<td>creation_time</td>
-<td>64&#x2F;32 bit</td>
-<td>创建时间，当 version&#x3D;0 时取 32bit</td>
-</tr>
-<tr>
-<td>modification_time</td>
-<td>64&#x2F;32 bit</td>
-<td>修改时间，当 version&#x3D;0 时取 32bit</td>
-</tr>
-<tr>
-<td>timescale</td>
-<td>32 bit</td>
-<td>时间基，同 mvhd 中 timescale</td>
-</tr>
-<tr>
-<td>duration</td>
-<td>64&#x2F;32 bit</td>
-<td>本 track 时长，当 version&#x3D;0 时取 32bit</td>
-</tr>
-<tr>
-<td>pad</td>
-<td>1 bit</td>
-<td>0</td>
-</tr>
-<tr>
-<td>language</td>
-<td>3 x 5 bit</td>
-<td>最高位为0，后面15位为3个字符(见ISO 639-2&#x2F;T标准中定义)</td>
-</tr>
-<tr>
-<td>pre_defined</td>
-<td>16 bit</td>
-<td>0</td>
-</tr>
-</tbody></table>
-<h4 id="hdlr"><a href="#hdlr" class="headerlink" title="hdlr"></a>hdlr</h4><p>hdlr（Handler Reference Box），用于确定轨道的类型和如何处理轨道中的媒体数据。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>version</td>
-<td>8 bit</td>
-<td>取 0 或 1，一般取 0</td>
-</tr>
-<tr>
-<td>flags</td>
-<td>24 bit</td>
-<td></td>
-</tr>
-<tr>
-<td>pre_defined</td>
-<td>32 bit</td>
-<td>0</td>
-</tr>
-<tr>
-<td>handler_type</td>
-<td>32 bit</td>
-<td>取值为 <br>vide：Video track<br>soun：Audio track<br>hint：Hint track<br>meta：Timed Metadata track<br>auxv：Auxiliary Video track</td>
-</tr>
-<tr>
-<td>reserved</td>
-<td>3 x 32 bit</td>
-<td>0</td>
-</tr>
-<tr>
-<td>name</td>
-<td>不定长度</td>
-<td>自定义名称，以 \0 结尾</td>
-</tr>
-</tbody></table>
-<h4 id="minf"><a href="#minf" class="headerlink" title="minf"></a>minf</h4><p>minf（Media Information Box），包含了有关媒体数据的详细信息，指导播放器解码和呈现媒体数据。需要注意的是，minf里面的⼦容器，音频和视频轨是有区别的，比如视频轨：vmhd， 音频轨则为：smhd。</p>
-<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/minf.png" alt="minf" style="zoom:50%;">
-
-<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/minf结构.png" alt="minf结构" style="zoom:50%;">
-
-<p>其中包含：</p>
-<ul>
-<li><p>vmhd（Video Media Header），描述视频媒体的属性。</p>
-</li>
-<li><p>smhd（Sound Media Header），描述音频媒体的属性。</p>
-</li>
-<li><p>dinf（Data Information Box），存储媒体数据信息的部分。</p>
-</li>
-<li><p>stbl（Sample Table Box），包含了与媒体数据的样本和时间戳相关的信息。</p>
-</li>
-</ul>
-<h5 id="vmhd"><a href="#vmhd" class="headerlink" title="vmhd"></a>vmhd</h5><p>vmhd（Video Media Header），为MP4文件中的视频轨道提供一些控制和信息，以帮助解码器和播放器正确显示视频内容。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>graphics mode</td>
-<td>16 bit</td>
-<td>指定了如何处理视频中的图形，取值：<br>0：复制（Copy） - 表示图形将与前一个样本相同<br>1：混合（Blend） - 表示图形将与前一个样本混合<br>其他值：保留（Reserved） - 保留供将来使用</td>
-</tr>
-<tr>
-<td>opcolor</td>
-<td>48 bit</td>
-<td>用于指定不透明颜色</td>
-</tr>
-</tbody></table>
-<h5 id="smhd"><a href="#smhd" class="headerlink" title="smhd"></a>smhd</h5><p>SMHD（Sound Media Header），为MP4文件中的音频轨道提供一些控制和信息，以帮助解码器和播放器正确播放音频内容。平衡字段允许用户调整左右声道的音量平衡，以适应不同的听觉需求。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>balance</td>
-<td>16 bit</td>
-<td>指定音频的平衡，取值：<br>0表示中性平衡<br>负数值表示更偏向左声道<br>正数值表示更偏向右声道</td>
-</tr>
-<tr>
-<td>reserved</td>
-<td>16 bit</td>
-<td>保留字段</td>
-</tr>
-</tbody></table>
-<h5 id="stbl"><a href="#stbl" class="headerlink" title="stbl"></a>stbl</h5><p>stbl（Sample Table Box）是MP4（MPEG-4 Part 14）容器格式中的一个重要箱子，用于存储有关媒体数据的样本（samples）和时间戳（timestamps）等信息。stbl通常包含在媒体轨道描述中，用于指导播放器解码和呈现媒体数据。</p>
-<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/stbl结构.png" alt="stbl结构" style="zoom:50%;">
-
-<h6 id="stsd"><a href="#stsd" class="headerlink" title="stsd"></a>stsd</h6><p>stsd （Sample Description Box），用于描述每个媒体样本的格式和编码类型。它包括有关媒体轨道使用的编解码器的详细信息，以便解码器能够正确解码数据。</p>
-<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/stsd视频结构-3572269.png" alt="stsd视频结构" style="zoom:50%;">
-
-<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/stsd音频结构.png" alt="stsd音频结构" style="zoom:50%;">
-
-<h6 id="stts"><a href="#stts" class="headerlink" title="stts"></a>stts</h6><p>stts（Time-to-Sample Box），包含有关样本时间戳的信息。它定义了媒体样本之间的时间同步信息，以确保媒体内容按正确的时间顺序呈现。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>version</td>
-<td>8 bit</td>
-<td>取 0 或 1，一般取 0</td>
-</tr>
-<tr>
-<td>flags</td>
-<td>24 bit</td>
-<td></td>
-</tr>
-<tr>
-<td>sample_count</td>
-<td>32 bit</td>
-<td>播放时长为 sample_delta 的连续 sample 个数</td>
-</tr>
-<tr>
-<td>sample_delta</td>
-<td>32 bit</td>
-<td>单个 sample 的播放时长，单位为 timescale</td>
-</tr>
-</tbody></table>
-<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/Time-to-Sample映射表.png" alt="Time-to-Sample映射表" style="zoom:50%;">
-
-<p>持续时间相同的连续sample可以放到⼀个entry里达到节省空间的目的。 sample的实际数量需要将每个entry的sample count进行累加才是真正的sample个数</p>
-<h6 id="stsc"><a href="#stsc" class="headerlink" title="stsc"></a>stsc</h6><p>stsc（Sample-to-Chunk Box），定义了样本与数据块之间的映射。它告诉播放器如何将媒体样本分布到不同的数据块中，以便有效地访问和解码。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>version</td>
-<td>8 bit</td>
-<td>取 0 或 1，一般取 0</td>
-</tr>
-<tr>
-<td>flags</td>
-<td>24 bit</td>
-<td></td>
-</tr>
-<tr>
-<td>first_chunk</td>
-<td>32 bit</td>
-<td>一组 chunk 的第一个 chunk 的序号，chunk 的编号从 1 开始</td>
-</tr>
-<tr>
-<td>samples_per_chunk</td>
-<td>32 bit</td>
-<td>每个 chunk 有多少个 sample</td>
-</tr>
-<tr>
-<td>sample_description_index</td>
-<td>32 bit</td>
-<td>stsd box 中 sample desc 信息的索引</td>
-</tr>
-</tbody></table>
-<img src="/2023/09/01/MP4%E5%B0%81%E8%A3%85%E6%A0%BC%E5%BC%8F/sample-chunk映射表.png" alt="sample-chunk映射表" style="zoom:50%;">
-
-<ul>
-<li><p>First chunk：使用该表项的第⼀个chunk序号。</p>
-</li>
-<li><p>Samples per chunk：使用该表项的chunk中包含有几个sample。</p>
-</li>
-<li><p>Sample description ID：使用该表项的chunk参考的stsd表项序号。</p>
-</li>
-</ul>
-<h6 id="stsz"><a href="#stsz" class="headerlink" title="stsz"></a>stsz</h6><p>stsz（Sample Size Box），指示每个媒体样本的大小。它用于确定在解码和播放过程中需要多少数据。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>version</td>
-<td>8 bit</td>
-<td>取 0 或 1，一般取 0</td>
-</tr>
-<tr>
-<td>flags</td>
-<td>24 bit</td>
-<td></td>
-</tr>
-<tr>
-<td>sample_size</td>
-<td>32 bit</td>
-<td>指定默认的 sample 字节大小，如果所有 sample 的大小不一样，这个字段为 0</td>
-</tr>
-<tr>
-<td>sample_count</td>
-<td>32 bit</td>
-<td>track 中 sample 的数量</td>
-</tr>
-<tr>
-<td>sample_sizes</td>
-<td>32bit</td>
-<td>每个媒体样本的大小</td>
-</tr>
-</tbody></table>
-<h6 id="stco"><a href="#stco" class="headerlink" title="stco"></a>stco</h6><p>stco（Chunk Offset Box）或 co64（64-bit Chunk Offset Box），包含了每个数据块的偏移量信息，以便播放器能够查找并访问数据块中的样本数据。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>version</td>
-<td>8 bit</td>
-<td>取 0 或 1，一般取 0</td>
-</tr>
-<tr>
-<td>flags</td>
-<td>24 bit</td>
-<td></td>
-</tr>
-<tr>
-<td>chunk_offsets</td>
-<td>32 bit</td>
-<td>chunk 在文件中的位置</td>
-</tr>
-</tbody></table>
-<h6 id="stss"><a href="#stss" class="headerlink" title="stss"></a>stss</h6><p>stss（Sync Sample Box）， 包含同步样本的索引，通常用于随机访问视频轨道中的关键帧。它指示哪些样本是关键帧，这对于快速定位和随机访问视频非常重要。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>类型</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>version</td>
-<td>8 bit</td>
-<td>取 0 或 1，一般取 0</td>
-</tr>
-<tr>
-<td>flags</td>
-<td>24 bit</td>
-<td></td>
-</tr>
-<tr>
-<td>sample_number</td>
-<td>32 bit</td>
-<td>对于关键帧的sample计数，从 1 开始</td>
-</tr>
-</tbody></table>
-<p><strong>MP4中轨道、数据块和样本的关系</strong></p>
-<p>在MP4（MPEG-4 Part 14）容器格式中，媒体轨道（track）、数据块（chunk）和样本（sample）之间存在以下关系：</p>
-<pre class="mermaid">graph LR
-    A[MP4]-->B[track1]
-    A-->C[track2]
-    B-->D[chunk1]
-    B-->E[chunk2]
-    D-->F[sample1]
-    D-->G[sample2]</pre>
-
-<ul>
-<li><p>媒体轨道（Track）：</p>
-<ul>
-<li><p>一个MP4文件可以包含一个或多个媒体轨道，每个轨道通常对应一个媒体类型，例如，视频轨道、音频轨道、字幕轨道等。</p>
-</li>
-<li><p>每个媒体轨道都有一个唯一的轨道标识符（Track ID），用于标识该轨道。</p>
-</li>
-<li><p>每个轨道包含有关其媒体数据的描述信息，如时间属性、媒体类型、解码信息等，这些信息通常存储在tkhd和mdia箱中。</p>
-</li>
-</ul>
-</li>
-<li><p>数据块（Chunk）：</p>
-<ul>
-<li><p>数据块是媒体数据的最小存储单元，通常对应于文件中的一小部分数据。</p>
-</li>
-<li><p>媒体数据被切分成若干个数据块，这些数据块可能包含一组连续的媒体样本（samples）。</p>
-</li>
-<li><p>数据块通常存储在文件中，每个数据块都有一个偏移量，以便播放器能够查找和读取它们。</p>
-</li>
-<li><p>数据块之间的划分和索引信息通常存储在stsc中，它指示哪些数据块包含哪些样本。</p>
-</li>
-</ul>
-</li>
-<li><p>样本（Sample）：</p>
-<ul>
-<li><p>样本是媒体数据的最小解码单元，例如，视频帧、音频采样点等。</p>
-</li>
-<li><p>样本是可以直接呈现的媒体数据单元，播放器解码后将其呈现给用户。</p>
-</li>
-<li><p>样本通常存储在数据块中，一个数据块可以包含一个或多个样本。</p>
-</li>
-<li><p>样本通常具有时间戳（timestamp），以确定何时呈现它们。时间戳信息通常存储在stts中。</p>
-</li>
-</ul>
-</li>
-</ul>
-<p>关于这些关系，<strong>一个媒体轨道可以包含多个数据块，每个数据块包含多个样本</strong>。这些关系有助于播放器在正确的时间顺序下读取、解码和呈现媒体数据。</p>
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://gpac.github.io/mp4box.js/test/filereader.html">https://gpac.github.io/mp4box.js/test/filereader.html</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/moonwalk/p/16244932.html#_label6">https://www.cnblogs.com/moonwalk/p/16244932.html#_label6</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="Previous page" aria-label="Previous page" href="/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/9/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1964,7 +1446,7 @@
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2024</span>
+    <span itemprop="copyrightYear">2025</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>
